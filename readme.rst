@@ -45,18 +45,14 @@ How to Use it
 zsh configuration files
 -----------------------
 
-========================= ===============================
+========================= ===================================
 Location of Symbolic Link Location of the USRHOME file
-========================= ================================
-``~/.zshenv``             ``~/my/dv/usrhome/dot/``
-``~/.zprofile``           ``~/my/dv/usrhome/dot/zprofile``
-``~/.zshrc``              ``~/my/dv/usrhome/dot/zshrc``
-``~/.zlogin``             ``~/my/dv/usrhome/dot/zlogin``
-``~/.zlogout``            ``~/my/dv/usrhome/dot/zlogout``
-========================= ================================
-
-
-
-
+========================= ===================================
+``~/.zshenv``             ``~/my/dv/usrhome/dot/zshenv.zsh``
+``~/.zprofile``           ``~/my/dv/usrhome/dot/zprofile.zsh``
+``~/.zshrc``              ``~/my/dv/usrhome/dot/zshrc.zsh``
+``~/.zlogin``             ``~/my/dv/usrhome/dot/zlogin.zsh``
+``~/.zlogout``            ``~/my/dv/usrhome/dot/zlogout.zsh``
+========================= ===================================
 
 .. ---------------------------------------------------------------------------
