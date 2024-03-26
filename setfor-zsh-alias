@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-26 15:23:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 16:39:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -23,7 +23,9 @@
 # ----
 #
 #
-echo "----/Users/roup/my/dv/usrhome/setfor-zsh-alias"
+if [[ "$USRHOME_ECHO" = "1" ]]; then
+    echo "----/Users/roup/my/dv/usrhome/setfor-zsh-alias"
+fi
 #
 # Note: if you need those in other shells like Bash they must be defined
 # the configuration of these shells.

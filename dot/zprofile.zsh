@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-26 16:18:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 16:37:05 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -26,8 +26,13 @@
 # Code
 # ----
 
-echo "---: Running ~/.zprofile : [\$0 : $0], \$SHELL : $SHELL "
+if [[ "$USRHOME_ECHO" = "1" ]]; then
+    echo "---: Running ~/.zprofile : [\$0 : $0], \$SHELL : $SHELL "
+fi
+
+# For testing:
 alias s='echo \$0 : $0 , \$SHELL : $SHELL'
+
 # ------------------------------------------
 # Set User-specific Path
 # ----------------------

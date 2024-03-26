@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-18 18:40:12 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 16:41:42 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -21,6 +21,8 @@
 #
 #
 
-# echo "---: Running ~/.zlogout"
+if [[ "$USRHOME_ECHO" = "1" ]]; then
+    echo "---: Running ~/.zlogout"
+fi
 
 # ----------------------------------------------------------------------------

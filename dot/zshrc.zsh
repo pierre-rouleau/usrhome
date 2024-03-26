@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-26 15:17:35 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 16:35:29 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -20,7 +20,9 @@
 # Code
 # ----
 
-echo "---: Running ~/.zshrc"
+if [[ "$USRHOME_ECHO" = "1" ]]; then
+    echo "---: Running ~/.zshrc"
+fi
 
 
 # ----------------------------------------------------------------------------
@@ -117,7 +119,7 @@ if [ -z $INSIDE_EMACS ]; then
     precmd_vcs_info() { vcs_info }
     precmd_functions+=( precmd_vcs_info )
     setopt prompt_subst
-    #RPROMPT=%B%~%b\ \$vcs_info_msg_0_
+    RPROMPT=%B%~%b\ \$vcs_info_msg_0_
     zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
     zstyle ':vcs_info:*' enable git
 fi

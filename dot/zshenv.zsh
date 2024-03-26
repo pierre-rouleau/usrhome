@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-26 11:20:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 16:43:45 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -20,7 +20,10 @@
 # ----
 #
 #
+# Un-comment the following lines to trace sourcing of each of the
+# Z shell configuration file:
 
-echo "---: Running ~/.zshenv"
+# export USRHOME_ECHO=1
+# echo "---: Running ~/.zshenv"
 
 # ----------------------------------------------------------------------------
