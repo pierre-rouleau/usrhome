@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-26 16:37:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 18:42:13 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -26,6 +26,27 @@
 # Code
 # ----
 
+# Get user-specific configuration.
+# --------------------------------
+#
+# Identify the path of the usrcfg directory by taking advantage that
+# usrhome and usrcfg are llocated inside the same parent, and that
+# this script is executed via a symbolic link.
+#
+script=${(%):-%x}
+original_script=`readlink $script`
+usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
+export DIR_USRHOME_USRCFG="$usrhome_parent/usrcfg"
+
+# Import user configuration. Possibly defines:
+# - USRHOME_ECHO
+# - USRHOME_USE_HOMEBREW
+source "$DIR_USRHOME_USRCFG/setfor-zsh-config.zsh"
+
+# ------------------------------------------
+# Trace Execution of Z Shell configuration files if required
+# ----------------------------------------------------------
+
 if [[ "$USRHOME_ECHO" = "1" ]]; then
     echo "---: Running ~/.zprofile : [\$0 : $0], \$SHELL : $SHELL "
 fi
@@ -37,12 +58,24 @@ alias s='echo \$0 : $0 , \$SHELL : $SHELL'
 # Set User-specific Path
 # ----------------------
 
-# - ~/my/bin                                : my own commands
+# - ~/my/bin                                : Local commands
 # - /opt/homebrew/opt/make/libexec/gnubin   : Homebrew GNU Make (the latest version)
 # - /opt/homebrew/bin                       : Homebrew binaries
 # - /opt/homebrew/sbin                      : Homebrew binaries
 # - /opt/homebrew/opt/m4/bin                : Homebrew m4
-export PATH=~/my/bin:/opt/homebrew/opt/make/libexec/gnubin:/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homebrew/opt/m4/bin:$PATH
+
+# For Homebrew
+if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
+    export PATH=\
+/opt/homebrew/opt/make/libexec/gnubin:\
+/opt/homebrew/bin:\
+/opt/homebrew/sbin:\
+/opt/homebrew/opt/m4/bin:\
+$PATH
+fi
+
+# For local binaries
+export PATH=~/my/bin:$PATH
 
 # ------------------------------------------
 # Set Environment Variable that won't change
