@@ -1,0 +1,62 @@
+# Sourced script: setfor-zsh-alias  -*- mode: sh; -*-
+#
+# Purpose   : Set Z shell alias.
+# Created   : Tuesday, March 26 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-26 15:23:48 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+echo "----/Users/roup/my/dv/usrhome/setfor-zsh-alias"
+#
+# Note: if you need those in other shells like Bash they must be defined
+# the configuration of these shells.
+
+alias ss='echo \$0 : $0 , \$SHELL : $SHELL'
+alias \?='echo $?'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+alias cls='clear'
+alias pel='cd $DIR_DV/elisp/pel'
+alias md='mkdir'
+
+# Python specific
+alias p3='python3'
+
+# ls flags:
+# -d : directories listed as plain files (instead of recursing into them)
+# -F : display '/' after dirname,
+#              '*' after executable,
+#              '@' for symlink,
+#              '=' after socket,
+#              '%' after whiteout,
+#              '|' after FIFO
+# -G : colorize
+# -O : include file flags
+#
+alias l='ls -FG'
+alias ll='ls -lFGO'
+alias lt='ls -ltrFGO'
+# lsd: list directories
+#  alias lsd='ls -dGF *(/)'
+
+
+# ----------------------------------------------------------------------------
