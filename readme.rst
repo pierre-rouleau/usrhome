@@ -6,7 +6,7 @@ USRHOME -- Unix Shell Configuration Files
    :alt: License
    :target: https://www.gnu.org/licenses/gpl-3.0.html
 
-.. image:: https://img.shields.io/badge/State-Under-Development-yellow
+.. image:: https://img.shields.io/badge/State-Under_Development-yellow
    :alt: Version
    :target: https://github.com/pierre-rouleau/usrhome
 
