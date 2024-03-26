@@ -27,9 +27,12 @@ configuration files I can use in multiple computers.
 
 It specifically assumes that:
 
+- The directory that holds the USRHOME directory tree also holds
+  a directory tree called ``usrcfg`` that holds the user-specific
+  and private configuration information.
+  See `The zsh User Configuration File`_ table.
 - Emacs is used, the terminal Emacs is the EDITOR.
-- 3 directory trees are managed by USRHOME; *dv*, *dvpub* and *dvpriv*.
-- These directories are sub-directories of the *~/my*  directory.
+- 3 directory trees are managed by USRHOME: *~/my/dv*, *~/my/dvpub* and *~/my/dvpriv*.
 
 
 How to Use it
@@ -49,7 +52,7 @@ How to Use it
   files listed in the table below.
 - Place your original logic not present in USRHOME inside the user-specific
   and user-private scripts USRHOME uses (*more on this later*).
-- Create
+
 
 zsh configuration files
 -----------------------
