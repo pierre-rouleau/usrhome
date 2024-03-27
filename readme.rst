@@ -180,8 +180,8 @@ USRHOME Command Name               Description
 ``lsl``                            List symbolic links in current directory.
 ================================== ================================================================
 
-Other shortcuts
-~~~~~~~~~~~~~~~
+Miscellaneous Commands
+~~~~~~~~~~~~~~~~~~~~~~
 
 ================================== ================================================================
 USRHOME Command Name               Description
@@ -189,6 +189,7 @@ USRHOME Command Name               Description
 ``cls``                            Shortcut for ``clear``; clear the content of the shell window.
 ``md``                             Shortcut for ``mkdir``
 ``p3``                             Shortcut for ``python3``
+``showpath``                       Print the value of PATH, placing each directory in its own line.
 ================================== ================================================================
 
 Programming Environment Setup

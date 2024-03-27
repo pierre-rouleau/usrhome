@@ -1,0 +1,29 @@
+#!/bin/sh
+# SH FILE: showpath
+#
+# Purpose   : Print current PATH, one directory per line.
+# Created   : Monday, March  4 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-27 15:04:50 EDT, updated by Pierre Rouleau>
+#
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print PATH's elements, one per line.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# printf, sed
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+printf -- "- "
+echo "$PATH" | sed 's/:/\n- /g'
+
+# ----------------------------------------------------------------------------
