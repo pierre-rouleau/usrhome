@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-27 11:10:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-27 15:00:35 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -55,34 +55,6 @@ fi
 alias s='echo \$0 : $0 , \$SHELL : $SHELL'
 
 # ------------------------------------------
-# Set User-specific Path
-# ----------------------
-
-# - ~/my/bin                                : Local commands
-# - /opt/homebrew/opt/make/libexec/gnubin   : Homebrew GNU Make (the latest version)
-# - /opt/homebrew/bin                       : Homebrew binaries
-# - /opt/homebrew/sbin                      : Homebrew binaries
-# - /opt/homebrew/opt/m4/bin                : Homebrew m4
-
-# For Homebrew
-if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
-    export PATH=\
-/opt/homebrew/opt/make/libexec/gnubin:\
-/opt/homebrew/bin:\
-/opt/homebrew/sbin:\
-/opt/homebrew/opt/m4/bin:\
-$PATH
-fi
-
-# For local binaries
-# If a ~/bin exists it may override the URSHOME/bin files.
-
-export PATH=$DIR_USRHOME/bin:$PATH
-if [[ -d "$HOME/bin" ]]; then
-    export PATH=~/my/bin:$PATH
-fi
-
-# ------------------------------------------
 # Set Environment Variable that won't change
 # ------------------------------------------
 #
@@ -111,7 +83,34 @@ export DIR_DVPUB=$HOME/my/dvpub
 export DIR_USRHOME=$DIR_DV/usrhome/
 
 # ------------------------------------------
+# Set User-specific Path
+# ----------------------
 
+# - ~/my/bin                                : Local commands
+# - /opt/homebrew/opt/make/libexec/gnubin   : Homebrew GNU Make (the latest version)
+# - /opt/homebrew/bin                       : Homebrew binaries
+# - /opt/homebrew/sbin                      : Homebrew binaries
+# - /opt/homebrew/opt/m4/bin                : Homebrew m4
+
+# For Homebrew
+if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
+    export PATH=\
+/opt/homebrew/opt/make/libexec/gnubin:\
+/opt/homebrew/bin:\
+/opt/homebrew/sbin:\
+/opt/homebrew/opt/m4/bin:\
+$PATH
+fi
+
+# For local binaries
+# If a ~/bin exists it may override the URSHOME/bin files.
+
+export PATH=$DIR_USRHOME/bin:$PATH
+if [[ -d "$HOME/bin" ]]; then
+    export PATH=$HOME/bin:$PATH
+fi
+
+# ------------------------------------------
 # /users/roup/my/bin/showpath
 
 
