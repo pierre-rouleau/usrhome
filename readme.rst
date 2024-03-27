@@ -180,6 +180,25 @@ USRHOME Command Name               Description
 ``lsl``                            List symbolic links in current directory.
 ================================== ================================================================
 
+Environment Variables Commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+``clrenv VARNAME``                 Clear (remove) the environment variable specified by name from
+                                   the environment of the *current* shell.
+
+``setenv VARNAME VALUE``           Set the environment variable named VARNAME to the specified
+                                   VALUE and inject it inside the *current* shell.
+
+``showpath [-n]``                  Print the value of PATH, placing each directory in its own line.
+                                   With the optional ``-n``: print a left justified number on
+                                   each line.
+
+================================== ================================================================
+
+
 Miscellaneous Commands
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -189,9 +208,6 @@ USRHOME Command Name               Description
 ``cls``                            Shortcut for ``clear``; clear the content of the shell window.
 ``md``                             Shortcut for ``mkdir``
 ``p3``                             Shortcut for ``python3``
-``showpath [-n]``                  Print the value of PATH, placing each directory in its own line.
-                                   With the optional ``-n``: print a left justified number on
-                                   each line.
 ================================== ================================================================
 
 Programming Environment Setup
@@ -209,13 +225,14 @@ Command and Script Organization
 
 USRHOME provides several types of command and scripts, as listed here.
 
-============================= ================== ==============================================
+============================= ================== =================================================
 Name format of scripts        Type of script     Purpose
-============================= ================== ==============================================
-``USRHOME/bin/setfor-CCC``    Sourced script     Meant to be invoked by alias command ``CCC``
-``USRHOME/bin/envfor-EEE``    Sourced script     Meant to be invoked by alias command ``EEE``
+============================= ================== =================================================
+``USRHOME/bin/do-CMD``        Sourced script     Meant to be invoked by alias command ``CMD``
+``USRHOME/bin/setfor-CMD``    Sourced script     Meant to be invoked by alias command ``CMD``
+``USRHOME/bin/envfor-ENV``    Sourced script     Meant to be invoked by alias command ``use-ENV``
 ``USRHOME/bin/...``           Shell script       A regular script that can be invoked directly.
-============================= ================== ==============================================
+============================= ================== =================================================
 
 The commands alias are all sourcing a sourced script that *injects* or *modifies*
 something inside the current running shell.  The source scripts all have names
@@ -225,9 +242,9 @@ The ``setfor-`` sourced scripts are used by various USRHOME commands that
 control the shell, such as ``usrhome-shell-toggle-tracing`` and
 ``usrhome-prompt-toggle-usr-host``.
 
-The ``envfor-EEE`` sourced scripts are used by the equivalent ``use-EEE``
+The ``envfor-ENV`` sourced scripts are used by the equivalent ``use-ENV``
 command.  These commands set the shell for the environment identified by the
-``EEE`` suffix.  The idea is that when you start a shell it comes with a
+``ENV`` suffix.  The idea is that when you start a shell it comes with a
 minimal environment.  You can then activate a given environment by issuing the
 corresponding ``use-`` command.  For example, assuming that you want to use
 various tools for the Erlang, Factor, Rust or Zig programming languages but

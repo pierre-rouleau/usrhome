@@ -3,7 +3,7 @@
 # Purpose   : Set shell for programming PEL.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-27 11:05:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-27 16:46:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -14,6 +14,7 @@
 # Dependencies
 # ------------
 #
+# - This should be invoked via a alias named pel
 # - $DIR_USRHOME/bin must be on PATH.  It holds settitle.
 
 # ----------------------------------------------------------------------------

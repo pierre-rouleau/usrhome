@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-27 11:59:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-27 16:46:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -47,8 +47,8 @@ alias md='mkdir'
 alias p3='python3'
 
 # Source environment control scripts
-alias usrhome-prompt-toggle-usr-host='source $DIR_USRHOME/bin/setfor-prompt-toggle-usr-host'
-alias usrhome-shell-toggle-tracing='source $DIR_USRHOME/bin/setfor-shell-toggle-tracing'
+alias usrhome-prompt-toggle-usr-host='source $DIR_USRHOME/ibin/setfor-prompt-toggle-usr-host'
+alias usrhome-shell-toggle-tracing='source $DIR_USRHOME/ibin/setfor-shell-toggle-tracing'
 
 
 # ls flags:
@@ -70,9 +70,13 @@ alias lla='ls -alFGO'
 alias lt='ls -ltrFGO'
 alias lta='ls -ltraFGO'
 
+# Manual environment variable manipulation
+alias setenv='source $DIR_USRHOME/ibin/do-setenv'
+alias clrenv='source $DIR_USRHOME/ibin/do-clrenv'
+
 # Programming Environment Setup
 # These commands source scripts that setup the environment.
 # Some of them set the terminal's title (using settitle)
-alias pel='source $DIR_USRHOME/bin/envfor-pel'
+alias pel='source $DIR_USRHOME/ibin/envfor-pel'
 
 # ----------------------------------------------------------------------------

@@ -1,0 +1,40 @@
+#!/bin/sh
+# SH FILE: do-clrenv
+#
+# Purpose   : Clear the specified environment from the environment.
+# Created   : Wednesday, March 27 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-27 16:50:07 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Remove a specified environment variable from the current shell.
+#
+#  Usage: source do-clrenv VARNAME
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# This script is meant to be sourced, and it should be assigned an alias named
+# clrenv such that it can be invoked directly by the clrenv command.
+#
+# - env, grep
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+if env | grep "^$1=" > /dev/null; then
+    unset "$1"
+    echo "Removed $1 from the environment"
+else
+    echo "ERROR: the '$1' environment variable does not exist."
+    return 1
+fi
+
+# ----------------------------------------------------------------------------
