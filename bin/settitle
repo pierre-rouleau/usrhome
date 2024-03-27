@@ -1,0 +1,46 @@
+#!/bin/sh
+# SH FILE: settitle
+#
+# Purpose   : Set the title of the enclosing terminal window.
+# Created   : Wednesday, March 27 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-27 12:02:44 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Update the title on the terminal's window title bar.
+#
+# Currently supports:
+# - macOS bash
+# - macOS zsh
+#
+
+# Credit:
+# - Alvin Alexander for the macOS echo trick.
+#   - https://alvinalexander.com/blog/post/mac-os-x/change-title-bar-of-mac-os-x-terminal-window/
+#
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+os_type=`uname`
+case $os_type in
+    'Darwin')
+        # Supports all shells with a simple echo.
+        echo "\033]0;${1}\007\c"
+        ;;
+    *)
+        echo "ERROR: The $os_type Operating System is not yet supported!"
+        echo "       Please report the error on GitHub."
+        echo "       You may also provide a Pull Request."
+        exit 1
+esac
+# ----------------------------------------------------------------------------

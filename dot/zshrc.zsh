@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-26 23:04:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-27 12:27:54 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -28,7 +28,7 @@ fi
 # ----------------------------------------------------------------------------
 # Set shortcut alias for Z shell
 # ------------------------------
-source $DIR_USRHOME/setfor-zsh-alias
+source $DIR_USRHOME/ibin/setfor-zsh-alias
 
 # ------------------------------------------
 # Set shortcut functions for Z shell

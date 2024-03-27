@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-26 23:04:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-27 11:10:20 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -75,7 +75,12 @@ $PATH
 fi
 
 # For local binaries
-export PATH=~/my/bin:$PATH
+# If a ~/bin exists it may override the URSHOME/bin files.
+
+export PATH=$DIR_USRHOME/bin:$PATH
+if [[ -d "$HOME/bin" ]]; then
+    export PATH=~/my/bin:$PATH
+fi
 
 # ------------------------------------------
 # Set Environment Variable that won't change

@@ -3,18 +3,20 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-26 23:03:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-27 11:59:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#
+# Defines a set of utility command shortcuts implemented as alias.
+# These alias are for the Z Shell (zsh) .
+# This is an early version of the file; it will evolve as it's tested on
+# various computers and environments.
 
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
-#
 #
 
 
@@ -36,7 +38,6 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
-alias pel='cd $DIR_DV/elisp/pel'
 
 # Useful commands
 alias cls='clear'
@@ -51,6 +52,7 @@ alias usrhome-shell-toggle-tracing='source $DIR_USRHOME/bin/setfor-shell-toggle-
 
 
 # ls flags:
+# -a : include all files, including 'hidden' files
 # -d : directories listed as plain files (instead of recursing into them)
 # -F : display '/' after dirname,
 #              '*' after executable,
@@ -59,13 +61,18 @@ alias usrhome-shell-toggle-tracing='source $DIR_USRHOME/bin/setfor-shell-toggle-
 #              '%' after whiteout,
 #              '|' after FIFO
 # -G : colorize
-# -O : include file flags
+# -O : include file macOS flags
 #
 alias l='ls -FG'
+alias la='ls -aFG'
 alias ll='ls -lFGO'
+alias lla='ls -alFGO'
 alias lt='ls -ltrFGO'
-# lsd: list directories
-#  alias lsd='ls -dGF *(/)'
+alias lta='ls -ltraFGO'
 
+# Programming Environment Setup
+# These commands source scripts that setup the environment.
+# Some of them set the terminal's title (using settitle)
+alias pel='source $DIR_USRHOME/bin/envfor-pel'
 
 # ----------------------------------------------------------------------------
