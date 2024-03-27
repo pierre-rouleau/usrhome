@@ -3,7 +3,7 @@
 # Purpose   : Change current directory to directory that holds specified file.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-27 18:13:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-27 18:58:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -57,6 +57,8 @@ file_count=$(grep -c . <<<"$the_fname")
 # Report error if more than 1 location found.
 if (( ${file_count} > 1 )); then
     echo "Error: found ${file_count} files in directory tree for: $1"
+    echo "The files are:"
+    fd -g "$1" | nl
     return 1
 fi
 
