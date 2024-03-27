@@ -162,6 +162,10 @@ USRHOME Command Name               Description
 ``cddv [dir]``                     cd to the ``/my/dv`` directory or specified sub-directory.
 ``cddpriv [dir]``                  cd to the ``/my/dvpriv`` directory or specified sub-directory.
 ``cddpub [dir]``                   cd to the ``/my/dvpub`` directory or specified sub-directory.
+``cd-to FNAME``                    cd to the sub-directory that holds the file FNAME.
+                                   It reports an error if the file is not found or if more than
+                                   one is found.
+                                   This command requires the fd_ utility.
 ================================== ================================================================
 
 Listing Files/Directories/Links
@@ -263,5 +267,6 @@ scripts and commands to support various Operating Systems.
 .. _PEL:
 .. _Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 .. _numeric keypad:          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
+.. _fd:                      https://github.com/sharkdp/fd
 
 .. ---------------------------------------------------------------------------

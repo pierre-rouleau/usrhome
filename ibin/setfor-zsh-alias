@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-27 16:46:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-27 17:30:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -73,6 +73,9 @@ alias lta='ls -ltraFGO'
 # Manual environment variable manipulation
 alias setenv='source $DIR_USRHOME/ibin/do-setenv'
 alias clrenv='source $DIR_USRHOME/ibin/do-clrenv'
+
+# File searching and navigation
+alias cd-to='source $DIR_USRHOME/ibin/do-cd-to'
 
 # Programming Environment Setup
 # These commands source scripts that setup the environment.

@@ -1,0 +1,76 @@
+# Sourced script: do-cd-to  -*- mode: sh; -*-
+#
+# Purpose   : Change current directory to directory that holds specified file.
+# Created   : Wednesday, March 27 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-27 18:13:54 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Changes the current directory to the directory of the specified file.
+
+# BUG: - I have seen that Inside zsh, after finding the location of the file
+#        and moving to it, the command prints
+#         "VCS_INFO_formats:32: VCS_INFO_reposub: function definition file not found"
+#        but is still able to print the content of the RPROMPT properly.
+#        - A work-around to this was to restart zsh by issuing a 'exec zsh'
+#        - However the problem does not always show up.
+#          More investigation is in order.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+#  - fd : a fast find.
+#       See: https://github.com/sharkdp/fd
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Check for availability of the fd command.
+if ! which fd > /dev/null; then
+    echo "ERROR: the fd command is not available!"
+    echo "  See: https://github.com/sharkdp/fd "
+    echo "  Install it with your package manager."
+    return 1
+fi
+
+# Check for presence of file name argument.
+if [ -z "$1" ]; then
+    echo "ERROR: specify a file name."
+    echo " Usage cd-to FILENAME"
+    echo " Change the current directory to the sub-directory holding FILENAME"
+    return 1
+fi
+
+
+# Search for the file.
+the_fname=$(fd -g "$1")
+file_count=$(grep -c . <<<"$the_fname")
+
+# Report error if more than 1 location found.
+if (( ${file_count} > 1 )); then
+    echo "Error: found ${file_count} files in directory tree for: $1"
+    return 1
+fi
+
+# Otherwise extract the directory name.
+
+the_fpath=$(dirname "${the_fname}")
+
+if [ "$the_fpath" = "." ]; then
+    echo "Error: Not found inside any sub-directory: $1"
+    return 1
+fi
+
+# And jump to it.
+cd "${the_fpath}" || return 1
+
+
+# ----------------------------------------------------------------------------
