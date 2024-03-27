@@ -189,7 +189,9 @@ USRHOME Command Name               Description
 ``cls``                            Shortcut for ``clear``; clear the content of the shell window.
 ``md``                             Shortcut for ``mkdir``
 ``p3``                             Shortcut for ``python3``
-``showpath``                       Print the value of PATH, placing each directory in its own line.
+``showpath [-n]``                  Print the value of PATH, placing each directory in its own line.
+                                   With the optional ``-n``: print a left justified number on
+                                   each line.
 ================================== ================================================================
 
 Programming Environment Setup
