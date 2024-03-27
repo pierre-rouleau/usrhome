@@ -123,7 +123,7 @@ USRHOME Commands and Scripts
                                      and values.
 .
 . **Terminal Window Control**
-. ``settitle`                        Set the time to the value passed as its first parameter.
+. ``settitle``                       Set the time to the value passed as its first parameter.
                                      Only accepts 1 parameter, so if you want to set the title with
                                      embedded spaces just quote the entire title.
 .
