@@ -10,6 +10,10 @@ USRHOME -- Unix Shell Configuration Files
    :alt: Version
    :target: https://github.com/pierre-rouleau/usrhome
 
+.. image:: https://img.shields.io/badge/Supports-macOS_zsh-green
+   :alt: Version
+   :target: https://github.com/pierre-rouleau/usrhome
+
 
 :Author:  Pierre Rouleau
 :Copyright: © 2024, Pierre Rouleau
