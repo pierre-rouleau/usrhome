@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-26 16:39:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 23:03:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -23,7 +23,7 @@
 # ----
 #
 #
-if [[ "$USRHOME_ECHO" = "1" ]]; then
+if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
     echo "----/Users/roup/my/dv/usrhome/setfor-zsh-alias"
 fi
 #
@@ -36,12 +36,19 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
-alias cls='clear'
 alias pel='cd $DIR_DV/elisp/pel'
+
+# Useful commands
+alias cls='clear'
 alias md='mkdir'
 
 # Python specific
 alias p3='python3'
+
+# Source environment control scripts
+alias usrhome-prompt-toggle-usr-host='source $DIR_USRHOME/bin/setfor-prompt-toggle-usr-host'
+alias usrhome-shell-toggle-tracing='source $DIR_USRHOME/bin/setfor-shell-toggle-tracing'
+
 
 # ls flags:
 # -d : directories listed as plain files (instead of recursing into them)

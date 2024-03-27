@@ -1,0 +1,40 @@
+# Sourced script: setfor-shell-toggle-tracing  -*- mode: sh; -*-
+#
+# Purpose   : Toggle tracing of shell configuration file sourcing.
+# Created   : Tuesday, March 26 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-26 23:11:22 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Toggle printing the sourcing of shell configuration file.
+# This tracing helps show which configuration file is used in various
+# situations.
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
+    export USRHOME_TRACE_SHELL_CONFIG=1
+else
+    if [ "$USRHOME_TRACE_SHELL_CONFIG" = 0 ]; then
+        export USRHOME_TRACE_SHELL_CONFIG=1
+    else
+        export USRHOME_TRACE_SHELL_CONFIG=0
+    fi
+fi
+
+if [ "$USRHOME_TRACE_SHELL_CONFIG" = 0 ]; then
+    echo "No longer trace shell configuration sourcing."
+else
+    echo "Now trace shell configuration sourcing."
+fi
+
+exec zsh
+
+
+# ----------------------------------------------------------------------------

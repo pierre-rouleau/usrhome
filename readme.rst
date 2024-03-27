@@ -76,13 +76,23 @@ Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 The zsh User Configuration File
 -------------------------------
 
-=========================== ===============================================
-Environment Variable Name   Purpose
-=========================== ===============================================
-USRHOME_ECHO                Set to 1 to activate tracing of the configuration
-                            file sourcing.
-USRHOME_USE_HOMEBREW        Set to 1 when using Homebrew, to add Homebrew
-                            directories to the PATH.
-=========================== ===============================================
+=============================== =================================================
+Environment Variable Name       Purpose
+=============================== =================================================
+USRHOME_TRACE_SHELL_CONFIG      Set to 1 to activate tracing of the configuration
+                                file sourcing.
+                                Use the ``usrhome-shell-toggle-tracing``
+                                command to
+                                toggle this in the current shell.
+
+USRHOME_PROMPT_SHOW_USR_HOST    Set to 1 to display user name and host name
+                                in the prompt.
+                                Use the ``usrhome-prompt-toggle-usr-host``
+                                command to
+                                toggle this in the current shell.
+
+USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
+                                directories to the PATH.
+=============================== =================================================
 
 .. ---------------------------------------------------------------------------

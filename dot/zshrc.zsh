@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-26 16:35:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 23:04:38 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -20,7 +20,7 @@
 # Code
 # ----
 
-if [[ "$USRHOME_ECHO" = "1" ]]; then
+if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
     echo "---: Running ~/.zshrc"
 fi
 
@@ -100,7 +100,11 @@ function cddpub {
 # - % for normal prompt, # for sudo      %#
 # - all of the above in bold: %B ... %b
 
-export PROMPT=">%?@%B%D{%H:%M:%S} L=%L %n@%m:%2~ %#%b "
+if [[ $USRHOME_PROMPT_SHOW_USR_HOST = 1 ]]; then
+    export PROMPT=">%?@%B%D{%H:%M:%S} L%L %n@%m:%2~ %#%b "
+else
+    export PROMPT=">%?@%B%D{%H:%M:%S} L%L %3~%#%b "
+fi
 
 # Note that the prompt starts with a '>', the exit code and a '@'.  It is
 # therefore possible to create a regexp that identifies a prompt line.

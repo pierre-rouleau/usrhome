@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-26 16:37:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 23:03:34 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -22,7 +22,7 @@
 #
 #
 
-if [[ "$USRHOME_ECHO" = "1" ]]; then
+if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
     echo "---: Running ~/.zlogin"
 fi
 

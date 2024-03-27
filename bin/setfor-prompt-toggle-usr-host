@@ -1,0 +1,36 @@
+# Sourced script: setfor-prompt-toggle-usr-host  -*- mode: sh; -*-
+#
+# Purpose   : Toggle showing host and user name in the prompt.
+# Created   : Tuesday, March 26 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-26 22:54:59 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Toggle showing the host name and user name on the Zsh prompt.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+if [ -z "$USRHOME_PROMPT_SHOW_USR_HOST" ]; then
+    export USRHOME_PROMPT_SHOW_USR_HOST=1
+else
+    if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = 0 ]; then
+        export USRHOME_PROMPT_SHOW_USR_HOST=1
+    else
+        export USRHOME_PROMPT_SHOW_USR_HOST=0
+    fi
+fi
+
+if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = 0 ]; then
+    echo "Prompt no longer shows host and user name."
+else
+    echo "Prompt now shows host and user name."
+fi
+
+exec zsh
+
+# ----------------------------------------------------------------------------

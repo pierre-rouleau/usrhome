@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-26 18:42:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-26 23:04:24 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -39,7 +39,7 @@ usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
 export DIR_USRHOME_USRCFG="$usrhome_parent/usrcfg"
 
 # Import user configuration. Possibly defines:
-# - USRHOME_ECHO
+# - USRHOME_TRACE_SHELL_CONFIG
 # - USRHOME_USE_HOMEBREW
 source "$DIR_USRHOME_USRCFG/setfor-zsh-config.zsh"
 
@@ -47,7 +47,7 @@ source "$DIR_USRHOME_USRCFG/setfor-zsh-config.zsh"
 # Trace Execution of Z Shell configuration files if required
 # ----------------------------------------------------------
 
-if [[ "$USRHOME_ECHO" = "1" ]]; then
+if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
     echo "---: Running ~/.zprofile : [\$0 : $0], \$SHELL : $SHELL "
 fi
 
