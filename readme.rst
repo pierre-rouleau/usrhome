@@ -14,15 +14,25 @@ USRHOME -- Unix Shell Configuration Files
 :Author:  Pierre Rouleau
 :Copyright: © 2024, Pierre Rouleau
 
-
-.. contents::  **Table of Contents**
-.. sectnum::
-
 .. ---------------------------------------------------------------------------
 
 USRHOME is a starting project with the goal of holding a set of portable
-Unix shell configuration files.  At first it will support Bash and the Z
-shell.
+Unix shell configuration files that can be used in macOS and multiple Linux
+distributions.  At first it will support Bash and the Z shell.
+
+The intent is not to provide colourful configurations with fancy fonts and
+emoji but allow its use in:
+
+- the default macOS Terminal.app
+- the default Linux terminal applications
+- inside Emacs various terminal shell modes,
+
+and work well when used with my Pragmatic Emacs Library which provides
+extensive key bindings for use in these Operating systems and allow the use of
+the numeric keypad.
+
+
+
 
 This early version of the files make several assumptions as to where some
 files and directories are located. As USRHOME evolves, most of these will
