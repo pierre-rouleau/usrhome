@@ -108,58 +108,58 @@ USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
 USRHOME Commands and Scripts
 ----------------------------
 
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-**Shell Behavior Control**
-``usrhome-shell-toggle-tracing``   Toggle tracing the execution of the shell configuration files
-                                   when a shell starts.
+= ================================== ================================================================
+. USRHOME Command Name               Description
+= ================================== ================================================================
+. **Shell Behavior Control**
+. ``usrhome-shell-toggle-tracing``   Toggle tracing the execution of the shell configuration files
+                                     when a shell starts.
 
-``usrhome-prompt-toggle-usr-host`` Toggle the inclusion of the user name and host name inside
-                                   the prompt.
+. ``usrhome-prompt-toggle-usr-host`` Toggle the inclusion of the user name and host name inside
+                                     the prompt.
 
-**Shell Status Info**
-``ss``                             Show current and default shell environment variable names
-                                   and values.
+. **Shell Status Info**
+. ``ss``                             Show current and default shell environment variable names
+                                     and values.
 
-**Terminal Window Control**
-``settitle`                        Set the time to the value passed as its first parameter.
-                                   Only accepts 1 parameter, so if you want to set the title with
-                                   embedded spaces just quote the entire title.
+. **Terminal Window Control**
+. ``settitle`                        Set the time to the value passed as its first parameter.
+                                     Only accepts 1 parameter, so if you want to set the title with
+                                     embedded spaces just quote the entire title.
 
-**Directory Navigation**           Extension to the ``cd`` command.
-``..``                             Alias to ``cd ..``
-``...``                            Alias to ``cd ../..``
-``....``                           Alias to ``cd ../../..``
-``cddusrhome [dir]``               cd to the USRHOME directory or specified sub-directory.
-``cdh [dir]``                      cd to the ``~/my`` directory or specified sub-directory.
-``cdv [dir]``                      cd to the ``/Volumes`` directory or specified sub-directory.
-``cddv [dir]``                     cd to the ``/my/dv`` directory or specified sub-directory.
-``cddpriv [dir]``                  cd to the ``/my/dvpriv`` directory or specified sub-directory.
-``cddpub [dir]``                   cd to the ``/my/dvpub`` directory or specified sub-directory.
+. **Directory Navigation**           Extension to the ``cd`` command.
+. ``..``                             Alias to ``cd ..``
+. ``...``                            Alias to ``cd ../..``
+. ``....``                           Alias to ``cd ../../..``
+. ``cddusrhome [dir]``               cd to the USRHOME directory or specified sub-directory.
+. ``cdh [dir]``                      cd to the ``~/my`` directory or specified sub-directory.
+. ``cdv [dir]``                      cd to the ``/Volumes`` directory or specified sub-directory.
+. ``cddv [dir]``                     cd to the ``/my/dv`` directory or specified sub-directory.
+. ``cddpriv [dir]``                  cd to the ``/my/dvpriv`` directory or specified sub-directory.
+. ``cddpub [dir]``                   cd to the ``/my/dvpub`` directory or specified sub-directory.
 
-**Listing Files**
-``l``                              Colorized ls that also shows the file type symbol.
-``la``                             Same as ``l`` but also show hidden files.
-``ll``                             ``ls -l`` with colorized and  file type symbols.
-``lla``                            Same as ``ll`` but also show hidden files.
-``lt``                             ``ls -ltr`` with colorized and  file type symbols.
-``lta``                            Same as ``lt`` but also show hidden files.
+. **Listing Files**
+. ``l``                              Colorized ls that also shows the file type symbol.
+. ``la``                             Same as ``l`` but also show hidden files.
+. ``ll``                             ``ls -l`` with colorized and  file type symbols.
+. ``lla``                            Same as ``ll`` but also show hidden files.
+. ``lt``                             ``ls -ltr`` with colorized and  file type symbols.
+. ``lta``                            Same as ``lt`` but also show hidden files.
 
-**Listing Directories**
-``lsd``                            List sub-directories in current directory.
+. **Listing Directories**
+. ``lsd``                            List sub-directories in current directory.
 
-**Listing Links**
-``lsl``                            List symbolic links in current directory.
+. **Listing Links**
+. ``lsl``                            List symbolic links in current directory.
 
-**Other shortcuts**
-``cls``                            Shortcut for ``clear``; clear the content of the shell window.
-``md``                             Shortcut for ``mkdir``
-``p3``                             Shortcut for ``python3``
+. **Other shortcuts**
+. ``cls``                            Shortcut for ``clear``; clear the content of the shell window.
+. ``md``                             Shortcut for ``mkdir``
+. ``p3``                             Shortcut for ``python3``
 
-**Programming Environment Setup**
-``pel``                            Change to the PEL development directory. Sets terminal title.
-================================== ================================================================
+. **Programming Environment Setup**
+. ``pel``                            Change to the PEL development directory. Sets terminal title.
+= ================================== ================================================================
 
 
 Command and Script Organization
