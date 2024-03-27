@@ -23,16 +23,13 @@ distributions.  At first it will support Bash and the Z shell.
 The intent is not to provide colourful configurations with fancy fonts and
 emoji but allow its use in:
 
-- the default macOS Terminal.app
-- the default Linux terminal applications
+- the default macOS Terminal.app,
+- the default Linux terminal applications,
 - inside Emacs various terminal shell modes,
 
-and work well when used with my Pragmatic Emacs Library which provides
-extensive key bindings for use in these Operating systems and allow the use of
-the numeric keypad.
-
-
-
+and work well when used with my `Pragmatic Emacs Library`_ which provides
+extensive key bindings for use in these Operating systems and allow extended
+use of the `numeric keypad`_.
 
 This early version of the files make several assumptions as to where some
 files and directories are located. As USRHOME evolves, most of these will
@@ -104,5 +101,12 @@ USRHOME_PROMPT_SHOW_USR_HOST    Set to 1 to display user name and host name
 USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
                                 directories to the PATH.
 =============================== =================================================
+
+.. ---------------------------------------------------------------------------
+.. links
+
+
+.. _Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _numeric keypad:          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
 
 .. ---------------------------------------------------------------------------
