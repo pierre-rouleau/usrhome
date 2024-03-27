@@ -200,7 +200,7 @@ Programming Environment Setup
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``pel``                            Change to the PEL development directory. Sets terminal title.
+``pel``                            Change to the PEL_ development directory. Sets terminal title.
 ================================== ================================================================
 
 
@@ -237,12 +237,13 @@ scripts that update the PATH and other environment variables that are
 necessary for the environment.
 
 As USRHOME grows, I will be adding several of these environment setting
-scripts and commands to support various Operating systems.
+scripts and commands to support various Operating Systems.
 
 .. ---------------------------------------------------------------------------
 .. links
 
 
+.. _PEL:
 .. _Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 .. _numeric keypad:          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
 
