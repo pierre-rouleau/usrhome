@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-28 09:41:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-28 17:30:24 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -20,10 +20,29 @@
 # Code
 # ----
 
+# Setup Initial Environment if not already done
+# ---------------------------------------------
+#
+# It's not done when the shell is a sub-shell.
+
+if [[ -z "$DIR_USRHOME" ]]; then
+    script=${(%):-%x}
+    original_script=`readlink $script`
+    usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
+    export DIR_USRHOME_USRCFG="$usrhome_parent/usrcfg"
+
+    # echo "script          : $script"
+    # echo "original_script : $original_script"
+    # echo "usrhome_parent  : $usrhome_parent"
+
+    # Import user configuration. Defines:
+    # - USRHOME_TRACE_SHELL_CONFIG
+    source "$DIR_USRHOME_USRCFG/setfor-zsh-config.zsh"
+fi
+
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
     echo "---: Running ~/.zshrc"
 fi
-
 
 # ----------------------------------------------------------------------------
 # Set shortcut alias for Z shell
