@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-28 15:45:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-28 16:40:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,6 +37,22 @@
 # ----
 #
 #
+# Checking or setting DIR_USRHOME environment variable
+# ----------------------------------------------------
+if [ -z "$DIR_USRHOME" ]; then
+    DIR_USRHOME=$(pwd)
+    if [ "$(basename "$DIR_USRHOME")" != "usrhome" ]; then
+        echo "The directory where USRHOME is installed must be identified"
+        echo "by the DIR_USRHOME environment variable."
+        echo "The directory name should be 'usrhome'"
+        echo "It's currently not the case; it is: $(basename "$DIR_USRHOME")"
+        echo "Please rename the directory to usrhome and try again."
+        exit 1
+    fi
+fi
+
+
+
 # Utility Functions
 # -----------------
 
@@ -81,6 +97,7 @@ exit_on_error()
     printf "ERROR: %s\nExiting..." "$1"
     exit 1
 }
+
 
 create_dot_file()
 {
@@ -158,6 +175,15 @@ if [ "$do_copy" = "1" ]; then
     echo "  cp $src_fpath $target_fpath"
     cp "$src_fpath" "$target_fpath"
 fi
+echo ""
+
+# ----
+echo "- Append definition of DIR_USRHOME to $target_fpath"
+echo "  DIR_USRHOME will be set to $DIR_USRHOME"
+prompt "Do you wish to proceed"
+printf "export DIR_USRHOME=%s\n" "$DIR_USRHOME" >>  "$target_fpath"
+echo "Done: "
+tail -n 3 "$target_fpath"
 echo ""
 
 # ----

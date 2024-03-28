@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-27 15:00:35 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-28 16:36:02 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -37,6 +37,10 @@ script=${(%):-%x}
 original_script=`readlink $script`
 usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
 export DIR_USRHOME_USRCFG="$usrhome_parent/usrcfg"
+
+# echo "script          : $script"
+# echo "original_script : $original_script"
+# echo "usrhome_parent  : $usrhome_parent"
 
 # Import user configuration. Possibly defines:
 # - USRHOME_TRACE_SHELL_CONFIG
@@ -79,8 +83,7 @@ export DIR_DV=$HOME/my/dv
 export DIR_DVPRIV=$HOME/my/dvpriv
 export DIR_DVPUB=$HOME/my/dvpub
 
-# Define the root of the usrhome directory
-export DIR_USRHOME=$DIR_DV/usrhome/
+
 
 # ------------------------------------------
 # Set User-specific Path
