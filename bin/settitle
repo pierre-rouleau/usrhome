@@ -4,7 +4,7 @@
 # Purpose   : Set the title of the enclosing terminal window.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-27 15:06:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-28 09:56:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -31,16 +31,20 @@
 # ----
 #
 #
-os_type=`uname`
-case $os_type in
-    'Darwin')
-        # Supports all shells with a simple echo.
-        echo "\033]0;${1}\007\c"
-        ;;
-    *)
-        echo "ERROR: The $os_type Operating System is not yet supported!"
-        echo "       Please report the error on GitHub."
-        echo "       You may also provide a Pull Request."
-        exit 1
-esac
+if [ -z "$INSIDE_EMACS" ]; then
+    os_type=$(uname)
+    case $os_type in
+        'Darwin')
+            # Supports all shells with a simple echo.
+            # On macOS, the escape sequences are passed properly by echo.
+            # shellcheck disable=SC2028
+            echo "\033]0;${1}\007\c"
+            ;;
+        *)
+            echo "ERROR: The $os_type Operating System is not yet supported!"
+            echo "       Please report the error on GitHub."
+            echo "       You may also provide a Pull Request."
+            exit 1
+    esac
+fi
 # ----------------------------------------------------------------------------
