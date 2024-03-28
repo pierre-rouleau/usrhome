@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-27 17:30:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-28 09:58:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -81,5 +81,6 @@ alias cd-to='source $DIR_USRHOME/ibin/do-cd-to'
 # These commands source scripts that setup the environment.
 # Some of them set the terminal's title (using settitle)
 alias pel='source $DIR_USRHOME/ibin/envfor-pel'
+alias usrhome='source $DIR_USRHOME/ibin/envfor-usrhome'
 
 # ----------------------------------------------------------------------------

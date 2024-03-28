@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-27 12:27:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-28 09:41:27 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -47,10 +47,6 @@ function lsl {
 
 function cdh {
     cd ~/my/$1
-}
-
-function cddusrhome {
-    cd $DIR_USRHOME/$1
 }
 
 function cdv {

@@ -1,28 +1,30 @@
-# Sourced script: envfor-pel  -*- mode: sh; -*-
+# Sourced script: envfor-usrhome  -*- mode: sh; -*-
 #
-# Purpose   : Set shell for programming PEL.
-# Created   : Wednesday, March 27 2024.
+# Purpose   : Set for for USRHOME.
+# Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-28 09:45:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-28 09:45:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Set the environment for programming PEL.
+#
+
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-# - This should be invoked via a alias named pel
-# - $DIR_USRHOME/bin must be on PATH.  It holds settitle.
+#
+
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
 #
-cd $DIR_DV/elisp/pel/$1
-settitle PEL
+
+cd $DIR_USRHOME/$1
+settitle USRHOME
 
 # ----------------------------------------------------------------------------

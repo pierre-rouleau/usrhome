@@ -156,7 +156,6 @@ USRHOME Command Name               Description
 ``..``                             Alias to ``cd ..``
 ``...``                            Alias to ``cd ../..``
 ``....``                           Alias to ``cd ../../..``
-``cddusrhome [dir]``               cd to the USRHOME directory or specified sub-directory.
 ``cdh [dir]``                      cd to the ``~/my`` directory or specified sub-directory.
 ``cdv [dir]``                      cd to the ``/Volumes`` directory or specified sub-directory.
 ``cddv [dir]``                     cd to the ``/my/dv`` directory or specified sub-directory.
@@ -214,13 +213,18 @@ USRHOME Command Name               Description
 ``p3``                             Shortcut for ``python3``
 ================================== ================================================================
 
-Programming Environment Setup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Project Startup Commands
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``pel``                            Change to the PEL_ development directory. Sets terminal title.
+``pel [SUBDIR]``                   Change current directory to PEL_ depot directory or its SUBDIR
+                                   if specified.
+                                   Set terminal title to 'PEL'.
+``usrhome [SUBDIR]``               Change current directory to USRHOME depot directory or its
+                                   SUBDIR if specified.
+                                   Set terminal title to 'USRHOME'.
 ================================== ================================================================
 
 
