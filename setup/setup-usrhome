@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-28 16:40:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-28 17:14:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,7 +40,7 @@
 # Checking or setting DIR_USRHOME environment variable
 # ----------------------------------------------------
 if [ -z "$DIR_USRHOME" ]; then
-    DIR_USRHOME=$(pwd)
+    DIR_USRHOME=$(pwd -P)
     if [ "$(basename "$DIR_USRHOME")" != "usrhome" ]; then
         echo "The directory where USRHOME is installed must be identified"
         echo "by the DIR_USRHOME environment variable."
