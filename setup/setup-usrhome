@@ -1,0 +1,198 @@
+#!/bin/sh
+# SH FILE: setup-usrhome
+#
+# Purpose   : Setup usrhome personnal/private persistent files.
+# Created   : Thursday, March 28 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-28 15:45:24 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# USRHOME Initial configuration: creates the initial personnal/private
+# persistent configuration script file inside the usrcfg directory placed in
+# the same directory already holding usrhome.  Then create the user's Z Shell
+# configuration file symlinks pointing to the ones provided by USRHOME.  If
+# there was any pre-existing regular files, they are renamed to regular
+# (non-hidden) backup files.
+#
+# All executed commands are printed on stdout.
+#
+# Before proceeding, the script prints a description of what would be done
+# and prompts to proceed.
+#
+# EXIT CODE:
+#  - 0 on success
+#  - 1 on command error
+#  - 2 on user request to exit
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - POSIX commands.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Utility Functions
+# -----------------
+
+# Global script variable: used as output from prompt().
+proceed=1
+
+prompt()
+{
+    # Arg 1: string: prompt
+    # Arg 2: optional string. When empty/unused, the function exits when the user
+    #                         answer is NO and exits normally when the user
+    #                         types YES.
+    #                         When non-empty, prompt does not exit when user
+    #                         answer NO and the caller must check the returned
+    #                         value stored in the proceed variable:
+    #                         set to 1 on yes, 0 on no.
+    while true; do
+        printf "%s [yn]? " "$1"
+        read -r yn
+        case $yn in
+            [Yy]* )
+                proceed=1
+                break
+                ;;
+            [Nn]* )
+                proceed=0
+                if [ -z "$2" ]; then
+                    echo "Exiting..."
+                    exit 2
+                else
+                    break
+                fi
+                ;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
+
+exit_on_error()
+{
+    # Arg 1: string: error message
+    printf "ERROR: %s\nExiting..." "$1"
+    exit 1
+}
+
+create_dot_file()
+{
+    # Arg 1: string: base name of config file (without the leading period)
+    # Arg 2: string: complete path to USRHOME dot config file to use
+
+    echo "  ln -sf $2 $HOME/.$1"
+    ln -sf "$2" "$HOME/.$1" || exit_on_error "creating symlink for $HOME/.$1"
+}
+
+modify_dot_file()
+{
+    # Arg 1: string: base name of config file (without the leading period)
+
+    usrhome_src="$(realpath "$DIR_USRHOME/dot/$1.zsh")"
+
+    if [ -f "$HOME/.$1" ]; then
+        if [ ! -h "$HOME/.$1" ]; then
+            # A regular file is being used: back it up.
+            echo " - Creating backup for $HOME/.$1:"
+            echo "   mv $HOME/.$1 $HOME/backup-$1"
+            mv "$HOME/.$1" "$HOME/backup-$1" || exit_on_error "renaming $HOME/.$1"
+        fi
+    fi
+
+    if [ -h "$HOME/.$1" ]; then
+        #  A symlink exists
+        old_src="$(realpath "$(readlink "$HOME/.$1")")"
+        if [ "$old_src" != "$usrhome_src" ]; then
+            echo " - Changing $HOME/.$1 symlink target from: ${old_src}:"
+            create_dot_file "$1" "$usrhome_src"
+        fi
+    else
+        # No symlink (either was a regular file or there was none).
+        echo " - Creating $HOME/.$1 symlink:"
+        create_dot_file "$1" "$usrhome_src"
+    fi
+}
+
+# ----------------------------------------------------------------------------
+# Script Execution
+# ----------------
+
+curpath=$(pwd)
+parentpath=$(dirname "$curpath")
+
+echo "----- USRHOME Installation:"
+echo "It will do this:"
+echo ""
+echo "- Create $parentpath/usrcfg"
+echo "- Copy   $curpath/setup/template/setfor-zsh-config.zsh"
+echo "    to   $parentpath/usrcfg/setfor-zsh-config.zsh"
+echo ""
+prompt "Do you wish to proceed"
+echo "OK, proceeding..."
+echo ""
+
+# ----
+echo "- Create user configuration file from the template."
+src_fpath="$curpath/setup/template/setfor-zsh-config.zsh"
+target_dirpath="$parentpath/usrcfg"
+target_fpath="$parentpath/usrcfg/setfor-zsh-config.zsh"
+
+do_copy=1
+if [ -e "$target_fpath" ]; then
+    echo " WARNING: $target_fpath already exists!"
+    prompt " Do you wish to overwrite it" dont-exit-on-no
+    do_copy=$proceed
+else
+    if [ ! -d "$target_dirpath" ]; then
+        mkdir "$target_dirpath" || exit_on_error "creating $target_dirpath"
+    fi
+fi
+if [ "$do_copy" = "1" ]; then
+    echo "  cp $src_fpath $target_fpath"
+    cp "$src_fpath" "$target_fpath"
+fi
+echo ""
+
+# ----
+echo "- Backup user Z Shell config files and set symlinks to USRHOME files."
+echo ""
+echo "  Now we rename your Z Shell config files as shown here unless they "
+echo "  are already symlinks pointing to the USRHOME files."
+echo "  if they are regular files they will be renamed like this:"
+echo "   - ~/.zlogin   --> ~/backup-zlogin"
+echo "   - ~/.zlogout  --> ~/backup-zlogout"
+echo "   - ~/.zprofile --> ~/backup-zprofile"
+echo "   - ~/.zshenv   --> ~/backup-zshenv"
+echo "   - ~/.zshrc    --> ~/backup-zshrc"
+echo ""
+echo "  If they are symbolic links not pointing USRHOME files, "
+echo "  they are re-linked after printing their original targets."
+echo "  If the symbolic links did not already exist, they are created."
+echo "  The end result will be:"
+echo "   - ~/.zlogin@   --> $DIR_USRHOME/dot/zlogin.zsh"
+echo "   - ~/.zlogout@  --> $DIR_USRHOME/dot/zlogout.zsh"
+echo "   - ~/.zprofile@ --> $DIR_USRHOME/dot/zprofile.zsh"
+echo "   - ~/.zshenv@   --> $DIR_USRHOME/dot/zshenv.zsh"
+echo "   - ~/.zshrc@    --> $DIR_USRHOME/dot/zshrc.zsh"
+echo ""
+prompt "Do you wish to proceed"
+echo "OK, proceeding..."
+echo ""
+
+modify_dot_file zlogin
+modify_dot_file zlogout
+modify_dot_file zprofile
+modify_dot_file zshenv
+modify_dot_file zshrc
+
+echo ""
+echo "USRHOME setup complete!"
+
+# ----------------------------------------------------------------------------
