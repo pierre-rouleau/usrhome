@@ -1,6 +1,6 @@
-=========================================
-USRHOME -- Unix Shell Configuration Files
-=========================================
+================================================
+USRHOME -- Easy Unix Shell Configuration & Tools
+================================================
 
 .. image:: https://img.shields.io/:License-gpl3-blue.svg
    :alt: License
@@ -337,8 +337,12 @@ An example is shown here:
 
 .. figure:: res/zsh-prompt-01.png
 
+Prompt Search Regexp
+++++++++++++++++++++
 
-
+With the above prompt, you can use the following regular
+expression to navigate to prompt lines inside a log within the prompt lines
+inside an Emacs terminal or shell mode buffer:  ``^>[0-9]+@.+[%#]``
 
 Command and Script Organization
 -------------------------------
