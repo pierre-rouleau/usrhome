@@ -57,19 +57,25 @@ How to Set it Up
 ================
 
 - Clone the USRHOME repository somewhere on your home directory tree.
-- Create a ``usrcfg`` directory inside the same directory that holds the
-  ``usrhome`` directory.
+- Execute the ``setup/setup-usrhome`` script from the root directory
+  of the USRHOME depot:
 
-  - Create the ``usrcfg/setfor-zsh-config.zsh`` file.  That file will be
-    sourced during the Z Shell startup by ``~/.zprofile``.  Inside that file
-    export one or several of the environment variables described in
-    `The zsh User Configuration File`_ table.
+  - It will print what will be done and prompt before proceeding.
 
-- Save your shell user configuration files that exist in USRHOME.
-- Create symbolic links from your home directory to the corresponding USRHOME
-  files listed in the table below.
-- Place your original logic not present in USRHOME inside the user-specific
-  and user-private scripts USRHOME uses (*more on this later*).
+    - It will create a ``usrcfg`` directory inside the same directory that
+       holds the ``usrhome`` directory.
+    - Then it will create the ``usrcfg/setfor-zsh-config.zsh`` file that will
+      hold your persistent and private configuration.  At first the file will
+      be a copy of a the `usrhome/setup/template/setfor-zsh-config.zsh`_ with
+      extra information appended.
+    - The last step is to create symbolic link in your home directory to point
+      to the Z Shell configuration files stored inside the `usrhome/dot`_
+      directory.  Before proceeding it will create backup of files that are
+      already present.
+
+Once that's done you should be able to open a Z Shell with the ``zsh`` command
+and see the basic prompt supported by the project and have access to the
+commands documented below.
 
 
 zsh configuration files
@@ -269,8 +275,10 @@ scripts and commands to support various Operating Systems.
 
 
 .. _PEL:
-.. _Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
-.. _numeric keypad:          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
-.. _fd:                      https://github.com/sharkdp/fd
+.. _Pragmatic Emacs Library:                      https://github.com/pierre-rouleau/pel#readme
+.. _numeric keypad:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
+.. _fd:                                           https://github.com/sharkdp/fd
+.. _usrhome/setup/template/setfor-zsh-config.zsh: https://github.com/pierre-rouleau/usrhome/blob/main/setup/template/setfor-zsh-config.zsh
+.. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
 
 .. ---------------------------------------------------------------------------
