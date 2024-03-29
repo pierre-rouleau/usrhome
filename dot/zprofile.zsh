@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-29 09:59:35 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 10:53:33 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -58,15 +58,11 @@ fi
 # For testing:
 alias s='echo \$0 : $0 , \$SHELL : $SHELL'
 
-# ------------------------------------------
+# ----------------------------------------------------------------------------
 # Set Environment Variable that won't change
 # ------------------------------------------
 #
-# The following environment variables are valid inside all zsh (sub-)shells
-# and are not expected to change for any shell of any type when running
-# on this computer.
 
-export EDITOR='emacs -nw'
 
 # ------------------------------------------
 # Set User-specific Path
@@ -95,10 +91,5 @@ export PATH=$DIR_USRHOME/bin:$PATH
 if [[ -d "$HOME/bin" ]]; then
     export PATH=$HOME/bin:$PATH
 fi
-
-# ------------------------------------------
-# /users/roup/my/bin/showpath
-
-
 
 # ----------------------------------------------------------------------------

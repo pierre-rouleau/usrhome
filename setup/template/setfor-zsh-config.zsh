@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-29 10:03:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 10:54:13 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -23,6 +23,9 @@
 # Code : modify it to suit your needs.
 # ------------------------------------
 #
+
+export EDITOR='emacs -nw'
+
 
 # Activation control.  Value 0 deactivate, 1: activates
 # -----------------------------------------------------

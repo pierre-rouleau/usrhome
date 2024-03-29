@@ -50,7 +50,11 @@ It specifically assumes that:
   a directory tree called ``usrcfg`` that holds the user-specific
   and private configuration information.
   See `The zsh User Configuration File`_ table.
-- Emacs is used, the terminal Emacs is the EDITOR.
+
+The code supports the Emacs editor, by using the INSIDE_EMACS environment
+variable to control the behaviour of some features when they are invoked
+inside a shell running inside Emacs.
+
 
 How to Set it Up
 ================
