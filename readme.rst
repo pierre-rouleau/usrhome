@@ -60,15 +60,15 @@ How to Set it Up
 - Execute the ``setup/setup-usrhome`` script from the root directory
   of the USRHOME depot:
 
-  - It will print what will be done and prompt before proceeding.
+  - It will print what will be done and prompt before proceeding:
 
-    - It will create a ``usrcfg`` directory inside the same directory that
-       holds the ``usrhome`` directory.
-    - Then it will create the ``usrcfg/setfor-zsh-config.zsh`` file that will
+    - Create a ``usrcfg`` directory inside the same directory that
+      holds the ``usrhome`` directory.
+    - Create the ``usrcfg/setfor-zsh-config.zsh`` file that will
       hold your persistent and private configuration.  At first the file will
       be a copy of a the `usrhome/setup/template/setfor-zsh-config.zsh`_ with
       extra information appended.
-    - The last step is to create symbolic link in your home directory to point
+    - Finally Create symbolic link in your home directory to point
       to the Z Shell configuration files stored inside the `usrhome/dot`_
       directory.  Before proceeding it will create backup of files that are
       already present.
