@@ -22,10 +22,23 @@ USRHOME -- Unix Shell Configuration Files
 
 USRHOME is a starting project with the goal of holding a set of portable
 Unix shell configuration files that can be used in macOS and multiple Linux
-distributions.  At first it will support Bash and the Z shell.
+distributions under the Z Shell and Bash.
 
-The intent is not to provide colourful configurations with fancy fonts and
-emoji but allow its use in:
+At the moment it supports:
+
+- A basic configuration of zsh for macOS.  It works when zsh is used as the
+  default shell, as its the case on macOS since macOS 10.15 Catalina.  It also
+  works on older versions of macOS where the older version of Bash is still
+  the default shell. On these system just invoke zsh as a sub-shell to use it
+  and try the features the older version of zsh provides.  USRHOME works fine
+  on those and configures the prompt.
+
+The intent is *not* to provide colourful configurations with fancy fonts and
+emoji but just provide a basic environment that will work over several
+versions of Operating Systems and will support the Z Shell as well as Bash
+running in the default terminal emulator programs provided by the OS.
+
+These are:
 
 - the default macOS Terminal.app,
 - the default Linux terminal applications,
@@ -35,16 +48,8 @@ and work well when used with my `Pragmatic Emacs Library`_ which provides
 extensive key bindings for use in these Operating systems and allow extended
 use of the `numeric keypad`_.
 
-In this early version of USRHOME I focus on macOS zsh and make several
-assumptions as to where some files and directories are located. As USRHOME
-evolves, I will add support for Bash on macOS and Linux and then complete zsh
-support for Linux.
-Also I'm going to make USRHOME more configurable and flexible.
-At this very early stage USRHOME is not very flexible.  However, this
-constitutes a set of shell configuration files I can use in multiple
-computers.
-
-It specifically assumes that:
+USRHOME makes one important assumption about the organization of the
+directories in your file system: it specifically assumes that:
 
 - The directory that holds the USRHOME directory tree also holds
   a directory tree called ``usrcfg`` that holds the user-specific
@@ -54,6 +59,7 @@ It specifically assumes that:
 The code supports the Emacs editor, by using the INSIDE_EMACS environment
 variable to control the behaviour of some features when they are invoked
 inside a shell running inside Emacs.
+
 
 
 How to Set it Up
@@ -293,6 +299,21 @@ USRHOME Command Name               Description
 ================================== ================================================================
 
 
+The Prompt
+~~~~~~~~~~
+
+The zsh prompt
+^^^^^^^^^^^^^^
+
+USRHOME sets up a basic Z Shell prompt that does not need any zsh extension
+library.  An example is shown here:
+
+
+.. figure:: res/zsh-prompt-01.png
+
+
+
+
 Command and Script Organization
 -------------------------------
 
@@ -301,9 +322,9 @@ USRHOME provides several types of command and scripts, as listed here.
 ============================= ================== =================================================
 Name format of scripts        Type of script     Purpose
 ============================= ================== =================================================
-``USRHOME/bin/do-CMD``        Sourced script     Meant to be invoked by alias command ``CMD``
-``USRHOME/bin/setfor-CMD``    Sourced script     Meant to be invoked by alias command ``CMD``
-``USRHOME/bin/envfor-ENV``    Sourced script     Meant to be invoked by alias command ``use-ENV``
+``USRHOME/ibin/do-CMD``       Sourced script     Meant to be invoked by alias command ``CMD``
+``USRHOME/ibin/setfor-CMD``   Sourced script     Meant to be invoked by alias command ``CMD``
+``USRHOME/ibin/envfor-ENV``   Sourced script     Meant to be invoked by alias command ``use-ENV``
 ``USRHOME/bin/...``           Shell script       A regular script that can be invoked directly.
 ============================= ================== =================================================
 
@@ -328,6 +349,8 @@ necessary for the environment.
 
 As USRHOME grows, I will be adding several of these environment setting
 scripts and commands to support various Operating Systems.
+
+
 
 .. ---------------------------------------------------------------------------
 .. links
