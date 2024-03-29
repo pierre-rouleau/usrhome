@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-28 17:14:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 11:46:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -162,14 +162,20 @@ target_dirpath="$parentpath/usrcfg"
 target_fpath="$parentpath/usrcfg/setfor-zsh-config.zsh"
 
 do_copy=1
+do_backup=0
 if [ -e "$target_fpath" ]; then
     echo " WARNING: $target_fpath already exists!"
-    prompt " Do you wish to overwrite it" dont-exit-on-no
+    prompt " Do you wish to back it up and overwrite it" dont-exit-on-no
+    do_backup=$proceed
     do_copy=$proceed
 else
     if [ ! -d "$target_dirpath" ]; then
         mkdir "$target_dirpath" || exit_on_error "creating $target_dirpath"
     fi
+fi
+if [ "$do_backup" = "1" ]; then
+    echo "  cp $target_fpath ${target_fpath}.old"
+    cp "$target_fpath" "$target_fpath".old
 fi
 if [ "$do_copy" = "1" ]; then
     echo "  cp $src_fpath $target_fpath"
