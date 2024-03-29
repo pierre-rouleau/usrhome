@@ -68,7 +68,7 @@ How to Set it Up
       hold your persistent and private configuration.  At first the file will
       be a copy of a the `usrhome/setup/template/setfor-zsh-config.zsh`_ with
       extra information appended.
-    - Finally Create symbolic link in your home directory to point
+    - Finally create symbolic link in your home directory to point
       to the Z Shell configuration files stored inside the `usrhome/dot`_
       directory.  Before proceeding it will create backup of files that are
       already present.
