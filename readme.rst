@@ -293,9 +293,15 @@ USRHOME Command Name               Description
 ``pel [SUBDIR]``                   Change current directory to PEL_ depot directory or its SUBDIR
                                    if specified.
                                    Set terminal title to 'PEL'.
-``usrhome [SUBDIR]``               Change current directory to USRHOME depot directory or its
-                                   SUBDIR if specified.
+
+``usrhome [SUBDIR]``               Change current directory to USRHOME depot directory
+                                   or its SUBDIR if specified.
                                    Set terminal title to 'USRHOME'.
+
+``usrcfg [SUBDIR]``                Change current directory to the USRHOME personal/persistent
+                                   configuration directory, usrcfg
+                                   or its SUBDIR if specified.
+                                   Set terminal title to 'USRHOME:usrcfg'
 ================================== ================================================================
 
 
@@ -306,7 +312,25 @@ The zsh prompt
 ^^^^^^^^^^^^^^
 
 USRHOME sets up a basic Z Shell prompt that does not need any zsh extension
-library.  An example is shown here:
+library. The default prompt shows:
+
+- A leading '>' character,
+- the exit code of the last command, in decimal,
+- current time in 24-hour HH:MM:SS format,
+- the shell nested level, prefixed with 'L',
+- optional user-name @ host-name,
+- the last 3 directory components of the current directory,
+- the last character is '#' if the current user has root privilege,
+  otherwise the '%' character is used.
+
+When there is enough room, the right side prompt (RPROMPT) is shown with:
+
+- The full path of the current directory.
+- If the current directory is inside a Git or Mercurial repository, the
+  repository branch and repository name.  In a Mercurial repository the 'hg:'
+  prefix is included.
+
+An example is shown here:
 
 
 .. figure:: res/zsh-prompt-01.png

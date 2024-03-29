@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-29 12:01:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 17:44:33 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -139,8 +139,9 @@ if [ -z $INSIDE_EMACS ]; then
     precmd_functions+=( precmd_vcs_info )
     setopt prompt_subst
     RPROMPT=%B%~%b\ \$vcs_info_msg_0_
+    zstyle ':vcs_info:hg:*'  formats 'hg:%F{240}(%b)%r%f'
     zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
-    zstyle ':vcs_info:*' enable git
+    zstyle ':vcs_info:*' enable hg git
 fi
 
 # ----------------------------------------------------------------------------

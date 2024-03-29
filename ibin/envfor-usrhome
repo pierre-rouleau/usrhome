@@ -1,9 +1,9 @@
 # Sourced script: envfor-usrhome  -*- mode: sh; -*-
 #
-# Purpose   : Set for for USRHOME.
+# Purpose   : Set environment for USRHOME.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-29 11:57:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 17:53:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

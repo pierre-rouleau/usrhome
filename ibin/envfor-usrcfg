@@ -1,0 +1,29 @@
+# Sourced script: envfor-usrcfg  -*- mode: sh; -*-
+#
+# Purpose   : Set environment for USRHOME's usrcfg.
+# Created   : Friday, March 29 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-29 17:55:34 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Change current directory to the root of the USRHOME's usrcfg directory and
+# set the terminal title to 'USRHOME:usrcfg'.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - The usrcfg must be a sibling of the usrhome directory; they must be inside
+#   the same parent directory.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+cd $USRHOME_DIR/../usrcfg/$1
+settitle USRHOME:usrcfg
+
+# ----------------------------------------------------------------------------
