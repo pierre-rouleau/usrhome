@@ -67,6 +67,7 @@ How to Set it Up
 ================
 
 - Clone the USRHOME repository somewhere on your home directory tree.
+- Open a Z Shell by typing ``zsh`` if you are not already inside a Z Shell.
 - Execute the ```setup/setup-usrhome`_`` script **from the root directory
   of the USRHOME depot**:
 
