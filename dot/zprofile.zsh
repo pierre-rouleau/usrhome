@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-28 16:36:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 09:59:35 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -67,23 +67,6 @@ alias s='echo \$0 : $0 , \$SHELL : $SHELL'
 # on this computer.
 
 export EDITOR='emacs -nw'
-
-# ------------------------------------------
-# Set Directory Environment Variable that won't change
-# -----------------------------------------------------
-#
-# For each of these environment variable, the usrhome/dot/zshrc.zsh file
-# defines a cd function to cd into them.
-
-# Define the root of 3 directory trees:
-# - DV     : main, local, development, public repositories.
-# - DVPUB  : secondary public depot clones.  All open source repositories, of others.
-# - DVPRIV : private depot clones. Repositories of contract work.
-export DIR_DV=$HOME/my/dv
-export DIR_DVPRIV=$HOME/my/dvpriv
-export DIR_DVPUB=$HOME/my/dvpub
-
-
 
 # ------------------------------------------
 # Set User-specific Path

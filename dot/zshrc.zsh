@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-28 17:30:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 10:02:24 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -64,24 +64,24 @@ function lsl {
     ls $1 -FGO *(@)
 }
 
-function cdh {
-    cd ~/my/$1
-}
-
 function cdv {
     cd /Volumes/$1
 }
 
+function cdh {
+    cd $DIR_USRHOME_MY/$1
+}
+
 function cddv {
-    cd $DIR_DV/$1
+    cd $DIR_USRHOME_DV/$1
 }
 
 function cddpriv {
-    cd $DIR_DVPRIV/$1
+    cd $DIR_USRHOME_PRIV/$1
 }
 
 function cddpub {
-    cd $DIR_DVPUB/$1
+    cd $DIR_USRHOME_PUB/$1
 }
 
 

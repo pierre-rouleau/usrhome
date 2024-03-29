@@ -51,13 +51,12 @@ It specifically assumes that:
   and private configuration information.
   See `The zsh User Configuration File`_ table.
 - Emacs is used, the terminal Emacs is the EDITOR.
-- 3 directory trees are managed by USRHOME: *~/my/dv*, *~/my/dvpub* and *~/my/dvpriv*.
 
 How to Set it Up
 ================
 
 - Clone the USRHOME repository somewhere on your home directory tree.
-- Execute the ``setup/setup-usrhome`` script from the root directory
+- Execute the ```setup/setup-usrhome`_`` script from the root directory
   of the USRHOME depot:
 
   - It will print what will be done and prompt before proceeding:
@@ -162,15 +161,62 @@ USRHOME Command Name               Description
 ``..``                             Alias to ``cd ..``
 ``...``                            Alias to ``cd ../..``
 ``....``                           Alias to ``cd ../../..``
-``cdh [dir]``                      cd to the ``~/my`` directory or specified sub-directory.
-``cdv [dir]``                      cd to the ``/Volumes`` directory or specified sub-directory.
-``cddv [dir]``                     cd to the ``/my/dv`` directory or specified sub-directory.
-``cddpriv [dir]``                  cd to the ``/my/dvpriv`` directory or specified sub-directory.
-``cddpub [dir]``                   cd to the ``/my/dvpub`` directory or specified sub-directory.
-``cd-to FNAME``                    cd to the sub-directory that holds the file FNAME.
+
+``cd-to FNAME``                    cd to the sub-directory that holds the file ``FNAME``.
                                    It reports an error if the file is not found or if more than
                                    one is found.
                                    This command requires the fd_ utility.
+``cdv [SUBDIR]``                   cd to the ``/Volumes`` directory or specified ``SUBDIR``.
+================================== ================================================================
+
+The following commands change to 4 important directories, and those directories are identified by
+environment variables.  The name of these environment variables start with the ``DIR_USRHOME_``
+prefix. They are:
+
+DIR_USRHOME_MY:
+  The directory where all your development directories are located.  It is
+  often different from ``HOME`` on systems like macOS; it could
+  be ``$HOME/Documents`` if you want your files replicated by
+  Apple iCloud or another directory, like ``$HOME/my`` if you do
+  not want them replicated and stored in the iCloud.
+
+DIR_USRHOME_DV:
+  The directory where you store your main, or most-active, development sub-directories.
+  For example on my systems I often have a ``~/code`` or ``~/my/code`` or ``~/my/dv``
+  directory where I place my most active projects (or symlinks to these directories).
+  This can be located anywhere.
+
+DIR_USRHOME_PRIV:
+  The directory where you store your *private* development sub-directories.
+  That could be something you do not want to publish because it's not ready, or
+  it could be the directories for your various contract work.
+  This can be located anywhere.
+
+DIR_USRHOME_PUB:
+  The directory where you store your secondary, *public*, sub-directories.
+  That could hold a set of repositories that are forks of other projects
+  to which you contribute, or libraries and tools you want to build yourself,
+  anything you do not consider your main or most-active development.
+  This can be located anywhere.
+
+These environment variables are defined in the user persistent configuration file:
+usrcfg/setfor-zsh-config.zsh.  The `setup/setup-usrhome`_ script initializes them
+to the value stored in `usrhome/setup/template/setfor-zsh-config.zsh`_ template file.
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+``cdh [SUBDIR]``                   cd to the directory identified by ``DIR_USRHOME_MY``
+                                   or its identified ``SUBDIR``.
+
+``cddv [SUBDIR]``                  cd to the directory identified by ``DIR_USRHOME_DV``
+                                   or its identified ``SUBDIR``.
+
+``cddpriv [SUBDIR]``               cd to the directory identified by ``DIR_USRHOME_PRIV``
+                                   or its identified ``SUBDIR``.
+
+``cddpub [SUBDIR]``                cd to the directory identified by ``DIR_USRHOME_PUB``
+                                   or its identified ``SUBDIR``.
 ================================== ================================================================
 
 Listing Files/Directories/Links
@@ -278,6 +324,7 @@ scripts and commands to support various Operating Systems.
 .. _Pragmatic Emacs Library:                      https://github.com/pierre-rouleau/pel#readme
 .. _numeric keypad:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
 .. _fd:                                           https://github.com/sharkdp/fd
+.. _ setup/setup-usrhome:                         https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
 .. _usrhome/setup/template/setfor-zsh-config.zsh: https://github.com/pierre-rouleau/usrhome/blob/main/setup/template/setfor-zsh-config.zsh
 .. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
 
