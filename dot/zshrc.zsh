@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-29 10:02:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 12:01:25 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -25,11 +25,11 @@
 #
 # It's not done when the shell is a sub-shell.
 
-if [[ -z "$DIR_USRHOME" ]]; then
+if [[ -z "$USRHOME_DIR" ]]; then
     script=${(%):-%x}
     original_script=`readlink $script`
     usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
-    export DIR_USRHOME_USRCFG="$usrhome_parent/usrcfg"
+    export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
 
     # echo "script          : $script"
     # echo "original_script : $original_script"
@@ -37,7 +37,7 @@ if [[ -z "$DIR_USRHOME" ]]; then
 
     # Import user configuration. Defines:
     # - USRHOME_TRACE_SHELL_CONFIG
-    source "$DIR_USRHOME_USRCFG/setfor-zsh-config.zsh"
+    source "$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
 fi
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
@@ -47,7 +47,7 @@ fi
 # ----------------------------------------------------------------------------
 # Set shortcut alias for Z shell
 # ------------------------------
-source $DIR_USRHOME/ibin/setfor-zsh-alias
+source $USRHOME_DIR/ibin/setfor-zsh-alias
 
 # ------------------------------------------
 # Set shortcut functions for Z shell
@@ -69,19 +69,19 @@ function cdv {
 }
 
 function cdh {
-    cd $DIR_USRHOME_MY/$1
+    cd $USRHOME_DIR_MY/$1
 }
 
 function cddv {
-    cd $DIR_USRHOME_DV/$1
+    cd $USRHOME_DIR_DV/$1
 }
 
 function cddpriv {
-    cd $DIR_USRHOME_PRIV/$1
+    cd $USRHOME_DIR_PRIV/$1
 }
 
 function cddpub {
-    cd $DIR_USRHOME_PUB/$1
+    cd $USRHOME_DIR_PUB/$1
 }
 
 

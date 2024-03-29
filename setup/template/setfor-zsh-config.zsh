@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-29 10:54:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 12:00:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -45,10 +45,10 @@ export USRHOME_PROMPT_SHOW_USR_HOST=1
 # The following environment variables identify the location of 4 important
 # directories:
 #
-export DIR_USRHOME_MY="$HOME/my"
-export DIR_USRHOME_DV="$HOME/my/dv"
-export DIR_USRHOME_PUB="$HOME/my/dvpub"
-export DIR_USRHOME_PRIV="$HOME/my/dvpriv"
+export USRHOME_DIR_MY="$HOME/my"
+export USRHOME_DIR_DV="$HOME/my/dv"
+export USRHOME_DIR_PUB="$HOME/my/dvpub"
+export USRHOME_DIR_PRIV="$HOME/my/dvpriv"
 
-# The last one is DIR_USRHOME, which defines the root of the usrhome directory
+# The last one is USRHOME_DIR, which defines the root of the usrhome directory
 # It is first set by execution of setup/setup-usrhome.

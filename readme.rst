@@ -60,8 +60,8 @@ How to Set it Up
 ================
 
 - Clone the USRHOME repository somewhere on your home directory tree.
-- Execute the ```setup/setup-usrhome`_`` script from the root directory
-  of the USRHOME depot:
+- Execute the ```setup/setup-usrhome`_`` script **from the root directory
+  of the USRHOME depot**:
 
   - It will print what will be done and prompt before proceeding:
 
@@ -79,6 +79,15 @@ How to Set it Up
 Once that's done you should be able to open a Z Shell with the ``zsh`` command
 and see the basic prompt supported by the project and have access to the
 commands documented below.
+
+Conventions
+===========
+
+- All environment variables used by USRHOME have a name that starts
+  with ``USRHOME_``.
+- All of those that identify the path of a directory have a name that starts with
+  ``USRHOME_DIR_``.
+
 
 
 zsh configuration files
@@ -174,29 +183,29 @@ USRHOME Command Name               Description
 ================================== ================================================================
 
 The following commands change to 4 important directories, and those directories are identified by
-environment variables.  The name of these environment variables start with the ``DIR_USRHOME_``
+environment variables.  The name of these environment variables start with the ``USRHOME_DIR_``
 prefix. They are:
 
-DIR_USRHOME_MY:
+USRHOME_DIR_MY:
   The directory where all your development directories are located.  It is
   often different from ``HOME`` on systems like macOS; it could
   be ``$HOME/Documents`` if you want your files replicated by
   Apple iCloud or another directory, like ``$HOME/my`` if you do
   not want them replicated and stored in the iCloud.
 
-DIR_USRHOME_DV:
+USRHOME_DIR_DV:
   The directory where you store your main, or most-active, development sub-directories.
   For example on my systems I often have a ``~/code`` or ``~/my/code`` or ``~/my/dv``
   directory where I place my most active projects (or symlinks to these directories).
   This can be located anywhere.
 
-DIR_USRHOME_PRIV:
+USRHOME_DIR_PRIV:
   The directory where you store your *private* development sub-directories.
   That could be something you do not want to publish because it's not ready, or
   it could be the directories for your various contract work.
   This can be located anywhere.
 
-DIR_USRHOME_PUB:
+USRHOME_DIR_PUB:
   The directory where you store your secondary, *public*, sub-directories.
   That could hold a set of repositories that are forks of other projects
   to which you contribute, or libraries and tools you want to build yourself,
@@ -210,16 +219,16 @@ to the value stored in `usrhome/setup/template/setfor-zsh-config.zsh`_ template 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``cdh [SUBDIR]``                   cd to the directory identified by ``DIR_USRHOME_MY``
+``cdh [SUBDIR]``                   cd to the directory identified by ``USRHOME_DIR_MY``
                                    or its identified ``SUBDIR``.
 
-``cddv [SUBDIR]``                  cd to the directory identified by ``DIR_USRHOME_DV``
+``cddv [SUBDIR]``                  cd to the directory identified by ``USRHOME_DIR_DV``
                                    or its identified ``SUBDIR``.
 
-``cddpriv [SUBDIR]``               cd to the directory identified by ``DIR_USRHOME_PRIV``
+``cddpriv [SUBDIR]``               cd to the directory identified by ``USRHOME_DIR_PRIV``
                                    or its identified ``SUBDIR``.
 
-``cddpub [SUBDIR]``                cd to the directory identified by ``DIR_USRHOME_PUB``
+``cddpub [SUBDIR]``                cd to the directory identified by ``USRHOME_DIR_PUB``
                                    or its identified ``SUBDIR``.
 ================================== ================================================================
 

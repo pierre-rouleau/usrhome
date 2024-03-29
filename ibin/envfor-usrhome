@@ -3,13 +3,13 @@
 # Purpose   : Set for for USRHOME.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-28 09:45:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 11:57:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#
-
+# Change current directory to the root of the USRHOME and set the terminal
+# title to USRHOME.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -17,14 +17,13 @@
 #
 #
 
-
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
 #
 
-cd $DIR_USRHOME/$1
+cd $USRHOME_DIR/$1
 settitle USRHOME
 
 # ----------------------------------------------------------------------------

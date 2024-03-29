@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-29 11:46:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-29 11:58:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,15 +37,15 @@
 # ----
 #
 #
-# Checking or setting DIR_USRHOME environment variable
+# Checking or setting USRHOME_DIR environment variable
 # ----------------------------------------------------
-if [ -z "$DIR_USRHOME" ]; then
-    DIR_USRHOME=$(pwd -P)
-    if [ "$(basename "$DIR_USRHOME")" != "usrhome" ]; then
+if [ -z "$USRHOME_DIR" ]; then
+    USRHOME_DIR=$(pwd -P)
+    if [ "$(basename "$USRHOME_DIR")" != "usrhome" ]; then
         echo "The directory where USRHOME is installed must be identified"
-        echo "by the DIR_USRHOME environment variable."
+        echo "by the USRHOME_DIR environment variable."
         echo "The directory name should be 'usrhome'"
-        echo "It's currently not the case; it is: $(basename "$DIR_USRHOME")"
+        echo "It's currently not the case; it is: $(basename "$USRHOME_DIR")"
         echo "Please rename the directory to usrhome and try again."
         exit 1
     fi
@@ -112,7 +112,7 @@ modify_dot_file()
 {
     # Arg 1: string: base name of config file (without the leading period)
 
-    usrhome_src="$(realpath "$DIR_USRHOME/dot/$1.zsh")"
+    usrhome_src="$(realpath "$USRHOME_DIR/dot/$1.zsh")"
 
     if [ -f "$HOME/.$1" ]; then
         if [ ! -h "$HOME/.$1" ]; then
@@ -184,10 +184,10 @@ fi
 echo ""
 
 # ----
-echo "- Append definition of DIR_USRHOME to $target_fpath"
-echo "  DIR_USRHOME will be set to $DIR_USRHOME"
+echo "- Append definition of USRHOME_DIR to $target_fpath"
+echo "  USRHOME_DIR will be set to $USRHOME_DIR"
 prompt "Do you wish to proceed"
-printf "export DIR_USRHOME=%s\n" "$DIR_USRHOME" >>  "$target_fpath"
+printf "export USRHOME_DIR=%s\n" "$USRHOME_DIR" >>  "$target_fpath"
 echo "Done: "
 tail -n 3 "$target_fpath"
 echo ""
@@ -208,11 +208,11 @@ echo "  If they are symbolic links not pointing USRHOME files, "
 echo "  they are re-linked after printing their original targets."
 echo "  If the symbolic links did not already exist, they are created."
 echo "  The end result will be:"
-echo "   - ~/.zlogin@   --> $DIR_USRHOME/dot/zlogin.zsh"
-echo "   - ~/.zlogout@  --> $DIR_USRHOME/dot/zlogout.zsh"
-echo "   - ~/.zprofile@ --> $DIR_USRHOME/dot/zprofile.zsh"
-echo "   - ~/.zshenv@   --> $DIR_USRHOME/dot/zshenv.zsh"
-echo "   - ~/.zshrc@    --> $DIR_USRHOME/dot/zshrc.zsh"
+echo "   - ~/.zlogin@   --> $USRHOME_DIR/dot/zlogin.zsh"
+echo "   - ~/.zlogout@  --> $USRHOME_DIR/dot/zlogout.zsh"
+echo "   - ~/.zprofile@ --> $USRHOME_DIR/dot/zprofile.zsh"
+echo "   - ~/.zshenv@   --> $USRHOME_DIR/dot/zshenv.zsh"
+echo "   - ~/.zshrc@    --> $USRHOME_DIR/dot/zshrc.zsh"
 echo ""
 prompt "Do you wish to proceed"
 echo "OK, proceeding..."
