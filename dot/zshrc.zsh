@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 14:09:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 15:17:56 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -136,7 +136,7 @@ fi
 # Update Path in sub-shells if not already done
 # ---------------------------------------------
 if [[ -z "$USRHOME_PATH_SET" ]]; then
-    source "$USRHOME_DIR/ibin/setfor-zsh-path"
+    source "$USRHOME_DIR/ibin/setfor-path"
 fi
 
 # ----------------------------------------------------------------------------

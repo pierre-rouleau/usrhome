@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 14:08:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 15:17:39 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -65,6 +65,6 @@ alias s='echo \$0 : $0 , \$SHELL : $SHELL'
 
 # Set User-specific Path
 # ----------------------
-source "$USRHOME_DIR/ibin/setfor-zsh-path"
+source "$USRHOME_DIR/ibin/setfor-path"
 
 # ----------------------------------------------------------------------------

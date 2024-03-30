@@ -1,9 +1,9 @@
-# Sourced script: setfor-zsh-path  -*- mode: sh; -*-
+# Sourced script: setfor-path  -*- mode: sh; -*-
 #
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-30 14:13:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 15:18:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
