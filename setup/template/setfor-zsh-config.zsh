@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-29 12:00:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 16:10:55 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,6 +32,10 @@ export EDITOR='emacs -nw'
 
 # Activate to trace Z Shell configuration file sourced.
 export USRHOME_TRACE_SHELL_CONFIG=0
+
+if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
+echo "---: Running usrcfg/setfor-zsh-config.zsh"
+fi
 
 # Activate when Homebrew is used.
 export USRHOME_USE_HOMEBREW=1
