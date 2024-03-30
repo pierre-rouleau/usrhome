@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-29 12:02:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 10:34:55 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -76,7 +76,7 @@ alias s='echo \$0 : $0 , \$SHELL : $SHELL'
 
 # For Homebrew
 if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
-    export PATH=\
+    PATH=\
 /opt/homebrew/opt/make/libexec/gnubin:\
 /opt/homebrew/bin:\
 /opt/homebrew/sbin:\
@@ -87,9 +87,10 @@ fi
 # For local binaries
 # If a ~/bin exists it may override the URSHOME/bin files.
 
-export PATH=$USRHOME_DIR/bin:$PATH
+the_path=$USRHOME_DIR/bin:$PATH
 if [[ -d "$HOME/bin" ]]; then
-    export PATH=$HOME/bin:$PATH
+    the_path=$HOME/bin:$the_path
 fi
+export PATH=$the_path
 
 # ----------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-29 17:44:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 10:13:50 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -14,30 +14,20 @@
 
 # User's Z Shell RC : ~/.zshrc
 # Executed at: login, new interactive shell
-# Note: This is re-executed in a sub-shell and inside a script.
+# Note: This is sourced: - when a terminal starts a new Z Shell
+#                        - when a zsh sub-shell is started (manually or
+#                          from an application)
 #
 # ----------------------------------------------------------------------------
 # Code
 # ----
 
-# Setup Initial Environment if not already done
-# ---------------------------------------------
+# Check Environment Consistency and Support Tracing
+# -------------------------------------------------
 #
-# It's not done when the shell is a sub-shell.
-
 if [[ -z "$USRHOME_DIR" ]]; then
-    script=${(%):-%x}
-    original_script=`readlink $script`
-    usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
-    export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
-
-    # echo "script          : $script"
-    # echo "original_script : $original_script"
-    # echo "usrhome_parent  : $usrhome_parent"
-
-    # Import user configuration. Defines:
-    # - USRHOME_TRACE_SHELL_CONFIG
-    source "$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
+    echo "USRHOME ERROR: environment variables not available!"
+    echo "               Check your usrcfg  files!"
 fi
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
@@ -83,8 +73,6 @@ function cddpriv {
 function cddpub {
     cd $USRHOME_DIR_PUB/$1
 }
-
-
 
 # ------------------------------------------
 # Update prompt
@@ -143,5 +131,32 @@ if [ -z $INSIDE_EMACS ]; then
     zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
     zstyle ':vcs_info:*' enable hg git
 fi
+
+# ----------------------------------------------------------------------------
+# Sanitize PATH
+# -------------
+#
+# - Replace '::' by ':'
+# - Remove duplicate entries in the PATH, leave first one seen.
+# - Then remove the trailing ':' injected.
+#
+# If the old path had to be sanitized, display a warning
+# describing the number of directory entries in each.
+# Use xargs to remove leading spaces from the number strings.
+
+path_entries="$(echo "$PATH" | sed 's/:/\n/g' | wc -l | xargs)"
+sanitized_path="$(echo "$PATH" | sed 's/::/:/g' | sed 's/:/\n/g' | awk '!seen[$0]++' | tr '\n' ':')"
+if [[ "${sanitized_path:0-1}" = ":" ]]; then
+    sanitized_path="${sanitized_path: 0:-1}"
+fi
+
+sanitized_path_entries="$(echo "$sanitized_path" | sed 's/:/\n/g' | wc -l | xargs)"
+if [[ "$path_entries" != "$sanitized_path_entries" ]]; then
+    echo "WARNING: USRHOME has sanitized your PATH:"
+    echo "         It had $path_entries directories, it now has $sanitized_path_entries."
+    echo " The original PATH was:"
+    showpath -n
+fi
+export PATH=$sanitized_path
 
 # ----------------------------------------------------------------------------
