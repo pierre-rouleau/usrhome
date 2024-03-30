@@ -248,8 +248,9 @@ USRHOME Command Name               Description
 ``cdv [SUBDIR]``                   cd to the ``/Volumes`` directory or specified ``SUBDIR``.
 ================================== ================================================================
 
-The following commands change to 4 important directories, and those directories are identified by
-environment variables.  The name of these environment variables start with the ``USRHOME_DIR_``
+The commands described below change the current directory to 4 conceptually important
+directories, and those directories are identified by USRHOME environment variables.
+The name of these environment variables start with the ``USRHOME_DIR_``
 prefix. They are:
 
 USRHOME_DIR_MY:
