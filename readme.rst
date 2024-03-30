@@ -302,6 +302,8 @@ USRHOME Command Name               Description
 Listing Files/Directories/Links
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+The following command shortcuts for specialized use of ls are provided by USRHOME.
+
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
