@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 10:36:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 11:24:53 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -22,7 +22,6 @@
 #
 # Un-comment the following lines to trace sourcing of each of the
 # Z shell configuration file:
-echo $PATH
 if [[ -z "$USRHOME_DIR" ]]; then
     script=${(%):-%x}
     original_script=`readlink $script`
