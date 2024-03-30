@@ -1,0 +1,53 @@
+# Sourced script: setfor-zsh-path  -*- mode: sh; -*-
+#
+# Purpose   : Add USRHOME directories to PATH.
+# Created   : Saturday, March 30 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-03-30 14:13:20 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Update PATH to include the USRHOME directory and, optionally,
+# the directories required for Homebrew directories as requested
+# by the user persistent configuration.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Homebrew directories:
+#
+# - /opt/homebrew/opt/make/libexec/gnubin   : Homebrew GNU Make (the latest version)
+# - /opt/homebrew/bin                       : Homebrew binaries
+# - /opt/homebrew/sbin                      : Homebrew binaries
+# - /opt/homebrew/opt/m4/bin                : Homebrew m4
+
+# For Homebrew
+if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
+    PATH=\
+/opt/homebrew/opt/make/libexec/gnubin:\
+/opt/homebrew/bin:\
+/opt/homebrew/sbin:\
+/opt/homebrew/opt/m4/bin:\
+$PATH
+fi
+
+# For local binaries
+# If a ~/bin exists it may override the URSHOME/bin files.
+
+the_path=$USRHOME_DIR/bin:$PATH
+if [[ -d "$HOME/bin" ]]; then
+    the_path=$HOME/bin:$the_path
+fi
+export PATH=$the_path
+export USRHOME_PATH_SET=1
+
+# ----------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 10:58:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 14:09:31 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -130,6 +130,13 @@ if [ -z $INSIDE_EMACS ]; then
     zstyle ':vcs_info:hg:*'  formats 'hg:%F{240}(%b)%r%f'
     zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
     zstyle ':vcs_info:*' enable hg git
+fi
+
+# ----------------------------------------------------------------------------
+# Update Path in sub-shells if not already done
+# ---------------------------------------------
+if [[ -z "$USRHOME_PATH_SET" ]]; then
+    source "$USRHOME_DIR/ibin/setfor-zsh-path"
 fi
 
 # ----------------------------------------------------------------------------

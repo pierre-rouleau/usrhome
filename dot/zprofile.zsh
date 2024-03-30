@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 10:34:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 14:08:29 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -63,34 +63,8 @@ alias s='echo \$0 : $0 , \$SHELL : $SHELL'
 # ------------------------------------------
 #
 
-
-# ------------------------------------------
 # Set User-specific Path
 # ----------------------
-
-# - ~/my/bin                                : Local commands
-# - /opt/homebrew/opt/make/libexec/gnubin   : Homebrew GNU Make (the latest version)
-# - /opt/homebrew/bin                       : Homebrew binaries
-# - /opt/homebrew/sbin                      : Homebrew binaries
-# - /opt/homebrew/opt/m4/bin                : Homebrew m4
-
-# For Homebrew
-if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
-    PATH=\
-/opt/homebrew/opt/make/libexec/gnubin:\
-/opt/homebrew/bin:\
-/opt/homebrew/sbin:\
-/opt/homebrew/opt/m4/bin:\
-$PATH
-fi
-
-# For local binaries
-# If a ~/bin exists it may override the URSHOME/bin files.
-
-the_path=$USRHOME_DIR/bin:$PATH
-if [[ -d "$HOME/bin" ]]; then
-    the_path=$HOME/bin:$the_path
-fi
-export PATH=$the_path
+source "$USRHOME_DIR/ibin/setfor-zsh-path"
 
 # ----------------------------------------------------------------------------
