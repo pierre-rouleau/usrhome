@@ -88,6 +88,13 @@ Once that's done you should be able to open a Z Shell with the ``zsh`` command
 and see the basic prompt supported by the project and have access to the
 commands documented below.
 
+The next step will to migrate any Z Shell startup logic you might have had in
+your old files that have been backed up by the startup script.  USRHOME
+expects that extra user-specific logic to be stored inside files located
+inside the usrcfg directory.  Read the section titled
+`The Z Shell Startup, Dot Files and User Configuration`_
+for details.
+
 Conventions
 ===========
 
@@ -453,5 +460,6 @@ which the files are sourced.
 .. _ setup/setup-usrhome:                         https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
 .. _usrhome/setup/template/setfor-zsh-config.zsh: https://github.com/pierre-rouleau/usrhome/blob/main/setup/template/setfor-zsh-config.zsh
 .. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
+.. _The Z Shell Startup, Dot Files and User Configuration: #the-z-shell-startup-dot-files-and-user-configuration
 
 .. ---------------------------------------------------------------------------
