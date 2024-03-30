@@ -416,7 +416,7 @@ The files sourced by the Z Shell depend on how the Z Shell is started.
 The files sourced by USRHOME take advantage of that behaviour to inject the
 user configuration, as shown in the following diagram.
 
-.. figure:: res/zsh-startup01.png
+.. figure:: res/zsh-startup-01.png
 
 - The ~/zshenv is sourced in all case.  Therefore the usrhome/dot/zshenv.zsh
   sources the user's configuration file.  That file controls the configurable
