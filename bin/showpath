@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-27 15:26:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 11:21:53 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -27,10 +27,10 @@
 #
 #
 if [ "$1" = "-n" ]; then
-    echo "$PATH" | sed 's/:/\n/g' | nl -n ln
+    echo "$PATH" | tr ':' '\n' | nl -n ln
 else
     printf -- "- "
-    echo "$PATH" | sed 's/:/\n- /g'
+    echo "$PATH" | sed 's/:/:- /g' | tr ':' '\n'
 fi
 
 # ----------------------------------------------------------------------------
