@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 10:13:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 10:58:39 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -144,13 +144,13 @@ fi
 # describing the number of directory entries in each.
 # Use xargs to remove leading spaces from the number strings.
 
-path_entries="$(echo "$PATH" | sed 's/:/\n/g' | wc -l | xargs)"
-sanitized_path="$(echo "$PATH" | sed 's/::/:/g' | sed 's/:/\n/g' | awk '!seen[$0]++' | tr '\n' ':')"
+path_entries="$(echo "$PATH" | tr ':' '\n' | wc -l | xargs)"
+sanitized_path="$(echo "$PATH" | sed 's/::/:/g' | tr ':' '\n' | awk '!seen[$0]++' | tr '\n' ':')"
 if [[ "${sanitized_path:0-1}" = ":" ]]; then
     sanitized_path="${sanitized_path: 0:-1}"
 fi
 
-sanitized_path_entries="$(echo "$sanitized_path" | sed 's/:/\n/g' | wc -l | xargs)"
+sanitized_path_entries="$(echo "$sanitized_path" | tr ':' '\n' | wc -l | xargs)"
 if [[ "$path_entries" != "$sanitized_path_entries" ]]; then
     echo "WARNING: USRHOME has sanitized your PATH:"
     echo "         It had $path_entries directories, it now has $sanitized_path_entries."
