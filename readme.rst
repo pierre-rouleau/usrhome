@@ -506,7 +506,7 @@ which the files are sourced.
 .. _Pragmatic Emacs Library:                      https://github.com/pierre-rouleau/pel#readme
 .. _numeric keypad:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
 .. _fd:                                           https://github.com/sharkdp/fd
-.. _ setup/setup-usrhome:                         https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
+.. _setup/setup-usrhome:                          https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
 .. _usrhome/setup/template/setfor-zsh-config.zsh: https://github.com/pierre-rouleau/usrhome/blob/main/setup/template/setfor-zsh-config.zsh
 .. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
 .. _The Z Shell Startup, Dot Files and User Configuration: #the-z-shell-startup-dot-files-and-user-configuration
