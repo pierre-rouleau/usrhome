@@ -381,6 +381,59 @@ As USRHOME grows, I will be adding several of these environment setting
 scripts and commands to support various Operating Systems.
 
 
+The Z Shell Startup, Dot Files and User Configuration
+-----------------------------------------------------
+
+The Z Shell has five different user configuration files:
+
+- ~/.zshenv
+- ~/.zprofile
+- ~/.zshrc
+- ~/.zlogin
+- ~/.zlogout
+
+USRHOME implements its own copy of each of these files, stored in the
+usrhome/dot directory.  The files are named differently, without a leading
+period and with a ``.zsh`` file extension.   That simplifies editing and
+management on these files on various environments. Several tools require a
+special option to process hidden files; it's not needed for these files since
+they are not hidden.
+
+However, to be used, USRHOME setup places them inside the user home directory,
+creating hidden symlinks to the files.  The result is the following:
+
+============== ==========================
+Symbolic link  USRHOME File Identified
+============== ==========================
+~/.zshenv      usrhome/dot/zshenv.zsh
+~/.zprofile    usrhome/dot/zprofile./zsh
+~/.zshrc       usrhome/dot/zshrc.zsh
+~/.zlogin      usrhome/dot/zlogin.zsh
+~/.zlogout     usrhome/dot/zlogout.zsh
+============== ==========================
+
+The files sourced by the Z Shell depend on how the Z Shell is started.
+The files sourced by USRHOME take advantage of that behaviour to inject the
+user configuration, as shown in the following diagram.
+
+.. figure:: res/zsh-startup01.png
+
+- The ~/zshenv is sourced in all case.  Therefore the usrhome/dot/zshenv.zsh
+  sources the user's configuration file.  That file controls the configurable
+  aspects of USRHOME.
+- The file usrhome/ibin/setfor-path controls adding extra directories in the
+  PATH; the directories used by USRHOME and some other.  That file is sourced
+  by the usrhome/dot/zprofile.zsh for a login shell and by the
+  usrhome/dot/zshrc.zsh in a sub-shell.
+- Since the usrhome/dot/zshrc.zsh is used both in the login and the sub-shell,
+  it's the file that sources the usrhome/ibin/setfor-zsh-alias to inject
+  the USRHOME commands inside the shell.  That's also the file that sanitizes
+  the PATH; it removes empty entries and duplicates if there's any.  And in
+  that case it prints a warning.  That's an indication to take a look at your
+  configuration files (or to the application that launched a sub-shell).
+
+What is currently missing is USRHOME invocation of user specified files that
+would hold extra startup logic.  That's coming...
 
 .. ---------------------------------------------------------------------------
 .. links
