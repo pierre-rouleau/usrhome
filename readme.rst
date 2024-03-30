@@ -104,11 +104,11 @@ zsh configuration files
 ========================= =====================================================
 Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ========================= =====================================================
-``~/.zshenv``             ``~/my/dv/usrhome/dot/zshenv.zsh``
-``~/.zprofile``           ``~/my/dv/usrhome/dot/zprofile.zsh``
-``~/.zshrc``              ``~/my/dv/usrhome/dot/zshrc.zsh``
-``~/.zlogin``             ``~/my/dv/usrhome/dot/zlogin.zsh``
-``~/.zlogout``            ``~/my/dv/usrhome/dot/zlogout.zsh``
+``~/.zshenv``             ``$USRHOME_DIR/dot/zshenv.zsh``
+``~/.zprofile``           ``$USRHOME_DIR/dot/zprofile.zsh``
+``~/.zshrc``              ``$USRHOME_DIR/dot/zshrc.zsh``
+``~/.zlogin``             ``$USRHOME_DIR/dot/zlogin.zsh``
+``~/.zlogout``            ``$USRHOME_DIR/dot/zlogout.zsh``
 ========================= =====================================================
 
 
