@@ -302,12 +302,12 @@ USRHOME Command Name               Description
 Listing Files/Directories/Links
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command shortcuts for specialized use of ls are provided by USRHOME.
+The following command shortcuts for specialized use of **ls** are provided by USRHOME.
 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``l``                              Colorized ls that also shows the file type symbol.
+``l``                              Colorized **ls** that also shows the file type symbol.
 ``la``                             Same as ``l`` but also show hidden files.
 ``ll``                             ``ls -l`` with colorized and  file type symbols.
 ``lla``                            Same as ``ll`` but also show hidden files.
