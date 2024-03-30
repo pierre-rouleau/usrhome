@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 11:24:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 16:24:25 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -20,18 +20,17 @@
 # ----
 #
 #
-# Un-comment the following lines to trace sourcing of each of the
-# Z shell configuration file:
-if [[ -z "$USRHOME_DIR" ]]; then
-    script=${(%):-%x}
-    original_script=`readlink $script`
-    usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
-    usrhome_dir_usrcfg="$usrhome_parent/usrcfg"
+# Identify the path of the usrcfg directory by taking advantage that
+# usrhome and usrcfg are llocated inside the same parent, and that
+# this script is executed via a symbolic link.
+#
+script=${(%):-%x}
+original_script=`readlink $script`
+usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
+export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
 
-    # Import user configuration. Defines:
-    # - USRHOME_TRACE_SHELL_CONFIG
-    source "$usrhome_dir_usrcfg/setfor-zsh-config.zsh"
-fi
+# Read user's USRHOME configuration
+source "$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
     echo "---: Running ~/.zshenv"

@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 15:17:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 16:24:42 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -26,28 +26,6 @@
 # Code
 # ----
 
-# Get user-specific configuration.
-# --------------------------------
-#
-# Identify the path of the usrcfg directory by taking advantage that
-# usrhome and usrcfg are llocated inside the same parent, and that
-# this script is executed via a symbolic link.
-#
-script=${(%):-%x}
-original_script=`readlink $script`
-usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
-export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
-
-# echo "script          : $script"
-# echo "original_script : $original_script"
-# echo "usrhome_parent  : $usrhome_parent"
-
-# Import user configuration. Possibly defines:
-# - USRHOME_TRACE_SHELL_CONFIG
-# - USRHOME_USE_HOMEBREW
-source "$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
-
-# ------------------------------------------
 # Trace Execution of Z Shell configuration files if required
 # ----------------------------------------------------------
 
