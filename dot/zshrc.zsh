@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 15:17:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 17:25:32 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -166,4 +166,11 @@ if [[ "$path_entries" != "$sanitized_path_entries" ]]; then
 fi
 export PATH=$sanitized_path
 
+# ----------------------------------------------------------------------------
+# Source User Extra zshrc if it exists
+# ------------------------------------
+user_zshrc="$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
+if [[ -f "$user_zshrc" ]]; then
+    source "$user_zshrc"
+fi
 # ----------------------------------------------------------------------------

@@ -432,8 +432,15 @@ user configuration, as shown in the following diagram.
   that case it prints a warning.  That's an indication to take a look at your
   configuration files (or to the application that launched a sub-shell).
 
-What is currently missing is USRHOME invocation of user specified files that
-would hold extra startup logic.  That's coming...
+The user can provide extra startup logic for the Z Shell.  USRHOME Z Shell
+startup code sources the following user configuration files stored in the user
+managed usrcfg directory:
+
+- usrcfg/do-user-zprofile.zsh
+- usrcfg/do-user-zshrc.zsh
+
+Each of these files is sourced if they exist. The diagram shows the order in
+which the files are sourced.
 
 .. ---------------------------------------------------------------------------
 .. links

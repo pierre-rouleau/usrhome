@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 16:24:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 17:22:50 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -44,5 +44,13 @@ alias s='echo \$0 : $0 , \$SHELL : $SHELL'
 # Set User-specific Path
 # ----------------------
 source "$USRHOME_DIR/ibin/setfor-path"
+
+# ----------------------------------------------------------------------------
+# Source User Extra zprofile if it exists
+# ------------------------------------
+user_zprofile="$USRHOME_DIR_USRCFG/do-user-zprofile.zsh"
+if [[ -f "$user_zprofile" ]]; then
+    source "$user_zprofile"
+fi
 
 # ----------------------------------------------------------------------------
