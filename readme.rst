@@ -55,7 +55,13 @@ directories in your file system: it specifically assumes that:
 - The directory that holds the USRHOME directory tree also holds
   a directory tree called ``usrcfg`` that holds the user-specific
   and private configuration information.
-  See `The zsh User Configuration File`_ table.
+
+The sections titled `The zsh Configuration Files`_ and
+`The User Configuration Files used by USRHOME`_  describe the files used.
+
+On shell startup, USRHOME takes over and sets the value of several environment
+variables that identify the location of directories and USRHOME state.
+
 
 The code supports the Emacs editor, by using the INSIDE_EMACS environment
 variable to control the behaviour of some features when they are invoked
@@ -91,7 +97,8 @@ commands documented below.
 The next step will to migrate any Z Shell startup logic you might have had in
 your old files that have been backed up by the startup script.  USRHOME
 expects that extra user-specific logic to be stored inside files located
-inside the usrcfg directory.  Read the section titled
+inside the usrcfg directory.
+Read the section titled
 `The Z Shell Startup, Dot Files and User Configuration`_
 for details.
 
@@ -105,8 +112,8 @@ Conventions
 
 
 
-zsh configuration files
------------------------
+The zsh Configuration Files
+---------------------------
 
 ========================= =====================================================
 Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
@@ -118,9 +125,31 @@ Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ``~/.zlogout``            ``$USRHOME_DIR/dot/zlogout.zsh``
 ========================= =====================================================
 
+The User Configuration Files used by USRHOME
+--------------------------------------------
 
-The zsh User Configuration File
--------------------------------
+=============================== ===============================================
+File Name                       Description
+=============================== ===============================================
+usrcfg/setfor-zsh-config.zsh    Persistent, user-specific basic USRHOME configuration.
+usrcfg/do-user-zprofile.zsh     User-specific Z Shell zprofile logic.
+usrcfg/do-user-zshrc.zsh        User-specific Z Shell zshrc logic.
+=============================== ===============================================
+
+As said above the usrcfg directory is expected to be a sibling to the usrhome
+directory; they must both be inside the same parent directory.
+USRHOME sets the ``USRHOME_DIR_USRCFG`` environment variable to hold the full
+path of the usrcfg directory.
+
+See the section titled
+`The Z Shell Startup, Dot Files and User Configuration`_
+for more information.
+
+The USRHOME Configuration Environment Variables
+-----------------------------------------------
+
+The file usrcfg/setfor-zsh-config.zsh holds the definition of the following
+environment variables.
 
 =============================== =================================================
 Environment Variable Name       Purpose
@@ -139,6 +168,26 @@ USRHOME_PROMPT_SHOW_USR_HOST    Set to 1 to display user name and host name
 
 USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
                                 directories to the PATH.
+
+USRHOME_DIR                     Path to the usrhome directory.
+                                The setup/setup-usrhome installation script
+                                appends code to set the value of that
+                                environment variable.
+=============================== =================================================
+
+When USRHOME Z Shell startup logic executes, USRHOME sets these other
+environment variables:
+
+=============================== =================================================
+Environment Variable Name       Purpose
+=============================== =================================================
+USRHOME_DIR_DV                  Development directory, used by USRHOME `Directory Navigation`_.
+USRHOME_DIR_MY                  Main user directory, used by USRHOME `Directory Navigation`_.
+USRHOME_DIR_PRIV                Private development directory, , used by USRHOME `Directory Navigation`_.
+USRHOME_DIR_PUB                 Public development directory, , used by USRHOME `Directory Navigation`_.
+USRHOME_DIR_USRCFG              The path of the user configuration directory.
+                                Something like ``/Users/roup/my/dv/usrcfg``
+USRHOME_PATH_SET                Internal logic flag.
 =============================== =================================================
 
 
