@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-31 09:25:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-31 12:59:21 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -32,12 +32,18 @@ show_path()
     # vname: string: name of path envvar: PATH, LIBPATH or MANPATH
 
     eval path_value='$'$vname
-    if [ "$1" = "-n" ]; then
-        echo "$path_value" | tr ':' '\n' | nl -b a -n ln
+    if [ -z "$path_value" ]; then
+        echo "$vname is not defined!"
+        exit 1
     else
-        printf -- "- "
-        echo "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
+        if [ "$1" = "-n" ]; then
+            echo "$path_value" | tr ':' '\n' | nl -b a -n ln
+        else
+            printf -- "- "
+            echo "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
+        fi
     fi
+
 }
 
 
@@ -78,23 +84,13 @@ case $vname in
         ;;
 
     'LIB'|'LIBPATH')
-        if [ -z "$LIBPATH" ]; then
-            echo "LIBPATH is not defined!"
-            exit 1
-        else
-            vname="LIBPATH"
-            show_path "$1"
-        fi
+        vname="LIBPATH"
+        show_path "$1"
         ;;
 
     'MAN'|'MANPATH')
-        if [ -z "$MANPATH" ]; then
-            echo "MANPATH is not defined!"
-            exit 1
-        else
-            vname="MANPATH"
-            show_path "$1"
-        fi
+        vname="MANPATH"
+        show_path "$1"
         ;;
 
     *)
