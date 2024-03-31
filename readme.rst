@@ -338,7 +338,7 @@ USRHOME Command Name               Description
                                    in its own line.
                                    With the optional ``-n``: print a left justified number on
                                    each line.
-                                   Example:
+                                   Examples:
 
                                    - ``showpath`` : prints PATH, one directory per line,
                                    - ``showpath PATH``: prints PATH, one directory per line,
@@ -351,6 +351,7 @@ USRHOME Command Name               Description
                                    prints an error message on stderr. The errors detected include
                                    a leading or trailing separator or multiple consecutive
                                    separators.  The exit code are:
+
                                    - 0 on success,
                                    - 1 on invalid argument(s),
                                    - 2 when specified environment variable is not defined,
