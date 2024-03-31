@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-31 12:59:21 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-31 13:16:15 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -14,6 +14,12 @@
 # Usage: showpath [-n] [MAN|LIB][PATH]
 #
 #  -n: when specified, a left justified number is printed on each line.
+#
+# On error,
+# - Print error on stderr.
+# - Exit code: 1:  invalid argument(s).
+#              2:  specified environment variable is not defined.
+#              3:  format of specified environment variable is incorrect.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -33,8 +39,8 @@ show_path()
 
     eval path_value='$'$vname
     if [ -z "$path_value" ]; then
-        echo "$vname is not defined!"
-        exit 1
+        >&2 echo "WARNING: $vname is not defined!"
+        exit 2
     else
         if [ "$1" = "-n" ]; then
             echo "$path_value" | tr ':' '\n' | nl -b a -n ln
@@ -42,8 +48,17 @@ show_path()
             printf -- "- "
             echo "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
         fi
+        if echo "$path_value" | grep '::' > /dev/null; then
+            >&2 echo "ERROR: $vname has empty entries!"
+            exit 3
+        elif echo "$path_value" | grep '^:' > /dev/null; then
+            >&2 echo "ERROR: $vname starts with an empty entry!"
+            exit 3
+        elif echo "$path_value" | grep ':$' > /dev/null; then
+            >&2 echo "ERROR: $vname ends with an empty entry!"
+            exit 3
+        fi
     fi
-
 }
 
 
@@ -94,8 +109,8 @@ case $vname in
         ;;
 
     *)
-        echo "ERROR: showpath does not support $vname"
-        echo " usage: showpath [[LIB|MAN]|PATH] [-n]"
+        >&2 echo "ERROR: showpath does not support $vname"
+        >&2 echo " usage: showpath [[LIB|MAN]|PATH] [-n]"
         exit 1
 esac
 
