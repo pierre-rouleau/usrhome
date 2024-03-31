@@ -347,6 +347,15 @@ USRHOME Command Name               Description
                                    - ``showpath -n MANPATH``: prints MANPATH with numbered lines,
                                    - ``showpath MAN``: prints MANPATH without numbers.
 
+                                   If the format of the path variable is incorrect, the command
+                                   prints an error message on stderr. The errors detected include
+                                   a leading or trailing separator or multiple consecutive
+                                   separators.  The exit code are:
+                                   - 0 on success,
+                                   - 1 on invalid argument(s),
+                                   - 2 when specified environment variable is not defined,
+                                   - 3 when the format of the specified path is incorrect.
+
 ================================== ================================================================
 
 
