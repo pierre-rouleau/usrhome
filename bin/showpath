@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-30 23:34:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-31 09:05:12 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -49,13 +49,19 @@ if [ -n "$2" ]; then
         shift
     fi
 else
-    # 1 argument (or more than 2, but ignore the ones after 2)
-    # and don't support -n after the variable name.
-    if [ "$1" = "-n" ]; then
+    if [ -z "$1" ]; then
+        # No argument
         vname="PATH"
     else
-        vname="$1"
+        # 1 argument (or more than 2, but ignore the ones after 2)
+        # and don't support -n after the variable name.
+        if [ "$1" = "-n" ]; then
+            vname="PATH"
+        else
+            vname="$1"
+        fi
     fi
+
 fi
 
 case $vname in
