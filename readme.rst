@@ -23,7 +23,7 @@ USRHOME -- Easy Unix Shell Configuration & Tools
 
 USRHOME is a starting project with the goal of holding a set of portable
 Unix shell configuration files that can be used in macOS and multiple Linux
-distributions under the Z Shell and Bash.
+distributions under the `Z Shell`_ and Bash.
 
 At the moment it supports:
 
@@ -283,6 +283,9 @@ These environment variables are defined in the user persistent configuration fil
 usrcfg/setfor-zsh-config.zsh.  The `setup/setup-usrhome`_ script initializes them
 to the value stored in `usrhome/setup/template/setfor-zsh-config.zsh`_ template file.
 
+The following commands are shortcuts to change the current directory to one of these
+directories.
+
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
@@ -319,6 +322,8 @@ USRHOME Command Name               Description
 
 Environment Variables Commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following commands help manage and read the content of environment variables.
 
 ================================== ================================================================
 USRHOME Command Name               Description
@@ -473,7 +478,7 @@ Symbolic link  USRHOME File Identified
 ~/.zlogout     usrhome/dot/zlogout.zsh
 ============== ==========================
 
-The files sourced by the Z Shell depend on how the Z Shell is started.
+The `files sourced by the Z Shell`_ depend on how the Z Shell is started.
 The files sourced by USRHOME take advantage of that behaviour to inject the
 user configuration, as shown in the following diagram.
 
@@ -515,5 +520,7 @@ which the files are sourced.
 .. _usrhome/setup/template/setfor-zsh-config.zsh: https://github.com/pierre-rouleau/usrhome/blob/main/setup/template/setfor-zsh-config.zsh
 .. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
 .. _The Z Shell Startup, Dot Files and User Configuration: #the-z-shell-startup-dot-files-and-user-configuration
+.. _Z Shell:                                      https://en.wikipedia.org/wiki/Z_shell
+.. _files sourced by the Z Shell:                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
 
 .. ---------------------------------------------------------------------------
