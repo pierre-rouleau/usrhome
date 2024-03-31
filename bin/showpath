@@ -4,14 +4,14 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-30 11:21:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-30 23:34:15 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Print PATH's elements, one per line.
-# Usage: showpath [-n]
+# Usage: showpath [-n] [MAN|LIB][PATH]
 #
 #  -n: when specified, a left justified number is printed on each line.
 
@@ -19,18 +19,82 @@
 # Dependencies
 # ------------
 #
-# printf, sed, nl
+# printf, sed, nl, tr
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
 #
-if [ "$1" = "-n" ]; then
-    echo "$PATH" | tr ':' '\n' | nl -n ln
+show_path()
+{
+    if [ "$1" = "-n" ]; then
+        echo "$PATH" | tr ':' '\n' | nl -n ln
+    else
+        printf -- "- "
+        echo "$PATH" | sed 's/:/:- /g' | tr ':' '\n'
+    fi
+}
+
+# [:todo 2024-03-30, by Pierre Rouleau: reduce code repetition
+#                    by finding a way to pass the name of the environment
+#                    variable to the function and use it there.]
+
+if [ -n "$2" ]; then
+    # there's 2 arguments. Check if one of them is -n
+    if [ "$1" = "-n" ]; then
+        vname="$2"
+    else
+        vname="$2"
+        shift
+    fi
 else
-    printf -- "- "
-    echo "$PATH" | sed 's/:/:- /g' | tr ':' '\n'
+    # 1 argument (or more than 2, but ignore the ones after 2)
+    # and don't support -n after the variable name.
+    if [ "$1" = "-n" ]; then
+        vname="PATH"
+    else
+        vname="$1"
+    fi
 fi
+
+case $vname in
+    'PATH')
+        show_path "$1"
+        ;;
+
+    'LIB'|'LIBPATH')
+        if [ -z "$LIBPATH" ]; then
+            echo "LIBPATH is not defined!"
+            exit 1
+        else
+            if [ "$1" = "-n" ]; then
+                echo "$LIBPATH" | tr ':' '\n' | nl -n ln
+            else
+                printf -- "- "
+                echo "$LIBPATH" | sed 's/:/:- /g' | tr ':' '\n'
+            fi
+        fi
+        ;;
+
+    'MAN'|'MANPATH')
+        if [ -z "$MANPATH" ]; then
+            echo "MANPATH is not defined!"
+            exit 1
+        else
+            if [ "$1" = "-n" ]; then
+                echo "$MANPATH" | tr ':' '\n' | nl -n ln
+            else
+                printf -- "- "
+                echo "$MANPATH" | sed 's/:/:- /g' | tr ':' '\n'
+            fi
+        fi
+        ;;
+
+    *)
+        echo "ERROR: showpath does not support $vname"
+        echo " usage: showpath [[LIB|MAN]|PATH] [-n]"
+        exit 1
+esac
 
 # ----------------------------------------------------------------------------

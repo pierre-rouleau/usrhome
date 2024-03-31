@@ -334,9 +334,18 @@ USRHOME Command Name               Description
 ``setenv VARNAME VALUE``           Set the environment variable named VARNAME to the specified
                                    VALUE and inject it inside the *current* shell.
 
-``showpath [-n]``                  Print the value of PATH, placing each directory in its own line.
+``showpath [-n] [MAN|LIB][PATH]``  Print the value of PATH, MANPATH or LIBPATH, placing each directory
+                                   in its own line.
                                    With the optional ``-n``: print a left justified number on
                                    each line.
+                                   Example:
+
+                                   - ``showpath`` : prints PATH, one directory per line,
+                                   - ``showpath PATH``: prints PATH, one directory per line,
+                                   - ``showpath -n``: prints PATH with numbered lines,
+                                   - ``showpath -n PATH``: prints PATH with numbered lines,
+                                   - ``showpath -n MANPATH``: prints MANPATH with numbered lines,
+                                   - ``showpath MAN``: prints MANPATH without numbers.
 
 ================================== ================================================================
 
