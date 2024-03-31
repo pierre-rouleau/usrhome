@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-31 09:05:12 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-03-31 09:25:48 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -28,18 +28,20 @@
 #
 show_path()
 {
+    # Arg 1: string: "-n" or nothing.
+    # vname: string: name of path envvar: PATH, LIBPATH or MANPATH
+
+    eval path_value='$'$vname
     if [ "$1" = "-n" ]; then
-        echo "$PATH" | tr ':' '\n' | nl -n ln
+        echo "$path_value" | tr ':' '\n' | nl -b a -n ln
     else
         printf -- "- "
-        echo "$PATH" | sed 's/:/:- /g' | tr ':' '\n'
+        echo "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
     fi
 }
 
-# [:todo 2024-03-30, by Pierre Rouleau: reduce code repetition
-#                    by finding a way to pass the name of the environment
-#                    variable to the function and use it there.]
 
+# Parse command line arguments
 if [ -n "$2" ]; then
     # there's 2 arguments. Check if one of them is -n
     if [ "$1" = "-n" ]; then
@@ -64,8 +66,14 @@ else
 
 fi
 
+# Parse further: check vname: only allow the valid ones
+# since their name will be passed to eval; don't allow
+# user input to be eval'ed; that would be a security risk.
+# Print the path using show_path function for the valid
+# variable names.
 case $vname in
     'PATH')
+        vname="PATH"
         show_path "$1"
         ;;
 
@@ -74,12 +82,8 @@ case $vname in
             echo "LIBPATH is not defined!"
             exit 1
         else
-            if [ "$1" = "-n" ]; then
-                echo "$LIBPATH" | tr ':' '\n' | nl -n ln
-            else
-                printf -- "- "
-                echo "$LIBPATH" | sed 's/:/:- /g' | tr ':' '\n'
-            fi
+            vname="LIBPATH"
+            show_path "$1"
         fi
         ;;
 
@@ -88,12 +92,8 @@ case $vname in
             echo "MANPATH is not defined!"
             exit 1
         else
-            if [ "$1" = "-n" ]; then
-                echo "$MANPATH" | tr ':' '\n' | nl -n ln
-            else
-                printf -- "- "
-                echo "$MANPATH" | sed 's/:/:- /g' | tr ':' '\n'
-            fi
+            vname="MANPATH"
+            show_path "$1"
         fi
         ;;
 
