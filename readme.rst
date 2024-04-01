@@ -548,6 +548,21 @@ of the real path.
 
 .. figure:: res/zsh-tracing-startup-01.png
 
+For comparison, here's the same inside shells started from within a terminal
+based instance of Emacs:
+
+.. figure:: res/zsh-tracing-startup-term-emacs.png
+
+From a graphical version of Emacs started from the system (and not from a
+shell):
+
+.. figure:: res/zsh-tracing-gr-emacs.png
+
+And a version of Aquamacs started from the system.  In that case you can see
+that the USRHOME logic detects and reports redundant entries in the PATH that
+is injected by the Aquamacs logic and then corrects them.
+
+.. figure:: res/zsh-tracing-aquamacs.png
 
 .. ---------------------------------------------------------------------------
 .. links
