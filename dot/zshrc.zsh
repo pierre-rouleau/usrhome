@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 17:25:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-01 09:42:15 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -31,7 +31,7 @@ if [[ -z "$USRHOME_DIR" ]]; then
 fi
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "---: Running ~/.zshrc"
+    echo "---: Sourcing ~/.zshrc"
 fi
 
 # ----------------------------------------------------------------------------

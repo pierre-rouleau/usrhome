@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-03-30 17:22:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-01 09:41:46 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -30,7 +30,7 @@
 # ----------------------------------------------------------
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "---: Running ~/.zprofile : [\$0 : $0], \$SHELL : $SHELL "
+    echo "---: Sourcing ~/.zprofile : [\$0 : $0], \$SHELL : $SHELL "
 fi
 
 # For testing:
