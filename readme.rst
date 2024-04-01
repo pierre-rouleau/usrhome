@@ -549,7 +549,8 @@ of the real path.
 .. figure:: res/zsh-tracing-startup-01.png
 
 For comparison, here's the same inside shells started from within a terminal
-based instance of Emacs:
+based instance of Emacs with two shells, one running inside a shell-mode
+buffer and another inside a term-mode buffer:
 
 .. figure:: res/zsh-tracing-startup-term-emacs.png
 
