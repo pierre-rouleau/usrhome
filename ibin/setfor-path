@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-01 09:40:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-01 10:34:36 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,7 +24,7 @@
 #
 #
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "---: Sourcing $USRHOME_DIR/ibin/setfor-path"
+    echo "---: Sourcing \$USRHOME_DIR/ibin/setfor-path"
 fi
 #
 

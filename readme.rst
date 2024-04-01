@@ -543,7 +543,8 @@ which file is sourced.
 
 With all usrcfg files existing, this is what you'd see from macOS that uses the Z
 Shell as the default shell when you open a new terminal and then create a
-sub-shell inside it.
+sub-shell inside it.  The name of the environment variables are shown instead
+of the real path.
 
 .. figure:: res/zsh-tracing-startup-01.png
 
