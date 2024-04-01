@@ -363,6 +363,9 @@ USRHOME Command Name               Description
                                    - 2 when specified environment variable is not defined,
                                    - 3 when the format of the specified path is incorrect.
 
+                                   Note: when MANPATH is empty, ``showpath`` uses the manpath_
+                                   command (if available) and prints the path it returns.  It also
+                                   prints a warning on stderr and exit with an exit-code of 0.
 ================================== ================================================================
 
 
@@ -763,5 +766,6 @@ Thanks!
 .. _Rust:                                         https://en.wikipedia.org/wiki/Rust_(programming_language)
 .. _Rust installation procedure:                  https://doc.rust-lang.org/cargo/getting-started/installation.html
 .. _Mercurial:                                    https://en.wikipedia.org/wiki/Mercurial
+.. _manpath:                                      https://man7.org/linux/man-pages/man1/manpath.1.html
 
 .. ---------------------------------------------------------------------------
