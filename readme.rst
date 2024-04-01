@@ -541,8 +541,9 @@ usrcfg/setfor-zsh-config.zsh file you activate USRHOME's tracing.  Then when
 you open a new shell inside a terminal, or create a sub-shell, you can see
 which file is sourced.
 
-When all usrcfg file exist, this is what you'd see from macOS that uses the Z
-Shell as the default shell.
+With all usrcfg files existing, this is what you'd see from macOS that uses the Z
+Shell as the default shell when you open a new terminal and then create a
+sub-shell inside it..
 
 .. figure:: res/zsh-tracing-startup-01.png
 
