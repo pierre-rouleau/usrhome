@@ -692,6 +692,17 @@ Now you can inject Rust support by executing the ``use-rust`` command:
 
 .. figure:: res/use-rust.png
 
+As you can see no change is required in the files supplied by the USRHOME
+project.  The customization is done inside your files, located in the usrcfg
+directory tree.  That directory tree should also be under the control of a
+version control system, like Git or anything else.  I also use Mercurial_ for
+that purpose as you can see below.
+
+
+.. figure:: res/use-rust-02.png
+
+
+
 
 
 .. ---------------------------------------------------------------------------
@@ -713,5 +724,6 @@ Now you can inject Rust support by executing the ``use-rust`` command:
 .. _Homebrew:                                     https://en.wikipedia.org/wiki/Homebrew_(package_manager)
 .. _Rust:                                         https://en.wikipedia.org/wiki/Rust_(programming_language)
 .. _Rust installation procedure:                  https://doc.rust-lang.org/cargo/getting-started/installation.html
+.. _Mercurial:                                    https://en.wikipedia.org/wiki/Mercurial
 
 .. ---------------------------------------------------------------------------
