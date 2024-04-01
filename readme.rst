@@ -6,7 +6,7 @@ USRHOME -- Easy Unix Shell Configuration & Tools
    :alt: License
    :target: https://www.gnu.org/licenses/gpl-3.0.html
 
-.. image:: https://img.shields.io/badge/State-Unstable_early_development-red
+.. image:: https://img.shields.io/badge/State-Stable,_zsh_support_only-yellow
    :alt: Version
    :target: https://github.com/pierre-rouleau/usrhome
 
