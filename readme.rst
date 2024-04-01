@@ -599,8 +599,8 @@ The method:
 
 Examples follow.
 
-**use-curl-hb** -- Activate Homebrew version of curl in the current shell.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+use-curl-hb -- Activate Homebrew version of curl in the current shell.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The version of curl_ available on macOS is often relatively old and may not
 incorporate the latest vulnerability fixes. You may want to install the
@@ -634,6 +634,66 @@ There's **no** impact in any other shells, and macOS continues to use its own
 version of curl.  You can open another shell and it will use the native
 version unless you execute the ``use-curl-hb`` command.
 
+
+use-rust -- Activate Rust programming environment in current shell
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you want to use the Rust_ programming language you most probably need to
+install it in your system.  The default mechanism is to install it in the
+system and each shell will have access to it.  You may also want to only limit
+it to one given shell and start all tools from that shell (or shells).  That
+what the ``use-rust`` command will do.
+
+The first step is to install Rust_ and Cargo as described in it the
+`Rust installation procedure`_, with::
+
+  curl https://sh.rustup.rs -sSf | sh
+
+Once it's done, you can use the ``git diff`` command to see what that changed
+into your shell configuration that is now stored inside the USRHOME directory
+tree.
+
+.. figure:: res/rust-install.png
+
+The Rust installation added the sourcing of "$HOME/.cargo/env" to your
+USRHOME ``dot/zshenv.zsh`` file.  Recall that the ``~/.zshenv`` now the
+USRHOME ``dot/zshenv.zsh``  is sourced every time a terminal opens a shell, at
+the beginning, before everything else.  It also sources it when a sub-shell is
+opened.  Looking into the ``$HOME/.cargo/env`` we can see that it
+conditionally prepends the ``$HOME/.cargo/bin`` directory to the PATH.  At
+least it won't do it several times.  But if you append that inside your Z
+Shell configuration it will be available to all processes once you restart
+your system.  It might be what you want. Or not.
+
+If you just want to add Rust support in selected shells, then create a
+``use-rust`` command.
+
+- Remove the extra code that was appended to your
+  USRHOME ``dot/zshenv.zsh`` file and place it inside a
+  ``envfor-rust`` script located inside your usrcfg directory.
+  At the same time add a little bit more to provide more info:
+
+
+  .. code:: shell
+
+            . "$HOME/.cargo/env"
+            rustv="$(rustc --version)"
+            echo "--- Rust $rustv Installed in shell"
+
+- Add the ``use-rust`` alias to your
+  usrcfg/do-user-zshrc.zsh file:
+
+  .. code:: shell
+
+            alias use-rust='source $USRHOME_DIR_USRCFG/envfor-rust'
+
+
+Now you can inject Rust support by executing the ``use-rust`` command:
+
+.. figure:: res/use-rust.png
+
+
+
 .. ---------------------------------------------------------------------------
 .. links
 
@@ -651,5 +711,7 @@ version unless you execute the ``use-curl-hb`` command.
 .. _Aquamacs:                                     https://aquamacs.org
 .. _curl:                                         https://en.wikipedia.org/wiki/CURL
 .. _Homebrew:                                     https://en.wikipedia.org/wiki/Homebrew_(package_manager)
+.. _Rust:                                         https://en.wikipedia.org/wiki/Rust_(programming_language)
+.. _Rust installation procedure:                  https://doc.rust-lang.org/cargo/getting-started/installation.html
 
 .. ---------------------------------------------------------------------------
