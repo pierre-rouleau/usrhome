@@ -734,6 +734,15 @@ Z Shell as we can see:
 
   .. figure:: res/use-rust-in-aquamacs.png
 
+Feedback?
+=========
+
+If you stumble on this page and find this project interesting but falling
+short somewhere, let me know.  Create an issue or propose a change or addition
+through a pull-request.
+
+Thanks!
+
 .. ---------------------------------------------------------------------------
 .. links
 
