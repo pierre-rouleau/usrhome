@@ -201,7 +201,13 @@ Shell Behavior Control
 USRHOME Command Name               Description
 ================================== ================================================================
 ``usrhome-shell-toggle-tracing``   Toggle tracing the execution of the shell configuration files
-                                   when a shell starts.
+                                   when a shell starts.  This toggles the value of the
+                                   ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
+                                   and vice-versa.  The original value is set inside your
+                                   usrcfg/setfor-zsh-config.zsh file.  The default value is 0 as
+                                   identified by `usrhome/setup/template/setfor-zsh-config.zsh`_
+                                   used to initialize the usrcfg file.
+
 ``usrhome-prompt-toggle-usr-host`` Toggle the inclusion of the user name and host name inside
                                    the prompt.
 ================================== ================================================================
@@ -526,6 +532,20 @@ managed usrcfg directory:
 
 Each of these files is sourced if they exist. The diagram shows the order in
 which the files are sourced.
+
+Activate Tracing of the Sourcing of the Shell Configuration Files
+-----------------------------------------------------------------
+
+By setting the value of ``USRHOME_TRACE_SHELL_CONFIG`` to 1 inside your
+usrcfg/setfor-zsh-config.zsh file you activate USRHOME's tracing.  Then when
+you open a new shell inside a terminal, or create a sub-shell, you can see
+which file is sourced.
+
+When all usrcfg file exist, this is what you'd see from macOS that uses the Z
+Shell as the default shell.
+
+.. figure:: res/zsh-tracing-startup-01.png
+
 
 .. ---------------------------------------------------------------------------
 .. links
