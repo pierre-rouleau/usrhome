@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-01 09:40:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-01 10:13:41 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -24,7 +24,7 @@
 # environment variables are always defined; no need to check.
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "---: Sourcing ~/.zlogin"
+    echo "---: Sourcing ~/.zlogin --> $USRHOME_DIR/dot/zlogin.zsh"
 fi
 
 
