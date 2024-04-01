@@ -702,8 +702,37 @@ that purpose as you can see below.
 .. figure:: res/use-rust-02.png
 
 
+Adding Permanent Environments to all Shells
+-------------------------------------------
 
+In some cases you may decide to add a feature to the system shell and all
+shell instances. This way you won't have to type the required ``use-`` command
+into each shell that requires it.
 
+You can do that too with USRHOME. And there are several ways to do it; add the
+sourcing of the corresponding ``envfor-`` file from one of the ``.zsh`` files
+in the usrcfg.
+Usually you will probably want to do that from the ``usrcfg/do-user-zshrc.zsh``.
+
+With envfor-rust sourced inside the ``usrcfg/do-user-zshrc.zsh`` file, Rust
+support is installed automatically inside all shells, including the system
+Z Shell as we can see:
+
+- from a Z Shell launched from Terminal.app:
+
+  .. figure:: res/use-rust-03.png
+
+- from a Z Shell opened inside a shell-mode terminal-type Emacs buffer:
+
+  .. figure:: res/use-rust-in-e.png
+
+- from a Z Shell opened inside a shell-mode graphical-type Emacs buffer:
+
+  .. figure:: res/use-rust-in-ge.png
+
+- from a Z Shell opened inside a shell-mode Aquamacs buffer:
+
+  .. figure:: res/use-rust-in-aquamacs.png
 
 .. ---------------------------------------------------------------------------
 .. links
