@@ -550,7 +550,9 @@ of the real path.
 
 For comparison, here's the same inside shells started from within a terminal
 based instance of Emacs with two shells, one running inside a shell-mode
-buffer and another inside a term-mode buffer:
+buffer and another inside a term-mode buffer.  Notice that the Z Shell started
+inside Emacs are sub-shells and therefore only execute the corresponding Z Shell
+configuration files for that.
 
 .. figure:: res/zsh-tracing-startup-term-emacs.png
 
