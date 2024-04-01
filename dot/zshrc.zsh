@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-01 11:38:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-01 11:48:07 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -165,7 +165,8 @@ if [[ "$path_entries" != "$sanitized_path_entries" ]]; then
         echo " The original PATH was:"
         showpath -n
     else
-        echo "Set USRHOME_TRACE_SHELL_CONFIG to 1 to see more info."
+        echo "Set USRHOME_TRACE_SHELL_CONFIG to 1 in to see more info."
+        echo "- Edit: \$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
     fi
 fi
 export PATH=$sanitized_path
