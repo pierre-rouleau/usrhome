@@ -558,7 +558,7 @@ shell):
 
 .. figure:: res/zsh-tracing-gr-emacs.png
 
-And a version of Aquamacs started from the system.  In that case you can see
+And a version of Aquamacs_ started from the system.  In that case you can see
 that the USRHOME logic detects and reports redundant entries in the PATH that
 is injected by the Aquamacs logic and then corrects them.
 
@@ -578,5 +578,6 @@ is injected by the Aquamacs logic and then corrects them.
 .. _The Z Shell Startup, Dot Files and User Configuration: #the-z-shell-startup-dot-files-and-user-configuration
 .. _Z Shell:                                      https://en.wikipedia.org/wiki/Z_shell
 .. _files sourced by the Z Shell:                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
+.. _Aquamacs:                                     https://aquamacs.org
 
 .. ---------------------------------------------------------------------------
