@@ -567,6 +567,13 @@ is injected by the Aquamacs logic and then corrects them.
 
 .. figure:: res/zsh-tracing-aquamacs.png
 
+When the USRHOME_TRACE_SHELL_CONFIG is set to ``0`` instead of ``1``, USRHOME
+startup configuration files do not display the entire warning. It just
+mentions that USRHOME sanitized the PATH and how to see more as we can see here:
+
+.. figure:: res/zsh-tracing-aquamacs-02.png
+
+
 .. ---------------------------------------------------------------------------
 .. links
 

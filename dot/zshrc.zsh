@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-01 10:33:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-01 11:38:22 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -159,10 +159,14 @@ fi
 
 sanitized_path_entries="$(echo "$sanitized_path" | tr ':' '\n' | wc -l | xargs)"
 if [[ "$path_entries" != "$sanitized_path_entries" ]]; then
-    echo "WARNING: USRHOME has sanitized your PATH:"
-    echo "         It had $path_entries directories, it now has $sanitized_path_entries."
-    echo " The original PATH was:"
-    showpath -n
+    echo "WARNING: USRHOME has sanitized your PATH!"
+    if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
+        echo "         It had $path_entries directories, it now has $sanitized_path_entries."
+        echo " The original PATH was:"
+        showpath -n
+    else
+        echo "Set USRHOME_TRACE_SHELL_CONFIG to 1 to see more info."
+    fi
 fi
 export PATH=$sanitized_path
 
