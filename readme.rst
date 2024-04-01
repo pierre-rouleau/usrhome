@@ -574,6 +574,63 @@ mentions that USRHOME sanitized the PATH and how to see more as we can see here:
 .. figure:: res/zsh-tracing-aquamacs-02.png
 
 
+Adding Your Own Environment Customization to your Shell
+=======================================================
+
+You will most probably want to add features to your shells, over what USRHOME
+provides. USRHOME provides several mechanism to do that, described in the
+following sections with examples and files located in the setup/template
+directory you can use as examples.
+
+The use- commands -- Inject something in your local shell
+---------------------------------------------------------
+
+The idea here is to provide a set of sourced scripts and corresponding
+commands to source them.  One set for each feature you want to inject into
+your shell.  Something like providing access to a different implementation of
+a command available to the Operating System, or adding support for the tools
+required for a programming language.
+
+The method:
+  Add a ``use-ENV`` alias command that sources a ``envfor-ENV`` script,
+  where ``ENV`` is the name of the environment concept.
+  Add the alias statement into the usrcfg/do-user-zshrc.zsh file.
+  Store the ``envfor-ENV`` script inside the usrcfg directory.
+
+Examples follow.
+
+**use-curl-hb** -- Activate Homebrew version of curl in the current shell.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The version of curl_ available on macOS is often relatively old and may not
+incorporate the latest vulnerability fixes. You may want to install the
+latest available from Homebrew_ but once you install it it will warn you
+that installing it permanently might cause problems with macOS.
+
+A solution to this is to install the files ion your system but not install
+the symlinks and not put it your your system's PATH. Homebrew does that.
+Now if you want to use Homebrew's version of curl you need to ensure that it
+will be piked up in the PATH before the system's one.
+
+To do that we can place the following statement inside the
+usrcfg/do-user-zshrc.zsh file:
+
+.. code:: shell
+
+          alias use-curl-hb='source $USRHOME_DIR_USRCFG/envfor-curl-hb'
+
+And we store the logic we need into the usrcfg/envfor-curl-hb file.
+In this specific case, there's not much.  Just this:
+
+.. code:: shell
+
+          export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+
+When we open a new Z Shell we can see the impact:
+
+.. figure:: res/use-curl-hb.png
+
+
 .. ---------------------------------------------------------------------------
 .. links
 
@@ -589,5 +646,7 @@ mentions that USRHOME sanitized the PATH and how to see more as we can see here:
 .. _Z Shell:                                      https://en.wikipedia.org/wiki/Z_shell
 .. _files sourced by the Z Shell:                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
 .. _Aquamacs:                                     https://aquamacs.org
+.. _curl:                                         https://curl.se
+.. _Homebrew:                                     https://en.wikipedia.org/wiki/Homebrew_(package_manager)
 
 .. ---------------------------------------------------------------------------
