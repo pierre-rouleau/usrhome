@@ -630,6 +630,9 @@ When we open a new Z Shell we can see the impact:
 
 .. figure:: res/use-curl-hb.png
 
+There's **no** impact in any other shells, and macOS continues to use its own
+version of curl.  You can open another shell and it will use the native
+version unless you execute the ``use-curl-hb`` command.
 
 .. ---------------------------------------------------------------------------
 .. links
@@ -646,7 +649,7 @@ When we open a new Z Shell we can see the impact:
 .. _Z Shell:                                      https://en.wikipedia.org/wiki/Z_shell
 .. _files sourced by the Z Shell:                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
 .. _Aquamacs:                                     https://aquamacs.org
-.. _curl:                                         https://curl.se
+.. _curl:                                         https://en.wikipedia.org/wiki/CURL
 .. _Homebrew:                                     https://en.wikipedia.org/wiki/Homebrew_(package_manager)
 
 .. ---------------------------------------------------------------------------
