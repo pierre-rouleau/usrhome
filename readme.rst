@@ -182,7 +182,7 @@ USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
 
                                 Other values will be supported.  For the
                                 moment, the other model is value 2.  For that
-                                model, all information is printed on the right
+                                model, all information is printed on the left
                                 side, the full path is shown, always.  The
                                 prompt ends on a new line that starts with '%'
                                 or '#' as for the first prompt.
@@ -452,12 +452,27 @@ An example is shown here:
 
 .. figure:: res/zsh-prompt-01.png
 
+What is shown above corresponds to USRHOME default prompt.
+USRHOME supports other prompts, selected by the value of the optional
+USRHOME_PROMPT_MODEL environment variable that holds a prompt model value.
+
+- The value for the default prompt is 1 (but it's also the model selected if the
+  variable is not defined).
+- A value of 2 selects a prompt that spans 2 lines and always displays the
+  complete path of the current directory, along with any available VCS info
+  on the left side of the first line.  The second line starts with ``%`` or
+  `#`` followed by a single space.
+
+
 Prompt Search Regexp
 ++++++++++++++++++++
 
-With the above prompt, you can use the following regular
+With the above prompt, the default prompt, you can use the following regular
 expression to navigate to prompt lines inside a log within the prompt lines
 inside an Emacs terminal or shell mode buffer:  ``^>[0-9]+@.+[%#]``
+
+
+The regexp for prompt model 2 is simpler: ``^[%#]``
 
 Command and Script Organization
 -------------------------------
