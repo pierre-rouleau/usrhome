@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-01 09:41:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-02 18:44:11 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,8 +40,12 @@ fi
 # Activate when Homebrew is used.
 export USRHOME_USE_HOMEBREW=1
 
-# Activate display of user name and host name on the prompt.
-export USRHOME_PROMPT_SHOW_USR_HOST=1
+if [[ -z $USRHOME__USRCFG_SEEN ]]; then
+    export USRHOME__USRCFG_SEEN=1
+    # Set the persistent values of variables that can be toggled dynamically.
+    # Activate display of user name and host name on the prompt.
+    export USRHOME_PROMPT_SHOW_USR_HOST=1
+fi
 
 # Directory Identification
 # ------------------------
