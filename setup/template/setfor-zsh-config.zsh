@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-02 18:44:11 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-02 19:34:51 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -45,6 +45,18 @@ if [[ -z $USRHOME__USRCFG_SEEN ]]; then
     # Set the persistent values of variables that can be toggled dynamically.
     # Activate display of user name and host name on the prompt.
     export USRHOME_PROMPT_SHOW_USR_HOST=1
+
+    # Select prompt model.
+    export USRHOME_PROMPT_MODEL=1
+    # Prompt Models:
+    # - 1 : original prompt. exit-code, 24-hour time, nesting level, [user@host] 2 or 3 path component [%#]
+    #       Use RPROMPT for VCS info, but not inside Emacs.
+    #       Prompt search regexp := '^>[0-9]+@.+[%#]'
+
+    # - 2 : 2-line prompt.  Complete path and VCS info in right side.
+    #       The second line is very minimal and has just a % or # followed by a space.
+    #       Prompt search regexp := '^[%#]
+
 fi
 
 # Directory Identification

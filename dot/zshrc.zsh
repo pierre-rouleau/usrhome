@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-01 11:48:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-02 19:25:23 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -103,34 +103,59 @@ function cddpub {
 # - % for normal prompt, # for sudo      %#
 # - all of the above in bold: %B ... %b
 
-if [[ $USRHOME_PROMPT_SHOW_USR_HOST = 1 ]]; then
-    export PROMPT=">%?@%B%D{%H:%M:%S} L%L %n@%m:%2~ %#%b "
+p1=$'>%?@%B%D{%H:%M:%S} L%L'
+
+if [ $USRHOME_PROMPT_SHOW_USR_HOST = 1 ]; then
+    p2=$'%n@%m:%~%b'
 else
-    export PROMPT=">%?@%B%D{%H:%M:%S} L%L %3~%#%b "
+    p2=$'%~%b'
 fi
 
-# Note that the prompt starts with a '>', the exit code and a '@'.  It is
-# therefore possible to create a regexp that identifies a prompt line.
-#
-# That is useful inside Emacs (in pel-shell-prompt-line-regexp) and inside
-# scripts that can identify consecutive prompts from a log and then compute
-# the elapsed time for a given command.
+case $USRHOME_PROMPT_MODEL in
+    2 )
+        autoload -Uz vcs_info
+        precmd_vcs_info() { vcs_info }
+        precmd_functions+=( precmd_vcs_info )
+        setopt prompt_subst
+        zstyle ':vcs_info:hg:*'  formats '%F{240}hg:(%b)%r%f'
+        zstyle ':vcs_info:git:*' formats '%F{240}git:(%b)%r%f'
+        zstyle ':vcs_info:*' enable hg git
+        export PROMPT=$'$p1 $p2 \ \$vcs_info_msg_0_\n%B%#%b '
+        ;;
 
-if [ -z $INSIDE_EMACS ]; then
-    # Unless inside Emacs, display full path at right
-    # followed by Git information if inside a Git repo directory.
-    # This is shown only if there is space in the window.
-    # The info can be shown in term-mode but not in shell-mode (I don't know why).
-    # Inside Emacs it's not that useful anyway because Emacs can display that information.
-    autoload -Uz vcs_info
-    precmd_vcs_info() { vcs_info }
-    precmd_functions+=( precmd_vcs_info )
-    setopt prompt_subst
-    RPROMPT=%B%~%b\ \$vcs_info_msg_0_
-    zstyle ':vcs_info:hg:*'  formats 'hg:%F{240}(%b)%r%f'
-    zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
-    zstyle ':vcs_info:*' enable hg git
-fi
+    * )
+        # Default (also model 1)
+        export PROMPT=$'$p1 $p2 '
+
+        # Note that the prompt starts with a '>', the exit code and a '@'.  It is
+        # therefore possible to create a regexp that identifies a prompt line.
+        #
+        # That is useful inside Emacs (in pel-shell-prompt-line-regexp) and inside
+        # scripts that can identify consecutive prompts from a log and then compute
+        # the elapsed time for a given command.
+        if [ -z $INSIDE_EMACS ]; then
+            # Unless inside Emacs, display full path at right
+            # followed by Git information if inside a Git repo directory.
+            # This is shown only if there is space in the window.
+            # The info can be shown in term-mode but not in shell-mode (I don't know why).
+            # Inside Emacs it's not that useful anyway because Emacs can display that information.
+            autoload -Uz vcs_info
+            precmd_vcs_info() { vcs_info }
+            precmd_functions+=( precmd_vcs_info )
+            setopt prompt_subst
+            RPROMPT=%B%~%b\ \$vcs_info_msg_0_
+            zstyle ':vcs_info:hg:*'  formats 'hg:%F{240}(%b)%r%f'
+            zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
+            zstyle ':vcs_info:*' enable hg git
+        fi
+        ;;
+
+
+esac
+
+
+
+
 
 # ----------------------------------------------------------------------------
 # Update Path in sub-shells if not already done
