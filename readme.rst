@@ -186,7 +186,7 @@ USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
 
                                 - **1** : (or not defined).
                                   Selects the default USRHOME prompt style
-                                  shown in the example. This is on one line
+                                  shown in the example_. This is on one line
                                   but uses the ``RPROMPT`` to show the VCS
                                   information.
                                   The search regexp for that prompt model is
@@ -440,7 +440,7 @@ The zsh prompt
 ^^^^^^^^^^^^^^
 
 USRHOME sets up a basic Z Shell prompt that does not need any zsh extension
-library. The default prompt shows:
+library. The default prompt (prompt model 1) shows:
 
 - A leading '>' character,
 - the exit code of the last command, in decimal,
@@ -820,5 +820,6 @@ Thanks!
 .. _Rust installation procedure:                  https://doc.rust-lang.org/cargo/getting-started/installation.html
 .. _Mercurial:                                    https://en.wikipedia.org/wiki/Mercurial
 .. _manpath:                                      https://man7.org/linux/man-pages/man1/manpath.1.html
+.. _example:                                      `The zsh prompt`_
 
 .. ---------------------------------------------------------------------------
