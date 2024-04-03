@@ -13,10 +13,13 @@ USRHOME -- Easy Unix Shell Configuration & Tools
 .. image:: https://img.shields.io/badge/Supports-macOS_zsh-green
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
 
-.. image:: https://img.shields.io/badge/Supports-Kali_Linux-green
+.. image:: https://img.shields.io/badge/Supports-Kali_Linux_zsh-green
    :target: #using-usrhome-on-kali-linux
 
 .. image:: https://img.shields.io/badge/Installer_tested_on-macOS_zsh-green
+   :target: #how-to-set-it-up
+
+.. image:: https://img.shields.io/badge/Installer_tested_on_Kali_Linux_zsh-green
    :target: #how-to-set-it-up
 
 :Author:  Pierre Rouleau
