@@ -1,10 +1,9 @@
-#!/bin/sh
-# SH FILE: do-clrenv
+# Sourced script: do-clrenv  -*- mode: sh; -*-
 #
 # Purpose   : Clear the specified environment from the environment.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-27 16:50:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 07:50:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

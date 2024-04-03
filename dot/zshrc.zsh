@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-03 07:38:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 07:48:18 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -73,7 +73,6 @@ function cddpriv {
 function cddpub {
     cd $USRHOME_DIR_PUB/$1
 }
-
 
 function mdd {
     # mdd: mkdir and cd
