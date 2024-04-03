@@ -3,7 +3,7 @@
 # Purpose   : Set environment for USRHOME.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-29 17:53:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 14:09:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,6 +24,6 @@
 #
 
 cd $USRHOME_DIR/$1
-settitle USRHOME
+set-title USRHOME
 
 # ----------------------------------------------------------------------------

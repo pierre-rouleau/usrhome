@@ -269,11 +269,11 @@ Terminal Window Control
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``settitle``                       Set the terminal's title to the value passed as its first
+``set-title [TITLE]``              Set the terminal's title to the value passed as its first
                                    parameter.  The terminal title is shown on the window title bar.
-                                   The command accepts only 1 parameter,
-                                   so if you want to set the title with
-                                   embedded spaces just quote the entire title.
+                                   The command accepts only 1 parameter, so if you want to set the
+                                   title with embedded spaces just quote the entire title.
+                                   With no argument: removes the title.
 ================================== ================================================================
 
 Directory Navigation

@@ -3,7 +3,7 @@
 # Purpose   : Set environment for USRHOME's usrcfg.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-29 17:55:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 14:10:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,6 +24,6 @@
 #
 #
 cd $USRHOME_DIR/../usrcfg/$1
-settitle USRHOME:usrcfg
+set-title USRHOME:usrcfg
 
 # ----------------------------------------------------------------------------

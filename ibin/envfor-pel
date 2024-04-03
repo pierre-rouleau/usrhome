@@ -3,7 +3,7 @@
 # Purpose   : Set shell for programming PEL.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-29 11:57:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 14:10:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -15,7 +15,7 @@
 # ------------
 #
 # - This should be invoked via a alias named pel
-# - $USRHOME_DIR/bin must be on PATH.  It holds settitle.
+# - $USRHOME_DIR/bin must be on PATH.  It holds set-title.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -23,6 +23,6 @@
 #
 #
 cd $USRHOME_DIR_DV/elisp/pel/$1
-settitle PEL
+set-title PEL
 
 # ----------------------------------------------------------------------------
