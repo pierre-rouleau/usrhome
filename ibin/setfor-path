@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-01 10:34:36 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 18:16:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,12 +37,15 @@ fi
 
 # For Homebrew
 if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
-    PATH=\
+    if [[ -d /opt/homebrew ]]; then
+        PATH=\
 /opt/homebrew/opt/make/libexec/gnubin:\
 /opt/homebrew/bin:\
 /opt/homebrew/sbin:\
 /opt/homebrew/opt/m4/bin:\
 $PATH
+    fi
+
 fi
 
 # For local binaries
