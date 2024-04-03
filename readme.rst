@@ -98,9 +98,18 @@ The next step will to migrate any Z Shell startup logic you might have had in
 your old files that have been backed up by the startup script.  USRHOME
 expects that extra user-specific logic to be stored inside files located
 inside the usrcfg directory.
-Read the section titled
-`The Z Shell Startup, Dot Files and User Configuration`_
-for details.
+
+  For that you need to understand which file is sourced when the Z Shell is started
+  in the various ways it is started. Read the section titled
+  `The Z Shell Startup, Dot Files and User Configuration`_
+  for details on that.
+
+  Then you can decide to use your original ``~/.zshrc`` and other Z Shell configuration
+  files that have been backed-up by `setup/setup-usrhome`_ and copy all or part of their
+  content inside the corresponding files inside the usrcfg directory.
+
+  You can also take a look at the other example files located in the `usrhome/template`_
+  directory and use ideas from there.
 
 Conventions
 ===========
@@ -811,6 +820,7 @@ Thanks!
 .. _fd:                                           https://github.com/sharkdp/fd#readme
 .. _setup/setup-usrhome:                          https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
 .. _usrhome/setup/template/setfor-zsh-config.zsh: https://github.com/pierre-rouleau/usrhome/blob/main/setup/template/setfor-zsh-config.zsh
+.. _usrhome/template:                             https://github.com/pierre-rouleau/usrhome/blob/main/setup/template
 .. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
 .. _The Z Shell Startup, Dot Files and User Configuration: #the-z-shell-startup-dot-files-and-user-configuration
 .. _Z Shell:                                      https://en.wikipedia.org/wiki/Z_shell
