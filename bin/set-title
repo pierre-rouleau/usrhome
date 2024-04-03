@@ -4,7 +4,7 @@
 # Purpose   : Set the title of the enclosing terminal window.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 14:11:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 18:07:24 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,11 +34,16 @@
 if [ -z "$INSIDE_EMACS" ]; then
     os_type=$(uname)
     case $os_type in
-        'Darwin' | 'Linux')
+        'Darwin' )
             # Supports all shells with a simple echo.
             # On macOS, the escape sequences are passed properly by echo.
             # shellcheck disable=SC2028
             echo "\033]0;${1}\007\c"
+            ;;
+
+        'Linux')
+            echo "\033]0;${1}\007\c"
+
             ;;
 
         *)
