@@ -19,7 +19,7 @@ USRHOME -- Easy Unix Shell Configuration & Tools
 .. image:: https://img.shields.io/badge/Installer_tested_on-macOS_zsh-green
    :target: #how-to-set-it-up
 
-.. image:: https://img.shields.io/badge/Installer_tested_on_Kali_Linux_zsh-green
+.. image:: https://img.shields.io/badge/Installer_tested_on-Kali_Linux_zsh-green
    :target: #how-to-set-it-up
 
 :Author:  Pierre Rouleau
