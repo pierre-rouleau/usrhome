@@ -175,25 +175,36 @@ USRHOME_DIR                     Path to the usrhome directory.
                                 environment variable.
 
 USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
-                                syntax of the prompt used by the shell.
-                                The default is the prompt style shown in the
-                                example and that corresponds to prompt model
-                                value 1.
+                                syntax of the prompt used by the shell. The
+                                supported values are:
 
-                                Other values will be supported.  For the
-                                moment, the other model is value 2.  For that
-                                model, all information is printed on the left
-                                side, the full path is shown, always.  The
-                                prompt ends on a new line that starts with '%'
-                                or '#' as for the first prompt.
-                                The search regexp for that prompt model is
-                                ``'^[%#]'``.
+                                - **0** : no prompt defined by USRHOME. The user
+                                  can defined a prompt inside the
+                                  ``usrcfg/do-user-zshrc.zsh`` file.
+                                  If nothing is defined, zsh will use it's
+                                  default prompt.
+
+                                - **1** : (or not defined).
+                                  Selects the default USRHOME prompt style
+                                  shown in the example. This is on one line
+                                  but uses the ``RPROMPT`` to show the VCS
+                                  information.
+                                  The search regexp for that prompt model is
+                                  ``^>[0-9]+@.+[%#]``
+
+                                - **2** : A 2-line prompt that displays the
+                                  complete path and the VCS info on the
+                                  left-hand side.  Commands are typed on the
+                                  second line right after a "%' or '#' leading
+                                  character followed by a space.
+                                  The search regexp for that prompt model is
+                                  ``^[%#]``
 
                                 Users can change the prompt dynamically by
-                                issuing a setenv command to change the value
-                                of the variable and then either start a new
-                                zsh shell or reset the current one with ``exec
-                                zsh``.
+                                issuing a clrenv or setenv command to change
+                                the value of the variable and then either
+                                start a new zsh shell or reset the current
+                                one with ``exec zsh``.
 =============================== =================================================
 
 When USRHOME Z Shell startup logic executes, USRHOME sets these other

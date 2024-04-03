@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-02 19:25:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-02 21:19:51 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -112,6 +112,13 @@ else
 fi
 
 case $USRHOME_PROMPT_MODEL in
+    0 )
+    # No prompt identified by USRHOME
+    # It can be set by "$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
+    # which could be the original users ~/.zshrc
+    # If not set, the default zsh prompt is used.
+    ;;
+
     2 )
         autoload -Uz vcs_info
         precmd_vcs_info() { vcs_info }
@@ -150,12 +157,7 @@ case $USRHOME_PROMPT_MODEL in
         fi
         ;;
 
-
 esac
-
-
-
-
 
 # ----------------------------------------------------------------------------
 # Update Path in sub-shells if not already done
