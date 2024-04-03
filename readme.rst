@@ -31,7 +31,7 @@ USRHOME is a starting project with the goal of holding a set of portable
 Unix shell configuration files that:
 
 - can be used in macOS and multiple Linux distributions under
-  the `Z Shell`_ and Bash,
+  the `Z Shell`_ and Bash (future),
 - support multiple computers:
 
   - the central configuration logic is inside this USRHOME Git repository,
