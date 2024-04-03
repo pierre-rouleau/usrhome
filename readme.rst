@@ -13,6 +13,9 @@ USRHOME -- Easy Unix Shell Configuration & Tools
 .. image:: https://img.shields.io/badge/Supports-macOS_zsh-green
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
 
+.. image:: https://img.shields.io/badge/Supports-Kali_Linux-green
+   :target: #using-usrhome-on-kali-linux
+
 .. image:: https://img.shields.io/badge/Installer_tested_on-macOS_zsh-green
    :target: #how-to-set-it-up
 
@@ -800,6 +803,46 @@ Z Shell as we can see:
 - from a Z Shell opened inside a shell-mode Aquamacs buffer:
 
   .. figure:: res/use-rust-in-aquamacs.png
+
+Using USRHOME on Kali Linux
+===========================
+
+Kali Linux uses zsh as the default shell.
+It has it's own prompt definition with  several Z Shell extensions
+enabled, which the USRHOME default shell does not have yet.
+
+You can still use USRHOME on Kali Linux and take advantage of the USRHOME commands
+and philosophy of storing the USRHOME main code and the local shell
+customization inside the usrcfg directory.  That can also be stored inside a
+repository.  In this example, the usrcfg files are stored inside a Mercurial
+repository.  The logic in the various files support multiple target
+environment, which they select by checking the host name and other values.
+
+This way, I can **centralize the shell setting of all computers or VMs** I use
+inside **a single repository** that I clone inside the usrcfg directory of these
+computers and VMs.  I can design the logic once, specialize it for varius
+environments and distribute it through the VCS.
+
+Here's a Kali Linux terminal with the Z shell using USRHOME selecting the
+original Kali Linux Z Shell configuration (moved into the
+``usrcfg/do-user-zshrc.zsh`` file aand selected based on the USRHOME prompt
+model value):
+
+.. figure:: res/on-kali-linux.png
+
+And then, after changing the color scheme of Kali Linux terminal, two
+terminals, one running the terminal version of Emacs launched with an alias to
+``emacs -nw`` and the graphical version of Emacs launched from the shell with a shell
+function that captures the current working directory and runs in background.
+You can see the prompts inside the Emacs shell-mode and term-mode buffers.
+
+
+.. figure:: res/on-kali-linux-02.png
+
+
+
+
+
 
 Feedback's Welcome!
 ===================
