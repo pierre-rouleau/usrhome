@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 14:10:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 18:54:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -65,10 +65,27 @@ alias usrhome-shell-toggle-tracing='source $USRHOME_DIR/ibin/setfor-shell-toggle
 #
 alias l='ls -FG'
 alias la='ls -aFG'
-alias ll='ls -lFGO'
-alias lla='ls -alFGO'
-alias lt='ls -ltrFGO'
-alias lta='ls -ltraFGO'
+
+os_type=$(uname)
+case $os_type in
+    'Darwin' )
+        # Supports the -O option:
+        alias ll='ls -lFGO'
+        alias lla='ls -alFGO'
+        alias lt='ls -ltrFGO'
+        alias lta='ls -ltraFGO'
+        ;;
+
+    *)
+        # There's no support for the -O option normally.
+        alias ll='ls -lFG'
+        alias lla='ls -alFG'
+        alias lt='ls -ltrFG'
+        alias lta='ls -ltraFG'
+        ;;
+esac
+unset os_type
+
 
 # Manual environment variable manipulation
 alias setenv='source $USRHOME_DIR/ibin/do-setenv'
