@@ -1,6 +1,6 @@
-================================================
-USRHOME -- Easy Unix Shell Configuration & Tools
-================================================
+===========================================================
+USRHOME -- Easily Clonable Unix Shell Configuration & Tools
+===========================================================
 
 .. image:: https://img.shields.io/:License-gpl3-blue.svg
    :alt: License
@@ -28,8 +28,24 @@ USRHOME -- Easy Unix Shell Configuration & Tools
 .. ---------------------------------------------------------------------------
 
 USRHOME is a starting project with the goal of holding a set of portable
-Unix shell configuration files that can be used in macOS and multiple Linux
-distributions under the `Z Shell`_ and Bash.
+Unix shell configuration files that:
+
+- can be used in macOS and multiple Linux distributions under
+  the `Z Shell`_ and Bash,
+- support multiple computers:
+
+  - the central configuration logic is inside this USRHOME Git repository,
+  - the user-specific configuration logic for several computers or VMs
+    is stored inside a *sibling*, private, repository; the *usrcfg*.
+
+- All shell configuration files are symbolic links to `USRHOME dot files`_,
+  allowing the logic to be under VCS control.
+
+USRHOME allows you to store shell configuration logic inside the USRHOME and
+you usrcfg repository.  That can be used inside all the computers you use and
+they may have different configuration.
+The goal is to be able to store all shell configuration logic
+into two VCS repositories: the public one (this) and your private one.
 
 At the moment it supports:
 
@@ -867,6 +883,7 @@ Thanks!
 .. _setup/setup-usrhome:                          https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
 .. _usrhome/setup/template/setfor-zsh-config.zsh: https://github.com/pierre-rouleau/usrhome/blob/main/setup/template/setfor-zsh-config.zsh
 .. _usrhome/template:                             https://github.com/pierre-rouleau/usrhome/blob/main/setup/template
+.. _USRHOME dot files:
 .. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
 .. _The Z Shell Startup, Dot Files and User Configuration: #the-z-shell-startup-dot-files-and-user-configuration
 .. _Z Shell:                                      https://en.wikipedia.org/wiki/Z_shell
