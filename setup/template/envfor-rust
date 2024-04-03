@@ -1,0 +1,32 @@
+# Sourced script: envfor-rust  -*- mode: sh; -*-
+#
+# Purpose   : Setup Rust programming environment.
+# Created   : Monday, April  1 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-03 08:32:58 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Example on how to activate Rust support inside the shell.
+# This is the minimal support.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Rust must be installed for this to work.
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+. "$HOME/.cargo/env"
+rustv="$(rustc --version)"
+echo "--- Rust $rustv Installed in shell"
+
+# ----------------------------------------------------------------------------
