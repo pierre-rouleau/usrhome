@@ -42,8 +42,8 @@ Unix shell configuration files that:
   allowing the logic to be under VCS control.
 
 USRHOME allows you to store shell configuration logic inside the USRHOME and
-you usrcfg repository.  That can be used inside all the computers you use and
-they may have different configuration.
+your usrcfg repository.  That can be used inside all the computers you use;
+the usrcfg files can select logic based on host names or other criteria.d
 The goal is to be able to store all shell configuration logic
 into two VCS repositories: the public one (this) and your private one.
 
