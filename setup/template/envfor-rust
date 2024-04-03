@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 08:32:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 15:03:24 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -16,7 +16,7 @@
 # Dependencies
 # ------------
 #
-# - Rust must be installed for this to work.
+# - Rust must be installed for this to work, otherwise it prints a warning.
 
 
 # ----------------------------------------------------------------------------
@@ -25,8 +25,12 @@
 #
 #
 
-. "$HOME/.cargo/env"
-rustv="$(rustc --version)"
-echo "--- Rust $rustv Installed in shell"
+if [[ -a "$HOME/.cargo/env" ]]; then
+    . "$HOME/.cargo/env"
+    rustv="$(rustc --version)"
+    echo "--- Rust $rustv Installed in shell"
+else
+    echo "--- WARNING: Requesting Rust, but it is not installed!"
+fi
 
 # ----------------------------------------------------------------------------
