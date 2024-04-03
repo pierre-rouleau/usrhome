@@ -463,6 +463,12 @@ USRHOME_PROMPT_MODEL environment variable that holds a prompt model value.
   on the left side of the first line.  The second line starts with ``%`` or
   `#`` followed by a single space.
 
+Here's an example when the prompt model 2 is selected by user configuration
+and the user dynamically changes it inside the shell.
+
+
+.. figure:: res/zsh-prompt-02.png
+
 
 Prompt Search Regexp
 ++++++++++++++++++++
