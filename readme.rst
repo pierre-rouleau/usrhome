@@ -123,8 +123,7 @@ inside the usrcfg directory.
 
 For that you need to understand which file is sourced when the Z Shell is started
 in the various ways it is started. Read the section titled
-`The Z Shell Startup, Dot Files and User Configuration`_
-for details on that.
+`The Z Shell Startup, Dot Files and User Configuration`_.
 
 Then you can decide to use your original ``~/.zshrc`` and other Z Shell configuration
 files that have been backed-up by `setup/setup-usrhome`_ and copy all or part of their
