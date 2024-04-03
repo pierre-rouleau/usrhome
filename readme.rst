@@ -409,6 +409,8 @@ USRHOME Command Name               Description
 ================================== ================================================================
 ``cls``                            Shortcut for ``clear``; clear the content of the shell window.
 ``md``                             Shortcut for ``mkdir``
+``mdd DIPATH``                     A mkdir followed by cd.  If DIRPATH has '/', then create
+                                   intermediate directories as required and print them on stdout.
 ``p3``                             Shortcut for ``python3``
 ================================== ================================================================
 
