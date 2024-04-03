@@ -121,17 +121,17 @@ your old files that have been backed up by the startup script.  USRHOME
 expects that extra user-specific logic to be stored inside files located
 inside the usrcfg directory.
 
-  For that you need to understand which file is sourced when the Z Shell is started
-  in the various ways it is started. Read the section titled
-  `The Z Shell Startup, Dot Files and User Configuration`_
-  for details on that.
+For that you need to understand which file is sourced when the Z Shell is started
+in the various ways it is started. Read the section titled
+`The Z Shell Startup, Dot Files and User Configuration`_
+for details on that.
 
-  Then you can decide to use your original ``~/.zshrc`` and other Z Shell configuration
-  files that have been backed-up by `setup/setup-usrhome`_ and copy all or part of their
-  content inside the corresponding files inside the usrcfg directory.
+Then you can decide to use your original ``~/.zshrc`` and other Z Shell configuration
+files that have been backed-up by `setup/setup-usrhome`_ and copy all or part of their
+content inside the corresponding files inside the usrcfg directory.
 
-  You can also take a look at the other example files located in the `usrhome/template`_
-  directory and use ideas from there.
+You can also take a look at the other example files located in the `usrhome/template`_
+directory and use ideas from there.
 
 Conventions
 ===========
