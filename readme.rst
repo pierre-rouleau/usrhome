@@ -825,7 +825,7 @@ environments and distribute it through the VCS.
 
 Here's a Kali Linux terminal with the Z shell using USRHOME selecting the
 original Kali Linux Z Shell configuration (moved into the
-``usrcfg/do-user-zshrc.zsh`` file aand selected based on the USRHOME prompt
+``usrcfg/do-user-zshrc.zsh`` file and selected based on the USRHOME prompt
 model value):
 
 .. figure:: res/on-kali-linux.png
