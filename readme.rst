@@ -495,16 +495,39 @@ An example is shown here:
 
 .. figure:: res/zsh-prompt-01.png
 
-What is shown above corresponds to USRHOME default prompt.
+What is shown above corresponds to USRHOME default prompt (model 1).
 USRHOME supports other prompts, selected by the value of the optional
 USRHOME_PROMPT_MODEL environment variable that holds a prompt model value.
 
-- The value for the default prompt is 1 (but it's also the model selected if the
-  variable is not defined).
-- A value of 2 selects a prompt that spans 2 lines and always displays the
-  complete path of the current directory, along with any available VCS info
-  on the left side of the first line.  The second line starts with ``%`` or
-  `#`` followed by a single space.
+Prompt model 2 provides the following features:
+
+- The prompt spans 2 lines:
+
+  - The first line shows:
+
+    - exit code of the last executed command,
+    - current time in 24-hour format,
+    - shell nesting level prefixed with a 'L',
+    - optional user name '@' host name,
+    - A colon followed by the complete path of the current working directory.
+    - If the current directory is part of a Git or Mercurial repository, the
+      prompt shows 2 spaces followed by:
+
+      - 'git:' for Git repository and 'hg:' for Mercurial repository,
+      - the VCS branch name in parenthesis
+      - the VCS repository name.
+
+  - The second line shows:
+
+    - The '%'  character (or '#' when current user has *sudo* privilege)
+      followed with a single space preceding where the typed commend is shown.
+    - If the shell is not running inside Emacs, the right prompt is also shown
+      with the following information:
+
+      - If the exit code of the last error is not 0, the exit code followed by
+        a red '⨯' character.
+      - If the shell has sub-process jobs, the number of jobs is shown,
+        followed by a yellow '⚙' character.
 
 Here's an example when the prompt model 2 is selected by user configuration
 and the user dynamically changes it inside the shell.
@@ -512,6 +535,10 @@ and the user dynamically changes it inside the shell.
 
 .. figure:: res/zsh-prompt-02.png
 
+And here's another example, when the shell has two nested instances of
+suspended Emacs running, in a macOS terminal.
+
+.. figure:: res/zsh-prompt-03.png
 
 Prompt Search Regexp
 ++++++++++++++++++++

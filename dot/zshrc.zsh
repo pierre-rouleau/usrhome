@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-03 07:48:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 21:03:50 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -139,6 +139,12 @@ case $USRHOME_PROMPT_MODEL in
         zstyle ':vcs_info:git:*' formats '%F{240}git:(%b)%r%f'
         zstyle ':vcs_info:*' enable hg git
         export PROMPT=$'$p1 $p2 \ \$vcs_info_msg_0_\n%B%#%b '
+
+        # Show the exit code and the current sub-process jobs
+        if [[ -z "$INSIDE_EMACS" ]]; then
+            #          exit code: value x on failure  #jobs when more than 1
+            RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
+        fi
         ;;
 
     * )
