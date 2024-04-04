@@ -333,10 +333,15 @@ USRHOME Command Name               Description
 ``...``                            Alias to ``cd ../..``
 ``....``                           Alias to ``cd ../../..``
 
-``cd-to FNAME``                    cd to the sub-directory that holds the file ``FNAME``.
-                                   It reports an error if the file is not found or if more than
-                                   one is found.
-                                   This command requires the fd_ utility.
+``cd-to [-H] FNAME``               Search for file specified by FNAME.  If only one file is found,
+                                   change the current directory to it.
+
+                                   - File search performed by the `fd`_ utility.  If it's not
+                                     installed the command exits with an error.
+                                   - The FNAME can be expressed with `fd`_ glob support.
+                                   - By default, does not search into hidden directories.
+                                     Specify the ``-H`` option to search into them.
+
 ``cdv [SUBDIR]``                   cd to the ``/Volumes`` directory or specified ``SUBDIR``.
 ================================== ================================================================
 
