@@ -231,10 +231,25 @@ USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
                                   ``^[%#]``
 
                                 Users can change the prompt dynamically by
-                                issuing a clrenv or setenv command to change
-                                the value of the variable and then either
-                                start a new zsh shell or reset the current
-                                one with ``exec zsh``.
+                                issuing a ``usrhome-prompt-model-to NUMBER``
+                                command.
+
+                                **Warning!!** executing ``exec zsh`` you
+                                replace the old shell with a new one and all
+                                shell knowledge in its variables is lost!
+                                If you have running background jobs under that
+                                shell you won't be able to join then with the
+                                ``fg`` command!  You will be able to see the
+                                running processes with  the ``ps`` command but
+                                may not be able to bring them to the
+                                foreground.
+
+                                The USRHOME commands, like
+                                ``usrhome-prompt-model``
+                                use ``exec zsh`` but
+                                won't proceed when they detect running
+                                background jobs to prevent running into this
+                                problem.
 =============================== =================================================
 
 When USRHOME Z Shell startup logic executes, USRHOME sets these other
@@ -272,11 +287,14 @@ USRHOME Command Name               Description
 
 ``usrhome-prompt-toggle-usr-host`` Toggle the inclusion of the user name and host name inside
                                    the prompt.
+
+``usrhome-prompt-model-to NUMBER`` Dynamically change the prompt model to the specified NUMBER.
 ================================== ================================================================
 
 Note that the above commands will not execute if there are any running
 sub-process jobs under the shell.  That's because these commands execute
-``exec zsh`` and that kills running sub-process jobs.
+``exec zsh`` and that wipes out shell knowledge about these background jobs,
+making it difficult to bring them back into the foreground.
 
 
 

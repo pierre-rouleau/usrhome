@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 18:54:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 23:33:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,6 +49,7 @@ alias p3='python3'
 # Source environment control scripts
 alias usrhome-prompt-toggle-usr-host='source $USRHOME_DIR/ibin/setfor-prompt-toggle-usr-host'
 alias usrhome-shell-toggle-tracing='source $USRHOME_DIR/ibin/setfor-shell-toggle-tracing'
+alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
 
 
 # ls flags:
