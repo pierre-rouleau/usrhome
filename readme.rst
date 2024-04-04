@@ -535,8 +535,8 @@ and the user dynamically changes it inside the shell.
 
 .. figure:: res/zsh-prompt-02.png
 
-And here's another example, when the shell has two nested instances of
-suspended Emacs running, in a macOS terminal.
+And here's another example, when the shell with prompt model 2, has two nested
+instances of suspended Emacs running, in a macOS terminal.
 
 .. figure:: res/zsh-prompt-03.png
 
