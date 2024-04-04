@@ -3,7 +3,7 @@
 # Purpose   : Toggle showing host and user name in the prompt.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-26 22:54:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-03 22:02:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -15,6 +15,14 @@
 # ----
 #
 #
+if [[ -n "$(jobs)" ]]; then
+    # Don't allow re-starting zsh when there are running jobs
+    # inside the shell.  The exec zsh might kill them if they
+    # were not detached.  Warn the user and quit.
+    echo "Unfinished jobs running.  Terminate them first!"
+    return 1
+fi
+
 if [ -z "$USRHOME_PROMPT_SHOW_USR_HOST" ]; then
     export USRHOME_PROMPT_SHOW_USR_HOST=1
 else

@@ -274,6 +274,12 @@ USRHOME Command Name               Description
                                    the prompt.
 ================================== ================================================================
 
+Note that the above commands will not execute if there are any running
+sub-process jobs under the shell.  That's because these commands execute
+``exec zsh`` and that kills running sub-process jobs.
+
+
+
 Shell Status Info
 ~~~~~~~~~~~~~~~~~
 
