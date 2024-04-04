@@ -466,6 +466,8 @@ USRHOME Command Name               Description
 ``mdd DIRPATH``                    A mkdir followed by cd.  If DIRPATH has '/', then create
                                    intermediate directories as required and print them on stdout.
 ``p3``                             Shortcut for ``python3``
+``pngquantf FNAME``                Compress PNG file identified by FNAME (with or without ``.png``
+                                   file extension.   Uses pngquant_.
 ================================== ================================================================
 
 Project Startup Commands
@@ -956,5 +958,6 @@ Thanks!
 .. _Mercurial:                                    https://en.wikipedia.org/wiki/Mercurial
 .. _manpath:                                      https://man7.org/linux/man-pages/man1/manpath.1.html
 .. _example:                                      `The zsh prompt`_
+.. _pngquant:                                     https://pngquant.org/
 
 .. ---------------------------------------------------------------------------
