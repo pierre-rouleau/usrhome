@@ -564,6 +564,16 @@ instances of suspended Emacs running, in a macOS terminal.
 
 .. figure:: res/zsh-prompt-03.png
 
+When the shell has running background jobs, the USRHOME commands that use
+``exec zsh`` to re-start the Z Shell to re-initialize won't execute and print a
+warning instead.  In the example above the two running process where ``e`` the
+USRHOME name for terminal-based emacs.  To be able to change the process
+prompt, these two suspended Emacs process must first be terminated (by making
+them active in the foreground again with ``fg`` and then closing Emacs).  Once
+there's no background process the ``usrhome-prompt-toggle-usr-host`` command
+can be used.
+
+
 Prompt Search Regexp
 ++++++++++++++++++++
 
