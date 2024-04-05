@@ -503,6 +503,34 @@ USRHOME Command Name               Description
 ================================== ================================================================
 
 
+Help for Zsh Builtin Commands
+-----------------------------
+
+The Z shell does not support a ``help`` command that provides information on
+the shell builtin commands like Bash does.  The Z Shell provides the run-help
+command instead but that is not always available.  For instance, under macOS,
+it is aliased to ``man``, which causes help requests to open the generic man
+page on zsh; something not very useful.  On some Linux distributions, like
+Kali Linux, run-help is a shell function and will display the requested
+builtin help.
+
+USRHOME implements the help command as an alias to run-help.  It also sets the
+HELPDIR environment variable, used by run-help, to identify the location of
+the zsh help files directory.
+
+- Under Linux, it's: ``/usr/share/zsh/help``
+- Under OS/X and macOS that's: ``/usr/share/zsh/VVV/help`` with ``VVV``
+  replaced by the zsh version number.
+
+The logic is inside USRHOME `dot/zshrc.zsh`_ file.
+
+Therefore, on most systems you should end-up with the zsh shell providing a
+help command that shows information on zsh builtin commands.
+
+If it does not work for your system, check the value of DIRHELP.
+You can set it to the value you need inside your file
+``usrcfg/setfor-zsh-config.zsh``
+
 
 Miscellaneous Commands
 ----------------------
@@ -989,6 +1017,7 @@ Thanks!
 .. _usrhome/template:                             https://github.com/pierre-rouleau/usrhome/blob/main/setup/template
 .. _USRHOME dot files:
 .. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
+.. _dot/zshrc.zsh:                                https://github.com/pierre-rouleau/usrhome/tree/main/dot/zshrc.zsh
 .. _The Z Shell Startup, Dot Files and User Configuration: #the-z-shell-startup-dot-files-and-user-configuration
 .. _Z Shell:                                      https://en.wikipedia.org/wiki/Z_shell
 .. _files sourced by the Z Shell:                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
