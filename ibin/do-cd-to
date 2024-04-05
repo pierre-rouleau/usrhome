@@ -4,7 +4,7 @@
 # Purpose   : Change current directory to directory that holds specified file.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-04 19:19:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-05 19:35:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -83,7 +83,7 @@ else
     the_fname=$(fd -g "$1")
 fi
 unset saerch_hidden
-file_count=$(echo "$the_fname" | grep -c . )
+file_count=$(printf "%s" "$the_fname" | grep -c . )
 
 # Report error if more than 1 location found.
 if [ "${file_count}" -gt  1 ]; then

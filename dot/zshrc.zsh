@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-05 10:09:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-05 19:36:02 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -140,7 +140,7 @@ function cddpub {
 function mdd {
     # mdd: mkdir and cd
     #      If path has / in it, mkdir -p is used.
-    if echo "$1" | grep "/" > /dev/null; then
+    if printf "%s" "$1" | grep "/" > /dev/null; then
         mkdir -pv "$1" || return 1
     else
         mkdir "$1" | return 1
@@ -258,13 +258,13 @@ fi
 # describing the number of directory entries in each.
 # Use xargs to remove leading spaces from the number strings.
 
-path_entries="$(echo "$PATH" | tr ':' '\n' | wc -l | xargs)"
-sanitized_path="$(echo "$PATH" | sed 's/::/:/g' | tr ':' '\n' | awk '!seen[$0]++' | tr '\n' ':')"
+path_entries="$(printf "%s" "$PATH" | tr ':' '\n' | wc -l | xargs)"
+sanitized_path="$(printf "%s" "$PATH" | sed 's/::/:/g' | tr ':' '\n' | awk '!seen[$0]++' | tr '\n' ':')"
 if [[ "${sanitized_path:0-1}" = ":" ]]; then
     sanitized_path="${sanitized_path: 0:-1}"
 fi
 
-sanitized_path_entries="$(echo "$sanitized_path" | tr ':' '\n' | wc -l | xargs)"
+sanitized_path_entries="$(printf "%s" "$sanitized_path" | tr ':' '\n' | wc -l | xargs)"
 if [[ "$path_entries" != "$sanitized_path_entries" ]]; then
     echo "WARNING: USRHOME has sanitized your PATH!"
     if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then

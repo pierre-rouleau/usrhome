@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 23:33:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-05 19:29:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,8 +32,8 @@ fi
 # Note: if you need those in other shells like Bash they must be defined
 # the configuration of these shells.
 
-alias ss='echo \$0 : $0 , \$SHELL : $SHELL'
-alias \?='echo $?'
+alias ss='printf "\$0 : %s, \$SHELL : %s" $0 $SHELL'
+alias \?='printf "%s\n" $?'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
