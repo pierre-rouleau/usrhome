@@ -515,14 +515,28 @@ USRHOME Command Name               Description
                                    file extension.   Uses pngquant_.
 ================================== ================================================================
 
-The Prompt
-==========
+USRHOME Prompt
+==============
 
 The zsh prompt
 --------------
 
 USRHOME sets up a basic Z Shell prompt that does not need any zsh extension
-library. The default prompt (prompt model 1) shows:
+library. It supports several models of prompts, selected by the presence and
+value of the ``USRHOME_PROMPT_MODEL`` environment variable.
+
+Prompt Model 0
+~~~~~~~~~~~~~~
+
+With the ``USRHOME_PROMPT_MODEL`` environment variable set to 0, USRHOME
+does **not** configure the zsh prompt and expects the prompt to be set inside
+the user provided configuration files located inside the usrcfg directory.
+
+
+Prompt Model 1 -- USRHOME Default
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The default prompt, the prompt model 1, shows:
 
 - A leading '>' character,
 - the exit code of the last command, in decimal,
@@ -546,8 +560,9 @@ An example is shown here:
 .. figure:: res/zsh-prompt-01.png
 
 What is shown above corresponds to USRHOME default prompt (model 1).
-USRHOME supports other prompts, selected by the value of the optional
-USRHOME_PROMPT_MODEL environment variable that holds a prompt model value.
+
+Prompt Model 2
+~~~~~~~~~~~~~~
 
 Prompt model 2 provides the following features:
 
@@ -598,7 +613,6 @@ prompt, these two suspended Emacs process must first be terminated (by making
 them active in the foreground again with ``fg`` and then closing Emacs).  Once
 there's no background process the ``usrhome-prompt-toggle-usr-host`` command
 can be used.
-
 
 Prompt Search Regexp
 ~~~~~~~~~~~~~~~~~~~~
