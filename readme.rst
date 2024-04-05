@@ -820,6 +820,10 @@ tools is:
 - `xz version 5.2.5`_
 - `xz version 5.6.0 and 5.6.1`_
 
+Here's what the shell would show when the compromised tool is present in the
+system.
+
+.. figure:: res/xz-vulnerability.png
 
 
 
