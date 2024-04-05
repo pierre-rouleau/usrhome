@@ -555,12 +555,20 @@ Miscellaneous Commands
 USRHOME Command Name               Description
 ================================== ================================================================
 ``cls``                            Shortcut for ``clear``; clear the content of the shell window.
+
 ``md``                             Shortcut for ``mkdir``
+
 ``mdd DIRPATH``                    A mkdir followed by cd.  If DIRPATH has '/', then create
                                    intermediate directories as required and print them on stdout.
+
 ``p3``                             Shortcut for ``python3``
+
 ``pngquantf FNAME``                Compress PNG file identified by FNAME (with or without ``.png``
                                    file extension.   Uses pngquant_.
+
+``pstree-for [PID]``               Print the process tree for specified process ID, PID.
+                                   If PID is not specified, the command uses the process ID of
+                                   the current process.
 ================================== ================================================================
 
 USRHOME Prompt

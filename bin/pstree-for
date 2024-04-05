@@ -1,0 +1,47 @@
+#!/bin/sh
+# SH FILE: pstree-for
+#
+# Purpose   : Print Process tree for specified process.
+# Created   : Friday, April  5 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-05 17:29:43 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Display the process tree of the specified process
+# Usage: pstree-for [PID]
+#  - PID: process id.  If not specified uses the PID of current process.
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - pstree
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+the_pid=$$
+if [ -n "$1" ]; then
+    the_pid="$1"
+fi
+os_type=$(uname)
+case $os_type in
+    'Darwin' )
+        pstree -p "$the_pid"
+        ;;
+
+    *)
+        # On Kali Linux the -s option is required.
+        pstree -s -p "$the_pid"
+        ;;
+esac
+unset os_type
+
+
+# ----------------------------------------------------------------------------
