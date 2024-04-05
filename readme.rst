@@ -531,6 +531,15 @@ If it does not work for your system, check the value of DIRHELP.
 You can set it to the value you need inside your file
 ``usrcfg/setfor-zsh-config.zsh``
 
+**Example on Kali Linux:**
+
+Here we can see the use of USRHOME in a Kali Linux system where zsh is the
+default shell.  At first it was setup with the older USRHOME version that did
+not support help.    Then USRHOME is updated with a ``git pull`` command and
+then we can open a new shell where ``help kill`` works as expected.
+
+.. figure:: res/zsh-help-on-kali.png
+
 
 Miscellaneous Commands
 ----------------------
