@@ -132,14 +132,8 @@ content inside the corresponding files inside the usrcfg directory.
 You can also take a look at the other example files located in the `usrhome/template`_
 directory and use ideas from there.
 
-Conventions
-===========
-
-- All environment variables used by USRHOME have a name that starts
-  with ``USRHOME_``.
-- All of those that identify the path of a directory have a name that starts with
-  ``USRHOME_DIR_``.
-
+USRHOME Organization
+====================
 
 
 The zsh Configuration Files
@@ -180,6 +174,13 @@ The USRHOME Configuration Environment Variables
 
 The file ``usrcfg/setfor-zsh-config.zsh`` holds the definition of the following
 environment variables.
+
+**Conventions**:
+
+- All environment variables used by USRHOME have a name that starts
+  with ``USRHOME_``.
+- All of those that identify the path of a directory have a name that starts with
+  ``USRHOME_DIR_``.
 
 =============================== =================================================
 Environment Variable Name       Purpose
@@ -278,10 +279,10 @@ USRHOME_PATH_SET                Internal logic flag.
 
 
 USRHOME Commands and Scripts
-----------------------------
+============================
 
 Shell Behavior Control
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 ================================== ================================================================
 USRHOME Command Name               Description
@@ -308,7 +309,7 @@ making it difficult to bring them back into the foreground.
 
 
 Shell Status Info
-~~~~~~~~~~~~~~~~~
+-----------------
 
 ================================== ================================================================
 USRHOME Command Name               Description
@@ -318,7 +319,7 @@ USRHOME Command Name               Description
 ================================== ================================================================
 
 Terminal Window Control
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 ================================== ================================================================
 USRHOME Command Name               Description
@@ -331,7 +332,7 @@ USRHOME Command Name               Description
 ================================== ================================================================
 
 Directory Navigation
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 Extensions to the ``cd`` command.
 
@@ -370,7 +371,7 @@ USRHOME Command Name               Description
 
 
 Cd to *Holder* Directories
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ================================== ================================================================
@@ -439,7 +440,7 @@ directories.
 
 
 Listing Files/Directories/Links
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------
 
 The following command shortcuts for specialized use of **ls** are provided by USRHOME.
 
@@ -456,8 +457,8 @@ USRHOME Command Name               Description
 ``lsl``                            List symbolic links in current directory.
 ================================== ================================================================
 
-Environment Variables Commands
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Command to Display and Manipulate Environment Variables
+-------------------------------------------------------
 
 The following commands help manage and read the content of environment variables.
 
@@ -500,7 +501,7 @@ USRHOME Command Name               Description
 
 
 Miscellaneous Commands
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 ================================== ================================================================
 USRHOME Command Name               Description
@@ -515,10 +516,10 @@ USRHOME Command Name               Description
 ================================== ================================================================
 
 The Prompt
-~~~~~~~~~~
+==========
 
 The zsh prompt
-^^^^^^^^^^^^^^
+--------------
 
 USRHOME sets up a basic Z Shell prompt that does not need any zsh extension
 library. The default prompt (prompt model 1) shows:
@@ -600,7 +601,7 @@ can be used.
 
 
 Prompt Search Regexp
-++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~
 
 With the above prompt, the default prompt, you can use the following regular
 expression to navigate to prompt lines inside a log within the prompt lines
@@ -610,7 +611,7 @@ inside an Emacs terminal or shell mode buffer:  ``^>[0-9]+@.+[%#]``
 The regexp for prompt model 2 is simpler: ``^[%#]``
 
 Command and Script Organization
--------------------------------
+===============================
 
 USRHOME provides several types of command and scripts, as listed here.
 
