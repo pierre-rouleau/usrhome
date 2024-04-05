@@ -395,8 +395,8 @@ USRHOME_DIR_MY:
     - it could be another directory, like ``$HOME/my`` if you do *not*
       want them replicated and stored in the iCloud.
 
-   - On any system, it could be used to identify a directory tree specific to a given activity or content
-     type or just be set to the value of ``$HOME``.
+  - On any system, it could be used to identify a directory tree specific to a given activity or content
+    type or just be set to the value of ``$HOME``.
 
 USRHOME_DIR_DV:
   The directory where you store your main, or most-active, development sub-directories.
