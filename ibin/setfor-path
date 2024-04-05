@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-05 12:57:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-05 14:49:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -31,6 +31,15 @@ fi
 # ----------------------------------------------------------------------------
 # Security Issue Check
 
+function usrhome_xz_vulnerability {
+    echo ""
+    echo "SECURITY ISSUE DETECTED By USRHOME:"
+    echo " - Compromised version ${xz_ver} of xz installed!"
+    echo " - in: ${xz_path}"
+    echo "   - See: "
+    echo "     - https://repology.org/project/xz/cves"
+}
+
 function usrhome_security_check {
     # check and warn if known problematic versions are installed
     # xz version 5.6,0, 5.6.1 have backdoors
@@ -39,15 +48,11 @@ function usrhome_security_check {
     xz_path=$(which xz)
     case $xz_ver in
         '5.6.0' | '5.6.1' )
-            echo ""
-            echo "SECURITY ISSUE DETECTED By USRHOME:"
-            echo " - Compromised version ${xz_ver} of xz installed!"
-            echo " - in: ${xz_path}"
-            echo "   - See: "
+            usrhome_xz_vulnerability
+            echo "     - https://nvd.nist.gov/vuln/detail/CVE-2024-3094"
             echo "     - https://www.wired.com/story/jia-tan-xz-backdoor/"
             echo "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor"
             echo ""
-
             case $os_type in
                 'Darwin')
                     echo "Run: 'brew update; brew upgrade' AS SOON AS POSSIBLE to downgrade xz!"
@@ -55,6 +60,12 @@ function usrhome_security_check {
                     ;;
             esac
             ;;
+
+        '5.2.5' )
+            usrhome_xz_vulnerability
+            echo "     - https://nvd.nist.gov/vuln/detail/CVE-2020-22916"
+            ;;
+
     esac
     unset os_type
     unset xz_ver
