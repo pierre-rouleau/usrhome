@@ -359,17 +359,44 @@ USRHOME Command Name               Description
                                    Also set terminal title to 'USRHOME:usrcfg'
 ================================== ================================================================
 
-The commands described below change the current directory to 4 conceptually important
-directories, and those directories are identified by USRHOME environment variables.
+
+Cd to *Holder* Directories
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+``cdh [SUBDIR]``                   cd to *home*: the directory identified by ``USRHOME_DIR_MY``
+                                   or its identified ``SUBDIR``.
+
+``cddv [SUBDIR]``                  cd to *main development*; the directory identified by
+                                   ``USRHOME_DIR_DV`` or its identified ``SUBDIR``.
+
+``cddpriv [SUBDIR]``               cd to *private projects*; the directory identified by
+                                   ``USRHOME_DIR_PRIV`` or its identified ``SUBDIR``.
+
+``cddpub [SUBDIR]``                cd to *public projects*; the directory identified by
+                                   ``USRHOME_DIR_PUB`` or its identified ``SUBDIR``.
+================================== ================================================================
+
+The commands described above change the current directory to 4 conceptually important
+(*holder*) directories.  Those directories are identified by USRHOME environment variables.
 The name of these environment variables start with the ``USRHOME_DIR_``
 prefix. They are:
 
 USRHOME_DIR_MY:
-  The directory where all your development directories are located.  It is
-  often different from ``HOME`` on systems like macOS; it could
-  be ``$HOME/Documents`` if you want your files replicated by
-  Apple iCloud or another directory, like ``$HOME/my`` if you do
-  not want them replicated and stored in the iCloud.
+  The directory where all your development directories are located.
+
+  - On macOS, it is often different from ``HOME``:
+
+    - it could be ``$HOME/Documents`` if you want the files located
+      in that directory tree replicated by Apple iCloud or,
+    - it could be another directory, like ``$HOME/my`` if you do *not*
+      want them replicated and stored in the iCloud.
+
+   - On any system, it could be used to identify a directory tree specific to a given activity or content
+     type or just be set to the value of ``$HOME``.
 
 USRHOME_DIR_DV:
   The directory where you store your main, or most-active, development sub-directories.
@@ -391,27 +418,16 @@ USRHOME_DIR_PUB:
   This can be located anywhere.
 
 These environment variables are defined in the user persistent configuration file:
-usrcfg/setfor-zsh-config.zsh.  The `setup/setup-usrhome`_ script initializes them
+the ``usrcfg/setfor-zsh-config.zsh`` file.
+
+During installation_, the `setup/setup-usrhome`_ script initializes them
 to the value stored in `usrhome/setup/template/setfor-zsh-config.zsh`_ template file.
+You can change them or add logic in your file to control their values any way you need.
 
 The following commands are shortcuts to change the current directory to one of these
 directories.
 
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``cdh [SUBDIR]``                   cd to the directory identified by ``USRHOME_DIR_MY``
-                                   or its identified ``SUBDIR``.
 
-``cddv [SUBDIR]``                  cd to the directory identified by ``USRHOME_DIR_DV``
-                                   or its identified ``SUBDIR``.
-
-``cddpriv [SUBDIR]``               cd to the directory identified by ``USRHOME_DIR_PRIV``
-                                   or its identified ``SUBDIR``.
-
-``cddpub [SUBDIR]``                cd to the directory identified by ``USRHOME_DIR_PUB``
-                                   or its identified ``SUBDIR``.
-================================== ================================================================
 
 Listing Files/Directories/Links
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -957,5 +973,6 @@ Thanks!
 .. _manpath:                                      https://man7.org/linux/man-pages/man1/manpath.1.html
 .. _example:                                      `The zsh prompt`_
 .. _pngquant:                                     https://pngquant.org/
+.. _installation:                                 #how-to-set-it-up
 
 .. ---------------------------------------------------------------------------
