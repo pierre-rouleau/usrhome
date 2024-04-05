@@ -343,6 +343,20 @@ USRHOME Command Name               Description
                                      Specify the ``-H`` option to search into them.
 
 ``cdv [SUBDIR]``                   cd to the ``/Volumes`` directory or specified ``SUBDIR``.
+
+
+``pel [SUBDIR]``                   Change current directory to PEL_ depot directory or its SUBDIR
+                                   if specified.
+                                   Also set terminal title to 'PEL'.
+
+``usrhome [SUBDIR]``               Change current directory to USRHOME depot directory
+                                   or its SUBDIR if specified.
+                                   Also set terminal title to 'USRHOME'.
+
+``usrcfg [SUBDIR]``                Change current directory to the USRHOME personal/persistent
+                                   configuration directory, usrcfg
+                                   or its SUBDIR if specified.
+                                   Also set terminal title to 'USRHOME:usrcfg'
 ================================== ================================================================
 
 The commands described below change the current directory to 4 conceptually important
@@ -474,27 +488,6 @@ USRHOME Command Name               Description
 ``pngquantf FNAME``                Compress PNG file identified by FNAME (with or without ``.png``
                                    file extension.   Uses pngquant_.
 ================================== ================================================================
-
-Project Startup Commands
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``pel [SUBDIR]``                   Change current directory to PEL_ depot directory or its SUBDIR
-                                   if specified.
-                                   Set terminal title to 'PEL'.
-
-``usrhome [SUBDIR]``               Change current directory to USRHOME depot directory
-                                   or its SUBDIR if specified.
-                                   Set terminal title to 'USRHOME'.
-
-``usrcfg [SUBDIR]``                Change current directory to the USRHOME personal/persistent
-                                   configuration directory, usrcfg
-                                   or its SUBDIR if specified.
-                                   Set terminal title to 'USRHOME:usrcfg'
-================================== ================================================================
-
 
 The Prompt
 ~~~~~~~~~~
