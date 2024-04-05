@@ -810,6 +810,17 @@ mentions that USRHOME sanitized the PATH and how to see more as we can see here:
 
 .. figure:: res/zsh-tracing-aquamacs-02.png
 
+USRHOME Security Checking
+=========================
+
+USRHOME reports the security issues by checking for the presence of
+compromised command line tools in the PATH.  The list of detected compromised
+tools is:
+
+- `xz version 5.6.0 and 5.6.1`_
+
+
+
 
 Adding Your Own Environment Customization to your Shell
 =======================================================
@@ -1047,5 +1058,6 @@ Thanks!
 .. _example:                                      `The zsh prompt`_
 .. _pngquant:                                     https://pngquant.org/
 .. _installation:                                 #how-to-set-it-up
+.. _xz version 5.6.0 and 5.6.1:                   https://en.wikipedia.org/wiki/XZ_Utils#Backdoor
 
 .. ---------------------------------------------------------------------------
