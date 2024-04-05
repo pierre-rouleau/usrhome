@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-05 08:27:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-05 10:09:24 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -82,10 +82,25 @@ else
     unset os_type
 fi
 #
-# 2 - Un-alias run-help and alias help to autoloaded run-help
-unalias run-help 2> /dev/null
-autoload run-help
-alias help=run-help
+# Check the validity of HELPDIR and proceed if it's OK.
+if [[ -d "$HELPDIR" ]]; then
+    # 2 - If necessary, Un-alias run-help, then autoload run-help
+    if type run-help | grep alias > /dev/null; then
+        unalias run-help 2> /dev/null
+        autoload run-help
+    fi
+    #
+    # 3 - Set an help alias
+    alias help=run-help
+else
+    echo "WARNING! The value of HELPDIR variable is invalid!"
+    echo " It should identify the location of zsh help directory,"
+    echo " but the directory it identifies does not exist!"
+    echo " Please investigate -- report the problem to USRHOME"
+    echo "                       by filing a bug report."
+fi
+
+#
 
 # ------------------------------------------
 # Set shortcut functions for Z shell
