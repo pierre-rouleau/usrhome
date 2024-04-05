@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-02 19:34:51 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-05 14:14:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,12 +37,22 @@ if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
 echo "---: Sourcing usrcfg/setfor-zsh-config.zsh"
 fi
 
-# Activate when Homebrew is used.
-export USRHOME_USE_HOMEBREW=1
+# ----------------------------------------------------------------------------
+# Activation Control that can be overridden in sub-shells
+# -------------------------------------------------------
 
 if [[ -z $USRHOME__USRCFG_SEEN ]]; then
     export USRHOME__USRCFG_SEEN=1
-    # Set the persistent values of variables that can be toggled dynamically.
+
+    # Set the persistent values of variables that can
+    # be changed dynamically to modify behavior inside
+    # sub-shells.
+
+    # Activate whether Homebrew is used:
+    # - 1 to use Homebrew,
+    # - 0 (or not defined) to prevent using Homebrew.
+    export USRHOME_USE_HOMEBREW=1
+
     # Activate display of user name and host name on the prompt.
     export USRHOME_PROMPT_SHOW_USR_HOST=1
 
@@ -56,9 +66,9 @@ if [[ -z $USRHOME__USRCFG_SEEN ]]; then
     # - 2 : 2-line prompt.  Complete path and VCS info in right side.
     #       The second line is very minimal and has just a % or # followed by a space.
     #       Prompt search regexp := '^[%#]
-
 fi
 
+# ----------------------------------------------------------------------------
 # Directory Identification
 # ------------------------
 #
