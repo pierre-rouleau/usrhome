@@ -817,6 +817,7 @@ USRHOME reports the security issues by checking for the presence of
 compromised command line tools in the PATH.  The list of detected compromised
 tools is:
 
+- `xz version 5.2.5`_
 - `xz version 5.6.0 and 5.6.1`_
 
 
@@ -1058,6 +1059,7 @@ Thanks!
 .. _example:                                      `The zsh prompt`_
 .. _pngquant:                                     https://pngquant.org/
 .. _installation:                                 #how-to-set-it-up
-.. _xz version 5.6.0 and 5.6.1:                   https://en.wikipedia.org/wiki/XZ_Utils#Backdoor
+.. _xz version 5.6.0 and 5.6.1:                   https://nvd.nist.gov/vuln/detail/CVE-2024-3094
+.. _xz version 5.2.5:                             https://nvd.nist.gov/vuln/detail/CVE-2020-22916
 
 .. ---------------------------------------------------------------------------
