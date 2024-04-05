@@ -178,7 +178,7 @@ for more information.
 The USRHOME Configuration Environment Variables
 -----------------------------------------------
 
-The file usrcfg/setfor-zsh-config.zsh holds the definition of the following
+The file ``usrcfg/setfor-zsh-config.zsh`` holds the definition of the following
 environment variables.
 
 =============================== =================================================
@@ -203,6 +203,15 @@ USRHOME_DIR                     Path to the usrhome directory.
                                 The setup/setup-usrhome installation script
                                 appends code to set the value of that
                                 environment variable.
+
+USRHOME_DIR_HELPDIR             Optional environment variable.  If defined it
+                                identifies the directory where Zsh Builtin
+                                Help files are located. Define it only when
+                                the default USRHOME logic in
+                                ``usrhome/dot/zshrc.zsh`` is not able to
+                                identify that directory for your system and
+                                therefore the help command is not able to
+                                operate like it would under Bash.
 
 USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
                                 syntax of the prompt used by the shell. The

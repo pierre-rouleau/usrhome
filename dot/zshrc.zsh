@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-03 21:03:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-05 08:27:02 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -38,6 +38,54 @@ fi
 # Set shortcut alias for Z shell
 # ------------------------------
 source $USRHOME_DIR/ibin/setfor-zsh-alias
+
+# ----------------------------------------------------------------------------
+# Activate the help for zsh builtins
+# ----------------------------------
+#
+# The Z Shell has zsh builtin help inside a directory like the following:
+#
+# - Linux:  /usr/share/zsh/help
+# - macOS:  /usr/share/zsh/VVV/help  , where VVV is zsh version number
+#
+# With zsh installed with Homebrew it might be /usr/local/share/help
+#
+# Unfortunately, by default, help does not work in zsh the way it does
+# inside Bash. The Z Shell provides run-help but it is normally aliased
+# to man and then you need to know which section of what man page to
+# find the information about the Z shell builtin.
+#
+# The following activates a working help command for builtin inside the Z
+# shell that works like the help in bash.
+#
+# 1 - HELPDIR:
+#
+# The following logic sets the HELPDIR environment variable to the
+# path where the zsh files are stored, unless USRHOME_DIR_HELPDIR
+# is set, in that case it uses that.
+if [[ -n "$USRHOME_DIR_HELPDIR" ]]; then
+    export HELPDIR="$USRHOME_DIR_HELPDIR"
+else
+    os_type=$(uname)
+    case $os_type in
+        'Darwin' )
+            # The following works since at least OS/X Snow Leopard 10.6.8
+            zsh_version=$(zsh --version | awk '{print $2}')
+            export HELPDIR=/usr/share/zsh/${zsh_version}/help
+            ;;
+
+        *)
+            # This works on Kali Linux, Ubuntu,
+            export HELPDIR=/usr/share/zsh/help
+            ;;
+    esac
+    unset os_type
+fi
+#
+# 2 - Un-alias run-help and alias help to autoloaded run-help
+unalias run-help 2> /dev/null
+autoload run-help
+alias help=run-help
 
 # ------------------------------------------
 # Set shortcut functions for Z shell
