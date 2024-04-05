@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-01 10:33:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-05 19:34:17 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -32,9 +32,6 @@
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
     echo "---: Sourcing ~/.zprofile --> \$USRHOME_DIR/dot/zprofile.zsh : [\$0 : $0], \$SHELL : $SHELL "
 fi
-
-# For testing:
-alias s='echo \$0 : $0 , \$SHELL : $SHELL'
 
 # ----------------------------------------------------------------------------
 # Set Environment Variable that won't change
