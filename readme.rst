@@ -27,6 +27,9 @@ USRHOME -- Easily Clonable Unix Shell Configuration & Tools
 
 .. ---------------------------------------------------------------------------
 
+Introduction
+============
+
 USRHOME is a starting project with the goal of holding a set of portable
 Unix shell configuration files that:
 
@@ -498,6 +501,7 @@ USRHOME Command Name               Description
                                    command (if available) and prints the path it returns.  It also
                                    prints a warning on stderr and exit with an exit-code of 0.
 ================================== ================================================================
+
 
 
 Miscellaneous Commands
