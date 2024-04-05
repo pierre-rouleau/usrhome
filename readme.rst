@@ -540,6 +540,13 @@ then we can open a new shell where ``help kill`` works as expected.
 
 .. figure:: res/zsh-help-on-kali.png
 
+**Example on macOS Sonoma**
+
+With USRHOME support the ``help kill`` command works on macOS zsh.
+
+.. figure:: res/zsh-help-on-macOS.png
+
+
 
 Miscellaneous Commands
 ----------------------
