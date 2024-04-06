@@ -534,6 +534,14 @@ USRHOME Command Name               Description
                                    - print a warning when it modifies PATH.
 ================================== ================================================================
 
+Dynamic Path Management
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The USRHOME commands and environment variables allow the dynamic management of the PATH
+in the *current*  shell.  Here's a screen shot of this being done on a MacOS Computer running on
+Apple Silicon CPU architecture.
+
+.. figure:: res/dynamic-path-management.png
 
 Help for Zsh Builtin Commands
 -----------------------------
