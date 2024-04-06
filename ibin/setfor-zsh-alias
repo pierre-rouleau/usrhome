@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-06 11:25:36 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-06 12:49:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -91,6 +91,7 @@ unset os_type
 # Manual environment variable manipulation
 alias setenv='source $USRHOME_DIR/ibin/do-setenv'
 alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
+alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path'
 
 # File searching and navigation
 alias cd-to='source $USRHOME_DIR/ibin/do-cd-to'
