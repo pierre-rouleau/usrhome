@@ -1,9 +1,9 @@
-# Sourced script: envfor-usrhome  -*- mode: sh; -*-
+# Sourced script: do-usrhome  -*- mode: sh; -*-
 #
-# Purpose   : Set environment for USRHOME.
+# Purpose   : Change current directory to USRHOME root.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 14:09:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-06 10:53:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -15,7 +15,7 @@
 # Dependencies
 # ------------
 #
-#
+# - Invoked via: usrhome, an alias set inside usrhome/ibin/setfor-zsh-alias
 
 # ----------------------------------------------------------------------------
 # Code

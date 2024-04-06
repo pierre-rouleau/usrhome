@@ -1,9 +1,9 @@
-# Sourced script: envfor-usrcfg  -*- mode: sh; -*-
+# Sourced script: do-usrcfg  -*- mode: sh; -*-
 #
-# Purpose   : Set environment for USRHOME's usrcfg.
+# Purpose   : Change current directory to USRHOME's usrcfg root.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 14:10:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-06 10:51:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,6 +17,7 @@
 #
 # - The usrcfg must be a sibling of the usrhome directory; they must be inside
 #   the same parent directory.
+# - Invoked via: usrcfg, an alias set inside usrhome/ibin/setfor-zsh-alias
 
 # ----------------------------------------------------------------------------
 # Code
