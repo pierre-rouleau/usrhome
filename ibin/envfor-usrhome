@@ -1,0 +1,36 @@
+# Sourced script: envfor-usrhome  -*- mode: sh; -*-
+#
+# Purpose   : Add support for USRHOME commands by updating PATH.
+# Created   : Saturday, April  6 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-06 11:17:31 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Add support for USRHOME and local ~/bin if it exists.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# For local binaries
+# If a ~/bin exists it may override the URSHOME/bin files.
+if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
+    echo "- Adding usrhome support."
+fi
+
+the_path=$USRHOME_DIR/bin:$PATH
+if [ -d "$HOME/bin" ]; then
+    the_path=$HOME/bin:$the_path
+fi
+export PATH="$the_path"
+
+# ----------------------------------------------------------------------------
