@@ -499,7 +499,19 @@ USRHOME Command Name               Description
 
                                    Note: when MANPATH is empty, ``showpath`` uses the manpath_
                                    command (if available) and prints the path it returns.  It also
-                                   prints a warning on stderr and exit with an exit-code of 0.
+                                   prints a warning on stderr and exit with an
+                                   exit-code of 0.
+
+``usrhome-switch-path``            Modify PATH.  Swap current PATH with the value stored inside the
+                                   ``USRHOME_ORIGINAL_PATH`` environment variable.  This is set to
+                                   PATH value the system had inside the shell before USRHOME
+                                   added support for itself and other tools.
+
+``sanitize-path``                  Check the PATH value of the current shell and sanitizes it:
+
+                                   - removes duplicate entries.
+                                   - removes empty entries,
+                                   - print a warning when it modifies PATH.
 ================================== ================================================================
 
 
