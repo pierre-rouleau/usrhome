@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-05 14:28:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-06 09:55:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -52,6 +52,9 @@ if [[ -z $USRHOME__USRCFG_SEEN ]]; then
     # Set the persistent values of variables that can
     # be changed dynamically to modify behavior inside
     # sub-shells.
+
+    # Activate shell header display of path activations
+    export USRHOME_SHOW_PATH_ACTIVATION=0
 
     # Activate display of user name and host name on the prompt.
     export USRHOME_PROMPT_SHOW_USR_HOST=1

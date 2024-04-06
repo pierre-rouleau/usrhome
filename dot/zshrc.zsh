@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-05 19:36:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-06 02:53:17 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -245,6 +245,13 @@ esac
 if [[ -z "$USRHOME_PATH_SET" ]]; then
     source "$USRHOME_DIR/ibin/setfor-path"
 fi
+
+function usrhome-switch-path {
+    oldp=$PATH
+    export PATH="$USRHOME_ORIGINAL_PATH"
+    export USRHOME_ORIGINAL_PATH="$oldp"
+    unset oldp
+}
 
 # ----------------------------------------------------------------------------
 # Sanitize PATH

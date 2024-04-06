@@ -1,0 +1,70 @@
+# Sourced script: envfor-homebrew  -*- mode: sh; -*-
+#
+# Purpose   : Activate use of Homebrew's installed utilities.
+# Created   : Saturday, April  6 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-06 11:15:58 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Add support for Homebrew.  Support x86 and Apple Silicon architectures.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Homebrew installs itself differently on the old x86 CPU architecture
+# and the new Apple Silicon CPU architecture.
+#
+# On the Apple Silicon architecture the files are stored in /opt/homebrew
+# which is not in the system PATH.
+#
+# But in the older x86 architecture, the files are installed in
+# /usr/local/Cellar and /usr/local/Caskroom and symlinks to these are stored
+# inside /usr/local/bin which IS on the system PATH.
+#
+# The new way is much more flexible but we have to add the /opt/homebrew directories
+# in the PATH, while this does not have to be done on the old architecture.
+
+usrhome_homebrew_path=\
+/opt/homebrew/opt/make/libexec/gnubin:\
+/opt/homebrew/bin:\
+/opt/homebrew/sbin:\
+/opt/homebrew/opt/m4/bin
+
+arch="$(uname -m)"
+case "$arch" in
+    'x86_64' )
+        if [ -d /usr/local/Cellar ]; then
+            if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
+                echo "- Using Homebrew tools from 'usr/local/Cellar via /usr/local/bin "
+            fi
+        else
+            echo "ERROR: Homebrew requested but not found in /usr/local/Cellar"
+        fi
+    ;;
+
+    'arm64' | 'aarch64' )
+        if [ -d /opt/homebrew ]; then
+            PATH=${usrhome_homebrew_path}:$PATH
+            if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
+                echo "- Using Homebrew tools from /opt/homebrew."
+            fi
+        else
+            echo "ERROR: Homebrew requested but not found in /opt/homebrew"
+        fi
+        ;;
+    *)
+
+esac
+unset usrhome_homebrew_path
+
+# ----------------------------------------------------------------------------

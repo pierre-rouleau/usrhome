@@ -3,14 +3,15 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-05 14:49:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-06 11:12:29 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Update PATH to include the USRHOME directory and, optionally,
 # the directories required for Homebrew directories as requested
-# by the user persistent configuration.
+# by the user persistent configuration.  Remember original PATH inside
+# USRHOME_ORIGINAL_PATH
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -74,34 +75,22 @@ function usrhome_security_check {
 
 
 # ----------------------------------------------------------------------------
-# Homebrew directories:
-#
-# - /opt/homebrew/opt/make/libexec/gnubin   : Homebrew GNU Make (the latest version)
-# - /opt/homebrew/bin                       : Homebrew binaries
-# - /opt/homebrew/sbin                      : Homebrew binaries
-# - /opt/homebrew/opt/m4/bin                : Homebrew m4
+# Remember original PATH in USRHOME_ORIGINAL_PATH
+export USRHOME_ORIGINAL_PATH="$PATH"
 
-# For Homebrew
+# ----------------------------------------------------------------------------
+# Add entries in PATH as required by user configuration
+
+# Set Homebrew first, just above system's PATH, USRHOME and user's bin will
+# be prepended before; to take precedence over homebrew, over system.
 if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
-    # echo "Adding Homebrew in PATH..."
-    if [[ -d /opt/homebrew ]]; then
-        PATH=\
-/opt/homebrew/opt/make/libexec/gnubin:\
-/opt/homebrew/bin:\
-/opt/homebrew/sbin:\
-/opt/homebrew/opt/m4/bin:\
-$PATH
-    fi
+    source $USRHOME_DIR/ibin/envfor-homebrew
 fi
 
-# For local binaries
-# If a ~/bin exists it may override the URSHOME/bin files.
+# Add usrhome directories in PATH
+source $USRHOME_DIR/ibin/envfor-usrhome
 
-the_path=$USRHOME_DIR/bin:$PATH
-if [[ -d "$HOME/bin" ]]; then
-    the_path=$HOME/bin:$the_path
-fi
-export PATH=$the_path
+# Remember that PATH was set.  Prevent setting it again.
 export USRHOME_PATH_SET=1
 
 # Check and report if there are any security issues
