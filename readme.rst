@@ -263,6 +263,11 @@ USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
                                 won't proceed when they detect running
                                 background jobs to prevent running into this
                                 problem.
+
+USRHOME_ORIGINAL_PATH           Set to the value of PATH before USRHOME adds to it.
+                                You can restore that value with the
+                                ``usrhome-switch-path`` command if necessary
+                                for testing purposes.
 =============================== =================================================
 
 When USRHOME Z Shell startup logic executes, USRHOME sets these other
@@ -473,6 +478,17 @@ USRHOME Command Name               Description
 
 ``setenv VARNAME VALUE``           Set the environment variable named VARNAME to the specified
                                    VALUE and inject it inside the *current* shell.
+
+``use-usrhome``                    Add USRHOME binary directory and ``~/bin`` to PATH if present.
+                                   This command is automatically executed for zsh shell started
+                                   under USRHOME control.
+
+``use-homebrew``                   Add Homebrew directories to PATH if required for the CPU
+                                   architecture.
+                                   This command is automatically executed for zsh shell started
+                                   under USRHOME control when the ``USRHOME_USE_HOMEBREW``
+                                   environment variable is set to 1 inside the USRHOME user's
+                                   configuration file ``usrcfg/setfor-zsh-config.zsh`` .
 
 ``showpath [-n] [MAN|LIB][PATH]``  Print the value of PATH, MANPATH or LIBPATH, placing each directory
                                    in its own line.
