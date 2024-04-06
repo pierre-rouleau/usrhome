@@ -268,6 +268,10 @@ USRHOME_ORIGINAL_PATH           Set to the value of PATH before USRHOME adds to 
                                 You can restore that value with the
                                 ``usrhome-switch-path`` command if necessary
                                 for testing purposes.
+
+USRHOME_SHOW_PATH_ACTIVATION    Set to 1 to see PATH changes done by the various
+                                ``use-ENV`` commands, including their use when
+                                the shell starts.
 =============================== =================================================
 
 When USRHOME Z Shell startup logic executes, USRHOME sets these other
