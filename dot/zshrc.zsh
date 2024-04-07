@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-06 17:17:26 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-07 12:35:49 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -260,7 +260,7 @@ function usrhome-switch-path {
 # Sanitize PATH
 # -------------
 #
-source $USRHOME_DIR/ibin/do-sanitize-path
+source $USRHOME_DIR/ibin/do-sanitize-path.zsh
 
 # ----------------------------------------------------------------------------
 # Source User Extra zshrc if it exists
