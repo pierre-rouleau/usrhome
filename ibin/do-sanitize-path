@@ -3,7 +3,7 @@
 # Purpose   : Sanitize current shell PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-07 12:16:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-07 12:20:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -19,7 +19,7 @@
 # Dependencies
 # ------------
 #
-#  - POSIX shell utilities: printf, tr, sed, awk, wc, xargs
+#  - POSIX shell utilities: printf, tr, sed, awk, wc, xargs, tail
 #  - USRHOME showpath
 #
 
