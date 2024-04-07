@@ -1,0 +1,27 @@
+#!/bin/sh
+# SH FILE: usrhome-show
+#
+# Purpose   : Show all USRSHOW environment variables.
+# Created   : Sunday, April  7 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-07 12:40:54 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print the list of USRHOME specific environment variables.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+env | grep USRHOME | sort
+
+# ----------------------------------------------------------------------------
