@@ -54,7 +54,7 @@ See the reference listed above for a complete list.
 The following diagram shows the user configuration files and
 how USRHOME deals with them:
 
-..figure ../res/zsh-startup-01.png
+.. figure:: ../res/zsh-startup-01.png
 
 .. ---------------------------------------------------------------------------
 .. links
