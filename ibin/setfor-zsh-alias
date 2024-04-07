@@ -1,9 +1,9 @@
-# Sourced script: setfor-zsh-alias  -*- mode: sh; -*-
+# Sourced script: setfor-zsh-alias  -*- mode: zsh; -*-
 #
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-06 13:50:26 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-07 12:25:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,7 +18,7 @@
 # Dependencies
 # ------------
 #
-
+# - Z Shell: zsh
 
 # ----------------------------------------------------------------------------
 # Code
@@ -91,7 +91,7 @@ unset os_type
 # Manual environment variable manipulation
 alias setenv='source $USRHOME_DIR/ibin/do-setenv'
 alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
-alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path'
+alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.zsh'
 
 # File searching and navigation
 alias cd-to='source $USRHOME_DIR/ibin/do-cd-to'
