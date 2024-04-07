@@ -3,7 +3,7 @@
 # Purpose   : Sanitize current shell PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-06 12:47:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-07 12:16:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -57,5 +57,10 @@ if [ "$path_entries" != "$sanitized_path_entries" ]; then
     fi
 fi
 export PATH="$sanitized_path"
+
+# cleanup
+unset path_entries
+unset sanitized_path
+unset sanitized_path_entries
 
 # ----------------------------------------------------------------------------
