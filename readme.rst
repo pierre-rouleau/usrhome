@@ -522,6 +522,9 @@ USRHOME Command Name               Description
                                    prints a warning on stderr and exit with an
                                    exit-code of 0.
 
+``usrhome-env``                    Display the values of all USRHOME environment variables
+                                   currently set in the shell.
+
 ``usrhome-switch-path``            Modify PATH.  Swap current PATH with the value stored inside the
                                    ``USRHOME_ORIGINAL_PATH`` environment variable.  This is set to
                                    PATH value the system had inside the shell before USRHOME
