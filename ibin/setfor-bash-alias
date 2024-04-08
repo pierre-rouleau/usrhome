@@ -1,0 +1,104 @@
+# Sourced script: setfor-bash-alias  -*- mode: sh; -*-
+#
+# Purpose   : Set Bash shell alias.
+# Created   : Friday, March 29 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-08 17:26:45 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Defines a set of utility command shortcuts implemented as alias.
+# These alias are for the Bash Shell (bash) .
+# This is an early version of the file; it will evolve as it's tested on
+# various computers and environments.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
+    echo "---: Sourcing $USRHOME_DIR/ibin/setfor-bash-alias"
+fi
+#
+# Note: if you need those in other shells like Bash they must be defined
+# the configuration of these shells.
+
+alias ss='echo \$0 : $0 , \$SHELL : $SHELL'
+alias \?='echo $?'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+
+# Useful commands
+alias cls='clear'
+alias md='mkdir'
+
+# Python specific
+alias p3='python3'
+
+# Source environment control scripts
+alias usrhome-prompt-toggle-usr-host='source $USRHOME_DIR/ibin/setfor-prompt-toggle-usr-host'
+alias usrhome-shell-toggle-tracing='source $USRHOME_DIR/ibin/setfor-shell-toggle-tracing'
+alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
+
+# ls flags:
+# -a : include all files, including 'hidden' files
+# -d : directories listed as plain files (instead of recursing into them)
+# -F : display '/' after dirname,
+#              '*' after executable,
+#              '@' for symlink,
+#              '=' after socket,
+#              '%' after whiteout,
+#              '|' after FIFO
+# -G : colorize
+# -O : include file macOS flags
+#
+alias l='ls -FG'
+alias la='ls -aFG'
+
+os_type=$(uname)
+case $os_type in
+    'Darwin' )
+        # Supports the -O option:
+        alias ll='ls -lFGO'
+        alias lla='ls -alFGO'
+        alias lt='ls -ltrFGO'
+        alias lta='ls -ltraFGO'
+        ;;
+
+    *)
+        # There's no support for the -O option normally.
+        alias ll='ls -lFG'
+        alias lla='ls -alFG'
+        alias lt='ls -ltrFG'
+        alias lta='ls -ltraFG'
+        ;;
+esac
+unset os_type
+
+# Manual environment variable manipulation
+alias setenv='source $USRHOME_DIR/ibin/do-setenv'
+alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
+alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.sh'
+
+# File searching and navigation
+alias cd-to='source $USRHOME_DIR/ibin/do-cd-to'
+
+# Programming Environment Setup
+# These commands source scripts that setup the environment.
+# Some of them set the terminal's title (using set-title)
+alias pel='source $USRHOME_DIR/ibin/envfor-pel'
+alias usrhome='source $USRHOME_DIR/ibin/do-usrhome'
+alias usrcfg='source $USRHOME_DIR/ibin/do-usrcfg'
+alias use-usrhome='source $USRHOME_DIR/ibin/envfor-usrhome'
+alias use-homebrew='source $USRHOME_DIR/ibin/envfor-homebrew'
+
+# ----------------------------------------------------------------------------
