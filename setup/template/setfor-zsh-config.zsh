@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-06 09:55:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-08 18:01:11 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,8 +30,11 @@ export EDITOR='emacs -nw'
 # Activation control.  Value 0 deactivate, 1: activates
 # -----------------------------------------------------
 
-# Activate to trace Z Shell configuration file sourced.
-export USRHOME_TRACE_SHELL_CONFIG=0
+if [[ -z $USRHOME_TRACE_SHELL_CONFIG ]]; then
+    # Activate (1) / de-activate (0) the tracing of Shell configuration
+    # sourcing if the environment variable is not already set to a value (0, or 1).
+    export USRHOME_TRACE_SHELL_CONFIG=0
+fi
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
 echo "---: Sourcing usrcfg/setfor-zsh-config.zsh"
@@ -40,7 +43,22 @@ fi
 # Activate whether Homebrew is used:
 # - 1 to use Homebrew,
 # - 0 (or not defined) to prevent using Homebrew.
-export USRHOME_USE_HOMEBREW=1
+# Activate whether Homebrew is used:
+# - 1 to use Homebrew,
+# - 0 (or not defined) to prevent using Homebrew.
+os_type=$(uname)
+case $os_type in
+    'Darwin' )
+        # On macOS, Homebrew is quite useful.
+        export USRHOME_USE_HOMEBREW=1
+        ;;
+
+    *)
+        # on Linux, it's not used that often
+        export USRHOME_USE_HOMEBREW=0
+        ;;
+esac
+unset os_type
 
 # ----------------------------------------------------------------------------
 # Activation Control that can be overridden in sub-shells
