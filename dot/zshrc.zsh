@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-07 12:35:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-08 16:15:42 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -189,8 +189,8 @@ case $USRHOME_PROMPT_MODEL in
     0 )
     # No prompt identified by USRHOME
     # It can be set by "$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
-    # which could be the original users ~/.zshrc
-    # If not set, the default zsh prompt is used.
+    # which could be the original users ~/.zshrc file.
+    # If that is not set, the default zsh prompt is used.
     ;;
 
     2 )
@@ -236,7 +236,6 @@ case $USRHOME_PROMPT_MODEL in
             zstyle ':vcs_info:*' enable hg git
         fi
         ;;
-
 esac
 
 # ----------------------------------------------------------------------------
