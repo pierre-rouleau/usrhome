@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-03-29 11:58:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-09 14:55:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -144,22 +144,24 @@ modify_dot_file()
 curpath=$(pwd)
 parentpath=$(dirname "$curpath")
 
+# --------
+# 1: Create usrcfg and store the following files into it:
+#                      - usrcfg/setfor-zsh-config.zsh
 echo "----- USRHOME Installation:"
 echo "It will do this:"
 echo ""
-echo "- Create $parentpath/usrcfg"
-echo "- Copy   $curpath/setup/template/setfor-zsh-config.zsh"
-echo "    to   $parentpath/usrcfg/setfor-zsh-config.zsh"
+echo "- Create ${parentpath}/usrcfg"
+echo "- Copy   ${curpath}/setup/template/usrcfg/setfor-zsh-config.zsh"
+echo "    to   ${parentpath}/usrcfg/setfor-zsh-config.zsh"
 echo ""
 prompt "Do you wish to proceed"
 echo "OK, proceeding..."
 echo ""
-
-# ----
+#
 echo "- Create user configuration file from the template."
-src_fpath="$curpath/setup/template/setfor-zsh-config.zsh"
-target_dirpath="$parentpath/usrcfg"
-target_fpath="$parentpath/usrcfg/setfor-zsh-config.zsh"
+src_fpath="${curpath}/setup/template/usrcfg/setfor-zsh-config.zsh"
+target_dirpath="${parentpath}/usrcfg"
+target_fpath="${parentpath}/usrcfg/setfor-zsh-config.zsh"
 
 do_copy=1
 do_backup=0
@@ -183,7 +185,9 @@ if [ "$do_copy" = "1" ]; then
 fi
 echo ""
 
-# ----
+# --------
+# 2: Write value of USRHOME_DIR into usrcfg/setfor-zsh-config.zsh
+#
 echo "- Append definition of USRHOME_DIR to $target_fpath"
 echo "  USRHOME_DIR will be set to $USRHOME_DIR"
 prompt "Do you wish to proceed"
@@ -192,7 +196,10 @@ echo "Done: "
 tail -n 3 "$target_fpath"
 echo ""
 
-# ----
+# --------
+# 3: Backup user's Z Shell files, copy them to usrhome/dot,
+#    and create symlinks from ~ files to usrhome/dot files.
+#
 echo "- Backup user Z Shell config files and set symlinks to USRHOME files."
 echo ""
 echo "  Now we rename your Z Shell config files as shown here unless they "
