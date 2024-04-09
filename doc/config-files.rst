@@ -6,7 +6,7 @@ Shell Configuration Files
 :Project:
 :Created:  Sunday, April  7 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-04-07 12:59:19, by Pierre Rouleau.
+:Modified: 2024-04-09 14:07:12 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -28,7 +28,11 @@ Interactive login shell Interactive, non-login shell              Non interactiv
 - ~/.bash_profile
 - ~/.bash_login
 - ~/.profile
+- ~/.bash_logout
 ======================= ========================================= ========================
+
+Typical ~/.bash_profile
+-----------------------
 
 Typically the ``~/.bash_profile`` file contains the line::
 
@@ -43,6 +47,24 @@ PATH being searched::
 
   if [ -n "$BASH_ENV" ]; then . "$BASH_ENV"; fi
 
+
+The ~/.bash_logout
+------------------
+
+The ``~/.bash_logout`` is normally not used in macOS, even in the older
+versions that use the older version of Bash as the default shell.
+
+The file is used on Linux distributions  and often hold the following code:
+
+.. code:: bash
+
+          # ~/.bash_logout: executed by bash(1) when login shell exits.
+
+          # when leaving the console clear the screen to increase privacy
+
+          if [ "$SHLVL" = 1 ]; then
+          [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
+          fi
 
 Z Shell Configuration Files
 ===========================
