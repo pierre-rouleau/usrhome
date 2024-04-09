@@ -6,7 +6,7 @@ Shell Configuration Files
 :Project:
 :Created:  Sunday, April  7 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-04-09 14:07:12 EDT, updated by Pierre Rouleau.
+:Modified: 2024-04-09 15:02:02 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -54,9 +54,7 @@ The ~/.bash_logout
 The ``~/.bash_logout`` is normally not used in macOS, even in the older
 versions that use the older version of Bash as the default shell.
 
-The file is used on Linux distributions  and often hold the following code:
-
-.. code:: bash
+The file is used on Linux distributions  and often hold the following code::
 
           # ~/.bash_logout: executed by bash(1) when login shell exits.
 
