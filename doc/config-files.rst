@@ -6,7 +6,7 @@ Shell Configuration Files
 :Project:
 :Created:  Sunday, April  7 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-04-09 15:02:02 EDT, updated by Pierre Rouleau.
+:Modified: 2024-04-10 09:03:40 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -34,7 +34,12 @@ Interactive login shell Interactive, non-login shell              Non interactiv
 Typical ~/.bash_profile
 -----------------------
 
-Typically the ``~/.bash_profile`` file contains the line::
+The ``~/.bash_profile`` file is not always used.  Several Linux
+distributions do not use it.  Others have it and do not have the
+``~/.profile`` file instead.
+
+
+When it is used, typically the ``~/.bash_profile`` file contains the line::
 
   if [ -f ~/.bashrc ]; then . ~/.bashrc; fi
 
@@ -47,6 +52,48 @@ PATH being searched::
 
   if [ -n "$BASH_ENV" ]; then . "$BASH_ENV"; fi
 
+The ~/.profile
+--------------
+
+This is the POSIX ``sh`` configuration file.
+
+Some Linux distributions have it, like Debia, Ubuntu and Kali, but others do not have
+it, like Fedora.
+
+The content is often the same, as shown here::
+
+      # ~/.profile: executed by the command interpreter for login shells.
+      # This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
+      # exists.
+      # see /usr/share/doc/bash/examples/startup-files for examples.
+      # the files are located in the bash-doc package.
+
+      # the default umask is set in /etc/profile; for setting the umask
+      # for ssh logins, install and configure the libpam-umask package.
+      #umask 022
+
+      # if running bash
+      if [ -n "$BASH_VERSION" ]; then
+          # include .bashrc if it exists
+          if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+          fi
+      fi
+
+      # set PATH so it includes user's private bin if it exists
+      if [ -d "$HOME/bin" ] ; then
+          PATH="$HOME/bin:$PATH"
+      fi
+
+      # set PATH so it includes user's private bin if it exists
+      if [ -d "$HOME/.local/bin" ] ; then
+          PATH="$HOME/.local/bin:$PATH"
+      fi
+
+When the file is not available, I suspect the POSIX sh to be implemented as
+bash, as GNU bash is able to simulate the POSIX sh. That is described in Bash
+man.  In that case the ``~/.bash_profile`` file is used and as described in
+the previous section it often simply sources the ``~/.bashrc`` file.
 
 The ~/.bash_logout
 ------------------
