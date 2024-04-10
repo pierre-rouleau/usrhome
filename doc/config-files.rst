@@ -6,7 +6,7 @@ Shell Configuration Files
 :Project:
 :Created:  Sunday, April  7 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-04-10 09:39:50 EDT, updated by Pierre Rouleau.
+:Modified: 2024-04-10 16:13:10 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -30,6 +30,45 @@ Interactive login shell Interactive, non-login shell              Non interactiv
 - ~/.profile
 - ~/.bash_logout
 ======================= ========================================= ========================
+
+
+**Startup**:
+
+================= ====================== ==================
+Operating System  On Terminal startup    On Bash sub-shell
+================= ====================== ==================
+macOS             - ``~/.bash_profile``  - `` ~/.bashrc``
+
+                    - ``~/.bashrc``
+
+Ubuntu Linux      - ``~/.bashrc``        - `` ~/.bashrc``
+================= ====================== ==================
+
+- On macOS:
+
+  - On macOS, the ``~/.bash_profile" is executing first and it sources
+    the ``~/.bashrc``.  Since the ``~/.bashrc`` file is sourced again
+    when a Bash sub-shell is launched, it's possible to place all logic
+    that must be executed once inside the ``~/.bash_profile"; for example
+    the building of the PATH environment variable.
+
+  - When Opening a new terminal, that uses Bash as the default shell, the
+    following files are sourced:
+
+    - ~/.bash_profile  (the code of that file normally also sources
+      ``~/.bashrc``)
+
+  - When typing ``bash`` to open a Bash sub-shell,
+    Note that the ``~/.bashrc`` is executed again.
+
+- On Ubuntu Linux, the only user-controlled file sourced in ``~/.bashrc``.
+  The ``/etc/profile`` file holds the logic for all users and that sets the
+  PATH environment variable.  The ``~/.bashrc`` normally inherits the PATH
+  and if logic is required to modify PATH it must use an environment variable
+  to prevent executing that logic again when a sub-shell runs ``~/.bashrc``
+  again.
+
+
 
 Typical ~/.bash_profile
 -----------------------
