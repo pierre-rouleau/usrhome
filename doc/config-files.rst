@@ -6,7 +6,7 @@ Shell Configuration Files
 :Project:
 :Created:  Sunday, April  7 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-04-10 09:03:40 EDT, updated by Pierre Rouleau.
+:Modified: 2024-04-10 09:39:50 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -57,7 +57,7 @@ The ~/.profile
 
 This is the POSIX ``sh`` configuration file.
 
-Some Linux distributions have it, like Debia, Ubuntu and Kali, but others do not have
+Some Linux distributions have it, like Debian, Ubuntu and Kali, but others do not have
 it, like Fedora.
 
 The content is often the same, as shown here::
@@ -110,6 +110,17 @@ The file is used on Linux distributions  and often hold the following code::
           if [ "$SHLVL" = 1 ]; then
           [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
           fi
+
+The ~/.bashrc
+-------------
+
+In all Linux distributions I have seen so far, the ``~/.bashrc`` file holds
+the Bash configuration logic.
+
+- The ``~/.bash_profile``, when present, simply source the ``~/.bashrc`` if present.
+- The ``~/.profile``, when running under Bash, sources the ``~/bashrc`` file
+  if it exists. In all shells it then appends ``~/.local/bin`` and ``~/bin``
+  to the PATH if these directories exists.
 
 Z Shell Configuration Files
 ===========================
