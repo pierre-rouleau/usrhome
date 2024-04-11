@@ -412,10 +412,10 @@ USRHOME Command Name               Description
 ``cddv [SUBDIR]``                  cd to *main development*; the directory identified by
                                    ``USRHOME_DIR_DV`` or its identified ``SUBDIR``.
 
-``cddpriv [SUBDIR]``               cd to *private projects*; the directory identified by
+``cdpriv [SUBDIR]``                cd to *private projects*; the directory identified by
                                    ``USRHOME_DIR_PRIV`` or its identified ``SUBDIR``.
 
-``cddpub [SUBDIR]``                cd to *public projects*; the directory identified by
+``cdpub [SUBDIR]``                 cd to *public projects*; the directory identified by
                                    ``USRHOME_DIR_PUB`` or its identified ``SUBDIR``.
 ================================== ================================================================
 

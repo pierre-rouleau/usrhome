@@ -4,7 +4,7 @@
 # Purpose   : Vash ~/.bashrc Configuration File.
 # Created   : Monday, April  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-08 17:34:26 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-11 17:59:21 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,7 +17,6 @@
 # ------------
 #
 #
-
 
 # ----------------------------------------------------------------------------
 # Code
@@ -68,11 +67,11 @@ function cddv {
     cd $USRHOME_DIR_DV/$1
 }
 
-function cddpriv {
+function cdpriv {
     cd $USRHOME_DIR_PRIV/$1
 }
 
-function cddpub {
+function cdpub {
     cd $USRHOME_DIR_PUB/$1
 }
 

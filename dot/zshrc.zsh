@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-08 16:15:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-11 17:57:59 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -129,11 +129,11 @@ function cddv {
     cd $USRHOME_DIR_DV/$1
 }
 
-function cddpriv {
+function cdpriv {
     cd $USRHOME_DIR_PRIV/$1
 }
 
-function cddpub {
+function cdpub {
     cd $USRHOME_DIR_PUB/$1
 }
 
