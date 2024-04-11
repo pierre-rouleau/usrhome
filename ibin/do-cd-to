@@ -4,7 +4,7 @@
 # Purpose   : Change current directory to directory that holds specified file.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-05 19:35:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-11 12:45:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -82,7 +82,7 @@ if [ "$search_hidden" = "true" ]; then
 else
     the_fname=$(fd -g "$1")
 fi
-unset saerch_hidden
+unset search_hidden
 file_count=$(printf "%s" "$the_fname" | grep -c . )
 
 # Report error if more than 1 location found.
@@ -90,12 +90,14 @@ if [ "${file_count}" -gt  1 ]; then
     echo "Error: found ${file_count} files in directory tree for: $1"
     echo "The files are:"
     fd -g "$1" | nl
+
     return 1
 fi
 
 # Otherwise extract the directory name.
 
 the_fpath=$(dirname "${the_fname}")
+unset the_fname
 
 if [ "$the_fpath" = "." ]; then
     echo "Error: Not found inside any sub-directory: $1"
@@ -104,5 +106,6 @@ fi
 
 # And jump to it.
 cd "${the_fpath}" || return 1
+unset the_fpath
 
 # ----------------------------------------------------------------------------
