@@ -1,41 +1,68 @@
-#!/bin/sh
+#!/bin/zsh -f
 # Sourced script: do-cd-to  -*- mode: sh; -*-
 #
-# Purpose   : Change current directory to directory that holds specified file.
-# Created   : Wednesday, March 27 2024.
+# Purpose   : Search for file in directory tree, if founcd ccd to its directory.
+# Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-11 12:45:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-11 15:00:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Changes the current directory to the directory of the specified file.
+# Searches for a file inside the current directory tree.
 #
-# Usage: cd-to [-H] FNAME
+# If ONE file is found, changes the current directory to the directory that
+# holds that file.
 #
-# - FNAME : name of the file
-# BUG: - I have seen that Inside zsh, after finding the location of the file
-#        and moving to it, the command prints
-#         "VCS_INFO_formats:32: VCS_INFO_reposub: function definition file not found"
-#        but is still able to print the content of the RPROMPT properly.
-#        - A work-around to this was to restart zsh by issuing a 'exec zsh'
-#        - However the problem does not always show up.
-#          More investigation is in order.
+# If it finds SEVERAL files:
+# - Print a cautionary note, listing the count and the files found.
+# - If the EDITOR environment variable is set, prompt the user for editing the
+#   files. If the user accepts open the editor on the found files.
+#
+# EXIT CODE:
+#  - 0: ONE file found
+#  - 1: NO file found
+#  - n: number of file found, regardless if they were edited or not.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
+# - fd : see https://github.com/sharkdp/fd "
+#   - To install fd:
+#      - On macOS:  brew install fd
 #
-#  - fd : a fast find.
-#       See: https://github.com/sharkdp/fd
-
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
 #
+
+# Set usrhome__running_shell to zsh, bash or unknown
+source  "$USRHOME_DIR/ibin/which-shell"
+
+
+prompt_yn_return=
+prompt_yn()
+{
+    # Arg 1: string prompt
+    while true; do
+        printf "%s [yn]? " "$1"
+        read -r yn
+        case $yn in
+            [Yy]* )
+                prompt_yn_return=y
+                break
+                ;;
+            [Nn]* )
+                prompt_yn_return=n
+                break
+                ;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
 
 print_usage()
 {
@@ -87,15 +114,37 @@ file_count=$(printf "%s" "$the_fname" | grep -c . )
 
 # Report error if more than 1 location found.
 if [ "${file_count}" -gt  1 ]; then
-    echo "Error: found ${file_count} files in directory tree for: $1"
+    echo "CAUTION: found ${file_count} files in directory tree for: $1"
     echo "The files are:"
     fd -g "$1" | nl
-
-    return 1
+    if [[ -n "$EDITOR" ]]; then
+        prompt_yn "Edit these files"
+        if [ "$prompt_yn_return" = "y" ]; then
+            the_fnames=$(printf "%s" "$the_fname" | tr '\n' ' ')
+            case $usrhome__running_shell in
+                zsh)
+                    read -A the_fnames_arr <<< "$the_fnames"
+                    eval $EDITOR $the_fnames_arr
+                    unset the_fnames_arr
+                    ;;
+                bash)
+                    IFS=' '  read -a the_fnames_arr <<< "$the_fnames"
+                    eval $EDITOR "${the_fnames_arr[@]}"
+                    unset the_fnames_arr
+                    ;;
+                *)
+                    echo "Editing files not supported under '$usrhome__running_shell' shell."
+                    ;;
+            esac
+            unset the_fnames
+            unset usrhome__running_shell
+        fi
+    fi
+    return ${file_count}
 fi
 
 # Otherwise extract the directory name.
-
+unset file_count
 the_fpath=$(dirname "${the_fname}")
 unset the_fname
 
@@ -108,4 +157,5 @@ fi
 cd "${the_fpath}" || return 1
 unset the_fpath
 
+# ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
