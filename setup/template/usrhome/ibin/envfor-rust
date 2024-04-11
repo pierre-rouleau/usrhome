@@ -1,36 +1,70 @@
-# Sourced script: envfor-rust  -*- mode: sh; -*-
+# Sourced script: envfor-rust  -*- mode: zsh; -*-
 #
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 15:03:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-11 18:43:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Example on how to activate Rust support inside the shell.
-# This is the minimal support.
-
+# If Rust is installed, set environment for using the currently installed
+# Rust version. If the source depot is available set the RUST_SRC_PATH
+# environment variable to the proper directory.
+#
+# Notes:
+#   - If writing a program written in Rust, try to use the same version
+#     Rust compiler and the source code.  The `rustup update` command
+#     normally updates to the latest stable version and that's on the
+#     Git 'stable' branch.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-# - Rust must be installed for this to work, otherwise it prints a warning.
+# - Script can be sourced under: bash and zsh.
 
+# - Rust
+#
+#   - Install           := cd ; curl https://sh.rustup.rs -sSf | sh
+#   - Update            := rustup update
+#   - Get source        := cdpub ; git clone https://github.com/rust-lang/rust.git
+#   - Get stable branch := cdpub rust ; git checkout stable
+#
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
 #
-
-if [[ -a "$HOME/.cargo/env" ]]; then
-    . "$HOME/.cargo/env"
-    rustv="$(rustc --version)"
-    echo "--- Rust $rustv Installed in shell"
+# Activate Rust programming language support only once.
+if [ -z "$CARGO_HOME" ]; then
+    if [[ -a "$HOME/.cargo/env" ]]; then
+        . "$HOME/.cargo/env"
+        export CARGO_HOME="$HOME/.cargo"
+        usrhome_rustv=$(rustc --version | awk '{print substr($0,7)}')
+        printf "--- Using Rust %s.\n" "$usrhome_rustv"
+        # Check for presence of the Rust source files in
+        # the public rust repo expected by USRHOME
+        usrhome_rustv_fpathname="$USRHOME_DIR_PUB/rust/src/version"
+        if [ -f "$usrhome_rustv_fpathname" ]; then
+            export RUST_SRC_PATH="$USRHOME_DIR_PUB/rust/src"
+            printf "     Rust ver. %s source is available.\n" "$(cat "$usrhome_rustv_fpathname")"
+        else
+            echo "**** CAUTION *****"
+            echo "Rust source is not installed!"
+            echo "See $USRHOME_DIR_USRCFG/envfor-rust"
+            echo "******************"
+        fi
+        # cleanup
+        unset usrhome_rustv
+        unset usrhome_rustv_fpathname
+    else
+        printf "--- WARNING: Requesting Rust, but it is not installed!\n"
+    fi
 else
-    echo "--- WARNING: Requesting Rust, but it is not installed!"
+    printf "--- Rust %s is already installed in shell.\n" "$(rustc --version)"
 fi
+
 
 # ----------------------------------------------------------------------------
