@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-11 18:43:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-11 19:18:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,13 +17,24 @@
 #     Rust compiler and the source code.  The `rustup update` command
 #     normally updates to the latest stable version and that's on the
 #     Git 'stable' branch.
+#
+# TO USE:
+#
+# - Copy this envfor-rust file into your usrcfg directory, the directory
+#   identified by the USRHOME_DIR_USRCFG environment variable.
+# - Inside the following files:
+#     - $USRHOME_DIR_USRCFG/do-user-zshrc.zsh
+#     - $USRHOME_DIR_USRCFG/do-user-bashrc.bash
+#   add a 'use-rust' command alias to the file.  Something like:
+#     alias use-rust='source $USRHOME_DIR_USRCFG/envfor-rust'
+#
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
 # - Script can be sourced under: bash and zsh.
-
+#
 # - Rust
 #
 #   - Install           := cd ; curl https://sh.rustup.rs -sSf | sh
@@ -43,16 +54,17 @@ if [ -z "$CARGO_HOME" ]; then
         . "$HOME/.cargo/env"
         export CARGO_HOME="$HOME/.cargo"
         usrhome_rustv=$(rustc --version | awk '{print substr($0,7)}')
-        printf "--- Using Rust %s.\n" "$usrhome_rustv"
+        printf ". Using Rust %s.\n" "$usrhome_rustv"
         # Check for presence of the Rust source files in
         # the public rust repo expected by USRHOME
         usrhome_rustv_fpathname="$USRHOME_DIR_PUB/rust/src/version"
-        if [ -f "$usrhome_rustv_fpathname" ]; then
+        if [[ -f "$usrhome_rustv_fpathname" ]]; then
             export RUST_SRC_PATH="$USRHOME_DIR_PUB/rust/src"
-            printf "     Rust ver. %s source is available.\n" "$(cat "$usrhome_rustv_fpathname")"
+            printf "   Rust ver. %s source is available.\n" "$(cat "$usrhome_rustv_fpathname")"
         else
             echo "**** CAUTION *****"
             echo "Rust source is not installed!"
+            echo "Expecting: $usrhome_rustv_fpathname"
             echo "See $USRHOME_DIR_USRCFG/envfor-rust"
             echo "******************"
         fi
@@ -60,10 +72,10 @@ if [ -z "$CARGO_HOME" ]; then
         unset usrhome_rustv
         unset usrhome_rustv_fpathname
     else
-        printf "--- WARNING: Requesting Rust, but it is not installed!\n"
+        printf ". WARNING: Requesting Rust, but it is not installed!\n"
     fi
 else
-    printf "--- Rust %s is already installed in shell.\n" "$(rustc --version)"
+    printf ". Rust %s is already installed in shell.\n" "$(rustc --version)"
 fi
 
 
