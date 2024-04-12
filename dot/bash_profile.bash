@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-12 11:25:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-12 16:44:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -56,8 +56,13 @@
 # ----
 #
 #
+if [ -e "$USRHOME_DIR_USRCFG/setfor-bash-config.bash" ]; then
+    . "$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
+else
+    printf "ERROR: %s does not exist!\n" "$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
+fi
 
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
+if [ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]; then
     echo "---: Sourcing ~/.bash_profile   --> \$USRHOME_DIR/dot/bash_profile.bash"
 fi
 
@@ -70,8 +75,9 @@ fi
 # within usrhome/dot/bashrc.bash to determine if it is running during
 # a login or not.
 
+# shellcheck disable=SC2034
 usrhome_inside_bash_profile=true
-. $USRHOME_DIR/dot/bashrc.bash
+. "$USRHOME_DIR/dot/bashrc.bash"
 unset usrhome_inside_bash_profile
 
 # ----------------------------------------------------------------------------
