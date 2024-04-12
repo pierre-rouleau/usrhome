@@ -90,6 +90,61 @@ are sourced by USRHOME files.
 USRHOME does provide examples of potential user files, located in a directory
 tree that mimics what would be stored inside the ``usrcfg`` directory tree.
 
+
+The Template Directory Tree
+---------------------------
+
+The USRHOME project has the following directory tree layout::
+
+    usrhome
+    ├── bin
+    ├── doc
+    ├── dot
+    ├── ibin
+    ├── res
+    └── setup
+        └── template
+            └── usrcfg
+                └── ibin
+
+All the files under the usrhome/setup/template directory are example of files
+that could be used in the user's usrcfg sibling directory.  These user files
+would hold user-specific and private information that cannot be submitted into
+the USRHOME project, but should nevertheless be under the control of a version
+control system.  Using two repositories, usrhome and usrcfg allows
+distributing generic logic in the usrhome which expects some user-specific
+files to exist inside usrcfg directory.
+
+The USRHOME project expects the usrhome and usrcfg directory to be placed
+inside the same parent directory.
+
+::
+
+   USRHOME Directory tree                     User specific usrcfg
+                                              directory tree, which is
+    usrhome                                   under the same parent directory.
+    ├── bin
+    ├── doc
+    ├── dot                                   Copy selected files
+    ├── ibin                                  usrhome/setup/template/usrcfg
+    ├── res                                   to the usrcfg directory and
+    └── setup                                 edit them to your need.
+        └── template
+            └── usrcfg                         --------->    usrcfg
+                ├── do-user-bash_profile.bash                ├── do-user-bash_profile.bash
+                ├── do-user-bashrc.bash                      ├── do-user-bashrc.bash
+                ├── do-user-zprofile.zsh                     ├── do-user-zprofile.zsh
+                ├── do-user-zshrc.zsh                        ├── do-user-zshrc.zsh
+                ├── ibin                                     ├── ibin
+                │   ├── envfor-curl-hb                       │   ├── envfor-curl-hb
+                .   .                                        .   .
+                .   .                                        .   .
+                .   .                                        .   .
+                │   └── envfor-rust                          │   └── envfor-rust
+                ├── setfor-bash-config.bash                  ├── setfor-bash-config.bash
+                └── setfor-zsh-config.zsh                    └── setfor-zsh-config.zsh
+
+
 .. ---------------------------------------------------------------------------
 
 ..
