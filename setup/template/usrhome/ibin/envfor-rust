@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-11 19:18:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-11 21:51:54 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -20,14 +20,18 @@
 #
 # TO USE:
 #
-# - Copy this envfor-rust file into your usrcfg directory, the directory
-#   identified by the USRHOME_DIR_USRCFG environment variable.
-# - Inside the following files:
+# - Copy this file into $USRHOME_DIR_USRCFG/ibin/envfor-rust
+# - Write, inside the following files:
 #     - $USRHOME_DIR_USRCFG/do-user-zshrc.zsh
 #     - $USRHOME_DIR_USRCFG/do-user-bashrc.bash
-#   add a 'use-rust' command alias to the file.  Something like:
-#     alias use-rust='source $USRHOME_DIR_USRCFG/envfor-rust'
+#   the following code:
 #
+#     alias use-rust='source $USRHOME_DIR_USRCFG/ibin/envfor-rust'
+#     alias manr='rustup man'
+#
+#
+#  Note: The Rust man pages are not available when Rust is installed.
+#  However the man pages are available via the ``rustup man`` command.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -77,6 +81,5 @@ if [ -z "$CARGO_HOME" ]; then
 else
     printf ". Rust %s is already installed in shell.\n" "$(rustc --version)"
 fi
-
 
 # ----------------------------------------------------------------------------
