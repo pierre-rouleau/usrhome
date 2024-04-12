@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-08 18:01:11 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-12 16:53:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,12 +37,9 @@ if [[ -z $USRHOME_TRACE_SHELL_CONFIG ]]; then
 fi
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-echo "---: Sourcing usrcfg/setfor-zsh-config.zsh"
+    echo "---: Sourcing \$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
 fi
 
-# Activate whether Homebrew is used:
-# - 1 to use Homebrew,
-# - 0 (or not defined) to prevent using Homebrew.
 # Activate whether Homebrew is used:
 # - 1 to use Homebrew,
 # - 0 (or not defined) to prevent using Homebrew.
@@ -74,6 +71,9 @@ if [[ -z $USRHOME__USRCFG_SEEN ]]; then
     # Activate shell header display of path activations
     export USRHOME_SHOW_PATH_ACTIVATION=0
 
+    # For USRHOME prompts: select whether host name and user name are shown
+    #
+    # Set the persistent values of variables that can be toggled dynamically.
     # Activate display of user name and host name on the prompt.
     export USRHOME_PROMPT_SHOW_USR_HOST=1
 
