@@ -838,6 +838,22 @@ managed usrcfg directory:
 Each of these files is sourced if they exist. The diagram shows the order in
 which the files are sourced.
 
+The Z and Bash Shell Startup, Dot Files and User Configuration
+--------------------------------------------------------------
+
+**Note**: preliminary section.
+
+USRHOME partially supports the Bash shell.  The support is partial and has not
+yet been tested on systems where Bash is the default shell.  It has only been
+tested on systems where the Z Shell is the primary shell and where Bash is
+also available.
+
+To support both the Z shell and the Bash shell, more configuration files are
+required and some logic is the same for both shells.  The following diagram
+shows all files currently used in the USRHOME system to support both shells.
+
+.. figure:: res/zsh-bash-startup-01.png
+
 Activate Tracing of the Sourcing of the Shell Configuration Files
 -----------------------------------------------------------------
 
