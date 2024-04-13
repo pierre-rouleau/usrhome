@@ -1,10 +1,9 @@
-#!/bin/zsh -f
 # Sourced script: do-cd-to  -*- mode: sh; -*-
 #
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-11 15:00:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-13 09:32:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -118,26 +117,35 @@ if [ "${file_count}" -gt  1 ]; then
     echo "The files are:"
     fd -g "$1" | nl
     if [[ -n "$EDITOR" ]]; then
-        prompt_yn "Edit these files"
+        prompt_yn "Edit these files with '$EDITOR'"
         if [ "$prompt_yn_return" = "y" ]; then
-            the_fnames=$(printf "%s" "$the_fname" | tr '\n' ' ')
-            case $usrhome__running_shell in
-                zsh)
-                    read -A the_fnames_arr <<< "$the_fnames"
-                    eval $EDITOR $the_fnames_arr
-                    unset the_fnames_arr
+            case $EDITOR in
+                cd* | rm* | sudo* | disk* )
+                    printf "WARNING!! Unsafe EDITOR: '%s'\n" "$EDITOR"
+                    printf "WARNING!! Files are not edited! Change value of EDITOR\n"
                     ;;
-                bash)
-                    IFS=' '  read -a the_fnames_arr <<< "$the_fnames"
-                    eval $EDITOR "${the_fnames_arr[@]}"
-                    unset the_fnames_arr
-                    ;;
+
                 *)
-                    echo "Editing files not supported under '$usrhome__running_shell' shell."
+                    the_fnames=$(printf "%s" "$the_fname" | tr '\n' ' ')
+                    case $usrhome__running_shell in
+                        zsh)
+                            read -A the_fnames_arr <<< "$the_fnames"
+                            eval $EDITOR $the_fnames_arr
+                            unset the_fnames_arr
+                            ;;
+                        bash)
+                            IFS=' '  read -a the_fnames_arr <<< "$the_fnames"
+                            eval $EDITOR "${the_fnames_arr[@]}"
+                            unset the_fnames_arr
+                            ;;
+                        *)
+                            echo "Editing files not supported under '$usrhome__running_shell' shell."
+                            ;;
+                    esac
+                    unset the_fnames
+                    unset usrhome__running_shell
                     ;;
             esac
-            unset the_fnames
-            unset usrhome__running_shell
         fi
     fi
     return ${file_count}
@@ -157,5 +165,4 @@ fi
 cd "${the_fpath}" || return 1
 unset the_fpath
 
-# ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
