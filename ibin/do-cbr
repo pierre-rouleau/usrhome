@@ -1,0 +1,202 @@
+# Sourced script: do-cbr  -*- mode: sh; -*-
+#
+# Purpose   : CBR: check, build or run files in current directory.
+# Created   : Sunday, April 14 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-14 16:42:14 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Early, experimental, implementation of the CBR single letter c, b and r
+# commands used to check, build and run commands for the current directory.
+#
+# CBR detects the mechanism required to perform the required action by
+# inspecting the content of the current directory.
+#
+# It currently supports:
+#
+# - Building single-file C and C++ programs with GNU make, taking advantage of
+#   GNU Make built-in rule for building the single C and C++ programs.
+# - Building programs with the 'make' command when the directory holds a
+#   'Makefile' or 'makefile'.
+# - Build Rust single main.rs program.
+# - Build Rust program with Cargo.
+#
+# CAUTION: early version; need cleanup.  More types of build needed.
+#          Minimum testing done.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Identify required operation
+op=
+case "$1" in
+    c)
+        op=check
+        ;;
+    b)
+        op=build
+        ;;
+    r)
+        op=run
+        ;;
+    *)
+        echo "cbr ERROR: invalid arg ($1)."
+        echo "Usage: c|b|r"
+        return 1
+esac
+
+# Identify build controller
+bt=
+dname="$(basename "$(pwd)")"
+cbr_error=
+# For directories that have a make file, use make
+# to build.
+if [ -f Makefile ]; then
+    bt=with_make
+elif [ -f makefile ]; then
+    bt=with_make
+
+    # For directories that have a single-file program
+    # written in or C++ use GNU Make builtin rule.
+    # use xargs to left-trim the file count string on macOS.
+elif [ -f "${dname}.c" ]; then
+    fc="$(find ./*.c | wc -l | xargs)"
+    if [ "$fc" = "1" ]; then
+        bt=with_make1
+    else
+        cbr_error="Too many .c files: ${fc}"
+    fi
+    unset fc
+
+elif [ -f "${dname}.cpp" ]; then
+    fc="$(find ./*.cpp | wc -l | xargs)"
+    if [ "$fc" = "1" ]; then
+        bt=with_make1
+    else
+        cbr_error="Too many .cpp files: ${fc}"
+    fi
+    unset fc
+
+elif [ -f "${dname}.CC" ]; then
+    fc="$(find ./*.CC | wc -l | xargs)"
+    if [ "$fc" = "1" ]; then
+        bt=with_make1
+    else
+        cbr_error="Too many .CC files: ${fc}"
+    fi
+    unset fc
+
+elif [ -f "${dname}.cxx" ]; then
+    fc="$(find ./*.cxx | wc -l | xargs)"
+    if [ "$fc" = "1" ]; then
+        bt=with_make1
+    else
+        cbr_error="Too many .cxx files: ${fc}"
+    fi
+    unset fc
+
+
+    # Support for Rust with Cargo and without on single main.rs file
+elif [ -f Cargo.toml ]; then
+    bt=with_rustc_cargo
+elif [ -f main.rs ]; then
+    fc="$(find ./*.rs | wc -l | xargs)"
+    if [ "$fc" = "1" ]; then
+        bt=with_rustc_main
+    else
+        cbr_error="Too many .rs files: ${fc}"
+    fi
+    unset fc
+
+# elif [ .zig ]; then
+
+fi
+
+
+# Execute C, B or R
+case $bt in
+    with_make)
+        case $op in
+            check)
+                make
+                ;;
+            build)
+                make clean
+                make
+                ;;
+            run)
+                make run
+                ;;
+        esac
+        ;;
+
+    with_make1)
+        case $op in
+            check)
+                make "$dname"
+                ;;
+            build)
+                make "$dname"
+                ;;
+            run)
+                make "$dname"
+                ./"$dname"
+                ;;
+        esac
+        ;;
+
+    with_rustc_main)
+        case $op in
+            check)
+                rustc main.rs
+                ;;
+            build)
+                rustc main.rs
+                ;;
+            run)
+                rustc main.rs
+                ./main
+                ;;
+        esac
+        ;;
+
+    with_rustc_cargo)
+        case $op in
+            check)
+                cargo check
+                ;;
+            build)
+                cargo build
+                ;;
+            run)
+                cargo run
+                ;;
+        esac
+        ;;
+
+    *)
+        echo "ERROR: no appropriate build type found."
+        echo " $cbr_error"
+        return 1
+        ;;
+esac
+
+
+# Cleanup
+unset op
+unset bt
+unset dname
+unset cbr_error
+# ----------------------------------------------------------------------------

@@ -1,0 +1,33 @@
+# Sourced script: envfor-cbr  -*- mode: sh; -*-
+#
+# Purpose   : Set environment to use the c, b and r commands.
+# Created   : Sunday, April 14 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-14 16:22:28 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Install the CBR single letter commands in shell to check, build, and run
+# code written in the current directory.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# This install the single letter commands that are implemented by USRHOME
+# usrhome/ibin/do-cbr sourced script.
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+alias c='source $USRHOME_DIR/ibin/do-cbr c'
+alias b='source $USRHOME_DIR/ibin/do-cbr b'
+alias r='source $USRHOME_DIR/ibin/do-cbr r'
+
+echo ". CBR single letter commands installed in shell:"
+echo "   c := check, b:= build, r:=run"
+# ----------------------------------------------------------------------------

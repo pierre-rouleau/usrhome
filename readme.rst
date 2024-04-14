@@ -606,6 +606,43 @@ With USRHOME support the ``help kill`` command works on macOS zsh.
 
 .. figure:: res/zsh-help-on-macOS.png
 
+CBR -- Single commands to Check, Build or Run
+---------------------------------------------
+
+USRHOME supports 3 single letter commands for checking, building and running
+code: c, b and r.  These are command aliases that are installed inside the
+shell with the ``use-cbr`` command (which is an alias itself to
+``usrhome/ibin/envfor-cbr``).
+
+The 'c', 'b' and 'r' commands are aliases to the ``usrhome/ibin/do-cbr``
+sourced script that detect the mechanism required to perform the required action by
+inspecting the content of the current directory.
+
+This currently supports:
+
+- Building single-file C and C++ programs with GNU make, taking advantage of
+  GNU Make built-in rule for building the single C and C++ programs.
+- Building programs with the 'make' command when the directory holds a
+  'Makefile' or 'makefile'.
+- Build Rust program with Cargo.
+- Build Rust single main.rs program.
+
+Once installed inside the shell with ``use-cbr``, the following commands are
+made available:
+
+=======  =============================================================
+Command  Description
+=======  =============================================================
+``c``    **Check**.  Perform command(s) required to check the validity
+         of the source code in the current directory.
+
+``b``    **Build**. Perform command(s) required to build an executable
+         from the source code in the current directory.
+
+``r``    **Run**. Perform command(s) required to build an executable
+         from the source code in the current directory and run it.
+=======  =============================================================
+
 
 
 Miscellaneous Commands
