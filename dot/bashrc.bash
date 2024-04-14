@@ -4,7 +4,7 @@
 # Purpose   : Vash ~/.bashrc Configuration File.
 # Created   : Monday, April  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-11 17:59:21 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-14 16:03:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -81,7 +81,7 @@ function mdd {
     if printf "%s" "$1" | grep "/" > /dev/null; then
         mkdir -pv "$1" || return 1
     else
-        mkdir "$1" | return 1
+        mkdir "$1" || return 1
     fi
     cd "$1"
 }

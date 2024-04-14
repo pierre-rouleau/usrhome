@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-11 17:57:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-14 16:03:18 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -143,7 +143,7 @@ function mdd {
     if printf "%s" "$1" | grep "/" > /dev/null; then
         mkdir -pv "$1" || return 1
     else
-        mkdir "$1" | return 1
+        mkdir "$1" || return 1
     fi
     cd "$1"
 }
