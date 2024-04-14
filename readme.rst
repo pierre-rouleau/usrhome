@@ -643,6 +643,12 @@ Command  Description
          from the source code in the current directory and run it.
 =======  =============================================================
 
+Once you have typed ``use-cbr``, simply ``cd`` into the code directory and
+type one of the 3 letters.  For example, type ``r`` to compile, link and run a
+Rust program from the top directory of the Rust program.
+
+If the commands cannot identify how to build the program it reports an error,
+returning with exit code of 1.
 
 
 Miscellaneous Commands
