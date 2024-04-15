@@ -3,7 +3,7 @@
 # Purpose   : CBR: check, build or run files in current directory.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-15 07:20:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-15 18:01:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -74,6 +74,11 @@ elif [ -x .cbr ]; then
     ./.cbr "$@"
     return "$?"
 
+    # For directories that have a CMakeLists.txt file
+    # build with cmake
+elif [ -f CMakeLists.txt ]; then
+    bt=with_cmake
+
     # For directories that have a make file, use make
     # to build.
 elif [ -f Makefile ]; then
@@ -140,6 +145,23 @@ fi
 
 # Execute C, B or R
 case $bt in
+    with_cmake)
+        # TODO: better support CMake
+        case $op in
+            check)
+                printf "No Check support for CMake build yet!\n"
+                return 1
+                ;;
+            build)
+                cmake CMakeLists.txt
+                ;;
+            run)
+                printf "No Run support for CMake build yet!\n"
+                return 1
+                ;;
+        esac
+        ;;
+
     with_make)
         case $op in
             check)
