@@ -1,0 +1,121 @@
+#!/bin/sh
+# SH FILE: setup-beyond-compare
+#
+# Purpose   : Setup Beyond Compare command lines.
+# Created   : Monday, April 15 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-15 15:33:54 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Install the symbolic links to Beyond Compare.
+# If symlinks are already present, check their validity and prompt
+# if invalid.  If user accepts, replace the symlinks with valid ones.
+#
+# Use the bcomp program to launch the comparison and wait for it to complete.
+#
+# Reference: https://www.scootersoftware.com/kb/OSXInstallCLT#:~:text=macOS%20only&text=Boot%20the%20application%2C%20and%20then,the%20comparison%20and%20return%20immediately)
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# Beyond Compare, a commercial application.
+# See: https://www.scootersoftware.com/home
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Check for presence of Beyond Compare executable
+# Store its directory path in dpath if found, exit otherwise.
+
+dpath=
+bc_dpath="/Applications/Beyond Compare.app/Contents/MacOS"
+bc_user_dpath="$HOME${bc_dpath}"
+
+if [ -e "${bc_dpath}/bcomp" ]; then
+    dpath="$bc_dpath"
+elif [ -e "${bc_user_dpath}/bcomp" ]; then
+    dpath="$bc_user_dpath"
+else
+    printf "ERROR Beyond Compare not found in System or User Application folder!\n"
+    printf " Expected: %s\n"  "${bc_dpath}/bcomp"
+    printf "       or: %s\n"  "${bc_user_dpath}/bcomp"
+    exit 2
+fi
+
+
+
+# Global script variable: used as output from prompt().
+proceed=1
+
+prompt()
+{
+    # Arg 1: string: prompt
+    # Arg 2: optional string. When empty/unused, the function exits when the user
+    #                         answer is NO and exits normally when the user
+    #                         types YES.
+    #                         When non-empty, prompt does not exit when user
+    #                         answer NO and the caller must check the returned
+    #                         value stored in the proceed variable:
+    #                         set to 1 on yes, 0 on no.
+    while true; do
+        printf "%s [yn]? " "$1"
+        read -r yn
+        case $yn in
+            [Yy]* )
+                proceed=y
+                break
+                ;;
+            [Nn]* )
+                proceed=n
+                break
+                ;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
+
+
+
+create_symlink()
+{
+    # Arg 1: string : "bcompare" or "bcomp"
+    ln -s "${dpath}/$1" "$HOME/bin/$1"
+}
+
+exit_code=0
+chk_bc()
+{
+    # Arg 1: string : "bcompare" or "bcomp"
+    if [ -L "$HOME/bin/$1" ]; then
+        if [ -e "$HOME/bin/$1" ]; then
+            printf "Valid symlink already exists: %s\n" "$1"
+        else
+            printf "The symlink %s exists but is invalid!\n" "$1"
+            prompt "Replace the invalid symlink with a valid one"
+            if [ "$proceed" = "y" ]; then
+                rm "$HOME/bin/$1"
+                create_symlink "$1"
+                printf "Updated symlink for %s\n" "$1"
+            else
+                exit_code=1
+            fi
+        fi
+    else
+        create_symlink "$1"
+        printf "Symlink created for %s\n" "$1"
+    fi
+}
+
+chk_bc bcompare
+chk_bc bcomp
+
+exit "$exit_code"
+
+# ----------------------------------------------------------------------------
