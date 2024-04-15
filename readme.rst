@@ -618,8 +618,9 @@ The 'c', 'b' and 'r' commands are aliases to the ``usrhome/ibin/do-cbr``
 sourced script that detect the mechanism required to perform the required action by
 inspecting the content of the current directory.
 
-This currently supports:
+This currently supports the following construction methods:
 
+- Running a local ``cbr`` executable file if one exists.  More on this below the table.
 - Building single-file C and C++ programs with GNU make, taking advantage of
   GNU Make built-in rule for building the single C and C++ programs.
 - Building programs with the 'make' command when the directory holds a
@@ -649,6 +650,40 @@ Rust program from the top directory of the Rust program.
 
 If the commands cannot identify how to build the program it reports an error,
 returning with exit code of 1.
+
+
+**Using a local ``cbr`` executable file:**
+
+After executing ``use-cbr``, the  ``c``, ``b`` and ``r`` commands
+check if a local ``cbr`` executable file is located in the current directory.
+If they find one they pass control to it, as described below. If there's none,
+then the command try to detect how to build the files in the directory with
+the construction methods described above.
+
+When the ``cbr`` executable file is found the commands invoke it passing all
+arguments to it.  The ``cbr`` command should expect and support, as their
+first argument, the letters c, b and r, and should act accordingly.
+
+This can do anything your project requires, like invoking a special build
+tool with the necessary arguments.  It can be useful when CBR currently does
+not support the construction method you need.
+
+Another use of the ``cbr`` executable is to changes the current directory to
+the directory where the build command must be issued and then re-issue the CBR
+command from that directory.
+
+For example, assuming you have a project where the build command is issued
+from the project root directory and that you also want to be able from a
+sub-directory.  To be able to issue the ``c``, ``b`` or ``r`` command from
+that sub-directory create a ``cbr`` or ``.cbr`` executable file inside the
+sub-directory that contains something like this::
+
+  #!/bin/sh
+  cd ..
+  source "$USRHOME_DIR/ibin/do-cbr" $1
+
+With this the c, b and r commands can be executed from the root and the
+sub-directory.
 
 
 Miscellaneous Commands
