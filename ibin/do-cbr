@@ -3,7 +3,7 @@
 # Purpose   : CBR: check, build or run files in current directory.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-15 06:48:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-15 07:20:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -69,6 +69,9 @@ cbr_error=
 # execute it passing all the arguments to it.
 if [ -x cbr ]; then
     ./cbr "$@"
+    return "$?"
+elif [ -x .cbr ]; then
+    ./.cbr "$@"
     return "$?"
 
     # For directories that have a make file, use make
