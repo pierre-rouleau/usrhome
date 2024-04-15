@@ -3,7 +3,7 @@
 # Purpose   : CBR: check, build or run files in current directory.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-14 16:42:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-15 06:48:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,7 +37,10 @@
 # Code
 # ----
 #
-#
+# Invocation:  do-cbr c|b|r
+# Alias     :  c := source do-cbr c
+# Alias     :  b := source do-cbr b
+# Alias     :  r := source do-cbr r
 
 # Identify required operation
 op=
@@ -61,9 +64,16 @@ esac
 bt=
 dname="$(basename "$(pwd)")"
 cbr_error=
-# For directories that have a make file, use make
-# to build.
-if [ -f Makefile ]; then
+
+# If the current directory has a local executable cbr script or program
+# execute it passing all the arguments to it.
+if [ -x cbr ]; then
+    ./cbr "$@"
+    return "$?"
+
+    # For directories that have a make file, use make
+    # to build.
+elif [ -f Makefile ]; then
     bt=with_make
 elif [ -f makefile ]; then
     bt=with_make
