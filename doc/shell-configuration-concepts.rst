@@ -4,7 +4,7 @@ Shell Configuration Concepts
 
 :Created:  Wednesday, April 10 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-04-10 16:17:57, by Pierre Rouleau.
+:Modified: 2024-04-15 11:52:48 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -102,12 +102,12 @@ The USRHOME project has the following directory tree layout::
     ├── dot
     ├── ibin
     ├── res
-    └── setup
-        └── template
-            └── usrcfg
-                └── ibin
+    ├── setup
+    └── template
+        └── usrcfg
+            └── ibin
 
-All the files under the usrhome/setup/template directory are example of files
+All the files under the usrhome/template directory are example of files
 that could be used in the user's usrcfg sibling directory.  These user files
 would hold user-specific and private information that cannot be submitted into
 the USRHOME project, but should nevertheless be under the control of a version
@@ -126,23 +126,23 @@ inside the same parent directory.
     ├── bin
     ├── doc
     ├── dot                                   Copy selected files
-    ├── ibin                                  usrhome/setup/template/usrcfg
+    ├── ibin                                  usrhome/template/usrcfg
     ├── res                                   to the usrcfg directory and
-    └── setup                                 edit them to your need.
-        └── template
-            └── usrcfg                         --------->    usrcfg
-                ├── do-user-bash_profile.bash                ├── do-user-bash_profile.bash
-                ├── do-user-bashrc.bash                      ├── do-user-bashrc.bash
-                ├── do-user-zprofile.zsh                     ├── do-user-zprofile.zsh
-                ├── do-user-zshrc.zsh                        ├── do-user-zshrc.zsh
-                ├── ibin                                     ├── ibin
-                │   ├── envfor-curl-hb                       │   ├── envfor-curl-hb
-                .   .                                        .   .
-                .   .                                        .   .
-                .   .                                        .   .
-                │   └── envfor-rust                          │   └── envfor-rust
-                ├── setfor-bash-config.bash                  ├── setfor-bash-config.bash
-                └── setfor-zsh-config.zsh                    └── setfor-zsh-config.zsh
+    ├── setup                                 edit them to your need.
+    └── template
+        └── usrcfg                         --------->    usrcfg
+            ├── do-user-bash_profile.bash                ├── do-user-bash_profile.bash
+            ├── do-user-bashrc.bash                      ├── do-user-bashrc.bash
+            ├── do-user-zprofile.zsh                     ├── do-user-zprofile.zsh
+            ├── do-user-zshrc.zsh                        ├── do-user-zshrc.zsh
+            ├── ibin                                     ├── ibin
+            │   ├── envfor-curl-hb                       │   ├── envfor-curl-hb
+            .   .                                        .   .
+            .   .                                        .   .
+            .   .                                        .   .
+            │   └── envfor-rust                          │   └── envfor-rust
+            ├── setfor-bash-config.bash                  ├── setfor-bash-config.bash
+            └── setfor-zsh-config.zsh                    └── setfor-zsh-config.zsh
 
 
 .. ---------------------------------------------------------------------------

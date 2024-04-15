@@ -108,7 +108,7 @@ How to Set it Up
       holds the ``usrhome`` directory.
     - Create the ``usrcfg/setfor-zsh-config.zsh`` file that will
       hold your persistent and private configuration.  At first the file will
-      be a copy of a the `usrhome/setup/template/setfor-zsh-config.zsh`_ with
+      be a copy of a the `usrhome/template/setfor-zsh-config.zsh`_ with
       extra information appended.
     - Finally create symbolic link in your home directory to point
       to the Z Shell configuration files stored inside the `usrhome/dot`_
@@ -304,7 +304,7 @@ USRHOME Command Name               Description
                                    ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
                                    and vice-versa.  The original value is set inside your
                                    usrcfg/setfor-zsh-config.zsh file.  The default value is 0 as
-                                   identified by `usrhome/setup/template/setfor-zsh-config.zsh`_
+                                   identified by `usrhome/template/setfor-zsh-config.zsh`_
                                    used to initialize the usrcfg file.
 
 ``usrhome-prompt-toggle-usr-host`` Toggle the inclusion of the user name and host name inside
@@ -460,7 +460,7 @@ These environment variables are defined in the user persistent configuration fil
 the ``usrcfg/setfor-zsh-config.zsh`` file.
 
 During installation_, the `setup/setup-usrhome`_ script initializes them
-to the value stored in `usrhome/setup/template/setfor-zsh-config.zsh`_ template file.
+to the value stored in `usrhome/template/setfor-zsh-config.zsh`_ template file.
 You can change them or add logic in your file to control their values any way you need.
 
 The following commands are shortcuts to change the current directory to one of these
@@ -1207,8 +1207,8 @@ Thanks!
 .. _numeric keypad:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
 .. _fd:                                           https://github.com/sharkdp/fd#readme
 .. _setup/setup-usrhome:                          https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
-.. _usrhome/setup/template/setfor-zsh-config.zsh: https://github.com/pierre-rouleau/usrhome/blob/main/setup/template/setfor-zsh-config.zsh
-.. _usrhome/template:                             https://github.com/pierre-rouleau/usrhome/blob/main/setup/template
+.. _usrhome/template/setfor-zsh-config.zsh:       https://github.com/pierre-rouleau/usrhome/blob/main/template/setfor-zsh-config.zsh
+.. _usrhome/template:                             https://github.com/pierre-rouleau/usrhome/blob/main/template
 .. _USRHOME dot files:
 .. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
 .. _dot/zshrc.zsh:                                https://github.com/pierre-rouleau/usrhome/tree/main/dot/zshrc.zsh

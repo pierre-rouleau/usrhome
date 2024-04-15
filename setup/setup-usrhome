@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-09 14:55:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-15 11:50:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -151,7 +151,7 @@ echo "----- USRHOME Installation:"
 echo "It will do this:"
 echo ""
 echo "- Create ${parentpath}/usrcfg"
-echo "- Copy   ${curpath}/setup/template/usrcfg/setfor-zsh-config.zsh"
+echo "- Copy   ${curpath}/template/usrcfg/setfor-zsh-config.zsh"
 echo "    to   ${parentpath}/usrcfg/setfor-zsh-config.zsh"
 echo ""
 prompt "Do you wish to proceed"
@@ -159,7 +159,7 @@ echo "OK, proceeding..."
 echo ""
 #
 echo "- Create user configuration file from the template."
-src_fpath="${curpath}/setup/template/usrcfg/setfor-zsh-config.zsh"
+src_fpath="${curpath}/template/usrcfg/setfor-zsh-config.zsh"
 target_dirpath="${parentpath}/usrcfg"
 target_fpath="${parentpath}/usrcfg/setfor-zsh-config.zsh"
 
