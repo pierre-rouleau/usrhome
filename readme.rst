@@ -691,7 +691,8 @@ Using Emacs as a man reader
 
 Anyone that have used Emacs knows that its man support is really good.
 For instance, with Emacs, you can follow all links that appear in man
-pages.  You can also use all Emacs features.
+pages; you essentially have access to a man page *browser*.
+And then you can also use all Emacs features.
 
 You can use `man (or woman)`_ right inside Emacs.  But at the shell, the
 ``man`` command will use the default man pager. Being able to open the man
@@ -734,6 +735,11 @@ Command                               Description
                                         method selected by the option, overriding what was selected
                                         by ``use-emacs-for-man``.
 ===================================== =============================================================
+
+*Side note*:
+  My PEL_ project provides extensive information about Emacs (in form of extensive hyperlinked PDF
+  files with a `PDF index`_ to a large set of topics and file format/language supports).
+  The `help PDF`_ has a `section that describe Emacs man and woman support`_.
 
 
 
@@ -1282,5 +1288,8 @@ Thanks!
 .. _xz version 5.2.5:                             https://nvd.nist.gov/vuln/detail/CVE-2020-22916
 .. _man (or woman):                               https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
 .. _usrhome/template/bin/ge:                      https://github.com/pierre-rouleau/usrhome/blob/main/template/bin/ge
+.. _PDF index:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
+.. _help PDF:                                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf
+.. _section that describe Emacs man and woman support: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf#page=5
 
 .. ---------------------------------------------------------------------------
