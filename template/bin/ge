@@ -1,0 +1,65 @@
+#!/bin/sh
+# SH FILE: ge
+#
+# Purpose   : Launch Emacs in Graphics mode in the background.  Support PEL.
+# Created   : Wednesday, April 17 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-17 15:49:41 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+# Open GUI-based Emacs from the current directory in the background
+# so we can continue using the shell.
+#
+# Pass to emacs:
+#   - --chdir to the current working directory so we open the same files
+#     as what is specified on the command line. If we don't do that the GUI
+#     based Emacs might use a different directory (I saw that it uses the home
+#     directory) and if you specify files that are not in that directory they
+#     will not be opened, another file file open which will most likely be
+#     in an empty buffer (if the file does not exists in the home directory).
+#   - All script command line arguments
+#
+# Note: Some versions of Emacs for macOS graphical dumps an error when it starts.
+#       This is annoying; it's noise on the shell.
+#       Just mask it by dumping it in the bit bucket.
+#
+# Emacs 27+ support:
+#    - To allow Emacs early-init.el code to distinguish whether Emacs is
+#      running in terminal mode or in graphics mode.  When running
+#           early-init.el Emacs does not know and the function
+#           display-graphic-p does not work at that moment.  The only way I
+#           have found is to use an environment variable.  So the following
+#           code sets one up: PEL_EMACS_IN_GRAPHICS
+#
+# See: https://emacs.stackexchange.com/questions/66268/how-to-set-package-user-dir-with-emacs-27-with-package-quickstart-and-distinguis
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+export PEL_EMACS_IN_GRAPHICS=1
+os_type=$(uname)
+case $os_type in
+    'Darwin' )
+        if [ -d /Applications/Emacs.app ]; then
+            /Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
+        elif [ -d "$HOME/Applications/Emacs.app" ]; then
+            "$HOME/Applications/Emacs.app/Contents/MacOS/Emacs" --chdir=$(pwd) "$@" 2>/dev/null &
+        else
+            printf "ERROR: cannot find Emacs.app in /Applications and %s/Applications\n" "$HOME"
+            exit 1
+        fi
+        ;;
+
+    *)
+        emacs --chdir="$(pwd)" "$@" &
+        ;;
+esac
+unset os_type
+
+# ----------------------------------------------------------------------------
