@@ -686,6 +686,58 @@ With this the c, b and r commands can be executed from the root and the
 sub-directory.
 
 
+Using Emacs as a man reader
+---------------------------
+
+Anyone that have used Emacs knows that its man support is really good.
+For instance, with Emacs, you can follow all links that appear in man
+pages.  You can also use all Emacs features.
+
+You can use `man (or woman)`_ right inside Emacs.  But at the shell, the
+``man`` command will use the default man pager. Being able to open the man
+pages with Emacs when typing the ``man`` command in the shell is what this
+section is about.
+
+USRHOME provides the ``use-emacs-for-man`` alias command that sets up the
+current shell, replacing the ``man`` command by a ``man`` function that opens
+the requested topic inside Emacs.  Both the ``use-emacs-for-man`` alias
+command and the ``man`` function also accept an option switch that identifies
+the way Emacs is launched.
+
+To use this, you first execute ``use-emacs-for-man`` to setup the shell.
+Then, when you type the man command inside that shell, the optic is shown
+inside Emacs.
+
+===================================== =============================================================
+Command                               Description
+===================================== =============================================================
+``use-emacs-for-man [-g | -s | -t ]`` Install the Emacs-minded ``man` command inside the shell.
+
+                                      By default it sets the Emacs launching mode to the terminal
+                                      mode. You can change this by using one of the following
+                                      options:
+
+                                      - ``-g`` : launch Emacs in GUI mode. Use the ``ge`` script to
+                                        do so.  It will use the template version of that script
+                                        located inside `usrhome/template/bin/ge`_
+                                        unless it finds it on the PATH.
+                                      - ``-s`` : uses emacsclient to the Emacs daemon.
+                                      - ``-t`` : launch Emacs in terminal mode in the current
+                                        shell. This is the default if no option is specified.
+
+
+``man [-g | -s | -t ] TOPIC``         Open Emacs man mode viewer for the specified TOPIC.
+                                      If no option is identified it launches Emacs as selected
+                                      by the execution of ``use-emacs-for-man`` options.
+                                      If man is executed wit one of the 3 options, it uses the
+                                      method selected by the option, overriding what was selected
+                                      by ``use-emacs-for-man``.
+===================================== =============================================================
+
+
+
+
+
 Miscellaneous Commands
 ----------------------
 
@@ -1227,5 +1279,7 @@ Thanks!
 .. _installation:                                 #how-to-set-it-up
 .. _xz version 5.6.0 and 5.6.1:                   https://nvd.nist.gov/vuln/detail/CVE-2024-3094
 .. _xz version 5.2.5:                             https://nvd.nist.gov/vuln/detail/CVE-2020-22916
+.. _man (or woman):                               https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
+.. _usrhome/template/bin/ge:                      https://github.com/pierre-rouleau/usrhome/blob/main/template/bin/ge
 
 .. ---------------------------------------------------------------------------
