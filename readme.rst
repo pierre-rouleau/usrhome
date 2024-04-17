@@ -711,7 +711,7 @@ inside Emacs.
 ===================================== =============================================================
 Command                               Description
 ===================================== =============================================================
-``use-emacs-for-man [-g | -s | -t ]`` Install the Emacs-minded ``man` command inside the shell.
+``use-emacs-for-man [-g | -s | -t ]`` Install the Emacs-minded ``man`` command inside the shell.
 
                                       By default it sets the Emacs launching mode to the terminal
                                       mode. You can change this by using one of the following
@@ -727,11 +727,12 @@ Command                               Description
 
 
 ``man [-g | -s | -t ] TOPIC``         Open Emacs man mode viewer for the specified TOPIC.
-                                      If no option is identified it launches Emacs as selected
-                                      by the execution of ``use-emacs-for-man`` options.
-                                      If man is executed wit one of the 3 options, it uses the
-                                      method selected by the option, overriding what was selected
-                                      by ``use-emacs-for-man``.
+
+                                      - If no option is identified it launches Emacs as selected
+                                        by the execution of ``use-emacs-for-man`` options.
+                                      - If man is executed with one of the 3 options, it uses the
+                                        method selected by the option, overriding what was selected
+                                        by ``use-emacs-for-man``.
 ===================================== =============================================================
 
 
