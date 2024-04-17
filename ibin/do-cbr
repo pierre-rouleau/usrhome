@@ -3,7 +3,7 @@
 # Purpose   : CBR: check, build or run files in current directory.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-15 18:01:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-17 10:37:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -154,6 +154,7 @@ case $bt in
                 ;;
             build)
                 cmake CMakeLists.txt
+                return $?
                 ;;
             run)
                 printf "No Run support for CMake build yet!\n"
@@ -166,13 +167,15 @@ case $bt in
         case $op in
             check)
                 make
+                return $?
                 ;;
             build)
-                make clean
-                make
+                make clean && make
+                return $?
                 ;;
             run)
                 make run
+                return $?
                 ;;
         esac
         ;;
@@ -181,13 +184,15 @@ case $bt in
         case $op in
             check)
                 make "$dname"
+                return $?
                 ;;
             build)
                 make "$dname"
+                return $?
                 ;;
             run)
-                make "$dname"
-                ./"$dname"
+                make "$dname" && ./"$dname"
+                return $?
                 ;;
         esac
         ;;
@@ -196,13 +201,15 @@ case $bt in
         case $op in
             check)
                 rustc main.rs
+                return $?
                 ;;
             build)
                 rustc main.rs
+                return $?
                 ;;
             run)
-                rustc main.rs
-                ./main
+                rustc main.rs && ./main
+                return $?
                 ;;
         esac
         ;;
@@ -211,12 +218,15 @@ case $bt in
         case $op in
             check)
                 cargo check
+                return $?
                 ;;
             build)
                 cargo build
+                return $?
                 ;;
             run)
                 cargo run
+                return $?
                 ;;
         esac
         ;;
