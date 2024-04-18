@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-17 16:39:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-17 21:03:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,7 +27,9 @@
 # ------------
 #
 # Presence of Emacs.
-
+#
+# Side Effects:
+# - Set USRHOME_MAN_MODE variable.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -35,6 +37,7 @@
 #
 #
 
+USRHOME_MAN_MODE=
 if [[ -n "$1" ]]; then
     case $1 in
         -g)
@@ -52,15 +55,15 @@ if [[ -n "$1" ]]; then
                 printf " You may want to copy it in a directory in your PATH\n"
                 printf " and possibly modify it to better suit you.\n\n"
             fi
-            usrhome_man_mode='-g'
+            USRHOME_MAN_MODE='-g'
             echo ". Using Emacs in graphics mode as man reader."
             ;;
         -s)
-            usrhome_man_mode='-s'
+            USRHOME_MAN_MODE='-s'
             echo ". Using Emacs server as man reader."
             ;;
         -t)
-            usrhome_man_mode='-t'
+            USRHOME_MAN_MODE='-t'
             echo ". Using Emacs in text mode as man reader."
             ;;
         *)
@@ -69,9 +72,10 @@ if [[ -n "$1" ]]; then
             return 1
     esac
 else
-    usrhome_man_mode='-t'
+    USRHOME_MAN_MODE='-t'
     echo ". Using Emacs in text mode as man reader."
 fi
+
 
 man()
 {
@@ -88,7 +92,7 @@ man()
     local topic
     topic="$1"
     local man_mode
-    man_mode=$usrhome_man_mode
+    man_mode="$USRHOME_MAN_MODE"
     if [[ -n "$2" ]]; then
         case $1 in
             -g)
@@ -134,6 +138,8 @@ man()
             ;;
     esac
 }
-unset usrhome_man_mode
+
+# Cleanup
+# This leaves USRHOME_MAN_MODE in the shell.
 
 # ----------------------------------------------------------------------------
