@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-18 14:44:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-18 15:33:55 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -119,7 +119,7 @@ if [[ -n "$1" ]]; then
                 echo "ATTENTION: Emacs Daemon was not running, starting it!"
                 emacs --daemon
             fi
-            USRHOME_MAN_MODE='-s'
+            USRHOME_MAN_MODE="$1"
             printf "%s Emacs server as man reader.\n" "$prefix_msg"
 
             ;;
@@ -155,6 +155,7 @@ unset prefix_msg
 man()
 {
     # See print_man_usage() for arguments.
+    # echo "man(): on entry: USRHOME_MAN_MODE := $USRHOME_MAN_MODE"
 
     case $1 in
         -h | --help)
@@ -210,6 +211,7 @@ man()
             return 2
             ;;    esac
 
+    #echo "man(): on use   : man_mode := $man_mode"
     case $man_mode in
         '-g' | '-G')
             # Launch GUI Emacs in separate process; don't wait.
