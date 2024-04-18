@@ -801,6 +801,7 @@ each one if you want.  Or just use one method.  The code is flexible.
 - On success; 0.
 - On help request: 1
 - On error: 2 or 3.
+- For man ``-s`` and ``-S``, when topic is not found: 4.
 
 **To Activate it Permanently in a Shell**:
   You may not always want to type the ``use-emacs-for-man`` command.
