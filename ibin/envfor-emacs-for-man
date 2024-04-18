@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-18 08:20:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-18 09:14:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -85,7 +85,7 @@ if [[ -n "$1" ]]; then
         -s | -S)
             # Requesting to use Emacs client/server mechanism.
             # Check if the Emacs daemon is running.  If it is not, start it.
-            if ! emacsclient -a false -e 't' 2> /dev/null; then
+            if ! emacsclient -a false -e 't' > /dev/null 2>&1; then
                 echo "ATTENTION: Emacs Daemon was not running, starting it!"
                 emacs --daemon
             fi
