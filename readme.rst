@@ -779,6 +779,25 @@ each one if you want.  Or just use one method.  The code is flexible.
 
             . "$USRHOME_DIR/ibin/envfor-emacs-for-man" -s
 
+  The shells can be "*permanently*" customized this way by writing the logic
+  that suits you inside your customization for the Z shell and the Bash shell
+  into your usrcfg files.
+
+  For example, on a macOS system I use, I activate Homebrew, Rust and the emacs server based man
+  with customized logic that includes the following lines:
+
+  .. code:: bash
+
+            export USRHOME_SHOW_PATH_ACTIVATION=1
+            export USRHOME_PROMPT_SHOW_USR_HOST=1
+            export USRHOME_PROMPT_MODEL=2
+            export USRHOME_USE_HOMEBREW=1
+            . "$USRHOME_DIR_USRCFG/ibin/envfor-rust"
+            . "$USRHOME_DIR/ibin/envfor-emacs-for-man" -s
+
+  We can see this in the following screen-shot:
+
+  .. figure:: res/use-emacs-for-man-01.png
 
 
 
