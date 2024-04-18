@@ -709,49 +709,56 @@ To use this, you first execute ``use-emacs-for-man`` to setup the shell.
 Then, when you type the man command inside that shell, the optic is shown
 inside Emacs.
 
-===================================== =============================================================
-Command                               Description
-===================================== =============================================================
-``use-emacs-for-man [-[gGsStT]]``     Install the Emacs-minded ``man`` command inside the shell.
+= ===================================== =============================================================
+. Command                               Description
+= ===================================== =============================================================
+. ``use-emacs-for-man [-[gGsStT]]``     Install the Emacs-minded ``man`` command inside the shell.
 
-                                      By default it sets the Emacs launching mode to the terminal
-                                      mode. You can change this by using one of the following
-                                      options:
+                                        By default it sets the Emacs launching mode to the terminal
+                                        mode. You can change this by using one of the following
+                                        options:
 
-                                      - ``-g`` : launch Emacs in GUI mode. Use the ``ge`` script to
-                                        do so.  It will use the template version of that script
-                                        located inside `usrhome/template/bin/ge`_
-                                        unless it finds it on the PATH.
-                                      - ``-G`` : same as ``-g`` but launches Emacs quicker with
-                                        less initialization  by using Emacs -Q option.
-                                      - ``-s`` : uses emacsclient to the Emacs daemon.
+                                        - ``-g`` : launch Emacs in GUI mode. Use the ``ge`` script to
+                                          do so.  It will use the template version of that script
+                                          located inside `usrhome/template/bin/ge`_
+                                          unless it finds it on the PATH.
+                                        - ``-G`` : same as ``-g`` but launches Emacs quicker with
+                                          less initialization  by using Emacs -Q option.
+                                        - ``-s`` : uses emacsclient to the Emacs daemon.
 
-                                        - This checks if the Emacs daemon is already running.  If
-                                          it's not running it starts it, after printing a message
-                                          stating what it is doing.
-                                        - Before using the man command with the Emacs daemon, you
-                                          should launch an emacsclient process on something, if
-                                          that's not already done, otherwise the man command will
-                                          print an error telling you to start it.
+                                          - This checks if the Emacs daemon is already running.  If
+                                            it's not running it starts it, after printing a message
+                                            stating what it is doing.
+                                          - Before using the man command with the Emacs daemon, you
+                                            should launch an emacsclient process on something, if
+                                            that's not already done, otherwise the man command will
+                                            print an error telling you to start it.
 
-                                      - ``-S`` : same as ``-s`` but does not delete an Emacs window
-                                        after executing the man command. This is normally better
-                                        when executing the man command from within a shell of
-                                        the emacsclient itself.
-                                      - ``-t`` : launch Emacs in terminal mode in the current
-                                        shell. This is the default if no option is specified.
-                                      - ``-T`` : same as ``-t`` but launches Emacs quicker with
-                                        less initialization  by using Emacs -Q option.
+                                        - ``-S`` : same as ``-s`` but does not delete an Emacs window
+                                          after executing the man command. This is normally better
+                                          when executing the man command from within a shell of
+                                          the emacsclient itself.
+                                        - ``-t`` : launch Emacs in terminal mode in the current
+                                          shell. This is the default if no option is specified.
+                                        - ``-T`` : same as ``-t`` but launches Emacs quicker with
+                                          less initialization  by using Emacs -Q option.
 
 
-``man [-[gGsStT]] TOPIC``             Open Emacs man mode viewer for the specified TOPIC.
+. - ``man [-[gGsStT]] TOPIC``           Open Emacs man mode viewer for the specified TOPIC.
+  - ``man -man [OPTIONS] TOPIC``
+                                        - If no option is identified it launches Emacs as selected
+                                          by the execution of ``use-emacs-for-man`` options.
+                                        - If man is executed with one of the 6 options, it uses the
+                                          method selected by the option, overriding what was selected
+                                          by ``use-emacs-for-man``.
 
-                                      - If no option is identified it launches Emacs as selected
-                                        by the execution of ``use-emacs-for-man`` options.
-                                      - If man is executed with one of the 6 options, it uses the
-                                        method selected by the option, overriding what was selected
-                                        by ``use-emacs-for-man``.
-===================================== =============================================================
+                                        If you want to use the system's native man command from
+                                        a shell where you already executed ``use-emacs-for-man``,
+                                        then you can use the ``-man`` special option, followed by
+                                        all options you want to pass to the native man command.
+                                        That executes the native man command with all options
+                                        passed to it.
+= ===================================== =============================================================
 
 The advantage of using the Emacs daemon and an emacsclient_ is speed.  Since Emacs is already
 running, the man command does not have to launch a new Emacs process that has to run through the
@@ -767,6 +774,11 @@ everything you normally use withing Emacs.
 It is possible to use both methods with multiple shells or inside the same shell by passing the
 emacs mode option to the man command. You can use several shells and use different method inside
 each one if you want.  Or just use one method.  The code is flexible.
+
+**Getting help**
+  You can pass the ``-h`` or ``--help`` options to both ``use-emacs-for-man``
+  and the specialized ``man`` function.  They will print the usage and return
+  an exit code of 1.
 
 **To Activate it Permanently in a Shell**:
   You may not always want to type the ``use-emacs-for-man`` command.
