@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-17 22:15:35 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-18 08:20:54 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,10 +17,10 @@
 # text-based Emacs.
 #
 # By specifying extra option arguments, it's also possible to open an
-# independent Emacs GUI process or to launch it inside an already running
-# emacs server.  These options can be passed to the setup script (this one),
-# which sets the default, and to the man() function, allowing overriding the
-# chosen default.
+# independent Emacs GUI process or to launch it inside a client ofn already
+# running emacs server.  These options can be passed to the setup script (this
+# one), which sets the default, and to the man() function, allowing overriding
+# the chosen default.  See print_man_usage() for more information.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -37,10 +37,27 @@
 #
 #
 
+print_man_usage()
+{
+    printf "\
+ Usage: man [-g | -s |-S | -t] TOPIC
+  -g : emacs started in graphics mode
+  -G : same as -g, but start emacs faster with less initialization (using -Q)
+  -s : using Emacs server: open man page in emacsclient
+  -S : same as -s, except meant for issuing the man command
+       in a shell running withing Emacs: does not delete any window.
+  -t : start emacs in terminal mode in the current shell.
+       This is the default if no option is specified.
+  -T : same as -t, but start emacs faster with less initialization (using -Q)
+
+  You can also specify the same options to man() to
+  override the option passed to use-emacs-for-man.\n"
+}
+
 USRHOME_MAN_MODE=
 if [[ -n "$1" ]]; then
     case $1 in
-        -g)
+        -g | -G)
             # This will use the 'ge' script.
             # That script is part of the templates.
             # Check if it is available and if not, inform the user that
@@ -55,10 +72,17 @@ if [[ -n "$1" ]]; then
                 printf " You may want to copy it in a directory in your PATH\n"
                 printf " and possibly modify it to better suit you.\n\n"
             fi
-            USRHOME_MAN_MODE='-g'
-            echo ". Using Emacs in graphics mode as man reader."
+            USRHOME_MAN_MODE="$1"
+            case $1 in
+                -g)
+                    echo ". Using Emacs in graphics mode as man reader."
+                    ;;
+                -G)
+                    echo ". Using Emacs quickly in graphics mode as man reader."
+                    ;;
+            esac
             ;;
-        -s)
+        -s | -S)
             # Requesting to use Emacs client/server mechanism.
             # Check if the Emacs daemon is running.  If it is not, start it.
             if ! emacsclient -a false -e 't' 2> /dev/null; then
@@ -73,9 +97,15 @@ if [[ -n "$1" ]]; then
             USRHOME_MAN_MODE='-t'
             echo ". Using Emacs in text mode as man reader."
             ;;
+
+        -T)
+            USRHOME_MAN_MODE='-T'
+            echo ". Using Emacs quickly in text mode as man reader."
+            ;;
+
         *)
             printf "ERROR:  use-emacs-for-man invalid option: %s\n" "$1"
-            printf " Usage: use-emacs-for-man [-g | -s | -t]\n"
+            print_man_usage
             return 1
     esac
 else
@@ -86,54 +116,49 @@ fi
 
 man()
 {
-    # Usage: man [-g | -s | -t] TOPIC
-    # -g : emacs started in graphics mode
-    # -s : using emacs server
-    # -t : start emacs in terminal mode in the current shell
-    #
-    # man() default operation is set by: use-emacs-for-man argument
-    #  - none: -t is set as default
-    #  - -g  : -g is set as default
-    #  - -s  : -s is set as default.
+    # See print_man_usage() for arguments.
+
+    local man_mode
+    man_mode="$USRHOME_MAN_MODE"
 
     local topic
     topic="$1"
-    local man_mode
-    man_mode="$USRHOME_MAN_MODE"
+
     if [[ -n "$2" ]]; then
-        case $1 in
-            -g)
-                man_mode='-g'
-                topic="$2"
-                ;;
-            -s)
-                man_mode='-s'
-                topic="$2"
-                ;;
-            -t)
-                man_mode='-t'
-                topic="$2"
-                ;;
-            *)
-                printf "ERROR:  emacs-for-man invalid option: %s\n" "$1"
-                printf " Usage: man [-g | -s | -t] TOPIC\n"
-                return 1
-                ;;
-        esac
+        man_mode="$1"
+        topic="$2"
     fi
 
+    local man_emacs_opt
+    man_emacs_opt=
+
     case $man_mode in
-        '-g')
+        -g | -s | -S | -t)
+            ;;
+        -G | -T)
+            man_emacs_opt=-Q
+            ;;
+
+        *)
+            printf "ERROR:  emacs-for-man invalid option: %s\n" "$1"
+            print_man_usage
+            return 1
+            ;;
+    esac
+
+    case $man_mode in
+        '-g' | '-G')
             # Launch GUI Emacs in separate process; don't wait.
             # The shell can continue to be used.
+            # Start Emacs with the -Q options when -G is requested.
             if which ge > /dev/null; then
-                ge --eval "(progn (man \"$topic\") (delete-window))"
+                ge ${man_emacs_opt} --eval "(progn (man \"$topic\") (delete-window))"
             else
-                "$USRHOME_DIR/template/bin/ge" --eval "(progn (man \"$topic\") (delete-window))"
+                "$USRHOME_DIR/template/bin/ge" ${man_emacs_opt} --eval "(progn (man \"$topic\") (delete-window))"
             fi
             ;;
 
-        '-s')
+        '-s' | '-S')
             # Use emacsclient to the running Emacs daemon
             # Check if the emacsclient is running, if not warn user
             # and exit.
@@ -142,14 +167,21 @@ man()
                 echo "Start emacsclient inside another window and try again."
                 return 1
             else
-                emacsclient --eval "(progn (man \"$topic\") (delete-window))"
+                case $man_mode in
+                    '-s')
+                        emacsclient --eval "(progn (man \"$topic\") (delete-window))"
+                        ;;
+                    '-S')
+                        emacsclient --eval "(progn (man \"$topic\"))"
+                        ;;
+                esac
             fi
             ;;
 
-        '-t')
+        '-t' | '-T')
             # Open a local terminal-based copy of Emacs in the current
             # terminal.
-            emacs -nw --eval "(progn (man \"$topic\") (delete-window))"
+            emacs ${man_emacs_opt} -nw --eval "(progn (man \"$topic\") (delete-window))"
             ;;
     esac
 }
