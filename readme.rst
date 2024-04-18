@@ -723,6 +723,15 @@ Command                               Description
                                         located inside `usrhome/template/bin/ge`_
                                         unless it finds it on the PATH.
                                       - ``-s`` : uses emacsclient to the Emacs daemon.
+
+                                        - This checks if the Emacs daemon is already running.  If
+                                          it's not running it starts it, after printing a message
+                                          stating what it is doing.
+                                        - Before using the man command with the Emacs daemon, you
+                                          should launch an emacsclient process on something, if
+                                          that's not already done, otherwise the man command will
+                                          print an error telling you to start it.
+
                                       - ``-t`` : launch Emacs in terminal mode in the current
                                         shell. This is the default if no option is specified.
 
@@ -735,6 +744,21 @@ Command                               Description
                                         method selected by the option, overriding what was selected
                                         by ``use-emacs-for-man``.
 ===================================== =============================================================
+
+The advantage of using the Emacs daemon and emacsclient_ is speed.  Since Emacs is already running,
+the man command does not have to launch a new Emacs process that has to run through the
+initialization process; it just opens the man page and renders it (if that has not already been
+done).  Opening the man page is instantaneous this way.
+
+The advantage of *not* using the Emacs daemon and emacsclient is that you open a new Emacs process,
+local to your shell with all its environment variables and you can continue using that instance of
+Emacs independently from all others (if any).  It takes more tie to start but if your
+initialization system is well done that's normally not excessive.  It would be possible to improve
+it further by passing the ``-Q`` option to Eamcs to speed up initialization but then you would not
+have access to your regular initialization-launched features.
+
+It is possible to use both methods with multiple shells or inside the same shell by passing the
+emacs mode option to the man command.
 
 *Side note*:
   My PEL_ project provides extensive information about Emacs (in form of extensive hyperlinked PDF
@@ -1291,5 +1315,6 @@ Thanks!
 .. _PDF index:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 .. _help PDF:                                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf
 .. _section that describe Emacs man and woman support: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf#page=5
+.. _emacsclient:                                  https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
 
 .. ---------------------------------------------------------------------------
