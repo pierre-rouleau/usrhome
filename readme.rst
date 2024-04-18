@@ -768,6 +768,21 @@ It is possible to use both methods with multiple shells or inside the same shell
 emacs mode option to the man command. You can use several shells and use different method inside
 each one if you want.  Or just use one method.  The code is flexible.
 
+**To Activate it Permanently in a Shell**:
+  You may not always want to type the ``use-emacs-for-man`` command.
+  Instead you can add a specific man behaviour permanently inside your shell by
+  sourcing the `usrhome/ibin/envfor-emacs-for-man`_ inside your shell startup code.
+  For example, you could add the following code inside your ``usrcfg/do-user-zshrc.zsh``
+  file to activate a man that uses an emacsclient frame:
+
+  .. code:: bash
+
+            . "$USRHOME_DIR/ibin/envfor-emacs-for-man" -s
+
+
+
+
+
 *Side note*:
   My PEL_ project provides extensive information about Emacs (in form of extensive hyperlinked PDF
   files with a `PDF index`_ to a large set of topics and file format/language supports).
@@ -1324,5 +1339,6 @@ Thanks!
 .. _help PDF:                                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf
 .. _section that describe Emacs man and woman support: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf#page=5
 .. _emacsclient:                                  https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
+.. _usrhome/ibin/envfor-emacs-for-man:            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
 
 .. ---------------------------------------------------------------------------
