@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-18 10:30:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-18 11:50:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -39,8 +39,10 @@
 
 print_man_usage()
 {
+    # arg 1: string: "use-emacs-for-man" | "man"
+
     printf "\
- Usage: man [-g | -s |-S | -t] TOPIC
+ Usage: %s [-g | -G | -s |-S | -t | -T] TOPIC
   -g : emacs started in graphics mode
   -G : same as -g, but start emacs faster with less initialization (using -Q)
   -s : using Emacs server: open man page in emacsclient
@@ -51,16 +53,28 @@ print_man_usage()
   -T : same as -t, but start emacs faster with less initialization (using -Q)
 
   You can also specify the same options to man() to
-  override the option passed to use-emacs-for-man.
+  override the option passed to use-emacs-for-man.\n" "$1"
 
-  And you can execute the man executable by using the -man
-  option. After that option pass all man executable options.
-  For example, to list all man pages for 'cc' with the man
-  executable after activating use-emacs-for-man, do this:
+    if [[ "$1" = "man" ]]; then
+        printf "\
 
-    man -man -a -w cc
+  ATTENTION!!
 
-\n"
+   This shell has been instrumented with 'use-emacs-for-man':
+   you are therefore executing USRHOME-supplied man() function,
+   NOT the native man command!
+
+   If you want to use the native man executable from this shell,
+   then simply prepend the '-man' option (without the quotes)
+   to the man command line.
+
+    For example, to list all man pages for 'cc' with the man
+    executable after activating use-emacs-for-man, do this:
+
+     man -man -a -w cc
+"
+    fi
+    printf "\n"
 }
 
 USRHOME_MAN_MODE=
@@ -112,10 +126,15 @@ if [[ -n "$1" ]]; then
             echo ". Using Emacs quickly in text mode as man reader."
             ;;
 
+        -h | --help )
+            print_man_usage "use-emacs-for-man"
+            return 1
+            ;;
+
         *)
             printf "ERROR:  use-emacs-for-man invalid option: %s\n" "$1"
-            print_man_usage
-            return 1
+            print_man_usage "use-emacs-for-man"
+            return 2
     esac
 else
     USRHOME_MAN_MODE='-t'
@@ -127,15 +146,36 @@ man()
 {
     # See print_man_usage() for arguments.
 
+    case $1 in
+        -h | --help)
+            print_man_usage "man"
+            return 1
+            ;;
+    esac
+
     local man_mode
     man_mode="$USRHOME_MAN_MODE"
 
     local topic
     topic="$1"
 
+    # Check for the case where man was issued with a sole argument
+    # that is a switch not supported by the function and not yet caught.
     if [[ -n "$2" ]]; then
-        man_mode="$1"
-        topic="$2"
+        if [[ "$1" = "-man" ]]; then
+            man_mode='-man'
+        else
+            man_mode="$1"
+            topic="$2"
+        fi
+    fi
+    if [[ "$topic" =~ ^- ]]; then
+        if [[ "$topic" = "-man" ]]; then
+            man_mode='-man'
+        else
+            print_man_usage "man"
+            return 3
+        fi
     fi
 
     local man_emacs_opt
@@ -148,16 +188,15 @@ man()
             man_emacs_opt=-Q
             ;;
 
-        -man )
+        -man)
             echo "Using man executable"
             ;;
 
         *)
             printf "ERROR:  emacs-for-man invalid option: %s\n" "$1"
-            print_man_usage
-            return 1
-            ;;
-    esac
+            print_man_usage "man"
+            return 2
+            ;;    esac
 
     case $man_mode in
         '-g' | '-G')
@@ -197,7 +236,7 @@ man()
             emacs ${man_emacs_opt} -nw --eval "(progn (man \"$topic\") (delete-window))"
             ;;
 
-        '-man' )
+        '-man')
             shift
             command man "$@"
             ;;
