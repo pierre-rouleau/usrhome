@@ -760,16 +760,28 @@ inside Emacs.
                                         passed to it.
 = ===================================== =============================================================
 
-The advantage of using the Emacs daemon and an emacsclient_ is speed.  Since Emacs is already
-running, the man command does not have to launch a new Emacs process that has to run through the
-initialization process; it just opens the man page and renders it (if that has not already been
-done).  Opening the man page is instantaneous this way.
+The advantage of using the Emacs daemon and an emacsclient_ are:
+
+- Speed.  Since Emacs is already running, the man command does not have to
+  launch a new Emacs process that has to run through the initialization process;
+  it just opens the man page and renders it (if that has not already been done).
+  Opening the man page is instantaneous this way.
+- Reduced system memory consumption. One Emacs frame is required and can be
+  used by the man command issued from several shells.
+- When the ``-S`` option is used, all man pages that have been previously
+  opened are left open inside an emacsclient buffer.  They each retain the
+  position where you left them when last looking at them.
+- The Emacs daemon starts with your full initialization; all your configured
+  Emacs features are available.
 
 The advantage of *not* using the Emacs daemon and emacsclient is that you open a new Emacs process,
 local to your shell with all its environment variables and you can continue using that instance of
 Emacs independently from all others (if any).  It takes more tie to start but if your
 initialization system is well done that's normally not excessive and it gives you access to
 everything you normally use withing Emacs.
+
+With USRHOME, you can take advantage of both methods, *happily eating your
+cake and keep having it*!
 
 It is possible to use both methods with multiple shells or inside the same shell by passing the
 emacs mode option to the man command. You can use several shells and use different method inside
@@ -784,6 +796,11 @@ each one if you want.  Or just use one method.  The code is flexible.
 
   .. figure:: res/use-emacs-for-man-00.png
 
+**Exit Codes**
+
+- On success; 0.
+- On help request: 1
+- On error: 2 or 3.
 
 **To Activate it Permanently in a Shell**:
   You may not always want to type the ``use-emacs-for-man`` command.
