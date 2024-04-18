@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-18 11:50:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-18 13:23:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -77,7 +77,11 @@ print_man_usage()
     printf "\n"
 }
 
-USRHOME_MAN_MODE=
+# Initialize USRHOME_MAN_MODE to unknown if it is not already set from previous
+# execution of the sourcing of the script.
+if [[ -z $USRHOME_MAN_MODE ]]; then
+    USRHOME_MAN_MODE=
+fi
 if [[ -n "$1" ]]; then
     case $1 in
         -g | -G)
@@ -177,6 +181,8 @@ man()
             return 3
         fi
     fi
+
+    #echo "man_mode:= $man_mode , topic:= $topic"
 
     local man_emacs_opt
     man_emacs_opt=
