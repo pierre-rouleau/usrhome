@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-18 13:23:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-18 14:44:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -80,7 +80,10 @@ print_man_usage()
 # Initialize USRHOME_MAN_MODE to unknown if it is not already set from previous
 # execution of the sourcing of the script.
 if [[ -z $USRHOME_MAN_MODE ]]; then
+    prefix_msg=". Using"
     USRHOME_MAN_MODE=
+else
+    prefix_msg="Now using"
 fi
 if [[ -n "$1" ]]; then
     case $1 in
@@ -102,10 +105,10 @@ if [[ -n "$1" ]]; then
             USRHOME_MAN_MODE="$1"
             case $1 in
                 -g)
-                    echo ". Using Emacs in graphics mode as man reader."
+                    printf "%s Emacs in graphics mode as man reader.\n" "$prefix_msg"
                     ;;
                 -G)
-                    echo ". Using Emacs quickly in graphics mode as man reader."
+                    printf "%s Emacs quickly in graphics mode as man reader.\n" "$prefix_msg"
                     ;;
             esac
             ;;
@@ -117,20 +120,21 @@ if [[ -n "$1" ]]; then
                 emacs --daemon
             fi
             USRHOME_MAN_MODE='-s'
-            echo ". Using Emacs server as man reader."
+            printf "%s Emacs server as man reader.\n" "$prefix_msg"
 
             ;;
         -t)
             USRHOME_MAN_MODE='-t'
-            echo ". Using Emacs in text mode as man reader."
+            printf "%s Emacs in text mode as man reader.\n" "$prefix_msg"
             ;;
 
         -T)
             USRHOME_MAN_MODE='-T'
-            echo ". Using Emacs quickly in text mode as man reader."
+            printf "%s Emacs quickly in text mode as man reader.\n" "$prefix_msg"
             ;;
 
         -h | --help )
+            unset prefix_msg
             print_man_usage "use-emacs-for-man"
             return 1
             ;;
@@ -138,12 +142,14 @@ if [[ -n "$1" ]]; then
         *)
             printf "ERROR:  use-emacs-for-man invalid option: %s\n" "$1"
             print_man_usage "use-emacs-for-man"
+            unset prefix_msg
             return 2
     esac
 else
     USRHOME_MAN_MODE='-t'
     echo ". Using Emacs in text mode as man reader."
 fi
+unset prefix_msg
 
 
 man()
