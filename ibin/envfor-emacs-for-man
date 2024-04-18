@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-18 15:33:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-18 17:06:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -233,14 +233,26 @@ man()
                 echo "Start emacsclient inside another window and try again."
                 return 1
             else
+                local found
                 case $man_mode in
                     '-s')
-                        emacsclient --eval "(progn (man \"$topic\") (delete-window))" > /dev/null
+                        found=$(emacsclient --eval "(progn (man \"$topic\") \
+                                                           (delete-window) \
+                                                           (with-current-buffer \"*Messages*\" \
+                                                             (end-of-buffer) \
+                                                             (when (search-backward (format \"%s man page formatted\" \"$topic\") nil :noerror) t)))")
                         ;;
                     '-S')
-                        emacsclient --eval "(progn (man \"$topic\"))" > /dev/null
+                        found=$(emacsclient --eval "(progn (man \"$topic\") \
+                                                           (with-current-buffer \"*Messages*\" \
+                                                             (end-of-buffer) \
+                                                             (when (search-backward (format \"%s man page formatted\" \"$topic\") nil :noerror) t)))")
                         ;;
                 esac
+                if [[ "$found" = "nil" ]]; then
+                    printf "ERROR: No man page found for %s\n" "$topic" >&2
+                    return 4
+                fi
             fi
             ;;
 
