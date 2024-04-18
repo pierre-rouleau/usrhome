@@ -779,6 +779,11 @@ each one if you want.  Or just use one method.  The code is flexible.
   You can pass the ``-h`` or ``--help`` options to both ``use-emacs-for-man``
   and the specialized ``man`` function.  They will print the usage and return
   an exit code of 1.
+  The ``man`` command also prints a reminder that the native man command is not
+  the one being used.
+
+  .. figure:: res/use-emacs-for-man-00.png
+
 
 **To Activate it Permanently in a Shell**:
   You may not always want to type the ``use-emacs-for-man`` command.
