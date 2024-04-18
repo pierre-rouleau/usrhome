@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-17 21:56:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-17 22:15:35 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -149,7 +149,7 @@ man()
         '-t')
             # Open a local terminal-based copy of Emacs in the current
             # terminal.
-            emacs --eval "(progn (man \"$topic\") (delete-window))"
+            emacs -nw --eval "(progn (man \"$topic\") (delete-window))"
             ;;
     esac
 }
