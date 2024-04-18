@@ -712,7 +712,7 @@ inside Emacs.
 ===================================== =============================================================
 Command                               Description
 ===================================== =============================================================
-``use-emacs-for-man [-g | -s | -t ]`` Install the Emacs-minded ``man`` command inside the shell.
+``use-emacs-for-man [-[gGsStT]]``     Install the Emacs-minded ``man`` command inside the shell.
 
                                       By default it sets the Emacs launching mode to the terminal
                                       mode. You can change this by using one of the following
@@ -722,6 +722,8 @@ Command                               Description
                                         do so.  It will use the template version of that script
                                         located inside `usrhome/template/bin/ge`_
                                         unless it finds it on the PATH.
+                                      - ``-G`` : same as ``-g`` but launches Emacs quicker with
+                                        less initialization  by using Emacs -Q option.
                                       - ``-s`` : uses emacsclient to the Emacs daemon.
 
                                         - This checks if the Emacs daemon is already running.  If
@@ -732,33 +734,39 @@ Command                               Description
                                           that's not already done, otherwise the man command will
                                           print an error telling you to start it.
 
+                                      - ``-S`` : same as ``-s`` but does not delete an Emacs window
+                                        after executing the man command. This is normally better
+                                        when executing the man command from within a shell of
+                                        the emacsclient itself.
                                       - ``-t`` : launch Emacs in terminal mode in the current
                                         shell. This is the default if no option is specified.
+                                      - ``-T`` : same as ``-t`` but launches Emacs quicker with
+                                        less initialization  by using Emacs -Q option.
 
 
-``man [-g | -s | -t ] TOPIC``         Open Emacs man mode viewer for the specified TOPIC.
+``man [-[gGsStT]] TOPIC``             Open Emacs man mode viewer for the specified TOPIC.
 
                                       - If no option is identified it launches Emacs as selected
                                         by the execution of ``use-emacs-for-man`` options.
-                                      - If man is executed with one of the 3 options, it uses the
+                                      - If man is executed with one of the 6 options, it uses the
                                         method selected by the option, overriding what was selected
                                         by ``use-emacs-for-man``.
 ===================================== =============================================================
 
-The advantage of using the Emacs daemon and emacsclient_ is speed.  Since Emacs is already running,
-the man command does not have to launch a new Emacs process that has to run through the
+The advantage of using the Emacs daemon and an emacsclient_ is speed.  Since Emacs is already
+running, the man command does not have to launch a new Emacs process that has to run through the
 initialization process; it just opens the man page and renders it (if that has not already been
 done).  Opening the man page is instantaneous this way.
 
 The advantage of *not* using the Emacs daemon and emacsclient is that you open a new Emacs process,
 local to your shell with all its environment variables and you can continue using that instance of
 Emacs independently from all others (if any).  It takes more tie to start but if your
-initialization system is well done that's normally not excessive.  It would be possible to improve
-it further by passing the ``-Q`` option to Eamcs to speed up initialization but then you would not
-have access to your regular initialization-launched features.
+initialization system is well done that's normally not excessive and it gives you access to
+everything you normally use withing Emacs.
 
 It is possible to use both methods with multiple shells or inside the same shell by passing the
-emacs mode option to the man command.
+emacs mode option to the man command. You can use several shells and use different method inside
+each one if you want.  Or just use one method.  The code is flexible.
 
 *Side note*:
   My PEL_ project provides extensive information about Emacs (in form of extensive hyperlinked PDF
