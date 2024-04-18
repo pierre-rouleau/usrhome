@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-17 21:03:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-17 21:56:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -59,8 +59,15 @@ if [[ -n "$1" ]]; then
             echo ". Using Emacs in graphics mode as man reader."
             ;;
         -s)
+            # Requesting to use Emacs client/server mechanism.
+            # Check if the Emacs daemon is running.  If it is not, start it.
+            if ! emacsclient -a false -e 't' 2> /dev/null; then
+                echo "ATTENTION: Emacs Daemon was not running, starting it!"
+                emacs --daemon
+            fi
             USRHOME_MAN_MODE='-s'
             echo ". Using Emacs server as man reader."
+
             ;;
         -t)
             USRHOME_MAN_MODE='-t'
@@ -128,7 +135,15 @@ man()
 
         '-s')
             # Use emacsclient to the running Emacs daemon
-            emacsclient --no-wait -e "(man \"$topic\")"
+            # Check if the emacsclient is running, if not warn user
+            # and exit.
+            if ! lsof -c emacsclient > /dev/null; then
+                echo "ERROR: Emacs client NOT running!"
+                echo "Start emacsclient inside another window and try again."
+                return 1
+            else
+                emacsclient --eval "(progn (man \"$topic\") (delete-window))"
+            fi
             ;;
 
         '-t')
