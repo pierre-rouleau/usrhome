@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-18 09:14:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-18 10:30:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -51,7 +51,16 @@ print_man_usage()
   -T : same as -t, but start emacs faster with less initialization (using -Q)
 
   You can also specify the same options to man() to
-  override the option passed to use-emacs-for-man.\n"
+  override the option passed to use-emacs-for-man.
+
+  And you can execute the man executable by using the -man
+  option. After that option pass all man executable options.
+  For example, to list all man pages for 'cc' with the man
+  executable after activating use-emacs-for-man, do this:
+
+    man -man -a -w cc
+
+\n"
 }
 
 USRHOME_MAN_MODE=
@@ -139,6 +148,10 @@ man()
             man_emacs_opt=-Q
             ;;
 
+        -man )
+            echo "Using man executable"
+            ;;
+
         *)
             printf "ERROR:  emacs-for-man invalid option: %s\n" "$1"
             print_man_usage
@@ -169,10 +182,10 @@ man()
             else
                 case $man_mode in
                     '-s')
-                        emacsclient --eval "(progn (man \"$topic\") (delete-window))"
+                        emacsclient --eval "(progn (man \"$topic\") (delete-window))" > /dev/null
                         ;;
                     '-S')
-                        emacsclient --eval "(progn (man \"$topic\"))"
+                        emacsclient --eval "(progn (man \"$topic\"))" > /dev/null
                         ;;
                 esac
             fi
@@ -182,6 +195,11 @@ man()
             # Open a local terminal-based copy of Emacs in the current
             # terminal.
             emacs ${man_emacs_opt} -nw --eval "(progn (man \"$topic\") (delete-window))"
+            ;;
+
+        '-man' )
+            shift
+            command man "$@"
             ;;
     esac
 }
