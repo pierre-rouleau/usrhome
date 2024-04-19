@@ -999,7 +999,7 @@ Prompt                       Emacs Regular Expression
 zsh model 1                  ``^>[0-9]+@.+[%#]``
 zsh model 2                  ``^[%#]``
 zsh model 3                  ``^zsh[%#]``
-bash model 1                 ``^>``
+bash model 1                 ``^>[%#]``
 bash model 2                 ``^bash[%#]``
 zsh model 3 and bash model 2 ``^\(\(zsh\)\|\(bash\)\)[%#]``
 ============================ ========================================

@@ -4,7 +4,7 @@
 # Purpose   : Vash ~/.bashrc Configuration File.
 # Created   : Monday, April  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-14 16:03:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 14:52:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -126,8 +126,16 @@ function mdd {
 # The code provides 2 already defined prompt, selected by the value
 # of USRHOME_PROMPT_MODEL
 
+case $LOGNAME in
+    root)
+        pb1="#"
+      ;;
+    *)
+        pb1="%"
+      ;;
+esac
 
-prompt1=">\h@\d@\t[\w]\n> "
+prompt1=">\h@\d@\t[\w]\n>$pb1 "
 
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = 1 ]; then
     # shellcheck disable=SC2016
