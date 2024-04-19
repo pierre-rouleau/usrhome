@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-07 06:32:21 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 15:16:09 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -33,7 +33,7 @@ export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
 source "$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "---: Sourcing ~/.zshenv   --> \$USRHOME_DIR/dot/zshenv.zsh"
+    echo "-1-: Sourcing ~/.zshenv   --> \$USRHOME_DIR/dot/zshenv.zsh"
 fi
 
 # cleanup
