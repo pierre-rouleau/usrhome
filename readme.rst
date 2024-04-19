@@ -968,6 +968,20 @@ them active in the foreground again with ``fg`` and then closing Emacs).  Once
 there's no background process the ``usrhome-prompt-toggle-usr-host`` command
 can be used.
 
+Prompt Model 3
+~~~~~~~~~~~~~~
+
+This prompt is similar to prompt model 2,
+but model 3 is a little more colorful;
+it shows the shell type, ``zsh``, followed by ``%`` or ``#`` on the second
+prompt line,
+in bold green if the last command succeeded or bold red if it failed.
+
+Showing the shell type helps when capturing commands for logs: it explicitly
+identifies the shell.
+
+.. figure:: res/zsh-prompt-model-3.png
+
 Prompt Search Regexp
 ~~~~~~~~~~~~~~~~~~~~
 
