@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-14 16:03:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 12:23:46 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -193,7 +193,19 @@ case $USRHOME_PROMPT_MODEL in
     # If that is not set, the default zsh prompt is used.
     ;;
 
-    2 )
+    2 | 3 )
+        # Select tail end of prompt.
+        # Model 2: just put the % or # in bold
+        # Model 3: print zsh followed by % or #, in bold and in color:
+        #          green when last command succeeded, red otherwise.
+        case $USRHOME_PROMPT_MODEL in
+            2)
+                p3=%B%#%b
+                ;;
+            3)
+                p3=%B%(?.%F{green}zsh%#%F{reset}.%F{red}zsh%#%F{reset})%b
+                ;;
+        esac
         autoload -Uz vcs_info
         precmd_vcs_info() { vcs_info }
         precmd_functions+=( precmd_vcs_info )
@@ -201,7 +213,7 @@ case $USRHOME_PROMPT_MODEL in
         zstyle ':vcs_info:hg:*'  formats '%F{240}hg:(%b)%r%f'
         zstyle ':vcs_info:git:*' formats '%F{240}git:(%b)%r%f'
         zstyle ':vcs_info:*' enable hg git
-        export PROMPT=$'$p1 $p2 \ \$vcs_info_msg_0_\n%B%#%b '
+        export PROMPT=$'$p1 $p2 \ \$vcs_info_msg_0_\n$p3 '
 
         # Show the exit code and the current sub-process jobs
         if [[ -z "$INSIDE_EMACS" ]]; then
