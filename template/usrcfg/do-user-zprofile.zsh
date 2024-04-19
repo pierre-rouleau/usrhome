@@ -3,7 +3,7 @@
 # Purpose   : Local setup.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:02:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 19:01:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,4 +28,7 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-zprofile.zsh"
 #
 
 
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

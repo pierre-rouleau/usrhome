@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 17:47:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:52:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -77,4 +77,7 @@ usrhome_inside_bash_profile=true
 . "$USRHOME_DIR/dot/bashrc.bash"
 unset usrhome_inside_bash_profile
 
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

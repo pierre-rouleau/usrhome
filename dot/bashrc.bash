@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.bashrc Configuration File.
 # Created   : Monday, April  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 17:48:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:52:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -213,4 +213,8 @@ user_bashrc="$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
 if [[ -f "$user_bashrc" ]]; then
     source "$user_bashrc"
 fi
+
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 17:50:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:50:47 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -48,4 +48,7 @@ if [[ -f "$user_zprofile" ]]; then
     source "$user_zprofile"
 fi
 
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

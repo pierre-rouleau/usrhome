@@ -3,7 +3,7 @@
 # Purpose   : Local setup.
 # Created   : Sunday, March 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:01:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 19:01:40 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,4 +42,7 @@ alias f-numbers='fd ".numbers$"'
 # -----------------------------
 . "$USRHOME_DIR_USRCFG/envfor-rust"
 
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

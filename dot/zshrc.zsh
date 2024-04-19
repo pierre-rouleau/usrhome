@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 17:51:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:54:01 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -278,4 +278,8 @@ user_zshrc="$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 if [[ -f "$user_zshrc" ]]; then
     source "$user_zshrc"
 fi
+
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:00:11 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:56:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,4 +42,7 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 #
 # Bash  specific aliases
 
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

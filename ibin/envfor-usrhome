@@ -3,7 +3,7 @@
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 17:43:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:45:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -45,4 +45,6 @@ if ! echo $PATH | grep "$USRHOME_DIR" > /dev/null; then
     unset the_path
 fi
 
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

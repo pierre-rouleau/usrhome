@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 17:59:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:55:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -105,4 +105,8 @@ alias use-homebrew='source $USRHOME_DIR/ibin/envfor-homebrew'
 # -------
 alias use-cbr='source $USRHOME_DIR/ibin/envfor-cbr'
 alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
+
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

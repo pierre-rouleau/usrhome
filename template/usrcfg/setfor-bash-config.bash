@@ -4,7 +4,7 @@
 # Purpose   : Template for the Private USRHOME configuration of the Bash Shell.
 # Created   : Monday, April  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:03:08 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 19:01:55 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -163,4 +163,7 @@ export USRHOME_DIR_DV="$HOME/my/dv"
 export USRHOME_DIR_PUB="$HOME/my/dvpub"
 export USRHOME_DIR_PRIV="$HOME/my/dvpriv"
 
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------

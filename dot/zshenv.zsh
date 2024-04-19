@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 18:20:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:54:32 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -31,11 +31,17 @@ usrhome_trace_in()
     if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
         if [ -z "$USRHOME_TRACE_LEVEL" ]; then
             USRHOME_TRACE_LEVEL=1
-            export USRHOME_TRACE_LEVEL
         else
             USRHOME_TRACE_LEVEL=$(( USRHOME_TRACE_LEVEL + 1 ))
         fi
         printf "-%s-: Sourcing %s\n" "$USRHOME_TRACE_LEVEL"  "$title"
+    fi
+}
+
+usrhome_trace_out()
+{
+    if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
+        USRHOME_TRACE_LEVEL=$(( USRHOME_TRACE_LEVEL - 1 ))
     fi
 }
 
@@ -71,4 +77,7 @@ unset usrhome_parent
 unset original_script
 unset script
 
+# ----------------------------------------------------------------------------
+# Cleanup
+usrhome_trace_out
 # ----------------------------------------------------------------------------
