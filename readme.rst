@@ -1014,6 +1014,69 @@ necessary for the environment.
 As USRHOME grows, I will be adding several of these environment setting
 scripts and commands to support various Operating Systems.
 
+File Naming Convention
+----------------------
+
+= ======================== =======================================================================
+. File Name Format         Description
+= ======================== =======================================================================
+. **Command aliases**      The command aliases must be defined in shell sourced files with the
+                           ``alias`` shell builtin.  For example::
+
+                             alias usrhome='source $USRHOME_DIR/ibin/do-usrhome'
+
+. sh4-\ *PROJECT*          Command alias to setup the shell for a specific project.
+
+                           - This is typically an alias to source a corresponding shell sourced
+                             file with a name sh4--\ *PROJECT* for the given *PROJECT*.
+                           - A sh4--\ *PROJECT* file in turns sets up the shell with all the tools
+                             required for working on this project, and perhaps also a named Emacs
+                             server for the project.  To set up the shell, the file typically
+                             sources a set of envfor-\ *ENV* files, each one setting the shell for
+                             their specific information.
+
+
+. use-\ *ENV*              Command alias that sets up the shell environment for a specific tool.
+
+                           - This is typically an alias to source a corresponding shell sourced
+                             file with the name envfor_\ *ENV* for the given *ENV*.
+                           - The file typically installs commands in the shell by either adding a
+                             directory to the PATH or defining these commands as shell commands
+                             injected inside the current shell.
+
+.
+. **Sourced Script**       All modifications to the current shell are performed by logic stored
+                           inside shell script files that must be sourced. The base name of these
+                           files follow the following convention.
+
+                           - The syntax used by the script code of these files must support both
+                             the Z Shell and Bash, since they are both supported by USRHOME.
+                           - These files are typically stored inside
+                             usrhome/ibin or usrcfg/ibin directories which are never placed
+                             inside the shell PATH.  They are accessed via explicit commands
+                             stored in other sourced file which include the complete path
+                             name using one of the USRHOME environment variable (typically
+                             USRHOME_DIR or USRHOME_DIR_USRCFG).
+
+
+. sh4--\*PROJECT*          Sourced file typically invoked by its corresponding sh4-\ *PROJECT*
+                           file to set up the shell for project *PROJECT*.
+
+. envfor-\ *ENV*           Sourced file typically invoked by its corresponding use-\ *ENV* alias
+                           command to set up the shell environment for a specific tool.
+
+. do-\ *CMD*               Sourced file typically invoked by it corresponding *CMD* shell command
+                           to inject something inside the current shell.
+
+. setfor-\ *SHELL-SETUP*   Sourced file that is part of the shell setup logic that comes from
+                           USRHOME or from the user specific usrcfg directory.  See the diagrams
+                           inside the following sections:
+
+                           - `The Z Shell Startup, Dot Files and User Configuration`_,
+                           - `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
+= ======================== =======================================================================
+
+
 
 The Z Shell Startup, Dot Files and User Configuration
 -----------------------------------------------------
