@@ -3,7 +3,7 @@
 # Purpose   : Environment to use the Homebrew version of curl.
 # Created   : Sunday, March 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-01 09:35:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 16:18:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -29,6 +29,9 @@
 # ----
 #
 #
-export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+if ! echo $PATH | grep "/opt/homebrew/opt/curl/bin" > /dev/null; then
+    echo "- Adding Homebrew curl support"
+    export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+fi
 
 # ----------------------------------------------------------------------------

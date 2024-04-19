@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-12 16:53:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 16:15:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,7 +37,7 @@ if [[ -z $USRHOME_TRACE_SHELL_CONFIG ]]; then
 fi
 
 if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "---: Sourcing \$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
+    echo "-1-: Sourcing \$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
 fi
 
 # Activate whether Homebrew is used:
