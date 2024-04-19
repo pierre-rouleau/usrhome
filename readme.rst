@@ -1028,7 +1028,8 @@ File Name Format         Description
 sh4-\ *PROJECT*          Command alias to setup the shell for a specific project.
 
                          - This is typically an alias to source a corresponding shell sourced
-                           file with a name sh4--\ *PROJECT* for the given *PROJECT*.
+                           file with a name sh4--\ *PROJECT* for the given *PROJECT* (notice the
+                           double dashes in the name of the sourced file).
                          - A sh4--\ *PROJECT* file in turns sets up the shell with all the tools
                            required for working on this project, and perhaps also a named Emacs
                            server for the project.  To set up the shell, the file typically
