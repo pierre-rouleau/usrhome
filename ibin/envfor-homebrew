@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-06 11:15:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 15:45:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,37 +34,47 @@
 # The new way is much more flexible but we have to add the /opt/homebrew directories
 # in the PATH, while this does not have to be done on the old architecture.
 
-usrhome_homebrew_path=\
+if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
+echo "-3-: Sourcing \$USRHOME_DIR/ibin/envfor-homebrew"
+fi
+
+
+if !  echo $PATH | grep "/homebrew/" > /dev/null; then
+    # If Homebrew has not already been installed (as seen in PATH)
+    # then install it.  Otherwise skip.
+
+    usrhome_homebrew_path=\
 /opt/homebrew/opt/make/libexec/gnubin:\
 /opt/homebrew/bin:\
 /opt/homebrew/sbin:\
 /opt/homebrew/opt/m4/bin
 
-arch="$(uname -m)"
-case "$arch" in
-    'x86_64' )
-        if [ -d /usr/local/Cellar ]; then
-            if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
-                echo "- Using Homebrew tools from 'usr/local/Cellar via /usr/local/bin "
+    arch="$(uname -m)"
+    case "$arch" in
+        'x86_64' )
+            if [ -d /usr/local/Cellar ]; then
+                if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
+                    echo "- Using Homebrew tools from 'usr/local/Cellar via /usr/local/bin "
+                fi
+            else
+                echo "ERROR: Homebrew requested but not found in /usr/local/Cellar"
             fi
-        else
-            echo "ERROR: Homebrew requested but not found in /usr/local/Cellar"
-        fi
-    ;;
-
-    'arm64' | 'aarch64' )
-        if [ -d /opt/homebrew ]; then
-            PATH=${usrhome_homebrew_path}:$PATH
-            if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
-                echo "- Using Homebrew tools from /opt/homebrew."
-            fi
-        else
-            echo "ERROR: Homebrew requested but not found in /opt/homebrew"
-        fi
         ;;
-    *)
 
-esac
-unset usrhome_homebrew_path
+        'arm64' | 'aarch64' )
+            if [ -d /opt/homebrew ]; then
+                PATH=${usrhome_homebrew_path}:$PATH
+                if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
+                    echo "- Using Homebrew tools from /opt/homebrew."
+                fi
+            else
+                echo "ERROR: Homebrew requested but not found in /opt/homebrew"
+            fi
+            ;;
+        *)
+
+    esac
+    unset usrhome_homebrew_path
+fi
 
 # ----------------------------------------------------------------------------
