@@ -985,12 +985,30 @@ identifies the shell.
 Prompt Search Regexp
 ~~~~~~~~~~~~~~~~~~~~
 
-With the above prompt, the default prompt, you can use the following regular
-expression to navigate to prompt lines inside a log within the prompt lines
-inside an Emacs terminal or shell mode buffer:  ``^>[0-9]+@.+[%#]``
+Use the following regular expressions to search a prompt, or
+to install them in editors, like Emacs, to navigate through
+prompt lines inside a shell.
+
+The regular expression syntax shown here correspond to the
+`Emacs 'string-format' regular expression syntax`_, the syntax you can use
+inside Emacs configuration.
+
+============================ ========================================
+Prompt                       Emacs Regular Expression
+============================ ========================================
+zsh model 1                  ``^>[0-9]+@.+[%#]``
+zsh model 2                  ``^[%#]``
+zsh model 3                  ``^zsh[%#]``
+bash model 1                 ``^>``
+bash model 2                 ``^bash[%#``
+zsh model 3 and bash model 2 ``^\(\(zsh\)\|\(bash\)\)[%#]``
+============================ ========================================
+
+Note that when using the zsh prompt model 3 is very similar to the
+bash prompt model 2 and it's easy to create a regexp that supports both.
 
 
-The regexp for prompt model 2 is simpler: ``^[%#]``
+
 
 Command and Script Organization
 ===============================
@@ -1473,5 +1491,6 @@ Thanks!
 .. _section that describe Emacs man and woman support: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf#page=5
 .. _emacsclient:                                  https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
 .. _usrhome/ibin/envfor-emacs-for-man:            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
+.. _Emacs 'string-format' regular expression syntax:              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
 
 .. ---------------------------------------------------------------------------
