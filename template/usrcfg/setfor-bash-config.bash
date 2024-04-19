@@ -4,7 +4,7 @@
 # Purpose   : Template for the Private USRHOME configuration of the Bash Shell.
 # Created   : Monday, April  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-08 18:01:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:03:08 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -39,9 +39,7 @@ if [[ -z $USRHOME_TRACE_SHELL_CONFIG ]]; then
     export USRHOME_TRACE_SHELL_CONFIG=0
 fi
 
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "---: Sourcing \$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
-fi
+usrhome_trace_in "\$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
 
 # Activate whether Homebrew is used:
 # - 1 to use Homebrew,

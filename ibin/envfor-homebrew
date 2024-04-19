@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 15:45:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 17:55:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,10 +34,7 @@
 # The new way is much more flexible but we have to add the /opt/homebrew directories
 # in the PATH, while this does not have to be done on the old architecture.
 
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-echo "-3-: Sourcing \$USRHOME_DIR/ibin/envfor-homebrew"
-fi
-
+usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-homebrew"
 
 if !  echo $PATH | grep "/homebrew/" > /dev/null; then
     # If Homebrew has not already been installed (as seen in PATH)

@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 15:48:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 17:51:33 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -30,9 +30,7 @@ if [[ -z "$USRHOME_DIR" ]]; then
     echo "               Check your usrcfg  files!"
 fi
 
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "-1-: Sourcing ~/.zshrc    --> \$USRHOME_DIR/dot/zshrc.zsh"
-fi
+usrhome_trace_in "~/.zshrc    --> \$USRHOME_DIR/dot/zshrc.zsh"
 
 # ----------------------------------------------------------------------------
 # Set shortcut alias for Z shell

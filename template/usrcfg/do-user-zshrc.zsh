@@ -3,7 +3,7 @@
 # Purpose   : Local setup.
 # Created   : Sunday, March 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 16:14:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:01:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -22,11 +22,7 @@
 # Code
 # ----
 #
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-echo "-3-: Sourcing \$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
-fi
-#
-#
+usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 
 # Setting Environments
 # --------------------

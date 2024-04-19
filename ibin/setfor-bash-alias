@@ -3,7 +3,7 @@
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-12 16:45:36 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 18:00:11 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,9 +30,7 @@ else
 fi
 
 
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "---: Sourcing $USRHOME_DIR/ibin/setfor-bash-alias"
-fi
+usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 
 # --------
 #

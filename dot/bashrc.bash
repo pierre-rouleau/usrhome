@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 # SH FILE: bashrc.bash
 #
-# Purpose   : Vash ~/.bashrc Configuration File.
+# Purpose   : Bash ~/.bashrc Configuration File.
 # Created   : Monday, April  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 14:52:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 17:48:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,9 +32,7 @@ if [[ -z "$USRHOME_DIR" ]]; then
     echo "               Check your usrcfg  files!"
 fi
 
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "---: Sourcing ~/.bashrc    --> \$USRHOME_DIR/dot/bashrc.bash"
-fi
+usrhome_trace_in "~/.bashrc    --> \$USRHOME_DIR/dot/bashrc.bash"
 
 # ----------------------------------------------------------------------------
 # Set shortcut alias for Z shell
@@ -56,23 +54,23 @@ alias lsd='ls -F | grep -i / | sort -f | sed -e "s~/~~g" | column'
 # }
 
 function cdv {
-    cd /Volumes/$1
+    cd "/Volumes/$1" || return 1
 }
 
 function cdh {
-    cd $USRHOME_DIR_MY/$1
+    cd "$USRHOME_DIR_MY/$1" || return 1
 }
 
 function cddv {
-    cd $USRHOME_DIR_DV/$1
+    cd "$USRHOME_DIR_DV/$1" || return 1
 }
 
 function cdpriv {
-    cd $USRHOME_DIR_PRIV/$1
+    cd "$USRHOME_DIR_PRIV/$1" || return 1
 }
 
 function cdpub {
-    cd $USRHOME_DIR_PUB/$1
+    cd "$USRHOME_DIR_PUB/$1" || return 1
 }
 
 function mdd {
@@ -83,7 +81,7 @@ function mdd {
     else
         mkdir "$1" || return 1
     fi
-    cd "$1"
+    cd "$1" || return 1
 }
 
 # ----------------------------------------------------------------------------

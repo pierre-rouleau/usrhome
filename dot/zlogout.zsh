@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 15:51:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 17:49:42 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -21,8 +21,6 @@
 #
 # Nothing else than supporting configuration tracing.
 
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "-1-: Sourcing ~/.zlogout  --> \$USRHOME_DIR/dot/zlogout.zsh"
-fi
+usrhome_trace_in "~/.zlogout  --> \$USRHOME_DIR/dot/zlogout.zsh"
 
 # ----------------------------------------------------------------------------

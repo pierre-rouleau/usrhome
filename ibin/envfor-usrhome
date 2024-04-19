@@ -3,7 +3,7 @@
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 15:44:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 17:43:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -22,9 +22,7 @@
 #
 #
 
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-echo "-3-: Sourcing \$USRHOME_DIR/ibin//envfor-usrhome"
-fi
+usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-usrhome"
 
 
 if ! echo $PATH | grep "$USRHOME_DIR" > /dev/null; then

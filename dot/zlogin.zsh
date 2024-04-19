@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 15:51:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 17:49:07 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -23,9 +23,6 @@
 # The zlogin is always sourced after the zprofile, so the USRHOME
 # environment variables are always defined; no need to check.
 
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "-1-: Sourcing ~/.zlogin   --> \$USRHOME_DIR/dot/zlogin.zsh"
-fi
-
+usrhome_trace_in "~/.zlogin   --> \$USRHOME_DIR/dot/zlogin.zsh"
 
 # ----------------------------------------------------------------------------

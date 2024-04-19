@@ -1,10 +1,9 @@
-#!/bin/sh
 # SH FILE: bash_profile.bash
 #
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-12 16:44:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 17:47:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,9 +61,7 @@ else
     printf "ERROR: %s does not exist!\n" "$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
 fi
 
-if [ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]; then
-    echo "---: Sourcing ~/.bash_profile   --> \$USRHOME_DIR/dot/bash_profile.bash"
-fi
+usrhome_trace_in "~/.bash_profile   --> \$USRHOME_DIR/dot/bash_profile.bash"
 
 # Mimic behaviour found on most Bash implementations:
 # - The ~/.bash_profile sources ~/.bashrc if it exists.

@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 15:16:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-19 17:45:58 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -30,11 +30,37 @@ usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
 export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
 
 # Read user's USRHOME configuration
-source "$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
-
-if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-    echo "-1-: Sourcing ~/.zshenv   --> \$USRHOME_DIR/dot/zshenv.zsh"
+# It must be available. Otherwise USRHOME won't work properly.
+usrhome_zsh_config="$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
+if [ ! -e $usrhome_zsh_config ]; then
+    printf "ERROR: USRHOME cannot find zsh configuration file!\n"
+    printf " It is expected at: %s\n" "$usrhome_zsh_config"
+    printf " Please install it, use the template example as basis.\n"
+else
+    source "$usrhome_zsh_config"
 fi
+unset usrhome_zsh_config
+
+usrhome_trace_in()
+{
+    # Arg 1: string: trace text.  printed after the level.
+    #                Something like:  ~/.zshenv   --> \$USRHOME_DIR/dot/zshenv.zsh
+    #                            or:  \$USRHOME_DIR/ibin/envfor-usrhome
+
+    local title
+    title=$1
+    if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
+        if [ -z "$USRHOME_TRACE_LEVEL" ]; then
+            USRHOME_TRACE_LEVEL=1
+            export USRHOME_TRACE_LEVEL
+        else
+            USRHOME_TRACE_LEVEL=$(( USRHOME_TRACE_LEVEL + 1 ))
+        fi
+        printf "-%s-: Sourcing %s\n" "$USRHOME_TRACE_LEVEL"  "$title"
+    fi
+}
+
+usrhome_trace_in "~/.zshenv   --> \$USRHOME_DIR/dot/zshenv.zsh"
 
 # cleanup
 unset usrhome_parent
