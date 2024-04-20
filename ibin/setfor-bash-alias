@@ -3,7 +3,7 @@
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:56:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-20 15:38:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -23,14 +23,13 @@
 # ----
 #
 #
+usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
+
 if [ -e "$USRHOME_DIR_USRCFG/setfor-bash-config.bash" ]; then
     . "$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
 else
     printf "ERROR: %s does not exist!\n" "$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
 fi
-
-
-usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 
 # --------
 #
