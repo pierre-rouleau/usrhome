@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.bashrc Configuration File.
 # Created   : Monday, April  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:52:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-20 10:01:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,6 +32,7 @@ if [[ -z "$USRHOME_DIR" ]]; then
     echo "               Check your usrcfg  files!"
 fi
 
+. $USRHOME_DIR/dot/shell-tracing.sh
 usrhome_trace_in "~/.bashrc    --> \$USRHOME_DIR/dot/bashrc.bash"
 
 # ----------------------------------------------------------------------------

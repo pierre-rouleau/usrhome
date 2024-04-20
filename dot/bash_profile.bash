@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:52:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-20 10:01:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -61,6 +61,7 @@ else
     printf "ERROR: %s does not exist!\n" "$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
 fi
 
+. $USRHOME_DIR/dot/shell-tracing.sh
 usrhome_trace_in "~/.bash_profile   --> \$USRHOME_DIR/dot/bash_profile.bash"
 
 # Mimic behaviour found on most Bash implementations:

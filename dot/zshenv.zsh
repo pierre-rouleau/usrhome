@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 18:54:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-20 10:09:58 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -20,30 +20,7 @@
 # ----
 #
 #
-usrhome_trace_in()
-{
-    # Arg 1: string: trace text.  printed after the level.
-    #                Something like:  ~/.zshenv   --> \$USRHOME_DIR/dot/zshenv.zsh
-    #                            or:  \$USRHOME_DIR/ibin/envfor-usrhome
 
-    local title
-    title=$1
-    if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-        if [ -z "$USRHOME_TRACE_LEVEL" ]; then
-            USRHOME_TRACE_LEVEL=1
-        else
-            USRHOME_TRACE_LEVEL=$(( USRHOME_TRACE_LEVEL + 1 ))
-        fi
-        printf "-%s-: Sourcing %s\n" "$USRHOME_TRACE_LEVEL"  "$title"
-    fi
-}
-
-usrhome_trace_out()
-{
-    if [[ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]]; then
-        USRHOME_TRACE_LEVEL=$(( USRHOME_TRACE_LEVEL - 1 ))
-    fi
-}
 
 # Identify the path of the usrcfg directory by taking advantage that
 # usrhome and usrcfg are llocated inside the same parent, and that
@@ -65,6 +42,8 @@ else
     source "$usrhome_zsh_config"
 fi
 unset usrhome_zsh_config
+
+. $USRHOME_DIR/dot/shell-tracing.sh
 
 # This script needs to source user configuration scripts to
 # figure out whether tracing is allowed, it sourced other files
