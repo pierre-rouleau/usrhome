@@ -3,7 +3,7 @@
 # Purpose   : Template for the Private USRHOME configuration for Z Shell.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 19:03:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-20 12:49:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -35,6 +35,23 @@ if [[ -z $USRHOME_TRACE_SHELL_CONFIG ]]; then
     # sourcing if the environment variable is not already set to a value (0, or 1).
     export USRHOME_TRACE_SHELL_CONFIG=0
 fi
+
+# Directory Identification
+# ------------------------
+#
+# The following environment variables identify the location of the
+# USRHOME important directories (the first one is updated by setup).
+#
+export USRHOME_DIR=SETUP_USRHOME_REPLACED_DIR_VALUE
+
+# Update the following lines to fit your environment.
+export USRHOME_DIR_MY="$HOME/my"
+export USRHOME_DIR_DV="$HOME/my/dv"
+export USRHOME_DIR_PUB="$HOME/my/dvpub"
+export USRHOME_DIR_PRIV="$HOME/my/dvpriv"
+
+# Define the tracing functions
+. $USRHOME_DIR/dot/shell-tracing.sh
 
 usrhome_trace_in "\$USRHOME_DIR_USRCFG/setfor-zsh-config.zsh"
 
@@ -87,21 +104,8 @@ if [[ -z $USRHOME__USRCFG_SEEN ]]; then
     #       Prompt search regexp := '^[%#]
 fi
 
+
 # ----------------------------------------------------------------------------
-# Directory Identification
-# ------------------------
-#
-# The following environment variables identify the location of 4 important
-# directories:
-#
-export USRHOME_DIR_MY="$HOME/my"
-export USRHOME_DIR_DV="$HOME/my/dv"
-export USRHOME_DIR_PUB="$HOME/my/dvpub"
-export USRHOME_DIR_PRIV="$HOME/my/dvpriv"
-
-# pop-one level.  Can't be at the end of the file because extra code is placed
-# there by the installer.
+# Cleanup
 usrhome_trace_out
-
-# The last one is USRHOME_DIR, which defines the root of the usrhome directory
-# It is first set by execution of setup/setup-usrhome.
+# ----------------------------------------------------------------------------

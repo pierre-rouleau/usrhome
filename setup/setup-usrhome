@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-15 11:50:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-20 13:46:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -191,10 +191,8 @@ echo ""
 echo "- Append definition of USRHOME_DIR to $target_fpath"
 echo "  USRHOME_DIR will be set to $USRHOME_DIR"
 prompt "Do you wish to proceed"
-printf "export USRHOME_DIR=%s\n" "$USRHOME_DIR" >>  "$target_fpath"
-echo "Done: "
-tail -n 3 "$target_fpath"
-echo ""
+sed "s~SETUP_USRHOME_REPLACED_DIR_VALUE~${USRHOME_DIR}~g" "$USRHOME_DIR/template/usrcfg/setfor-zsh-config.zsh" > "$target_fpath"
+echo "Done. "
 
 # --------
 # 3: Backup user's Z Shell files, copy them to usrhome/dot,
