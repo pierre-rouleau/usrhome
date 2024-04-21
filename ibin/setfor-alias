@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:55:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-21 16:30:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -57,16 +57,18 @@ alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
 #              '=' after socket,
 #              '%' after whiteout,
 #              '|' after FIFO
-# -G : colorize
+# -G : macOS: colorize    , Linux:= no-group: don't list group
 # -O : include file macOS flags
 #
-alias l='ls -FG'
-alias la='ls -aFG'
+
 
 os_type=$(uname)
 case $os_type in
     'Darwin' )
         # Supports the -O option:
+        # -G on macOS means colorize.
+        alias l='ls -FG'
+        alias la='ls -aFG'
         alias ll='ls -lFGO'
         alias lla='ls -alFGO'
         alias lt='ls -ltrFGO'
@@ -75,10 +77,14 @@ case $os_type in
 
     *)
         # There's no support for the -O option normally.
-        alias ll='ls -lFG'
-        alias lla='ls -alFG'
-        alias lt='ls -ltrFG'
-        alias lta='ls -ltraFG'
+        # -G normally means to not display group info in long display (so we don't use this here)
+        # --color=auto activates colors
+        alias l='ls -F --color=auto'
+        alias la='ls -aF --color=auto'
+        alias ll='ls -lF --color=auto'
+        alias lla='ls -alF --color=auto'
+        alias lt='ls -ltrF --color=auto'
+        alias lta='ls -ltraF --color=auto'
         ;;
 esac
 unset os_type
