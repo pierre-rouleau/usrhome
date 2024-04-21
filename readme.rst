@@ -6,7 +6,7 @@ USRHOME -- Easily Clonable Unix Shell Configuration & Tools
    :alt: License
    :target: https://www.gnu.org/licenses/gpl-3.0.html
 
-.. image:: https://img.shields.io/badge/State-Stable,_zsh_support_only-yellow
+.. image:: https://img.shields.io/badge/State-Unstable,_zsh_support_only-red
    :alt: Version
    :target: https://github.com/pierre-rouleau/usrhome
 
