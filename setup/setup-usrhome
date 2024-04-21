@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-20 15:22:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-21 15:53:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -111,8 +111,9 @@ create_dot_file()
 modify_dot_file()
 {
     # Arg 1: string: base name of config file (without the leading period)
+    # Arg 2: string: extension: "zsh", "bash" or "sh"
 
-    usrhome_src="$(realpath "$USRHOME_DIR/dot/$1.zsh")"
+    usrhome_src="$(realpath "$USRHOME_DIR/dot/$1.$2")"
 
     if [ -f "$HOME/.$1" ]; then
         if [ ! -h "$HOME/.$1" ]; then
@@ -220,17 +221,61 @@ echo "   - ~/.zprofile@ --> $USRHOME_DIR/dot/zprofile.zsh"
 echo "   - ~/.zshenv@   --> $USRHOME_DIR/dot/zshenv.zsh"
 echo "   - ~/.zshrc@    --> $USRHOME_DIR/dot/zshrc.zsh"
 echo ""
+echo " ATTENTION:  please open another terminal using your current"
+echo "             shell setup and tools to use once the shell"
+echo "             config files are replaced by symlinks."
+echo ""
 prompt "Do you wish to proceed"
-echo "OK, proceeding..."
+echo "OK, backing up ZShell config and creating symlinks..."
 echo ""
 
-modify_dot_file zlogin
-modify_dot_file zlogout
-modify_dot_file zprofile
-modify_dot_file zshenv
-modify_dot_file zshrc
-
+modify_dot_file zlogin   zsh
+modify_dot_file zlogout  zsh
+modify_dot_file zprofile zsh
+modify_dot_file zshenv   zsh
+modify_dot_file zshrc    zsh
 echo ""
-echo "USRHOME setup complete!"
+echo "Done:"
+echo " Z Shell Configuration files backed up,"
+echo " symlinks to usrcfg files created."
+echo ""
+echo ""
+echo "The next step is to do the same for the Bash"
+echo "configuration files: backing them up and creating"
+echo "symlinks to their usrhome/dot corresponding files."
+echo ""
+echo "  The end result will be:"
+echo "   - ~/.bash_login@   --> $USRHOME_DIR/dot/bash_login.bash"
+echo "   - ~/.bash_logout@  --> $USRHOME_DIR/dot/bash_logout.bash"
+echo "   - ~/.bash_profile@ --> $USRHOME_DIR/dot/bash_profile.bash"
+echo "   - ~/.bashrc@       --> $USRHOME_DIR/dot/bashrc.bash"
+echo "   - ~/.profile@      --> $USRHOME_DIR/dot/profile.sh"
+echo ""
+echo " ATTENTION:  please open another terminal using your current"
+echo "             shell setup and tools to use once the shell"
+echo "             config files are replaced by symlinks."
+echo ""
+prompt "Do you wish to proceed"
+echo "OK, backing up Bash config and creating symlinks..."
+echo ""
+
+modify_dot_file bash_login   bash
+modify_dot_file bash_logout  bash
+modify_dot_file bash_profile bash
+modify_dot_file bashrc       bash
+modify_dot_file profile      sh
+echo ""
+echo "Done:"
+echo " Bash Configuration files backed up,"
+echo " symlinks to usrhome/dot files created."
+echo ""
+echo ""
+echo "USRHOME automated setup is now complete."
+echo " You must now integrate the backup of your Bash and/or ZShell"
+echo " into the usrhome/dot files that are identified by the symlink."
+echo ""
+echo "DO NOT CLOSE THIS TERMINAL!  It uses you old shell setup."
+echo " Use it to perform the required editing!"
+
 
 # ----------------------------------------------------------------------------
