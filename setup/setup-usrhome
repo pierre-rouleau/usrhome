@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-21 16:52:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-21 16:54:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -153,7 +153,7 @@ echo "It will do this:"
 echo ""
 echo "- Create ${parentpath}/usrcfg"
 if [ -e  "${parentpath}/usrcfg/setfor-zsh-config.zsh" ]; then
-    echo "-  Create a backup of ${parentpath}/usrcfg/setfor-zsh-config.zsh if requested."
+    echo "- Create a backup of ${parentpath}/usrcfg/setfor-zsh-config.zsh if requested."
 fi
 echo "- Copy   ${curpath}/template/usrcfg/setfor-zsh-config.zsh"
 echo "    to   ${parentpath}/usrcfg/setfor-zsh-config.zsh"
