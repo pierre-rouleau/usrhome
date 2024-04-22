@@ -4,14 +4,14 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-01 17:37:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 17:15:44 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Print PATH's elements, one per line.
-# Usage: showpath [-n] [MAN|LIB][PATH]
+# Usage: showpath [-n] [[MAN|LIB][PATH]|[[USRHOME_]ORIGINAL[_PATH]]
 #
 #  -n: when specified, a left justified number is printed on each line.
 #
@@ -20,6 +20,18 @@
 # - Exit code: 1:  invalid argument(s).
 #              2:  specified environment variable is not defined.
 #              3:  format of specified environment variable is incorrect.
+#
+# Examples:
+#
+#  showpath
+#  showpath -n
+#  showpath -n PATH
+#  showpath LIB
+#  showpath LIBPATH
+#  showpath -n LIBPATH
+#  showpath -n ORIGINAL
+#  showpath -n ORIGINAL_PATH
+#  showpath -n USRHOME_ORIGINAL_PATH
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -35,7 +47,9 @@
 show_path()
 {
     # Arg 1: string: "-n" or nothing.
-    # vname: string: name of path envvar: PATH, LIBPATH or MANPATH
+    # vname: string: name of path envvar: PATH, LIBPATH or MANPATH.
+    #                It also supports: ORIGINAL, ORIGINAL_PATH or USRHOME_ORIGINAL_PATH
+    #                to show the value of USRHOME_ORIGINAL_PATH
 
     eval path_value='$'$vname
     if [ -z "$path_value" ]; then
@@ -122,6 +136,10 @@ case $vname in
         show_path "$1"
         ;;
 
+    'ORIGINAL' | 'ORIGINAL_PATH' | 'USRHOME_ORIGINAL_PATH')
+        vname="USRHOME_ORIGINAL_PATH"
+        show_path "$1"
+        ;;
     *)
         >&2 echo "ERROR: showpath does not support $vname"
         >&2 echo " usage: showpath [[LIB|MAN]|PATH] [-n]"
