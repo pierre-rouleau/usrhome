@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:56:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 17:01:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,73 +26,78 @@
 #
 usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-path"
 
-# ----------------------------------------------------------------------------
-# Security Issue Check
+if [ ! "$USRHOME_PATH_SET" = "1" ]; then
+    # ----------------------------------------------------------------------------
+    # Security Issue Check Functions
 
-function usrhome_xz_vulnerability {
-    echo ""
-    echo "SECURITY ISSUE DETECTED By USRHOME:"
-    echo " - Compromised version ${xz_ver} of xz installed!"
-    echo " - in: ${xz_path}"
-    echo "   - See: "
-    echo "     - https://repology.org/project/xz/cves"
-}
+    function usrhome_xz_vulnerability {
+        echo ""
+        echo "SECURITY ISSUE DETECTED By USRHOME:"
+        echo " - Compromised version ${xz_ver} of xz installed!"
+        echo " - in: ${xz_path}"
+        echo "   - See: "
+        echo "     - https://repology.org/project/xz/cves"
+    }
 
-function usrhome_security_check {
-    # check and warn if known problematic versions are installed
-    # xz version 5.6,0, 5.6.1 have backdoors
-    os_type=$(uname)
-    xz_ver=$(xz --version | grep liblzma | awk '{print $2 }')
-    xz_path=$(which xz)
-    case $xz_ver in
-        '5.6.0' | '5.6.1' )
-            usrhome_xz_vulnerability
-            echo "     - https://nvd.nist.gov/vuln/detail/CVE-2024-3094"
-            echo "     - https://www.wired.com/story/jia-tan-xz-backdoor/"
-            echo "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor"
-            echo ""
-            case $os_type in
-                'Darwin')
-                    echo "Run: 'brew update; brew upgrade' AS SOON AS POSSIBLE to downgrade xz!"
-                    echo ""
-                    ;;
-            esac
-            ;;
+    function usrhome_security_check {
+        # check and warn if known problematic versions are installed
+        # xz version 5.6,0, 5.6.1 have backdoors
+        os_type=$(uname)
+        xz_ver=$(xz --version | grep liblzma | awk '{print $2 }')
+        xz_path=$(which xz)
+        case $xz_ver in
+            '5.6.0' | '5.6.1' )
+                usrhome_xz_vulnerability
+                echo "     - https://nvd.nist.gov/vuln/detail/CVE-2024-3094"
+                echo "     - https://www.wired.com/story/jia-tan-xz-backdoor/"
+                echo "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor"
+                echo ""
+                case $os_type in
+                    'Darwin')
+                        echo "Run: 'brew update; brew upgrade' AS SOON AS POSSIBLE to downgrade xz!"
+                        echo ""
+                        ;;
+                esac
+                ;;
 
-        '5.2.5' )
-            usrhome_xz_vulnerability
-            echo "     - https://nvd.nist.gov/vuln/detail/CVE-2020-22916"
-            ;;
+            '5.2.5' )
+                usrhome_xz_vulnerability
+                echo "     - https://nvd.nist.gov/vuln/detail/CVE-2020-22916"
+                ;;
 
-    esac
-    unset os_type
-    unset xz_ver
-    unset xz_path
-}
+        esac
+        unset os_type
+        unset xz_ver
+        unset xz_path
+    }
 
+    # ----------------------------------------------------------------------------
+    # Remember original PATH in USRHOME_ORIGINAL_PATH
+    export USRHOME_ORIGINAL_PATH="$PATH"
 
-# ----------------------------------------------------------------------------
-# Remember original PATH in USRHOME_ORIGINAL_PATH
-export USRHOME_ORIGINAL_PATH="$PATH"
+    #
+    . "$USRHOME_DIR_USRCFG/setfor-all-config.sh"
 
-# ----------------------------------------------------------------------------
-# Add entries in PATH as required by user configuration
+    # ----------------------------------------------------------------------------
+    # Add entries in PATH as required by user configuration
 
-# Set Homebrew first, just above system's PATH, USRHOME and user's bin will
-# be prepended before; to take precedence over homebrew, over system.
+    # Set Homebrew first, just above system's PATH, USRHOME and user's bin will
+    # be prepended before; to take precedence over homebrew, over system.
 
-if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
-    source $USRHOME_DIR/ibin/envfor-homebrew
+    if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
+        source $USRHOME_DIR/ibin/envfor-homebrew
+    fi
+
+    # Add usrhome directories in PATH
+    source $USRHOME_DIR/ibin/envfor-usrhome
+
+    # Remember that PATH was set.  Prevent setting it again.
+    export USRHOME_PATH_SET=1
+
+    # Check and report if there are any security issues
+    usrhome_security_check
+
 fi
-
-# Add usrhome directories in PATH
-source $USRHOME_DIR/ibin/envfor-usrhome
-
-# Remember that PATH was set.  Prevent setting it again.
-export USRHOME_PATH_SET=1
-
-# Check and report if there are any security issues
-usrhome_security_check
 
 # ----------------------------------------------------------------------------
 # Cleanup

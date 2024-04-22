@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 18:50:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 15:56:08 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -47,6 +47,7 @@ user_zprofile="$USRHOME_DIR_USRCFG/do-user-zprofile.zsh"
 if [[ -f "$user_zprofile" ]]; then
     source "$user_zprofile"
 fi
+unset user_zprofile
 
 # ----------------------------------------------------------------------------
 # Cleanup

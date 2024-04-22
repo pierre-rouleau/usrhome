@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 18:54:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 18:23:52 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -19,8 +19,8 @@
 #                          from an application)
 #
 # ----------------------------------------------------------------------------
-# Code
-# ----
+# USRHOME-specific code
+# ---------------------
 
 # Check Environment Consistency and Support Tracing
 # -------------------------------------------------
@@ -99,53 +99,6 @@ else
 fi
 
 #
-
-# ------------------------------------------
-# Set shortcut functions for Z shell
-# ----------------------------------
-
-function lsd {
-    ls $1 -dGF *(/)
-}
-
-# lsl: list links
-#  alias lsl='ls -lFGO *(@)'
-# With a function it's possible to pass a command line argument (like lsl -l)
-function lsl {
-    ls $1 -FGO *(@)
-}
-
-function cdv {
-    cd /Volumes/$1
-}
-
-function cdh {
-    cd $USRHOME_DIR_MY/$1
-}
-
-function cddv {
-    cd $USRHOME_DIR_DV/$1
-}
-
-function cdpriv {
-    cd $USRHOME_DIR_PRIV/$1
-}
-
-function cdpub {
-    cd $USRHOME_DIR_PUB/$1
-}
-
-function mdd {
-    # mdd: mkdir and cd
-    #      If path has / in it, mkdir -p is used.
-    if printf "%s" "$1" | grep "/" > /dev/null; then
-        mkdir -pv "$1" || return 1
-    else
-        mkdir "$1" || return 1
-    fi
-    cd "$1"
-}
-
 # ------------------------------------------
 # Update prompt
 # -------------

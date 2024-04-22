@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-21 16:30:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 18:17:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,8 +62,7 @@ alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
 #
 
 
-os_type=$(uname)
-case $os_type in
+case $(uname) in
     'Darwin' )
         # Supports the -O option:
         # -G on macOS means colorize.
@@ -87,7 +86,6 @@ case $os_type in
         alias lta='ls -ltraF --color=auto'
         ;;
 esac
-unset os_type
 
 
 # Manual environment variable manipulation
@@ -111,6 +109,49 @@ alias use-homebrew='source $USRHOME_DIR/ibin/envfor-homebrew'
 # -------
 alias use-cbr='source $USRHOME_DIR/ibin/envfor-cbr'
 alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
+
+# ----------------------------------------------------------------------------
+# Set shortcut functions for Bash and the Z shell
+# -----------------------------------------------
+# These functions
+
+if [ "$(uname)" = "Darwin" ]; then
+    function cdv {
+        cd "/Volumes/$1"
+    }
+fi
+
+function cdh {
+    cd "$USRHOME_DIR_MY/$1"
+}
+
+function cddv {
+    cd "$USRHOME_DIR_DV/$1"
+}
+
+function cdpriv {
+    cd "$USRHOME_DIR_PRIV/$1"
+}
+
+function cdpub {
+    cd "$USRHOME_DIR_PUB/$1"
+}
+
+function cdtmp {
+    cd "$HOME/tmp/$1"
+}
+
+
+function mdd {
+    # mdd: mkdir and cd
+    #      If path has / in it, mkdir -p is used.
+    if printf "%s" "$1" | grep "/" > /dev/null; then
+        mkdir -pv "$1" || return 1
+    else
+        mkdir "$1" || return 1
+    fi
+    cd "$1"
+}
 
 # ----------------------------------------------------------------------------
 # Cleanup
