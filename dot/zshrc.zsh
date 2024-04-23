@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-22 18:23:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 22:00:04 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -35,7 +35,7 @@ usrhome_trace_in "~/.zshrc    --> \$USRHOME_DIR/dot/zshrc.zsh"
 # ----------------------------------------------------------------------------
 # Set shortcut alias for Z shell
 # ------------------------------
-source $USRHOME_DIR/ibin/setfor-zsh-alias
+. $USRHOME_DIR/ibin/setfor-zsh-alias
 
 # ----------------------------------------------------------------------------
 # Activate the help for zsh builtins
@@ -204,32 +204,20 @@ esac
 # ----------------------------------------------------------------------------
 # Update Path in sub-shells if not already done
 # ---------------------------------------------
-if [[ -z "$USRHOME_PATH_SET" ]]; then
-    source "$USRHOME_DIR/ibin/setfor-path"
-fi
-
-function usrhome-switch-path {
-    oldp=$PATH
-    export PATH="$USRHOME_ORIGINAL_PATH"
-    export USRHOME_ORIGINAL_PATH="$oldp"
-    if [[ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]]; then
-        echo "- Switch PATH with USRHOME_ORIGINAL_PATH"
-    fi
-    unset oldp
-}
+. "$USRHOME_DIR/ibin/setfor-path"
 
 # ----------------------------------------------------------------------------
 # Sanitize PATH
 # -------------
 #
-source $USRHOME_DIR/ibin/do-sanitize-path.zsh
+. $USRHOME_DIR/ibin/do-sanitize-path.zsh
 
 # ----------------------------------------------------------------------------
 # Source User Extra zshrc if it exists
 # ------------------------------------
 user_zshrc="$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 if [[ -f "$user_zshrc" ]]; then
-    source "$user_zshrc"
+    . "$user_zshrc"
 fi
 
 # ----------------------------------------------------------------------------
