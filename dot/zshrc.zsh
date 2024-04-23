@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-23 15:11:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 17:37:56 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -130,7 +130,7 @@ fi
 
 p1=$'>%?@%B%D{%H:%M:%S} L%L'
 
-if [ $USRHOME_PROMPT_SHOW_USR_HOST = 1 ]; then
+if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then
     p2=$'%n@%m:%~%b'
 else
     p2=$'%~%b'
