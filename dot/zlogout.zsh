@@ -1,10 +1,10 @@
-# ZSH Config FILE: zlogout
+# ZSH Configuration FILE: zlogout
 #
 # Purpose   : Z Shell Logout Configuration - Sourced at logout
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-19 18:53:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 15:11:12 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description

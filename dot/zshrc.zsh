@@ -1,10 +1,10 @@
-# ZSH Config FILE: zshrc
+# ZSH Configuration FILE: zshrc
 #
 # Purpose   : Z Shell Recource Configuration - Define alias, functions, prompt.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-23 09:26:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 15:11:39 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description

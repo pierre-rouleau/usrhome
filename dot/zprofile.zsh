@@ -1,10 +1,10 @@
-# ZSH Config FILE: zprofile
+# ZSH Configuration FILE: zprofile
 #
 # Purpose   : Z Shell Profile Configuration - Customize important envvar once.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-22 15:56:08 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 15:11:23 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description

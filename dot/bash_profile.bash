@@ -1,9 +1,9 @@
-# SH FILE: bash_profile.bash
+# Bash Configuration FILE: bash_profilen.bash
 #
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 09:08:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 15:10:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

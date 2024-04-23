@@ -1,10 +1,9 @@
-#!/bin/sh
-# SH FILE: bash_login.bash
+# Bash Configuration FILE: bash_login.bash
 #
 # Purpose   : Bash ~/.bash_login Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-20 10:16:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 15:09:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
