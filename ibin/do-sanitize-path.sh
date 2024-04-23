@@ -3,7 +3,7 @@
 # Purpose   : Sanitize current shell PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 16:53:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 17:10:16 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -36,7 +36,7 @@
 # describing the number of directory entries in each.
 # Use xargs to remove leading spaces from the number strings.
 
-path_entries="$(printf "%s" "$PATH" | tr ':' '\n' | wc -l | xargs)"
+path_entries="$(printf "%s\n" "$PATH" | tr ':' '\n' | wc -l | xargs)"
 sanitized_path="$(printf "%s" "$PATH" | sed 's/::/:/g' | tr ':' '\n' | awk '!seen[$0]++' | tr '\n' ':')"
 
 # remove any trailing ':' character
