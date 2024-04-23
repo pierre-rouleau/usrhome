@@ -106,12 +106,17 @@ How to Set it Up
 
     - Create a ``usrcfg`` directory inside the same directory that
       holds the ``usrhome`` directory.
-    - Create the ``usrcfg/setfor-zsh-config.zsh`` file that will
-      hold your persistent and private configuration.  At first the file will
-      be a copy of a the `usrhome/template/setfor-zsh-config.zsh`_ with
-      extra information appended.
+    - Create all required and optional user-specific configuration files,
+      using the corresponding templates as basis.
+
+      - Section `The User Configuration Files used by USRHOME`_ lists these
+        files.  The `usrhome/template`_ directory holds the template copy
+        of the files.
+      - You will have to update these files to put your own logic into the
+        file stored into the usrcfg directory.
+
     - Finally create symbolic link in your home directory to point
-      to the Z Shell configuration files stored inside the `usrhome/dot`_
+      to the Z Shell and Bash configuration files stored inside the `usrhome/dot`_
       directory.  Before proceeding it will create backup of files that are
       already present.
 
@@ -155,13 +160,42 @@ Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 The User Configuration Files used by USRHOME
 --------------------------------------------
 
-=============================== ===============================================
-File Name                       Description
-=============================== ===============================================
-usrcfg/setfor-zsh-config.zsh    Persistent, user-specific basic USRHOME configuration.
-usrcfg/do-user-zprofile.zsh     User-specific Z Shell zprofile logic.
-usrcfg/do-user-zshrc.zsh        User-specific Z Shell zshrc logic.
-=============================== ===============================================
+================================== ================================================================
+File Name                          Description
+================================== ================================================================
+usrcfg/setfor-shell-tracing.sh     **Required** Defines USRHOME_TRACE_SHELL_CONFIG to 1,
+                                   to activate tracing of shell configuration files,
+                                   0 to disable it.
+
+usrcfg/setfor-all-config.sh        **Required** Holds user configuration that applies to the Bash
+                                   and Z Shell.
+
+                                   - This must be written in POSIX sh script, compatible with
+                                     both Bash and Z Shell.
+                                   - It also holds some USRHOME-specific logic to control optional
+                                     shell config file tracing.
+
+usrcfg/do-user-zprofile.zsh        **Optional**. User-specific Z Shell zprofile logic.
+
+                                   - This must be written in Z Shell compatible logic.
+                                   - It also holds some USRHOME-specific logic to control optional
+                                     shell config file tracing.
+
+usrcfg/do-user-zshrc.zsh           **Required for Z Shell** User-specific Z Shell specific
+                                   configuration.
+
+                                   - This must be written in Z Shell compatible logic.
+                                   - It also holds some USRHOME-specific logic to control optional
+                                     shell config file tracing.
+
+
+usrcfg/do-user-bashrc.bash         **Required for Bash** User-specific Bash Shell specific
+                                   configuration.
+
+                                   - This must be written in Bash compatible logic.
+                                   - It also holds some USRHOME-specific logic to control optional
+                                     shell config file tracing.
+================================== ================================================================
 
 As said above the usrcfg directory is expected to be a sibling to the usrhome
 directory; they must both be inside the same parent directory.
@@ -175,15 +209,15 @@ for more information.
 The USRHOME Configuration Environment Variables
 -----------------------------------------------
 
-The file ``usrcfg/setfor-zsh-config.zsh`` holds the definition of the following
-environment variables.
-
 **Conventions**:
 
 - All environment variables used by USRHOME have a name that starts
   with ``USRHOME_``.
 - All of those that identify the path of a directory have a name that starts with
   ``USRHOME_DIR_``.
+- All *internal* USRHOME environment variables have a name that start with ``USRHOME__``.
+  These variables are only used by USRHOME logic and should not be modified by user's logic.
+
 
 =============================== =================================================
 Environment Variable Name       Purpose
@@ -303,9 +337,12 @@ USRHOME Command Name               Description
 ``usrhome-shell-toggle-tracing``   Toggle tracing the execution of the shell configuration files
                                    when a shell starts.  This toggles the value of the
                                    ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
-                                   and vice-versa.  The original value is set inside your
-                                   usrcfg/setfor-zsh-config.zsh file.  The default value is 0 as
-                                   identified by `usrhome/template/setfor-zsh-config.zsh`_
+                                   and vice-versa.
+
+                                   - The original value of this environment variable is set inside
+                                     your usrcfg/setfor-shell-tracing.sh file.
+                                     The default value is 0 as
+                                     identified by `usrhome/template/setfor-shell-tracing.sh`_
                                    used to initialize the usrcfg file.
 
 ``usrhome-prompt-toggle-usr-host`` Toggle the inclusion of the user name and host name inside
@@ -461,7 +498,7 @@ These environment variables are defined in the user persistent configuration fil
 the ``usrcfg/setfor-zsh-config.zsh`` file.
 
 During installation_, the `setup/setup-usrhome`_ script initializes them
-to the value stored in `usrhome/template/setfor-zsh-config.zsh`_ template file.
+to the value stored in `usrhome/template/setfor-shell-tracing.sh`_ template file.
 You can change them or add logic in your file to control their values any way you need.
 
 The following commands are shortcuts to change the current directory to one of these
@@ -1465,7 +1502,7 @@ Thanks!
 .. _numeric keypad:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
 .. _fd:                                           https://github.com/sharkdp/fd#readme
 .. _setup/setup-usrhome:                          https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
-.. _usrhome/template/setfor-zsh-config.zsh:       https://github.com/pierre-rouleau/usrhome/blob/main/template/setfor-zsh-config.zsh
+.. _usrhome/template/setfor-shell-tracing.sh:     https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-shell-tracing.sh
 .. _usrhome/template:                             https://github.com/pierre-rouleau/usrhome/blob/main/template
 .. _USRHOME dot files:
 .. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
