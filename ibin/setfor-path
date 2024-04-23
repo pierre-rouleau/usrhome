@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 09:00:30 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 09:11:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -92,16 +92,17 @@ if [ ! "$USRHOME__PATH_SET" = "1" ]; then
     # Source configuration logic that applies to Bash and Z Shell
 
     all_config_fpathname="$USRHOME_DIR_USRCFG/setfor-all-config.sh"
-    if [[ -e "$all_config_fpathname" ]]; then
+    if [ -e "$all_config_fpathname" ]; then
         . "$USRHOME_DIR_USRCFG/setfor-all-config.sh"
     else
         printf "***USRHOME ERROR!!*********************************************\n"
         printf "The user common shell configuration file is missing!\n"
         printf " Expected file: %s\n" "$all_config_fpathname"
-        printf " Create that file using this template as guide: %s\n" "$USRHOME/template/usrcfg/setfor-all-config.sh"
+        printf " Please write it, use the template example as basis.\n"
+        printf " The template is: %s\n" "$USRHOME/template/usrcfg/setfor-all-config.sh"
         printf "***************************************************************\n"
     fi
-
+    unset all_config_fpathname
     # ----------------------------------------------------------------------------
     # Add entries in PATH as required by user configuration
 

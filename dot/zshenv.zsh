@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-22 20:59:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 09:12:45 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -65,13 +65,15 @@ fi
 # -------------------------------------------
 #
 usrhome_trace_activation="$USRHOME_DIR_USRCFG/setfor-shell-tracing.sh"
-if [ ! -e $usrhome_trace_activation ]; then
-    printf "ERROR: USRHOME cannot find the user's shell tracing configuration file!\n"
-    printf " It is expected at: %s\n" "$usrhome_trace_activation"
-    printf " Please write it, use the template example as basis.\n"
-    printf " The template is: %s/template/usrcfg/setfor-shell-tracing.sh\n" "$USRHOME_DIR"
-else
+if [ -e $usrhome_trace_activation ]; then
     . "$usrhome_trace_activation"
+else
+    printf "***USRHOME ERROR!!*********************************************\n"
+    printf "Cannot find the user's shell tracing configuration file!\n"
+    printf " Expected file: %s\n" "$usrhome_trace_activation"
+    printf " Please write it, use the template example as basis.\n"
+    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-shell-tracing.sh"
+    printf "***************************************************************\n"
 fi
 unset usrhome_trace_activation
 
