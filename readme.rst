@@ -499,8 +499,8 @@ USRHOME_DIR_PUB:
   anything you do not consider your main or most-active development.
   This can be located anywhere.
 
-These environment variables are defined in the user persistent configuration file:
-the ``usrcfg/setfor-zsh-config.zsh`` file.
+These environment variables are defined in the user persistent configuration
+file common to Bash and Z Shell: the ``usrcfg/setfor-all-config.sh`` file.
 
 During installation_, the `setup/setup-usrhome`_ script initializes them
 to the value stored in `usrhome/template/setfor-shell-tracing.sh`_ template file.
@@ -552,7 +552,8 @@ USRHOME Command Name               Description
                                    This command is automatically executed for zsh shell started
                                    under USRHOME control when the ``USRHOME_USE_HOMEBREW``
                                    environment variable is set to 1 inside the USRHOME user's
-                                   configuration file ``usrcfg/setfor-zsh-config.zsh`` .
+                                   common shell configuration file
+                                   ``usrcfg/setfor-all-config.sh`` .
 
 ``showpath [-n] [MAN|LIB][PATH]``  Print the value of PATH, MANPATH or LIBPATH, placing each directory
                                    in its own line.
@@ -632,7 +633,7 @@ help command that shows information on zsh builtin commands.
 
 If it does not work for your system, check the value of DIRHELP.
 You can set it to the value you need inside your file
-``usrcfg/setfor-zsh-config.zsh``
+``usrcfg/setfor-all-config.sh``
 
 **Example on Kali Linux:**
 
@@ -1236,7 +1237,8 @@ Activate Tracing of the Sourcing of the Shell Configuration Files
 -----------------------------------------------------------------
 
 By setting the value of ``USRHOME_TRACE_SHELL_CONFIG`` to 1 inside your
-usrcfg/setfor-zsh-config.zsh file you activate USRHOME's tracing.  Then when
+``usrcfg/setfor-shell-tracing.sh`` file you activate USRHOME's shell
+configuration file tracing.  Then when
 you open a new shell inside a terminal, or create a sub-shell, you can see
 which file is sourced.
 
