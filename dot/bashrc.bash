@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-04-22 14:37:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 21:58:37 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -14,18 +14,24 @@
 #
 # To use it, create a ~/.bashrc symbolic link to this file.
 #
-# It sets the important USRHOME environment variables, USRHOME_DIR and
-# USRHOME_DIR_USRCFG, then sources the usrcfg/setfor-bash-config.bash, where
-# the user must store it ZShell configuration logic.  It also participates in
-# the tracing of the shell configuration if activated by the user's
-# configuration.
-
+# - If not already done, sets the important USRHOME environment variables:
+#   - USRHOME_DIR
+#   - USRHOME_DIR_USRCFG
+#
+# - Determines if shell tracing is activated by sourcing user's controlled
+#   file: usrcfg/setfor-shell-tracing.sh
+#
+# - Defines the USRHOME shell tracing functions by sourcing
+#   file: usrhome/ibin/shell-tracing.sh
+#
+# - If required print tracing of this file.
+#
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
-# Set USRHOME_DIR and USRHOME_DIR_USRCFG
-# --------------------------------------
+# 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
+# ------------------------------------------
 #
 # Identify the path of the usrcfg directory by taking advantage that usrhome
 # and usrcfg are located inside the same parent directory, and that this
@@ -34,7 +40,6 @@
 # If it has already been done, as indicated by the existence of the
 # USRHOME_DIR environment variable, then skip this part.
 #
-echo "--> /Users/roup/my/dv/usrhome/dot/bashrc.bash 1"
 if [[ -z $USRHOME_DIR ]]; then
     # - Identify the name of what bash executed (that should be the ~/.bashrc symlink)
     script=${BASH_SOURCE[0]}
@@ -48,12 +53,10 @@ if [[ -z $USRHOME_DIR ]]; then
     export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
 fi
 
-echo "--> /Users/roup/my/dv/usrhome/dot/bashrc.bash 2"
-# Read user's USRHOME configuration files for Bash Shell
-# ------------------------------------------------------
+
+# 2 - Determine is shell tracing is activated
+# -------------------------------------------
 #
-# These must be available. Otherwise USRHOME won't work properly.
-# - 1: Get user's shell tracing activation
 usrhome_trace_activation="$USRHOME_DIR_USRCFG/setfor-shell-tracing.sh"
 if [ ! -e "$usrhome_trace_activation" ]; then
     printf "ERROR: USRHOME cannot find the user's shell tracing configuration file!\n"
@@ -65,13 +68,15 @@ else
 fi
 unset usrhome_trace_activation
 
-#
-# - 2: Define USRHOME shell tracing functions
-. "$USRHOME_DIR/ibin/shell-tracing.sh"
 
-echo "--> /Users/roup/my/dv/usrhome/dot/bashrc.bash 3"
+# 3 - Define USRHOME shell tracing functions
+# ------------------------------------------
+. "${USRHOME_DIR}/ibin/shell-tracing.sh"
+
+
+# 4 - Trace Shell Configuration if required
+# -----------------------------------------
 #
-# - 3: Trace Shell Configuration if required
 # This script needs to source user configuration scripts to
 # figure out whether tracing is allowed, it sourced other files
 # that reported nested tracing.  The level must be reset to 1.
@@ -81,71 +86,11 @@ fi
 # shellcheck disable=SC2088
 usrhome_trace_in "~/.bashrc    --> \$USRHOME_DIR/dot/bashrc.bash"
 
-echo "--> /Users/roup/my/dv/usrhome/dot/bashrc.bash 4"
-#
-# - 4: Include user's Bash shell configuration logic.
-usrhome_bash_config="$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
-if [ ! -e "$usrhome_bash_config" ]; then
-    printf "ERROR: USRHOME cannot find the user's bash configuration file!\n"
-    printf " It is expected at: %s\n" "$usrhome_bash_config"
-    printf " Please write it, use the template example as basis.\n"
-    printf " The template is: %s/template/usrcfg/setfor-bash-config.bash\n" "$USRHOME_DIR"
-else
-    . "$usrhome_bash_config"
-fi
-unset usrhome_bash_config
-
-echo "--> /Users/roup/my/dv/usrhome/dot/bashrc.bash 5"
-
 # ----------------------------------------------------------------------------
-# Set shortcut alias for Z shell
-# ------------------------------
+# Set shortcut aliases and short functions for Bash shell
+# -------------------------------------------------------
 
 source "$USRHOME_DIR/ibin/setfor-bash-alias"
-
-# ------------------------------------------
-# Set shortcut functions for Bash shell
-# -------------------------------------
-
-alias lsd='ls -F | grep -i / | sort -f | sed -e "s~/~~g" | column'
-
-# lsl: list links
-#  alias lsl='ls -lFGO *(@)'
-# With a function it's possible to pass a command line argument (like lsl -l)
-# function lsl {
-#     ls $1 -FGO *(@)
-# }
-
-function cdv {
-    cd "/Volumes/$1" || return 1
-}
-
-function cdh {
-    cd "$USRHOME_DIR_MY/$1" || return 1
-}
-
-function cddv {
-    cd "$USRHOME_DIR_DV/$1" || return 1
-}
-
-function cdpriv {
-    cd "$USRHOME_DIR_PRIV/$1" || return 1
-}
-
-function cdpub {
-    cd "$USRHOME_DIR_PUB/$1" || return 1
-}
-
-function mdd {
-    # mdd: mkdir and cd
-    #      If path has / in it, mkdir -p is used.
-    if printf "%s" "$1" | grep "/" > /dev/null; then
-        mkdir -pv "$1" || return 1
-    else
-        mkdir "$1" || return 1
-    fi
-    cd "$1" || return 1
-}
 
 # ----------------------------------------------------------------------------
 # Prompt control
@@ -249,27 +194,14 @@ unset prompt2
 # ----------------------------------------------------------------------------
 # Update Path in sub-shells if not already done
 # ---------------------------------------------
-if [[ -z "$USRHOME_PATH_SET" ]]; then
-    source "$USRHOME_DIR/ibin/setfor-path"
-fi
-
-function usrhome-switch-path {
-    oldp=$PATH
-    export PATH="$USRHOME_ORIGINAL_PATH"
-    export USRHOME_ORIGINAL_PATH="$oldp"
-    if [[ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]]; then
-        echo "- Switch PATH with USRHOME_ORIGINAL_PATH"
-    fi
-    unset oldp
-}
+. "$USRHOME_DIR/ibin/setfor-path"
 
 # ----------------------------------------------------------------------------
 # Sanitize PATH
 # -------------
 #
-source "$USRHOME_DIR/ibin/do-sanitize-path.sh"
+. "$USRHOME_DIR/ibin/do-sanitize-path.sh"
 
-echo "--> /Users/roup/my/dv/usrhome/dot/bashrc.bash 99"
 # ----------------------------------------------------------------------------
 # Source User Extra zshrc if it exists
 # ------------------------------------

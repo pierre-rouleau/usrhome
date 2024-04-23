@@ -3,7 +3,7 @@
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-20 15:38:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 21:40:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,11 +25,20 @@
 #
 usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 
-if [ -e "$USRHOME_DIR_USRCFG/setfor-bash-config.bash" ]; then
-    . "$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
-else
-    printf "ERROR: %s does not exist!\n" "$USRHOME_DIR_USRCFG/setfor-bash-config.bash"
-fi
+
+# ----------------------------------------------------------------------------
+# Set shortcut functions for Bash shell
+# -------------------------------------
+
+alias lsd='ls -F | grep -i / | sort -f | sed -e "s~/~~g" | column'
+
+# lsl: list links
+#  alias lsl='ls -lFGO *(@)'
+# With a function it's possible to pass a command line argument (like lsl -l)
+# function lsl {
+#     ls $1 -FGO *(@)
+# }
+
 
 # --------
 #
