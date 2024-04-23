@@ -3,29 +3,25 @@
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:45:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 17:29:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Add support for USRHOME and local ~/bin if it exists.
-
-# ----------------------------------------------------------------------------
-# Dependencies
-# ------------
-#
-#
+# Add  usrhome/bin and ~/bin (if it exists) to the beginning of PATH
+# if they are not already inside it.
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
-#
-
+# Tracing
 usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-usrhome"
+# ----------------------------------------------------------------------------
+# Add usrhome/bin at beginning of PATH if not already there.
+# Also add ~/bin to the beginning od PATH if that directory is present
 
-
-if ! echo $PATH | grep "$USRHOME_DIR" > /dev/null; then
+if ! echo "$PATH" | grep "$USRHOME_DIR" > /dev/null; then
     # If USRHOME has not already been installed (as seen in PATH),
     # then install it.  Otherwise skip.
 
@@ -35,9 +31,11 @@ if ! echo $PATH | grep "$USRHOME_DIR" > /dev/null; then
         echo "- Adding usrhome support."
     fi
 
-    the_path=$USRHOME_DIR/bin:$PATH
+    the_path="$USRHOME_DIR/bin":$PATH
     if [ -d "$HOME/bin" ]; then
-        the_path=$HOME/bin:$the_path
+        if ! echo "$PATH" | grep "$HOME/bin" > /dev/null; then
+            the_path="$HOME/bin":$the_path
+        fi
     fi
     export PATH="$the_path"
 
@@ -45,6 +43,7 @@ if ! echo $PATH | grep "$USRHOME_DIR" > /dev/null; then
     unset the_path
 fi
 
+# ----------------------------------------------------------------------------
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
