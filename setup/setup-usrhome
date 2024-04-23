@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 14:37:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 15:30:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -313,8 +313,9 @@ echo " You must now integrate the backup of your Bash and/or ZShell"
 echo " into the usrhome/dot files that are identified by the symlink."
 echo "****************COMPLETE!************************************"
 echo ""
-echo "DO NOT CLOSE THIS TERMINAL!  It uses you old shell setup."
-echo " Use it to perform the required editing!"
+echo "DO NOT CLOSE THIS TERMINAL!"
+echo " It uses your old shell setup: use it to perform"
+echo " the required editing!"
 
 
 # ----------------------------------------------------------------------------
