@@ -3,7 +3,7 @@
 # Purpose   : Sanitize current shell PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 17:10:16 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 17:12:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -44,7 +44,7 @@ if [ "$(printf "%s" "${sanitized_path}"  | tail -c 1)"  = ":" ]; then
     sanitized_path="$(printf "%s" "$sanitized_path" | sed 's/.$//')"
 fi
 
-sanitized_path_entries="$(printf "%s" "$sanitized_path" | tr ':' '\n' | wc -l | xargs)"
+sanitized_path_entries="$(printf "%s\n" "$sanitized_path" | tr ':' '\n' | wc -l | xargs)"
 if [ "$path_entries" != "$sanitized_path_entries" ]; then
     echo "WARNING: USRHOME has sanitized your PATH!"
     echo "Original PATH: $PATH"
