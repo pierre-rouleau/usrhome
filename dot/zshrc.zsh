@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-22 22:00:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 09:26:31 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -216,10 +216,17 @@ esac
 # Source User Extra zshrc if it exists
 # ------------------------------------
 user_zshrc="$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
-if [[ -f "$user_zshrc" ]]; then
+if [ -e "$user_zshrc" ]; then
     . "$user_zshrc"
+else
+    printf "***USRHOME ERROR!!*********************************************\n"
+    printf "Cannot find the user's Z shell configuration file!\n"
+    printf " Expected file: %s\n" "$user_zshrc"
+    printf " Please write it, use the template example as basis.\n"
+    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/do-user-zshrc.zsh"
+    printf "***************************************************************\n"
 fi
-
+unset user_zshrc
 # ----------------------------------------------------------------------------
 # Cleanup
 usrhome_trace_out
