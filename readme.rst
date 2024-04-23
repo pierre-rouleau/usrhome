@@ -286,7 +286,8 @@ USRHOME_DIR_PRIV                Private development directory, , used by USRHOME
 USRHOME_DIR_PUB                 Public development directory, , used by USRHOME `Directory Navigation`_.
 USRHOME_DIR_USRCFG              The path of the user configuration directory.
                                 Something like ``/Users/roup/my/dv/usrcfg``
-USRHOME_PATH_SET                Internal logic flag.
+USRHOME__PATH_SET               Internal logic flag.
+USRHOME__USRCFG_SEEN            Internal logic flag.
 =============================== =================================================
 
 

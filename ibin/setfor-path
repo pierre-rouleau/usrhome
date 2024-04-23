@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-22 21:56:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 08:26:54 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,7 +26,7 @@
 #
 usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-path"
 
-if [ ! "$USRHOME_PATH_SET" = "1" ]; then
+if [ ! "$USRHOME__PATH_SET" = "1" ]; then
     # ----------------------------------------------------------------------------
     # Security Issue Check Functions
 
@@ -107,7 +107,7 @@ if [ ! "$USRHOME_PATH_SET" = "1" ]; then
     source $USRHOME_DIR/ibin/envfor-usrhome
 
     # Remember that PATH was set.  Prevent setting it again.
-    export USRHOME_PATH_SET=1
+    export USRHOME__PATH_SET=1
 
     # Check and report if there are any security issues
     usrhome_security_check
