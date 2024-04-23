@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-22 17:01:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 21:56:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -75,7 +75,22 @@ if [ ! "$USRHOME_PATH_SET" = "1" ]; then
     # Remember original PATH in USRHOME_ORIGINAL_PATH
     export USRHOME_ORIGINAL_PATH="$PATH"
 
-    #
+    # ----------------------------------------------------------------------------
+    # Define a function to switch back to original path and back
+
+    function usrhome-switch-path {
+        local oldp
+        oldp=$PATH
+        export PATH="$USRHOME_ORIGINAL_PATH"
+        export USRHOME_ORIGINAL_PATH="$oldp"
+        if [[ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]]; then
+            echo "- Switch PATH with USRHOME_ORIGINAL_PATH"
+        fi
+    }
+
+    # ----------------------------------------------------------------------------
+    # Source configuration logic that applies to Bash and Z Shell
+
     . "$USRHOME_DIR_USRCFG/setfor-all-config.sh"
 
     # ----------------------------------------------------------------------------
