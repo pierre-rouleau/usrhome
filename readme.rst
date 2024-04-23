@@ -389,9 +389,14 @@ Extensions to the ``cd`` command.
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``..``                             Alias to ``cd ..``
-``...``                            Alias to ``cd ../..``
-``....``                           Alias to ``cd ../../..``
+``.. [DIR]``                       Perform ``cd ../DIR``.
+                                   If DIR is not specified, performs ``cd ..``
+
+``... [DIR]``                      Performs ``cd ../../DIR``
+                                   If DIR is not specified, performs ``cd ../..``
+
+``.... [DIR]``                     Performs ``cd ../../../DIR``
+                                   If DIR is not specified, performs ``cd ../../..``
 
 ``cd-to [-H] FNAME``               Search for file specified by FNAME in current directory tree.
 

@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-22 18:17:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 15:36:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,9 +30,6 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-alias"
 
 alias ss='printf "\$0 : %s, \$SHELL : %s\n" $0 $SHELL'
 alias \?='printf "%s\n" $?'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
 
 
 # Useful commands
@@ -116,33 +113,59 @@ alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
 # These functions
 
 if [ "$(uname)" = "Darwin" ]; then
-    function cdv {
+    cdv()
+    {
         cd "/Volumes/$1"
     }
 fi
 
-function cdh {
+cdh()
+{
     cd "$USRHOME_DIR_MY/$1"
 }
 
-function cddv {
+cddv()
+{
     cd "$USRHOME_DIR_DV/$1"
 }
 
-function cdpriv {
+cdpriv()
+{
     cd "$USRHOME_DIR_PRIV/$1"
 }
 
-function cdpub {
+cdpub()
+{
     cd "$USRHOME_DIR_PUB/$1"
 }
 
-function cdtmp {
+cdtmp()
+{
     cd "$HOME/tmp/$1"
 }
 
+cd..()
+{
+    cd "../$1"
+}
 
-function mdd {
+cd...()
+{
+    cd "../../$1"
+}
+
+cd....()
+{
+    cd "../../../$1"
+}
+
+
+alias ..='cd..'
+alias ...='cd...'
+alias ....='cd....'
+
+mdd()
+{
     # mdd: mkdir and cd
     #      If path has / in it, mkdir -p is used.
     if printf "%s" "$1" | grep "/" > /dev/null; then
