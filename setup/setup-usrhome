@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-21 22:58:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 14:37:32 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -89,7 +89,10 @@ prompt()
             * ) echo "Please answer yes or no.";;
         esac
     done
+    # dummy code to prevent invalid shellcheck warning
+    echo "proceed: $proceed" > /dev/null
 }
+
 
 exit_on_error()
 {
@@ -142,61 +145,91 @@ modify_dot_file()
 # Script Execution
 # ----------------
 
-curpath=$(pwd)
-parentpath=$(dirname "$curpath")
+usrhome_path="$(pwd)"
+parent_path="$(dirname "$usrhome_path")"
+usrcfg_path="$parent_path/usrcfg"
+template_path="$usrhome_path/template/usrcfg"
+
+s_usrcfg_path=$(echo "$parent_path/usrcfg" | sed "s:$HOME:~:" )
+s_template_path=$(echo "$usrhome_path/template/usrcfg" | sed "s:$HOME:~:" )
+
+# echo "usrcfg_path     := $usrcfg_path"
+# echo "s_usrcfg_path   := $s_usrcfg_path"
+# echo "template_path   := $template_path"
+# echo "s_template_path := $s_template_path"
 
 # --------
 # 1: Create usrcfg and store the following files into it:
-#                      - usrcfg/setfor-zsh-config.zsh
+#
+#   - do-user-bashrc.bash
+#   - do-user-zprofile.zsh
+#   - do-user-zshrc.zsh
+#   - setfor-all-config.sh
+#   - setfor-shell-tracing.sh
+#
+
+usr_fnames="\
+do-user-bashrc.bash     \
+do-user-zprofile.zsh    \
+do-user-zshrc.zsh       \
+setfor-all-config.sh    \
+setfor-shell-tracing.sh"
+
+clear
 echo "----- USRHOME Installation:"
-echo "It will do this:"
+echo " It will do this:"
 echo ""
-echo "- Create ${parentpath}/usrcfg"
-if [ -e  "${parentpath}/usrcfg/setfor-zsh-config.zsh" ]; then
-    echo "- Create a backup of ${parentpath}/usrcfg/setfor-zsh-config.zsh if requested."
+if [ !  -d "$usrcfg_path" ]; then
+    printf -- " - Create directory %s\n" "${s_usrcfg_path}"
 fi
-echo "- Copy   ${curpath}/template/usrcfg/setfor-zsh-config.zsh"
-echo "    to   ${parentpath}/usrcfg/setfor-zsh-config.zsh"
-echo ""
-prompt "Do you wish to proceed"
-echo "OK, proceeding..."
-echo ""
-#
-echo "- Create user configuration file from the template."
-src_fpath="${curpath}/template/usrcfg/setfor-zsh-config.zsh"
-target_dirpath="${parentpath}/usrcfg"
-target_fpath="${parentpath}/usrcfg/setfor-zsh-config.zsh"
-
-do_copy=1
-do_backup=0
-if [ -e "$target_fpath" ]; then
-    echo " WARNING: $target_fpath already exists!"
-    prompt " Do you wish to back it up and overwrite it" dont-exit-on-no
-    do_backup=$proceed
-    do_copy=$proceed
-else
-    if [ ! -d "$target_dirpath" ]; then
-        mkdir "$target_dirpath" || exit_on_error "creating $target_dirpath"
+has_backup=no
+# shellcheck disable=SC2116
+for fn in $(echo "$usr_fnames"); do
+    printf -- " - To create %s/%s:\n" "$s_usrcfg_path" "$fn "
+    if [ -e  "${usrcfg_path}/${fn}" ]; then
+        printf -- "   - Backup %s as   %s\n" "${s_usrcfg_path}/${fn}"  "${s_usrcfg_path}/backup-${fn}"
+        has_backup=yes
     fi
-fi
-if [ "$do_backup" = "1" ]; then
-    echo "  cp $target_fpath ${target_fpath}.old"
-    cp "$target_fpath" "$target_fpath".old
-fi
-if [ "$do_copy" = "1" ]; then
-    echo "  cp $src_fpath $target_fpath"
-    cp "$src_fpath" "$target_fpath"
+    printf -- "   - Create %s from %s\n\n" "${s_usrcfg_path}/${fn}" "${s_template_path}/${fn}"
+done
+if [ "$has_backup" = "yes" ]; then
+    printf -- " YOU will have to edit the backups and the new files\n"
+    printf -- " and bring the old logic from the backup into the new\n"
+    printf -- " files as required.\n"
 fi
 echo ""
-
-# --------
-# 2: Write value of USRHOME_DIR into usrcfg/setfor-zsh-config.zsh
-#
-echo "- Create file $target_fpath"
-echo "  from the usrhome/template/usrcfg/setfor-zsh-config.zsh"
 prompt "Do you wish to proceed"
-cp "$USRHOME_DIR/template/usrcfg/setfor-zsh-config.zsh"  "$target_fpath"
-echo "Done. "
+clear
+echo "OK, clearing screen and proceeding..."
+
+
+# Create usrcfg directory if it does not exists
+if [ !  -d "$usrcfg_path" ]; then
+    mkdir "${usrcfg_path}" || exit 1
+fi
+
+# backup file if needed, create new files from templates
+# shellcheck disable=SC2116
+for fn in $(echo "$usr_fnames"); do
+    if [ -e  "${usrcfg_path}/${fn}" ]; then
+        printf -- "mv %s %s\n" "${usrcfg_path}/${fn}"  "${usrcfg_path}/backup-${fn}"
+        mv "${usrcfg_path}/${fn}"  "${usrcfg_path}/backup-${fn}"
+    fi
+    printf -- "cp %s %s\n" "${template_path}/${fn}" "${usrcfg_path}/${fn}"
+    cp "${template_path}/${fn}" "${usrcfg_path}/${fn}"
+done
+
+if [ "$has_backup" = "yes" ]; then
+    printf -- "\nATTENTION!\n"
+    printf -- " Some of your previously existing usrcfg files were backed up\n"
+    printf -- " and replaced!\n"
+    printf -- " Please update the new files with the content of the backup ones\n"
+    printf -- " to ensure continued operation of your USRHOME based shells!\n"
+fi
+
+prompt "Continue"
+clear
+echo "OK, clearing screen and proceeding..."
 
 # --------
 # 3: Backup user's Z Shell files, copy them to usrhome/dot,
@@ -228,7 +261,8 @@ echo "             shell setup and tools to use once the shell"
 echo "             config files are replaced by symlinks."
 echo ""
 prompt "Do you wish to proceed"
-echo "OK, backing up ZShell config and creating symlinks..."
+clear
+echo "OK, clearing screen, backing up ZShell config and creating symlinks..."
 echo ""
 
 modify_dot_file zlogin   zsh
@@ -258,7 +292,8 @@ echo "             shell setup and tools to use once the shell"
 echo "             config files are replaced by symlinks."
 echo ""
 prompt "Do you wish to proceed"
-echo "OK, backing up Bash config and creating symlinks..."
+clear
+echo "OK, clearing screen, backing up Bash config and creating symlinks..."
 echo ""
 
 modify_dot_file bash_login   bash
@@ -272,9 +307,11 @@ echo " Bash Configuration files backed up,"
 echo " symlinks to usrhome/dot files created."
 echo ""
 echo ""
+echo "****************COMPLETE!************************************"
 echo "USRHOME automated setup is now complete."
 echo " You must now integrate the backup of your Bash and/or ZShell"
 echo " into the usrhome/dot files that are identified by the symlink."
+echo "****************COMPLETE!************************************"
 echo ""
 echo "DO NOT CLOSE THIS TERMINAL!  It uses you old shell setup."
 echo " Use it to perform the required editing!"
