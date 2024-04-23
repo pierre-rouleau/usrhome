@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-22 15:27:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-22 20:59:44 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -37,8 +37,8 @@
 # Code
 # ----
 #
-# Set USRHOME_DIR and USRHOME_DIR_USRCFG
-# --------------------------------------
+# 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
+# ------------------------------------------
 #
 # Identify the path of the usrcfg directory by taking advantage that usrhome
 # and usrcfg are located inside the same parent directory, and that this
@@ -60,11 +60,10 @@ if [[ -z $USRHOME_DIR ]]; then
     export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
 fi
 
-# Read user's USRHOME configuration for Z Shell
-# ---------------------------------------------
+
+# 2 - Determine is shell tracing is activated
+# -------------------------------------------
 #
-# These must be available. Otherwise USRHOME won't work properly.
-# - 1: Get user's shell tracing activation.
 usrhome_trace_activation="$USRHOME_DIR_USRCFG/setfor-shell-tracing.sh"
 if [ ! -e $usrhome_trace_activation ]; then
     printf "ERROR: USRHOME cannot find the user's shell tracing configuration file!\n"
@@ -76,12 +75,15 @@ else
 fi
 unset usrhome_trace_activation
 
-#
-# - 2: Define USRHOME shell tracing functions
+
+# 3 - Define USRHOME shell tracing functions
+# ------------------------------------------
 . $USRHOME_DIR/ibin/shell-tracing.sh
 
+
+# 4 - Trace Shell Configuration if required
+# -----------------------------------------
 #
-# - 3: Trace Shell Configuration if required
 # This script needs to source user configuration scripts to
 # figure out whether tracing is allowed, it sourced other files
 # that reported nested tracing.  The level must be reset to 1.
