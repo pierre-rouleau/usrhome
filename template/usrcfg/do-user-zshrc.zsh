@@ -3,44 +3,47 @@
 # Purpose   : Local setup.
 # Created   : Sunday, March 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 19:01:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-23 10:44:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
-# Module Description
-# ------------------
+# Description
+# -----------
 #
+# This file holds user-specific Z Shell logic invoked by the ~/.zshrc
+# file as controlled by USRHOME.
 #
-
-
-# ----------------------------------------------------------------------------
-# Dependencies
-# ------------
-#
-#
-
+# It contains some USRHOME-specific code and place for the user-specific
+# logic.
 
 # ----------------------------------------------------------------------------
-# Code
-# ----
+# USRHOME-specific code
+# ---------------------
+#
+# Trace if requested by user.
 #
 usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 
-# Setting Environments
-# --------------------
-alias use-curl-hb='source $USRHOME_DIR_USRCFG/envfor-curl-hb'
-alias use-rust='source $USRHOME_DIR_USRCFG/envfor-rust'
+# ----------------------------------------------------------------------------
+# User-Specific code
+# ------------------
+#
+# Place your code inside this section before the next separator line.
+# Some example code is left in comment.
+#
 
-
-# My Extra Commands
-# -----------------
-alias cdlog-installs='cd ~/my/logs/install-logs'
-alias cdbin='cd ~/my/bin'
-alias cddoc='cd ~/Documents'
-
-alias f-numbers='fd ".numbers$"'
-
-# Permanent Shell Configuration
-# -----------------------------
-. "$USRHOME_DIR_USRCFG/envfor-rust"
+# # Manual Command for Setting Environments
+# # ----------------------------------------
+# alias use-rust='source $USRHOME_DIR_USRCFG/ibin/envfor-rust'
+#
+#
+# # My Extra Commands
+# # -----------------
+# alias cdbin='cd ~/my/bin'
+# alias cddoc='cd ~/Documents'
+#
+#
+# # Permanent Shell Configuration
+# # -----------------------------
+# . "$USRHOME_DIR_USRCFG/envfor-rust"
 
 # ----------------------------------------------------------------------------
 # Cleanup
