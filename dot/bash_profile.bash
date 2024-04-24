@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 20:24:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-24 07:48:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -80,6 +80,7 @@ fi
 #
 usrhome_trace_activation="$USRHOME_DIR_USRCFG/setfor-shell-tracing.sh"
 if [ -e "$usrhome_trace_activation" ]; then
+    # shellcheck disable=SC1090
     . "$usrhome_trace_activation"
 else
     printf "***USRHOME ERROR!!*********************************************\n"
@@ -94,6 +95,7 @@ unset usrhome_trace_activation
 
 # 3 - Define USRHOME shell tracing functions
 # ------------------------------------------
+# shellcheck disable=SC1091
 . "${USRHOME_DIR}/ibin/shell-tracing.sh"
 
 
@@ -111,16 +113,27 @@ usrhome_trace_in "~/.bash_profile   --> \$USRHOME_DIR/dot/bash_profile.bash"
 
 # ----------------------------------------------------------------------------
 # Mimic behaviour found on most Bash implementations:
+#
+# - Execute the usercfg/do-usr-bash_profile.bash if it exists, which
+#   corresponds to executing user's logic stored in ~/.bash_profile.
+#
 # - The ~/.bash_profile sources ~/.bashrc if it exists.
 #   - In the case of USRHOME implementation ~/.bashrc
 #     does exists: it is implemented as usrhome/dot/bashrc.bash
 #
+
+if [ -f "$USRHOME_DIR_USRCFG/do-user-bash_profile.bash" ]; then
+    # shellcheck disable=SC1091
+    . "$USRHOME_DIR_USRCFG/do-user-bash_profile.bash"
+fi
+
 # Set usrhome_inside_bash_profile variable to true; this can be used
 # within usrhome/dot/bashrc.bash to determine if it is running during
 # a login or not.
 
 # shellcheck disable=SC2034
 usrhome_inside_bash_profile=true
+# shellcheck disable=SC1091
 . "$USRHOME_DIR/dot/bashrc.bash"
 unset usrhome_inside_bash_profile
 
