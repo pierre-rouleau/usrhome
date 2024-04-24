@@ -1,12 +1,23 @@
-# Bash Configuration FILE: bash_profilen.bash
+# Bash Configuration FILE: bash_profile.bash
 #
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-24 07:48:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-24 09:04:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
+#
+#  This USRHOME/dot/bash_profile.bash file is meant to be identified by the
+#  ~/.bash_profile symlink.  It provides:
+#
+#  - the USRHOME-specific code that supports tracing of the shell
+#    configuration files, then it
+#  - sources the user-provided usrcfg/do-user-bash_profile.bash file
+#    it it exists, then it
+#  - sources the usrhome/dot/bashrc.bash file to mimick what most Bash
+#    implementation do.
+#
 #
 # On macos
 # --------
