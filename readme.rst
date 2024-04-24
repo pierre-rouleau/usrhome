@@ -187,7 +187,22 @@ usrcfg/do-user-zshrc.zsh           **Required for Z Shell** User-specific Z Shel
                                    - This must be written in Z Shell compatible logic.
                                    - It also holds some USRHOME-specific logic to control optional
                                      shell config file tracing.
+                                   - That file could also source a node-specific file stored inside
+                                     the ``usrcfg/node/do-NODE-zshrc.zsh`` file where
+                                     ``NODE`` is identified with ``uname -n``.
 
+usrcfg/do-user-bash_profile.bash   **Optional**. User-specific Bash Shell specific configuration.
+                                   In some system the ~/.bash_login is executed during login.
+                                   On those systems it might be useful to write configuration logic
+                                   that must only be executed once, at login, inside this file, as
+                                   one would do with the ``~/.bash_login``.
+
+                                   - This must be written in Bash compatible logic.
+                                   - It should also hold some USRHOME-specific logic to control
+                                     optional shell config file tracing.
+                                   - That file could also source a node-specific file stored inside
+                                     the ``usrcfg/node/do-NODE-bash_profile.bash`` file where
+                                     ``NODE`` is identified with ``uname -n``.
 
 usrcfg/do-user-bashrc.bash         **Required for Bash** User-specific Bash Shell specific
                                    configuration.
@@ -195,6 +210,9 @@ usrcfg/do-user-bashrc.bash         **Required for Bash** User-specific Bash Shel
                                    - This must be written in Bash compatible logic.
                                    - It also holds some USRHOME-specific logic to control optional
                                      shell config file tracing.
+                                   - That file could also source a node-specific file stored inside
+                                     the ``usrcfg/node/do-NODE-bashrc.bash`` file where
+                                     ``NODE`` is identified with ``uname -n``.
 ================================== ================================================================
 
 As said above the usrcfg directory is expected to be a sibling to the usrhome
