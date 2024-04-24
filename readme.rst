@@ -189,7 +189,7 @@ usrcfg/do-user-zshrc.zsh           **Required for Z Shell** User-specific Z Shel
                                      shell config file tracing.
                                    - That file could also source a node-specific file stored inside
                                      the ``usrcfg/node/do-NODE-zshrc.zsh`` file where
-                                     ``NODE`` is identified with ``uname -n``.
+                                     ``NODE`` is identified with ``hostname -s``.
 
 usrcfg/do-user-bash_profile.bash   **Optional**. User-specific Bash Shell specific configuration.
                                    In some system the ~/.bash_login is executed during login.
@@ -202,7 +202,7 @@ usrcfg/do-user-bash_profile.bash   **Optional**. User-specific Bash Shell specif
                                      optional shell config file tracing.
                                    - That file could also source a node-specific file stored inside
                                      the ``usrcfg/node/do-NODE-bash_profile.bash`` file where
-                                     ``NODE`` is identified with ``uname -n``.
+                                     ``NODE`` is identified with ``hostname -s``.
 
 usrcfg/do-user-bashrc.bash         **Required for Bash** User-specific Bash Shell specific
                                    configuration.
@@ -212,7 +212,7 @@ usrcfg/do-user-bashrc.bash         **Required for Bash** User-specific Bash Shel
                                      shell config file tracing.
                                    - That file could also source a node-specific file stored inside
                                      the ``usrcfg/node/do-NODE-bashrc.bash`` file where
-                                     ``NODE`` is identified with ``uname -n``.
+                                     ``NODE`` is identified with ``hostname -s``.
 ================================== ================================================================
 
 As said above the usrcfg directory is expected to be a sibling to the usrhome
