@@ -3,7 +3,7 @@
 # Purpose   : USRHOME template for user-specific Bash configuration.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-24 09:46:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-24 19:20:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -43,7 +43,7 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
 # Source the node-specific logic if the file exists
 # -------------------------------------------------
 node="$(hostname -s)"
-node-fname="$USRHOME_DIR_USRCFG/node/do-${node}-bashrc.bash"
+node_fname="$USRHOME_DIR_USRCFG/node/do-${node}-bashrc.bash"
 if [ -e "$node_fname" ]; then
     . "$node_fname"
 fi

@@ -3,7 +3,7 @@
 # Purpose   : Local setup.
 # Created   : Sunday, March 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-24 09:51:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-24 19:20:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -60,7 +60,7 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 # Source the node-specific logic if the file exists
 # -------------------------------------------------
 node="$(hostname -s)"
-node-fname="$USRHOME_DIR_USRCFG/node/do-${node}-zshrc.zsh"
+node_fname="$USRHOME_DIR_USRCFG/node/do-${node}-zshrc.zsh"
 if [ -e "$node_fname" ]; then
     . "$node_fname"
 fi
