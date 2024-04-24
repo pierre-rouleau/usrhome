@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-24 09:04:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-24 09:05:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -15,7 +15,7 @@
 #    configuration files, then it
 #  - sources the user-provided usrcfg/do-user-bash_profile.bash file
 #    it it exists, then it
-#  - sources the usrhome/dot/bashrc.bash file to mimick what most Bash
+#  - sources the usrhome/dot/bashrc.bash file to mimic what most Bash
 #    implementation do.
 #
 #
