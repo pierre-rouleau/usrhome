@@ -4,7 +4,7 @@
 # Purpose   : Move a file to a directory and create a symlink to it's new location.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-25 17:31:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-25 18:07:08 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -42,7 +42,7 @@
 print_usage()
 {
     printf "\
-Usage: flip-to-ln FILENAME DIRNAME
+Usage: flip-to-ln DIRNAME FILENAME
         - Move FILENAME inside directory DIRNAME
         - Create a symlink at FILENAME pointing to it's new location inside DIRNAME
 
@@ -63,53 +63,55 @@ Usage: flip-to-ln FILENAME DIRNAME
 
 }
 
-if [ -z "$1" ] || [ -z "$2" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ -z "$2" ] || [ -z "$1" ] || [ "$2" = "-h" ] || [ "$2" = "--help" ]; then
     print_usage
     exit 1
 fi
 
-if [ -d "$1" ]; then
+if [ -d "$2" ]; then
     >&2 printf "\
 ***ERROR***
- - flip-to-ln arg 1 identifies a directory: %s
-***********
-" "$1"
-    print_usage
-    exit 2
-fi
-
-if [ -h "$1" ]; then
-    >&2 printf "\
-***ERROR***
- - flip-to-ln arg 1 identifies a symbolic link: %s
-***********
-" "$1"
-    print_usage
-    exit 2
-fi
-
-if [ ! -f "$1" ]; then
-    >&2 printf "\
-***ERROR***
- - flip-to-ln: arg 1: invalid file (not found): %s
-***********
-" "$1"
-    print_usage
-    exit 2
-fi
-
-if [ ! -d "$2" ]; then
-    >&2 printf "\
-***ERROR***
- - flip-to-ln: arg 2: invalid directory: %s
+ - flip-to-ln arg 2 identifies a directory: %s
 ***********
 " "$2"
     print_usage
     exit 2
 fi
 
-base_fname="$(basename "$1")"
-target_fpath="$2/${base_fname}"
+if [ -h "$2" ]; then
+    >&2 printf "\
+***ERROR***
+ - flip-to-ln arg 2 identifies a symbolic link: %s
+
+   Has this already been done?
+***********
+" "$2"
+    print_usage
+    exit 2
+fi
+
+if [ ! -f "$2" ]; then
+    >&2 printf "\
+***ERROR***
+ - flip-to-ln: arg 2: invalid file (not found): %s
+***********
+" "$2"
+    print_usage
+    exit 2
+fi
+
+if [ ! -d "$1" ]; then
+    >&2 printf "\
+***ERROR***
+ - flip-to-ln: arg 1: invalid directory: %s
+***********
+" "$1"
+    print_usage
+    exit 2
+fi
+
+base_fname="$(basename "$2")"
+target_fpath="$1/${base_fname}"
 case $(uname) in
     Darwin)
         lnopt="-s"
@@ -123,9 +125,9 @@ printf "\
 Doing:
   -  mv %s %s/%s
   -  ln %s %s %s
-" "$1" "$2" "$base_fname"  "${lnopt}" "$target_fpath" "$1"
+" "$2" "$1" "$base_fname"  "${lnopt}" "$target_fpath" "$2"
 
-mv "$1" "$2/${base_fname}"  || exit 2
-ln "${lnopt}" "${target_fpath}" "$1"
+mv "$2" "$1/${base_fname}"  || exit 2
+ln "${lnopt}" "${target_fpath}" "$2"
 
 # ----------------------------------------------------------------------------
