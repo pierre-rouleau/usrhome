@@ -3,19 +3,13 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 15:36:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-25 14:31:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # This file contains command alias definitions that are available for USRHOME
 # users of Bash and Z shell.
-#
-
-# ----------------------------------------------------------------------------
-# Dependencies
-# ------------
-#
 #
 
 # ----------------------------------------------------------------------------
@@ -35,6 +29,7 @@ alias \?='printf "%s\n" $?'
 # Useful commands
 alias cls='clear'
 alias md='mkdir'
+alias rd='rmdir'
 
 # Python specific
 alias p3='python3'

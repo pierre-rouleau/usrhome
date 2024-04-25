@@ -933,6 +933,8 @@ USRHOME Command Name               Description
 
 ``md``                             Shortcut for ``mkdir``
 
+``rd``                             Shortcut for ``rmdir``
+
 ``mdd DIRPATH``                    A mkdir followed by cd.  If DIRPATH has '/', then create
                                    intermediate directories as required and print them on stdout.
 
