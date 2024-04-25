@@ -13,13 +13,13 @@ USRHOME -- Easily Clonable Unix Shell Configuration & Tools
 .. image:: https://img.shields.io/badge/Supports-macOS,_Kali_Linux,_zsh_as_main_or_subshell-green
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
 
-.. image:: https://img.shields.io/badge/Supports-macOS,_Kali_Linux,_Bash_as_main_or_subshell-green
+.. image:: https://img.shields.io/badge/Supports-macOS,_Kali_Linux,_Ubuntu_Linux,_Rocky_Linux__Bash_as_main_or_subshell-green
    :target: #using-usrhome-on-kali-linux
 
 .. image:: https://img.shields.io/badge/Installer_tested_on-macOS,_Kali_zsh-green
    :target: #how-to-set-it-up
 
-.. image:: https://img.shields.io/badge/Installer_tested_on-Ubuntu_Linux_Bash-green
+.. image:: https://img.shields.io/badge/Installer_tested_on-Ubuntu_Linux,_Rocky_Linux_Bash-green
    :target: #how-to-set-it-up
 
 :Author:  Pierre Rouleau
