@@ -252,6 +252,13 @@ USRHOME_PROMPT_SHOW_USR_HOST    Set to 1 to display user name and host name
                                 command to
                                 toggle this in the current shell.
 
+USRHOME_CONFIG_AT_LOGIN         Set to 1 to inform USRHOME files to perform
+                                configuration when invoked in a login shell.
+                                If you want to restrict use of USRHOME controlled
+                                configuration to interactive shells, don't set it,
+                                or set it to 0.  If set this must be set inside the
+                                `usrcfg/setfor-all-config.sh`_ file.
+
 USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
                                 directories to the PATH.
 
@@ -329,18 +336,26 @@ USRHOME_SHOW_PATH_ACTIVATION    Set to 1 to see PATH changes done by the various
 When USRHOME Z Shell startup logic executes, USRHOME sets these other
 environment variables:
 
-=============================== =================================================
-Environment Variable Name       Purpose
-=============================== =================================================
-USRHOME_DIR_DV                  Development directory, used by USRHOME `Directory Navigation`_.
-USRHOME_DIR_MY                  Main user directory, used by USRHOME `Directory Navigation`_.
-USRHOME_DIR_PRIV                Private development directory, , used by USRHOME `Directory Navigation`_.
-USRHOME_DIR_PUB                 Public development directory, , used by USRHOME `Directory Navigation`_.
-USRHOME_DIR_USRCFG              The path of the user configuration directory.
-                                Something like ``/Users/roup/my/dv/usrcfg``
-USRHOME__PATH_SET               Internal logic flag.
-USRHOME__USRCFG_SEEN            Internal logic flag.
-=============================== =================================================
+================================== ================================================================
+Environment Variable Name          Purpose
+================================== ================================================================
+USRHOME_DIR_DV                     Development directory, used by USRHOME `Directory Navigation`_.
+USRHOME_DIR_MY                     Main user directory, used by USRHOME `Directory Navigation`_.
+USRHOME_DIR_PRIV                   Private development directory, , used by USRHOME `Directory Navigation`_.
+USRHOME_DIR_PUB                    Public development directory, , used by USRHOME `Directory Navigation`_.
+USRHOME_DIR_USRCFG                 The path of the user configuration directory.
+                                   Something like ``/Users/roup/my/dv/usrcfg``
+USRHOME__IN_LOGIN                  Internal logic flag set to 1 by `usrhome/dot/zprofile.zsh`_ and
+                                   `usrhome/dot/bash_profile.bash`_ to inform the shell code that
+                                   the sourcing of the configuration files is being done by a login
+                                   shell.  When the sourcing of the configuration file is done by a
+                                   sub-shell this is not set.  The `usrcfg/setfor-all-config.sh`_ file
+                                   can set the USRHOME_CONFIG_AT_LOGIN flag to 1 to indicate the
+                                   USRHOME configuration should be done at login.
+
+USRHOME__PATH_SET                  Internal logic flag.
+USRHOME__USRCFG_SEEN               Internal logic flag.
+================================== ================================================================
 
 
 USRHOME Commands and Scripts
@@ -1555,5 +1570,8 @@ Thanks!
 .. _emacsclient:                                  https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
 .. _usrhome/ibin/envfor-emacs-for-man:            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
 .. _Emacs 'string-format' regular expression syntax:              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
+.. _usrhome/dot/zprofile.zsh:                     https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
+.. _usrhome/dot/bash_profile.bash:                https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
+.. _usrcfg/setfor-all-config.sh:                  https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
 
 .. ---------------------------------------------------------------------------

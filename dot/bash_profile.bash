@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-24 09:05:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-25 09:21:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -48,10 +48,9 @@
 # inside  ~/.bashrc.  More precisely into the usrhome/dot/bashrc.bash file
 # pointed to by the ~/.bashrc symlink.
 #
-# The file sets the usrhome_inside_bash_profile variable and then sources the
+# The file sets the USRHOME__IN_LOGIN to 1 to indicate the sourcing of the
+# configuration file by a login shell. It then sources the
 # $USRHOME_DIR/dot/bashrc.bash file as would most implementation would do.
-# Then it unset the variable.  This way the other sourced files can detect if
-# they are sourced during login.
 #
 # However, before doing it, it executes the logic that allows activation of
 # the USRHOME tracing.
@@ -133,20 +132,21 @@ usrhome_trace_in "~/.bash_profile   --> \$USRHOME_DIR/dot/bash_profile.bash"
 #     does exists: it is implemented as usrhome/dot/bashrc.bash
 #
 
+# Set USRHOME__IN_LOGIN to 1; this can be used within usrhome/dot/bashrc.bash
+# to determine if it is running during a login or not.
+
+# shellcheck disable=SC2034
+USRHOME__IN_LOGIN=1
+
 if [ -f "$USRHOME_DIR_USRCFG/do-user-bash_profile.bash" ]; then
     # shellcheck disable=SC1091
     . "$USRHOME_DIR_USRCFG/do-user-bash_profile.bash"
 fi
 
-# Set usrhome_inside_bash_profile variable to true; this can be used
-# within usrhome/dot/bashrc.bash to determine if it is running during
-# a login or not.
-
-# shellcheck disable=SC2034
-usrhome_inside_bash_profile=true
+# Inform other files the shell configuration is done during the setup of a login shell.
 # shellcheck disable=SC1091
 . "$USRHOME_DIR/dot/bashrc.bash"
-unset usrhome_inside_bash_profile
+unset USRHOME__IN_LOGIN
 
 # ----------------------------------------------------------------------------
 # Cleanup

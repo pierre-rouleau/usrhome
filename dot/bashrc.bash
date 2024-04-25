@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-04-23 09:10:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-25 09:13:44 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -57,8 +57,10 @@ fi
 # 2 - Determine is shell tracing is activated
 # -------------------------------------------
 #
+# source #1 (shown in diagram)
 usrhome_trace_activation="$USRHOME_DIR_USRCFG/setfor-shell-tracing.sh"
 if [ -e "$usrhome_trace_activation" ]; then
+    # shellcheck disable=SC1090
     . "$usrhome_trace_activation"
 else
     printf "***USRHOME ERROR!!*********************************************\n"
@@ -73,6 +75,8 @@ unset usrhome_trace_activation
 
 # 3 - Define USRHOME shell tracing functions
 # ------------------------------------------
+# source #2 (shown in diagram)
+# shellcheck disable=SC1091
 . "${USRHOME_DIR}/ibin/shell-tracing.sh"
 
 
@@ -92,7 +96,9 @@ usrhome_trace_in "~/.bashrc    --> \$USRHOME_DIR/dot/bashrc.bash"
 # Set shortcut aliases and short functions for Bash shell
 # -------------------------------------------------------
 
-source "$USRHOME_DIR/ibin/setfor-bash-alias"
+# source #3 (shown in diagram)
+# shellcheck disable=SC1091
+. "$USRHOME_DIR/ibin/setfor-bash-alias"
 
 # ----------------------------------------------------------------------------
 # Prompt control
@@ -193,23 +199,33 @@ esac
 unset prompt1
 unset prompt2
 
-# ----------------------------------------------------------------------------
-# Update Path in sub-shells if not already done
-# ---------------------------------------------
-. "$USRHOME_DIR/ibin/setfor-path"
+if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
+    # echo "--- bashrc.bash - proceeding with USRHOME config"
 
-# ----------------------------------------------------------------------------
-# Sanitize PATH
-# -------------
-#
-. "$USRHOME_DIR/ibin/do-sanitize-path.sh"
+    # ----------------------------------------------------------------------------
+    # Update Path in sub-shells if not already done
+    # ---------------------------------------------
+    # source #4 (shown in diagram)
+    # shellcheck disable=SC1091
+    . "$USRHOME_DIR/ibin/setfor-path"
 
-# ----------------------------------------------------------------------------
-# Source User Extra zshrc if it exists
-# ------------------------------------
-user_bashrc="$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
-if [[ -f "$user_bashrc" ]]; then
-    source "$user_bashrc"
+    # ----------------------------------------------------------------------------
+    # Sanitize PATH
+    # -------------
+    #
+    # source #4a (not shown in the diagram)
+    # shellcheck disable=SC1091
+    . "$USRHOME_DIR/ibin/do-sanitize-path.sh"
+
+    # ----------------------------------------------------------------------------
+    # Source User Extra zshrc if it exists
+    # ------------------------------------
+    # source #5 (shown in diagram)
+    user_bashrc="$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
+    if [[ -f "$user_bashrc" ]]; then
+        # shellcheck disable=SC1090
+        . "$user_bashrc"
+    fi
 fi
 
 # ----------------------------------------------------------------------------

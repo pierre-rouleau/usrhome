@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-23 15:11:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-24 22:11:57 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -20,6 +20,9 @@
 # in the shells launched by macOS terminal because macOS treats the terminal
 # shells like login shells that do not authenticate user.
 #
+# The file sets the USRHOME__IN_LOGIN to 1 to indicate the sourcing of the
+# configuration file by a login shell.
+#
 # This file is NOT sourced by sub-shell nor scripts.
 
 # ----------------------------------------------------------------------------
@@ -30,6 +33,9 @@
 # ----------------------------------------------------------
 
 usrhome_trace_in "~/.zprofile --> \$USRHOME_DIR/dot/zprofile.zsh : [\$0 : $0], \$SHELL : $SHELL"
+
+# Inform other files the shell configuration is done during the setup of a login shell.
+USRHOME__IN_LOGIN=1
 
 # ----------------------------------------------------------------------------
 # Set Environment Variable that won't change
@@ -51,5 +57,6 @@ unset user_zprofile
 
 # ----------------------------------------------------------------------------
 # Cleanup
+unset USRHOME__IN_LOGIN
 usrhome_trace_out
 # ----------------------------------------------------------------------------
