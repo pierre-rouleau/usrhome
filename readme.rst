@@ -931,6 +931,15 @@ USRHOME Command Name               Description
 ================================== ================================================================
 ``cls``                            Shortcut for ``clear``; clear the content of the shell window.
 
+``flip-to-ln FNAME DNAME``         Move file FNAME into directory DNAME and create a symbolic link
+                                   at DNAME that points to its new location inside directory DNAME.
+
+                                   - Under Linux, where the GNU coreutils ln (>= 8.16) has the
+                                     ``-r`` option switch, the symbolic links are always created
+                                     relative if they can be.
+                                   - Under macOS if you need to create relative symbolic links
+                                     you must provide relative FNAME and DNAME arguments.
+
 ``md``                             Shortcut for ``mkdir``
 
 ``rd``                             Shortcut for ``rmdir``

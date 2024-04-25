@@ -1,0 +1,131 @@
+#!/bin/sh
+# SH FILE: flip-to-ln
+#
+# Purpose   : Move a file to a directory and create a symlink to it's new location.
+# Created   : Thursday, April 25 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-25 17:31:33 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# This utility moves a file from its original location into a new location,
+# and then creates a symbolic link from the old location to the new location.
+#
+# For example:
+#
+#  - `flip-to-ln ~/.emacs.d/init.el  ~/my/depots/emacs.d/`
+#
+#    - moves             ~/.emacs.d/init.el   TO   ~/my/depots/emacs.d/init.el
+#    - creates a symlink ~/.emacs.d/init.el  ----> ~/my/depots/emacs.d/init.el
+#
+# It prints what it did.
+#
+#  Exit codes:
+#   - 0 : on success
+#   - 1 : command line error
+#   - 2 : operation error; nothing has been modified.
+#
+#
+# BUGS:
+#  - Limitation: the created symbolic link is absolute on macOS
+#                but it is relative on Linux where the GNU coreutils ln (>= 8.16)
+#                has the -r option to create relative links even when the
+#                arguments are absolute.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf "\
+Usage: flip-to-ln FILENAME DIRNAME
+        - Move FILENAME inside directory DIRNAME
+        - Create a symlink at FILENAME pointing to it's new location inside DIRNAME
+
+       If FILENAME is already a symlink, the command warns and
+       return exit code 2.
+
+  Exit codes:  0 : on success
+            :  1 : command line error, usage is printed.
+            :  2 : execution error.  Nothing is done.
+
+- Limitation: the created symbolic link is absolute on macOS
+              unless the arguments are relative paths.
+              The symlink created on Linux is always relative if it can be
+              since the code takes advantage of the GNU coreutils ln (>= 8.16)
+              has the -r option to create relative links even when the
+              arguments are absolute.
+"
+
+}
+
+if [ -z "$1" ] || [ -z "$2" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 1
+fi
+
+if [ -d "$1" ]; then
+    >&2 printf "\
+***ERROR***
+ - flip-to-ln arg 1 identifies a directory: %s
+***********
+" "$1"
+    print_usage
+    exit 2
+fi
+
+if [ -h "$1" ]; then
+    >&2 printf "\
+***ERROR***
+ - flip-to-ln arg 1 identifies a symbolic link: %s
+***********
+" "$1"
+    print_usage
+    exit 2
+fi
+
+if [ ! -f "$1" ]; then
+    >&2 printf "\
+***ERROR***
+ - flip-to-ln: arg 1: invalid file (not found): %s
+***********
+" "$1"
+    print_usage
+    exit 2
+fi
+
+if [ ! -d "$2" ]; then
+    >&2 printf "\
+***ERROR***
+ - flip-to-ln: arg 2: invalid directory: %s
+***********
+" "$2"
+    print_usage
+    exit 2
+fi
+
+base_fname="$(basename "$1")"
+target_fpath="$2/${base_fname}"
+case $(uname) in
+    Darwin)
+        lnopt="-s"
+        ;;
+    *)
+        lnopt="-s --relative"
+        ;;
+esac
+
+printf "\
+Doing:
+  -  mv %s %s/%s
+  -  ln %s %s %s
+" "$1" "$2" "$base_fname"  "${lnopt}" "$target_fpath" "$1"
+
+mv "$1" "$2/${base_fname}"  || exit 2
+ln "${lnopt}" "${target_fpath}" "$1"
+
+# ----------------------------------------------------------------------------
