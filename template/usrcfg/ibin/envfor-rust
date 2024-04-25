@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 16:19:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-25 13:52:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -67,9 +67,10 @@ if [ -z "$CARGO_HOME" ]; then
             printf "   Rust ver. %s source is available.\n" "$(cat "$usrhome_rustv_fpathname")"
         else
             echo "**** CAUTION *****"
-            echo "Rust source is not installed!"
-            echo "Expecting: $usrhome_rustv_fpathname"
-            echo "See $USRHOME_DIR_USRCFG/envfor-rust"
+            echo "Rust source is NOT installed!"
+            echo " Expecting: $usrhome_rustv_fpathname"
+            echo " See $USRHOME_DIR_USRCFG/ibin/envfor-rust"
+            echo " Get it with: cdpub ; git clone https://github.com/rust-lang/rust.git"
             echo "******************"
         fi
         # cleanup
