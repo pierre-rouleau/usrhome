@@ -1,0 +1,74 @@
+#!/bin/sh
+# SH FILE: dsize
+#
+# Purpose   : Compute and print size of all files in the current directory tree.
+# Created   : Thursday, April 25 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-04-25 22:43:00 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# Compute the byte size of all files in the specified directory (tree).
+# Use `du' if there are any sub-directory, otherwise compute it the long way by
+# adding the size of each file as returned by `ls' and use `awk' to perform
+# the addition.  Since this can take quite a bit of time on large and deep
+# directory tree use `du -sh' in that case.  I have seen this fail in some
+# cases, so if it fails compute it the long way (but warn the user).
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - ls, find, awk, xargs, grep, printf , du
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf "\
+Usage: dsize [DIRPATH]
+  Print the size of the directory tree identified by DIRPATH.
+  DIRPATH defaults to the current directory.
+
+  If there are no directories in the specified DIRPATH, a slow,
+  but more precise computation is done, printing the exact number
+  of bytes.  Otherwise du is used and prints the size in bytes,
+  KBytes, MBytes, etc... in multiples of 1024.  The value is less
+  precise but the computation faster.
+"
+}
+
+dirpath=$1
+if [ -z "$dirpath" ]; then
+    dirpath=.
+fi
+
+# Count number of sub-directories in the current directory.
+# - list files and dirs one per line, ensure that directory names end with /
+# - grep the lines that have the /, then count the lines
+#
+# shellcheck disable=SC2010
+dir_count=$(ls -F -1 "$dirpath" | grep -c / )
+
+print_size()
+{
+    printf "%'.0f bytes\n" "$(find "$dirpath" -type f -print0 | xargs -0 -I % ls -l % | awk '{sum+=$5;} END {print sum;}')"
+}
+
+if (( dir_count < 1 ))
+then
+    print_size
+else
+    if ! du -sh "${dirpath}"; then
+        echo "du -sh failed.  Computing it the long way..."
+        print_size
+    fi
+fi
+
+# ----------------------------------------------------------------------------

@@ -931,8 +931,15 @@ USRHOME Command Name               Description
 ================================== ================================================================
 ``cls``                            Shortcut for ``clear``; clear the content of the shell window.
 
-``flip-to-ln DNAME FNAME``         Move file FNAME into directory DNAME and create a symbolic link
-                                   at DNAME that points to its new location inside directory DNAME.
+``dsize [DPATH]``                  Compute and print the size of all files in the directory tree
+                                   identified by DPATH, which defaults to the current directory.
+                                   If the directory has no sub-directories the command counts
+                                   the bytes of each files in the directory and produces a byte
+                                   count. Otherwise it uses the ``du`` command, which runs faster,
+                                   and print the size in units of 1024 bytes multiples.
+
+``flip-to-ln DPATH FNAME``         Move file FNAME into directory DPATH and create a symbolic link
+                                   FNAME that points to its new location inside directory DPATH.
 
                                    - Under Linux, where the GNU coreutils ln (>= 8.16) has the
                                      ``-r`` option switch, the symbolic links are always created

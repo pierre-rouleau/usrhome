@@ -4,7 +4,7 @@
 # Purpose   : Move a file to a directory and create a symlink to it's new location.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-25 18:07:08 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-25 22:50:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -42,9 +42,10 @@
 print_usage()
 {
     printf "\
-Usage: flip-to-ln DIRNAME FILENAME
-        - Move FILENAME inside directory DIRNAME
-        - Create a symlink at FILENAME pointing to it's new location inside DIRNAME
+Usage: flip-to-ln DPATH FILENAME
+        - Move FILENAME inside directory DPATH.
+        - Create a symlink at FILENAME pointing to it's new location inside
+          directory DPATH.
 
        If FILENAME is already a symlink, the command warns and
        return exit code 2.
