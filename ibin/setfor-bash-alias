@@ -3,7 +3,7 @@
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-22 21:40:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-27 12:07:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,6 +30,11 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 # Set shortcut functions for Bash shell
 # -------------------------------------
 
+# The zsh where command is used often, but not available under bash.
+# Create it as an alias to type
+alias where='type'
+
+# lsd lists directories.
 alias lsd='ls -F | grep -i / | sort -f | sed -e "s~/~~g" | column'
 
 # lsl: list links
