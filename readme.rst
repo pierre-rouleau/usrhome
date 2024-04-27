@@ -374,9 +374,9 @@ USRHOME_DIR_USRCFG                 The path of the user configuration directory.
                                    Use the ``usrcfg`` command to change the current directory to
                                    that directory.
 
-**Internal Variables**
 
-USRHOME__IN_LOGIN                  Internal logic flag set to 1 by `usrhome/dot/zprofile.zsh`_ and
+USRHOME__IN_LOGIN                  **USRHOME Internal environment variable**:
+                                   A logic flag set to 1 by `usrhome/dot/zprofile.zsh`_ and
                                    `usrhome/dot/bash_profile.bash`_ to inform the shell code that
                                    the sourcing of the configuration files is being done by a login
                                    shell.  When the sourcing of the configuration file is done by a
@@ -384,8 +384,12 @@ USRHOME__IN_LOGIN                  Internal logic flag set to 1 by `usrhome/dot/
                                    can set the USRHOME_CONFIG_AT_LOGIN flag to 1 to indicate the
                                    USRHOME configuration should be done at login.
 
-USRHOME__PATH_SET                  Internal logic flag.
-USRHOME__USRCFG_SEEN               Internal logic flag.
+USRHOME__PATH_SET                  **USRHOME Internal environment variable**:
+                                   A logic flag set when USRHOME modified PATH.
+
+USRHOME__USRCFG_SEEN               **USRHOME Internal environment variable**:
+                                   A logic flag set when USRHOME has processed user-specified
+                                   usrcfg configuration.
 ================================== ================================================================
 
 More information about these in the section `Cd to Conceptual Directories`_.
