@@ -3,7 +3,7 @@
 # Purpose   : Template for private USRHOME configuration command to Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 10:15:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-27 11:19:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -63,6 +63,9 @@ export USRHOME_DIR_MY="$HOME/my"
 export USRHOME_DIR_DV="$HOME/my/dv"
 export USRHOME_DIR_PUB="$HOME/my/dvpub"
 export USRHOME_DIR_PRIV="$HOME/my/dvpriv"
+export USRHOME_DIR_LIC="$HOME/my/licences"
+export USRHOME_DIR_LOG="$HOME/my/logs"
+export USRHOME_DIR_TMP="$HOME/tmp"
 
 
 # Select Prompt

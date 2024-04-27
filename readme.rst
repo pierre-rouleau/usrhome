@@ -339,12 +339,43 @@ environment variables:
 ================================== ================================================================
 Environment Variable Name          Purpose
 ================================== ================================================================
-USRHOME_DIR_DV                     Development directory, used by USRHOME `Directory Navigation`_.
 USRHOME_DIR_MY                     Main user directory, used by USRHOME `Directory Navigation`_.
-USRHOME_DIR_PRIV                   Private development directory, , used by USRHOME `Directory Navigation`_.
-USRHOME_DIR_PUB                    Public development directory, , used by USRHOME `Directory Navigation`_.
+                                   Change current directory to this directory with the ``cdh``
+                                   command.
+
+USRHOME_DIR_LIC                    Directory where you can keep the software license files for the
+                                   software tools you use. Change current directory to this
+                                   directory with the ``cdlic`` command.
+
+USRHOME_DIR_LOG                    Directory where your own log files and notes can be stored.
+                                   Change current directory to this directory with the ``cdlog``
+                                   command.
+
+USRHOME_DIR_DV                     Development directory, used by USRHOME `Directory Navigation`_.
+                                   Change current directory to this directory with the ``cddv``
+                                   command.
+
+USRHOME_DIR_PRIV                   Private development directory,
+                                   used by USRHOME `Directory Navigation`_.
+                                   Change current directory to this directory with the ``cdpriv``
+                                   command.
+
+USRHOME_DIR_PUB                    Public development directory,
+                                   used by USRHOME `Directory Navigation`_.
+                                   Change current directory to this directory with the ``cdpub``
+                                   command.
+
+USRHOME_DIR_TMP                    User local temporary directory.
+                                   Change current directory to this directory with the ``cdtmp``
+                                   command.
+
 USRHOME_DIR_USRCFG                 The path of the user configuration directory.
-                                   Something like ``/Users/roup/my/dv/usrcfg``
+                                   Something like ``/Users/roup/my/dv/usrcfg``.
+                                   Use the ``usrcfg`` command to change the current directory to
+                                   that directory.
+
+**Internal Variables**
+
 USRHOME__IN_LOGIN                  Internal logic flag set to 1 by `usrhome/dot/zprofile.zsh`_ and
                                    `usrhome/dot/bash_profile.bash`_ to inform the shell code that
                                    the sourcing of the configuration files is being done by a login
@@ -356,6 +387,8 @@ USRHOME__IN_LOGIN                  Internal logic flag set to 1 by `usrhome/dot/
 USRHOME__PATH_SET                  Internal logic flag.
 USRHOME__USRCFG_SEEN               Internal logic flag.
 ================================== ================================================================
+
+More information about these in the section `Cd to Conceptual Directories`_.
 
 
 USRHOME Commands and Scripts
@@ -457,9 +490,6 @@ USRHOME Command Name               Description
                                        were edited.
 
 
-``cdv [SUBDIR]``                   cd to the ``/Volumes`` directory or specified ``SUBDIR``.
-
-
 ``pel [SUBDIR]``                   Change current directory to PEL_ depot directory or its SUBDIR
                                    if specified.
                                    Also set terminal title to 'PEL'.
@@ -475,14 +505,23 @@ USRHOME Command Name               Description
 ================================== ================================================================
 
 
-Cd to *Holder* Directories
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Cd to Conceptual Directories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
 ``cdh [SUBDIR]``                   cd to *home*: the directory identified by ``USRHOME_DIR_MY``
+                                   or its identified ``SUBDIR``.
+
+``cdlic [SUBDIR]``                 cd to the directory identified by the ``USRHOME_DIR_LIC``
+                                   or its identified ``SUBDIR``.
+
+``cdlog [SUBDIR]``                 cd to the directory identified by the ``USRHOME_DIR_LOG``
+                                   or its identified ``SUBDIR``.
+
+``cdv [SUBDIR]``                   **On macOS only**, cd to the ``/Volume`` directory
                                    or its identified ``SUBDIR``.
 
 ``cddv [SUBDIR]``                  cd to *main development*; the directory identified by
@@ -493,9 +532,12 @@ USRHOME Command Name               Description
 
 ``cdpub [SUBDIR]``                 cd to *public projects*; the directory identified by
                                    ``USRHOME_DIR_PUB`` or its identified ``SUBDIR``.
+
+``cdtmp [SUBDIR]``                 cd to user-specific temporary directory, identified by
+                                   ``USRHOME_DIR_TMP`` or its identified ``SUBDIR``.
 ================================== ================================================================
 
-The commands described above change the current directory to 4 conceptually important
+The commands described above change the current directory to several conceptually important
 (*holder*) directories.  Those directories are identified by USRHOME environment variables.
 The name of these environment variables start with the ``USRHOME_DIR_``
 prefix. They are:
@@ -512,6 +554,13 @@ USRHOME_DIR_MY:
 
   - On any system, it could be used to identify a directory tree specific to a given activity or content
     type or just be set to the value of ``$HOME``.
+
+USRHOME_DIR_LIC:
+  The directory where you could collect all the licence files you have agreed with when
+  using a software service or package.
+
+USRHOME_DIR_LOG :
+  The directory where you could store activity log files and notes.
 
 USRHOME_DIR_DV:
   The directory where you store your main, or most-active, development sub-directories.
@@ -531,6 +580,14 @@ USRHOME_DIR_PUB:
   to which you contribute, or libraries and tools you want to build yourself,
   anything you do not consider your main or most-active development.
   This can be located anywhere.
+
+USRHOME_DIR_TMP:
+  The name of a directory where your user's temporary files may be stored,
+  in a separate directory than the standard ``/tmp`` directory.
+  That can be used for testing code and checking if your tested code suffers from
+  *temporary file leakage*.
+
+**Where to Define these Environment Variables**
 
 These environment variables are defined in the user persistent configuration
 file common to Bash and Z Shell: the ``usrcfg/setfor-all-config.sh`` file.

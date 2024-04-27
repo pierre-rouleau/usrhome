@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-25 14:31:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-27 11:14:24 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -107,6 +107,20 @@ alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
 # -----------------------------------------------
 # These functions
 
+usrhome_cd()
+{
+    if [ -n "$2" ]; then
+        if [[ -d "$2/$3" ]]; then
+            cd "$2/$3" || return 1
+        else
+            printf "****ERROR: %s is not a directory!\n" "$2/$3"
+        fi
+    else
+        echo "****ERROR: $1 is not defined!"
+    fi
+}
+
+
 if [ "$(uname)" = "Darwin" ]; then
     cdv()
     {
@@ -114,29 +128,41 @@ if [ "$(uname)" = "Darwin" ]; then
     }
 fi
 
+
 cdh()
 {
-    cd "$USRHOME_DIR_MY/$1"
+    usrhome_cd "USRHOME_DIR_MY" "$USRHOME_DIR_MY" "$1"
 }
+
+cdlic()
+{
+    usrhome_cd "USRHOME_DIR_LIC" "$USRHOME_DIR_LIC" "$1"
+}
+
+cdlog()
+{
+    usrhome_cd "USRHOME_DIR_LOG" "$USRHOME_DIR_LOG" "$1"
+}
+
 
 cddv()
 {
-    cd "$USRHOME_DIR_DV/$1"
+    usrhome_cd "USRHOME_DIR_DV" "$USRHOME_DIR_DV" "$1"
 }
 
 cdpriv()
 {
-    cd "$USRHOME_DIR_PRIV/$1"
+    usrhome_cd "USRHOME_DIR_PRIV" "$USRHOME_DIR_PRIV" "$1"
 }
 
 cdpub()
 {
-    cd "$USRHOME_DIR_PUB/$1"
+    usrhome_cd "USRHOME_DIR_PUB" "$USRHOME_DIR_PUB" "$1"
 }
 
 cdtmp()
 {
-    cd "$HOME/tmp/$1"
+    usrhome_cd "USRHOME_DIR_TMP" "$USRHOME_DIR_TMP" "$1"
 }
 
 cd..()
