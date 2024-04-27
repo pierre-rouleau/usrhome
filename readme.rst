@@ -34,7 +34,7 @@ USRHOME is a starting project with the goal of holding a set of portable
 Unix shell configuration files that:
 
 - can be used in macOS and multiple Linux distributions under
-  the `Z Shell`_ and Bash (future),
+  the `Z Shell`_ and Bash,
 - support multiple computers:
 
   - the central configuration logic is inside this USRHOME Git repository,
@@ -44,21 +44,26 @@ Unix shell configuration files that:
 - All shell configuration files are symbolic links to `USRHOME dot files`_,
   allowing the logic to be under VCS control.
 
-USRHOME allows you to store shell configuration logic inside the USRHOME and
-your usrcfg repository.  That can be used inside all the computers you use;
-the usrcfg files can select logic based on host names or other criteria.d
-The goal is to be able to store all shell configuration logic
-into two VCS repositories: the public one (this) and your private one.
+USRHOME allows you to use basic shell configuration infrastructure logic
+provided by USRHOME in the usrhome directory and your own personal/private
+configuration logic into your own usrcfg repository.
+
+- That can be used inside all the computers you use;
+  the usrcfg files can select logic based on host names or other criteria.d
+  The goal is to be able to store all shell configuration logic
+  into two VCS repositories: the public one (this) and your private one.
 
 At the moment it supports:
 
-- A basic configuration of zsh for macOS.  It works when zsh is used as the
-  default shell, as its the case on macOS since macOS 10.15 Catalina.  It also
-  works on older versions of macOS where the older version of Bash is still
-  the default shell. On these system just invoke zsh as a sub-shell to use it
-  and try the features the older version of zsh provides.  USRHOME works fine
-  on those and configures the prompt.
+- A basic configuration of zsh and bash for macOS and several Linux distributions.
 
+  - It works when Bash or zsh is used as the default shell.
+
+    - It supports the latest versions of macOS where zsh is the default shell (since macOS 10.15 Catalina),
+      and older versions of macOS where an old version of Bash is the default shell.
+    - It also supports several Linux distributions where Bash is the default shell.
+
+USRHOME provides default prompt configurations that provide useful information.
 The intent is *not* to provide colourful configurations with fancy fonts and
 emoji but just provide a basic environment that will work over several
 versions of Operating Systems and will support the Z Shell as well as Bash
@@ -87,7 +92,6 @@ The sections titled `The zsh Configuration Files`_ and
 On shell startup, USRHOME takes over and sets the value of several environment
 variables that identify the location of directories and USRHOME state.
 
-
 The code supports the Emacs editor, by using the INSIDE_EMACS environment
 variable to control the behaviour of some features when they are invoked
 inside a shell running inside Emacs.
@@ -97,10 +101,24 @@ inside a shell running inside Emacs.
 How to Set it Up
 ================
 
-- Clone the USRHOME repository somewhere on your home directory tree.
-- Open a Z Shell by typing ``zsh`` if you are not already inside a Z Shell.
-- Execute the `setup/setup-usrhome`_  script **from the root directory
-  of the USRHOME depot**:
+- Open the default Bash or Z Shell.
+- Create a directory that will hold 2 sub-directories: usrhome (the USRHOME
+  repo directory tree) and usrcfg (your own repository that will hold your
+  configuration for your computer(s).  I use ``~/my/shell`` for that.
+- Change the current directory to the directory you just created (for example
+  ``cd ~/my/shell`` ).
+- Clone the USRHOME repository by doing:
+  ``git clone https://github.com/pierre-rouleau/usrhome.git``
+- Change the current directory to the root of your USRHOME repository:
+  ``cd usrhome``
+- Execute the setup script **from the root directory  of the USRHOME depot**.
+  This way the script can identify the location of your usrhome directory and
+  create a usrcfg with some basic files can can later update to suit your
+  needs.  So, do this from the directory like ``~/my/shell`` you selected
+  before::
+
+    cd usrhome
+    setup/setup-usrhome
 
   - It will print what will be done and prompt before proceeding:
 
