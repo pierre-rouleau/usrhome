@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 14:39:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 14:48:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -57,22 +57,22 @@ along with their values (except for positional parameters)
 shown within single quotes.
  - \$#: Positional parameter # value: \$1 is the first parameter. (None shown here).
  - \$0: Name of the shell or shell script.
- ----> '%s'
+ ----> '$0'
  - \$*: In double quote: expand all positional parameters, they are all inside 1 word, each separated by \$IFS.
- ----> '%s'
+ ----> '$*'
  - \$@: In double quote: expand all positional parameters, each one inside it's own argument word.
- ----> '%s'
+ ----> '$@'
  - \$?: Exit status of last executed command
- ----> '%s'
+ ----> '$?'
  - \$_: Last argument of previous command
- ----> '%s'
+ ----> '$_'
  - \$-: The current set of options
- ----> '%s'
+ ----> '$-'
  - \$!: Process ID of job most recently placed in foreground.
- ----> '%s'
- - \$\$: Process ID of the shell.
- ----> '%s'
-" "$0" "$*" "$@" "$?" "$_" "$-" "$!" "$$"
+ ----> '$!'
+ - \$\$: Process ID of the shell. $$
+ ----> '$$'
+"
             ;;
 
         *)
