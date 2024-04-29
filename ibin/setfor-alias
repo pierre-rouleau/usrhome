@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 09:18:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 09:24:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -230,7 +230,9 @@ $(tput bold)- PS1:$(tput sgr0) %s
 $(tput bold)- PS2:$(tput sgr0) %s
 $(tput bold)- PS3:$(tput sgr0) %s
 $(tput bold)- PS4:$(tput sgr0) %s
-" "$PS0" "$PS1" "$PS2" "$PS3" "$PS4"
+$(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
+
+" "$PS0" "$PS1" "$PS2" "$PS3" "$PS4" "$USRHOME_PROMPT_MODEL"
         }
         ;;
 
@@ -248,7 +250,8 @@ $(tput bold)- PS4:$(tput sgr0) %s
 - PROMPT : %s
   - p1   : %s
   - p2   : %s
-" "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2"
+- USRHOME_PROMPT_MODEL: %s
+" "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2" "$USRHOME_PROMPT_MODEL"
         }
         ;;
     *)
