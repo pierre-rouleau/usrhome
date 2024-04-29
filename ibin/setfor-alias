@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 14:48:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 15:19:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,8 +49,17 @@ alias \?='printf "%s\n" $?'
 
 info-shell-special-var()
 {
+    all_words=""
+    for word in "$@"; do
+        all_words="${all_words}\"${word}\" "
+    done
+    all_words="$(echo "$all_words" | sed -e 's/[[:space:]]*$//')"
+
     case "$USRHOME_SHELL" in
         bash | zsh)
+            # Note: printf arguments MUST math number of formatting meta-characters
+            #       otherwise multiple printf executions is done to consume all arguments!
+            # This precludes pass in $@ to printf, so it was processed into the all_words variable.
             printf -- "\
 The following shows the shell special shell parameters
 along with their values (except for positional parameters)
@@ -59,9 +68,9 @@ shown within single quotes.
  - \$0: Name of the shell or shell script.
  ----> '$0'
  - \$*: In double quote: expand all positional parameters, they are all inside 1 word, each separated by \$IFS.
- ----> '$*'
+ ----> '\"%s\"'
  - \$@: In double quote: expand all positional parameters, each one inside it's own argument word.
- ----> '$@'
+ ----> '%s'
  - \$?: Exit status of last executed command
  ----> '$?'
  - \$_: Last argument of previous command
@@ -71,14 +80,14 @@ shown within single quotes.
  - \$!: Process ID of job most recently placed in foreground.
  ----> '$!'
  - \$\$: Process ID of the shell. $$
- ----> '$$'
-"
+ ----> '$$'\n" "$*" "$all_words"
             ;;
 
         *)
             printf "The %s shell is not supported yet.\n" "$USRHOME_SHELL"
             ;;
     esac
+    echo "-----------------------------------"
 }
 
 
