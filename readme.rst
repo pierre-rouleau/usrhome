@@ -1046,7 +1046,7 @@ USRHOME Command Name               Description
 USRHOME Prompt
 ==============
 
-USRHOME provides control for the Z Shell and Bash prompts as decribed below.
+USRHOME provides control for the Z Shell and Bash prompts as described below.
 
 
 
