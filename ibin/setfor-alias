@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 09:24:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 10:47:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -232,6 +232,7 @@ $(tput bold)- PS3:$(tput sgr0) %s
 $(tput bold)- PS4:$(tput sgr0) %s
 $(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
 
+See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequences
 " "$PS0" "$PS1" "$PS2" "$PS3" "$PS4" "$USRHOME_PROMPT_MODEL"
         }
         ;;
@@ -256,8 +257,37 @@ $(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
         ;;
     *)
         ;;
-
 esac
+
+
+# Topic: Terminal Type : Info
+# ---------------------------
+#
+# Environment variables:
+# Gnome: DESKTOP_SESSION
+# XCFE: XDG_CURRENT_DESKTOP=XFCE
+info-desktop()
+{
+    case $(uname) in
+        'Darwin' )
+            USRHOME_DESKTOP=macOS
+            printf "macOS\n"
+            ;;
+        *)
+            if test -n "$DESKTOP_SESSION"; then
+                USRHOME_DESKTOP=gnome
+                printf "%s\n" "$DESKTOP_SESSION"
+            elif test -n "$XDG_CURRENT_DESKTOP"; then
+                USRHOME_DESKTOP=xfce
+                printf "XFCE\n"
+            else
+                printf "Desktop unknown - please update info-desktop()
+inside: %s/ibin/setfor-alias
+" "$USRHOME_DIR"
+            fi
+            ;;
+    esac
+}
 
 # ----------------------------------------------------------------------------
 # Cleanup
