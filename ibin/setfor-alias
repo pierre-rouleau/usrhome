@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-27 11:14:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 08:20:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -19,8 +19,28 @@
 #
 
 usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-alias"
-
 # --------
+
+# Identify what (Bourne compatible) shell this  is running.
+# Store result in $USRHOME_SHELL so further code can depend
+# on the shell type.  Credit: https://unix.stackexchange.com/a/72475/473577
+# Not yet exported.
+
+if test -n "$ZSH_VERSION"; then
+  USRHOME_SHELL=zsh
+elif test -n "$BASH_VERSION"; then
+  USRHOME_SHELL=bash
+elif test -n "$KSH_VERSION"; then
+  USRHOME_SHELL=ksh
+elif test -n "$FCEDIT"; then
+  USRHOME_SHELL=ksh
+elif test -n "$PS3"; then
+  USRHOME_SHELL=unknown
+else
+  USRHOME_SHELL=sh
+fi
+
+
 
 alias ss='printf "\$0 : %s, \$SHELL : %s\n" $0 $SHELL'
 alias \?='printf "%s\n" $?'
@@ -196,6 +216,41 @@ mdd()
     fi
     cd "$1"
 }
+
+case $USRHOME_SHELL in
+    bash)
+        info-prompt()
+        {
+            printf "Bash prompt control variables:
+    - PS0: %s
+    - PS1: %s
+    - PS2: %s
+    - PS3: %s
+    - PS4: %s
+" "$PS0" "$PS1" "$PS2" "$PS3" "$PS4"
+        }
+        ;;
+    zsh)
+        info-prompt()
+        {
+            printf "Z shell prompt control variables:
+    - PROMPT0: %s
+    - PROMPT1: %s
+    - PROMPT2: %s
+    - PROMPT3: %s
+    - PROMPT4: %s
+    - RPROMPT: %s
+    - SPROMPT: %s
+    - PROMPT : %s
+    - p1     : %s
+    - p2     : %s
+" "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2"
+        }
+        ;;
+    *)
+        ;;
+
+esac
 
 # ----------------------------------------------------------------------------
 # Cleanup

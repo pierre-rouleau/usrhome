@@ -1046,12 +1046,29 @@ USRHOME Command Name               Description
 USRHOME Prompt
 ==============
 
+USRHOME provides control for the Z Shell and Bash prompts as decribed below.
+
+
+
 The zsh prompt
 --------------
 
 USRHOME sets up a basic Z Shell prompt that does not need any zsh extension
 library. It supports several models of prompts, selected by the presence and
 value of the ``USRHOME_PROMPT_MODEL`` environment variable.
+
+Information About Prompt Control Variables
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+URSHOME provides the following commands to get information about the shell
+prompt.
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+``info-prompt``                    Print information about shell's prompt controlling variables.
+================================== ================================================================
+
 
 Prompt Model 0
 ~~~~~~~~~~~~~~
