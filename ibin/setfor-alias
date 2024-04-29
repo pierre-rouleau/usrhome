@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 10:47:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 11:00:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -266,27 +266,39 @@ esac
 # Environment variables:
 # Gnome: DESKTOP_SESSION
 # XCFE: XDG_CURRENT_DESKTOP=XFCE
+# KDE:  XDG_CURRENT_DESKTOP=KDE
 info-desktop()
 {
+    if test -n "$USRHOME_DESKTOP"; then
+        USRHOME_DESKTOP=
+    fi
     case $(uname) in
         'Darwin' )
             USRHOME_DESKTOP=macOS
             printf "macOS\n"
             ;;
+
         *)
+            # Assume Unix/Linux OS
             if test -n "$DESKTOP_SESSION"; then
                 USRHOME_DESKTOP=gnome
                 printf "%s\n" "$DESKTOP_SESSION"
             elif test -n "$XDG_CURRENT_DESKTOP"; then
-                USRHOME_DESKTOP=xfce
-                printf "XFCE\n"
-            else
-                printf "Desktop unknown - please update info-desktop()
-inside: %s/ibin/setfor-alias
-" "$USRHOME_DIR"
+                if [[ "$XDG_CURRENT_DESKTOP" = "XCFE" ]]; then
+                    USRHOME_DESKTOP=xfce
+                    printf "XFCE\n"
+                elif [[ "$XDG_CURRENT_DESKTOP" = "KDE" ]]; then
+                    USRHOME_DESKTOP=kde
+                    printf "KDE\n"
+                fi
             fi
             ;;
     esac
+    if test -z "$USRHOME_DESKTOP"; then
+        printf "Desktop unknown - please update info-desktop()
+inside: %s/ibin/setfor-alias
+" "$USRHOME_DIR"
+    fi
 }
 
 # ----------------------------------------------------------------------------
