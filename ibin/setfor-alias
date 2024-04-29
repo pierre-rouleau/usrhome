@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 08:20:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 09:18:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -217,33 +217,37 @@ mdd()
     cd "$1"
 }
 
+
+# Topic: Prompt Control : Info
+# ----------------------------
 case $USRHOME_SHELL in
     bash)
         info-prompt()
         {
             printf "Bash prompt control variables:
-    - PS0: %s
-    - PS1: %s
-    - PS2: %s
-    - PS3: %s
-    - PS4: %s
+$(tput bold)- PS0:$(tput sgr0) %s
+$(tput bold)- PS1:$(tput sgr0) %s
+$(tput bold)- PS2:$(tput sgr0) %s
+$(tput bold)- PS3:$(tput sgr0) %s
+$(tput bold)- PS4:$(tput sgr0) %s
 " "$PS0" "$PS1" "$PS2" "$PS3" "$PS4"
         }
         ;;
+
     zsh)
         info-prompt()
         {
             printf "Z shell prompt control variables:
-    - PROMPT0: %s
-    - PROMPT1: %s
-    - PROMPT2: %s
-    - PROMPT3: %s
-    - PROMPT4: %s
-    - RPROMPT: %s
-    - SPROMPT: %s
-    - PROMPT : %s
-    - p1     : %s
-    - p2     : %s
+- PROMPT0: %s
+- PROMPT1: %s
+- PROMPT2: %s
+- PROMPT3: %s
+- PROMPT4: %s
+- RPROMPT: %s
+- SPROMPT: %s
+- PROMPT : %s
+  - p1   : %s
+  - p2   : %s
 " "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2"
         }
         ;;
