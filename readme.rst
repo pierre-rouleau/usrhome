@@ -449,9 +449,27 @@ making it difficult to bring them back into the foreground.
 Shell Status Info
 -----------------
 
+USRHOME provides the following special commands (implemented as shell functions or alias) that
+provide useful information about the current shell and can also serve as help reminders when
+writing shells script code.
+
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
+``info-desktop``                   Print the name of the desktop software type being used.
+                                   Internally also set the shell variable USRHOME_DESKTOP which can
+                                   later be used inside shell scripts.
+
+``info-prompt``                    Print information about shell's prompt controlling variables.
+
+`info-shell-special-var [ARGS]``   List the shell special variables like ``$*``, ``$@``, ``$?`` and
+                                   others,  describing their purpose and showing their values.
+
+                                   - When command line arguments are passed to the command, it
+                                     prints the positional arguments, the value of ``"$*"`` and
+                                     ``"$@"``  helping you remember the basic differences.  Try it
+                                     by passing a glob_ to it like ``*``.
+
 ``ss``                             Show current and default shell environment variable names
                                    and values.
 ================================== ================================================================
@@ -1687,5 +1705,6 @@ Thanks!
 .. _usrhome/dot/zprofile.zsh:                     https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
 .. _usrhome/dot/bash_profile.bash:                https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
 .. _usrcfg/setfor-all-config.sh:                  https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
+.. _glob:                                         https://en.wikipedia.org/wiki/Glob_(programming)
 
 .. ---------------------------------------------------------------------------
