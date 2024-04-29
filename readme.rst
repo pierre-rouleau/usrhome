@@ -462,7 +462,7 @@ USRHOME Command Name               Description
 
 ``info-prompt``                    Print information about shell's prompt controlling variables.
 
-`info-shell-special-var [ARGS]``   List the shell special variables like ``$*``, ``$@``, ``$?`` and
+``info-shell-special-var [ARGS]``  List the shell special variables like ``$*``, ``$@``, ``$?`` and
                                    others,  describing their purpose and showing their values.
 
                                    - When command line arguments are passed to the command, it
