@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 12:29:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 12:37:25 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -281,13 +281,19 @@ info-desktop()
         *)
             # Assume Unix/Linux OS
             if test -n "$XDG_CURRENT_DESKTOP"; then
-                if [[ "$XDG_CURRENT_DESKTOP" = "XFCE" ]]; then
-                    USRHOME_DESKTOP=xfce
-                    printf "XFCE\n"
-                elif [[ "$XDG_CURRENT_DESKTOP" = "KDE" ]]; then
-                    USRHOME_DESKTOP=kde
-                    printf "KDE\n"
-                fi
+                case "$XDG_CURRENT_DESKTOP" in
+                    "XFCE" | "xfce")
+                        USRHOME_DESKTOP=xfce
+                        printf "XFCE\n"
+                        ;;
+                    "GNOME" | "gnome")
+                        USRHOME_DESKTOP=gnome
+                        printf "gnome\n"
+                        ;;
+                    "KDE" |"kde")
+                        USRHOME_DESKTOP=kde
+                        printf "kde\n"
+                esac
             elif test -n "$DESKTOP_SESSION"; then
                 USRHOME_DESKTOP=gnome
                 printf "%s\n" "$DESKTOP_SESSION"
