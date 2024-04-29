@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 12:37:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 14:39:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,25 +41,83 @@ else
 fi
 
 
-
+# Topic: Info: Shell
+# ------------------
 alias ss='printf "\$0 : %s, \$SHELL : %s\n" $0 $SHELL'
 alias \?='printf "%s\n" $?'
 
 
+info-shell-special-var()
+{
+    case "$USRHOME_SHELL" in
+        bash | zsh)
+            printf -- "\
+The following shows the shell special shell parameters
+along with their values (except for positional parameters)
+shown within single quotes.
+ - \$#: Positional parameter # value: \$1 is the first parameter. (None shown here).
+ - \$0: Name of the shell or shell script.
+ ----> '%s'
+ - \$*: In double quote: expand all positional parameters, they are all inside 1 word, each separated by \$IFS.
+ ----> '%s'
+ - \$@: In double quote: expand all positional parameters, each one inside it's own argument word.
+ ----> '%s'
+ - \$?: Exit status of last executed command
+ ----> '%s'
+ - \$_: Last argument of previous command
+ ----> '%s'
+ - \$-: The current set of options
+ ----> '%s'
+ - \$!: Process ID of job most recently placed in foreground.
+ ----> '%s'
+ - \$\$: Process ID of the shell.
+ ----> '%s'
+" "$0" "$*" "$@" "$?" "$_" "$-" "$!" "$$"
+            ;;
+
+        *)
+            printf "The %s shell is not supported yet.\n" "$USRHOME_SHELL"
+            ;;
+    esac
+}
+
+
+
+# Topic: Alias: Clear Screen
+# --------------------------
 # Useful commands
 alias cls='clear'
+
+# Topic: Alias: Create/Delete Directory
+# -------------------------------------
+mdd()
+{
+    # mdd: mkdir and cd
+    #      If path has / in it, mkdir -p is used.
+    if printf "%s" "$1" | grep "/" > /dev/null; then
+        mkdir -pv "$1" || return 1
+    else
+        mkdir "$1" || return 1
+    fi
+    cd "$1"
+}
+
 alias md='mkdir'
 alias rd='rmdir'
 
-# Python specific
+# Topic: Alias: Python
+# --------------------
 alias p3='python3'
 
+# Topic: Alias: USRHOME Control
+# -----------------------------
 # Source environment control scripts
 alias usrhome-prompt-toggle-usr-host='source $USRHOME_DIR/ibin/setfor-prompt-toggle-usr-host'
 alias usrhome-shell-toggle-tracing='source $USRHOME_DIR/ibin/setfor-shell-toggle-tracing'
 alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
 
-
+# Topic: Alias: ls commands
+# -------------------------
 # ls flags:
 # -a : include all files, including 'hidden' files
 # -d : directories listed as plain files (instead of recursing into them)
@@ -72,7 +130,6 @@ alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
 # -G : macOS: colorize    , Linux:= no-group: don't list group
 # -O : include file macOS flags
 #
-
 
 case $(uname) in
     'Darwin' )
@@ -99,11 +156,18 @@ case $(uname) in
         ;;
 esac
 
-
+# ----------------------------------------------------------------------------
+# Topic: Alias: Environment Variables
+# -----------------------------------
 # Manual environment variable manipulation
 alias setenv='source $USRHOME_DIR/ibin/do-setenv'
 alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
 alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.zsh'
+
+
+# ----------------------------------------------------------------------------
+# Topic: Alias: Change Current Directory
+# --------------------------------------
 
 # File searching and navigation
 alias cd-to='source $USRHOME_DIR/ibin/do-cd-to'
@@ -114,18 +178,9 @@ alias cd-to='source $USRHOME_DIR/ibin/do-cd-to'
 alias pel='source $USRHOME_DIR/ibin/envfor-pel'
 alias usrhome='source $USRHOME_DIR/ibin/do-usrhome'
 alias usrcfg='source $USRHOME_DIR/ibin/do-usrcfg'
-alias use-usrhome='source $USRHOME_DIR/ibin/envfor-usrhome'
-alias use-homebrew='source $USRHOME_DIR/ibin/envfor-homebrew'
 
-
-# -------
-alias use-cbr='source $USRHOME_DIR/ibin/envfor-cbr'
-alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
-
-# ----------------------------------------------------------------------------
 # Set shortcut functions for Bash and the Z shell
 # -----------------------------------------------
-# These functions
 
 usrhome_cd()
 {
@@ -200,26 +255,13 @@ cd....()
     cd "../../../$1"
 }
 
-
 alias ..='cd..'
 alias ...='cd...'
 alias ....='cd....'
 
-mdd()
-{
-    # mdd: mkdir and cd
-    #      If path has / in it, mkdir -p is used.
-    if printf "%s" "$1" | grep "/" > /dev/null; then
-        mkdir -pv "$1" || return 1
-    else
-        mkdir "$1" || return 1
-    fi
-    cd "$1"
-}
-
-
-# Topic: Prompt Control : Info
-# ----------------------------
+# ----------------------------------------------------------------------------
+# Topic: Info: Prompt
+# -------------------
 case $USRHOME_SHELL in
     bash)
         info-prompt()
@@ -259,9 +301,9 @@ See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequ
         ;;
 esac
 
-
-# Topic: Terminal Type : Info
-# ---------------------------
+# ----------------------------------------------------------------------------
+# Topic: Info: Terminal Type
+# --------------------------
 #
 # Environment variables:
 # Gnome: DESKTOP_SESSION
@@ -306,6 +348,14 @@ inside: %s/ibin/setfor-alias
 " "$USRHOME_DIR"
     fi
 }
+
+# ----------------------------------------------------------------------------
+# Topic: Alias: Environment Setup Control
+# ---------------------------------------
+alias use-usrhome='source $USRHOME_DIR/ibin/envfor-usrhome'
+alias use-homebrew='source $USRHOME_DIR/ibin/envfor-homebrew'
+alias use-cbr='source $USRHOME_DIR/ibin/envfor-cbr'
+alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
 
 # ----------------------------------------------------------------------------
 # Cleanup
