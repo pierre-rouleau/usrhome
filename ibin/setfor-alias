@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 15:39:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 15:56:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,22 +27,24 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-alias"
 # Not yet exported.
 
 if test -n "$ZSH_VERSION"; then
-  USRHOME_SHELL=zsh
+  USRHOME_SHELL="zsh"
 elif test -n "$BASH_VERSION"; then
-  USRHOME_SHELL=bash
+  USRHOME_SHELL="bash"
 elif test -n "$KSH_VERSION"; then
-  USRHOME_SHELL=ksh
+  USRHOME_SHELL="ksh"
 elif test -n "$FCEDIT"; then
-  USRHOME_SHELL=ksh
+  USRHOME_SHELL="ksh"
 elif test -n "$PS3"; then
-  USRHOME_SHELL=unknown
+  USRHOME_SHELL="unknown"
 else
-  USRHOME_SHELL=sh
+  USRHOME_SHELL="sh"
 fi
 
 
 # Topic: Info: Shell
 # ------------------
+
+# shellcheck disable=SC2142 # inside a function $0 refers to the function name.  Can't use that.
 alias ss='printf "\$0 : %s, \$SHELL : %s\n" $0 $SHELL'
 alias \?='printf "%s\n" $?'
 
@@ -126,7 +128,7 @@ mdd()
     else
         mkdir "$1" || return 1
     fi
-    cd "$1"
+    cd "$1" || return 1
 }
 
 alias md='mkdir'
@@ -226,7 +228,7 @@ usrhome_cd()
 if [ "$(uname)" = "Darwin" ]; then
     cdv()
     {
-        cd "/Volumes/$1"
+        cd "/Volumes/$1" || return 1
     }
 fi
 
@@ -269,17 +271,17 @@ cdtmp()
 
 cd..()
 {
-    cd "../$1"
+    cd "../$1"  || return 1
 }
 
 cd...()
 {
-    cd "../../$1"
+    cd "../../$1" || return 1
 }
 
 cd....()
 {
-    cd "../../../$1"
+    cd "../../../$1" || return 1
 }
 
 alias ..='cd..'
@@ -309,6 +311,7 @@ See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequ
     zsh)
         info-prompt()
         {
+            # shellcheck disable=SC2154
             printf "Z shell prompt control variables:
 - PROMPT0: %s
 - PROMPT1: %s
@@ -320,8 +323,7 @@ See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequ
 - PROMPT : %s
   - p1   : %s
   - p2   : %s
-- USRHOME_PROMPT_MODEL: %s
-" "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2" "$USRHOME_PROMPT_MODEL"
+- USRHOME_PROMPT_MODEL: %s\n" "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2" "$USRHOME_PROMPT_MODEL"
         }
         ;;
     *)
