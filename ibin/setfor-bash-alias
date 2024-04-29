@@ -3,7 +3,7 @@
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-27 12:07:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 18:57:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,23 +30,15 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 # Set shortcut functions for Bash shell
 # -------------------------------------
 
+# ----------------------------------------------------------------------------
+# Topic: Alias: where
+# -------------------
+
 # The zsh where command is used often, but not available under bash.
 # Create it as an alias to type
 alias where='type'
 
-# lsd lists directories.
-alias lsd='ls -F | grep -i / | sort -f | sed -e "s~/~~g" | column'
-
-# lsl: list links
-#  alias lsl='ls -lFGO *(@)'
-# With a function it's possible to pass a command line argument (like lsl -l)
-# function lsl {
-#     ls $1 -FGO *(@)
-# }
-
-
-# --------
-#
+# ----------------------------------------------------------------------------
 # Include aliases available in all USRHOME supported shells.
 
 . "$USRHOME_DIR/ibin/setfor-alias"
@@ -55,6 +47,21 @@ alias lsd='ls -F | grep -i / | sort -f | sed -e "s~/~~g" | column'
 #
 # Bash  specific aliases
 
+# ----------------------------------------------------------------------------
+# Topic: Alias: ls commands
+# -------------------------
+
+lsl()
+{
+    case $(uname) in
+        'Darwin' )
+            ls -FGO | grep @
+            ;;
+        *)
+            find ! -name . -prune -type l
+            ;;
+    esac
+}
 # ----------------------------------------------------------------------------
 # Cleanup
 usrhome_trace_out

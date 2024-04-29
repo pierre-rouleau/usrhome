@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-22 18:21:21 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 18:50:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -31,42 +31,17 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-zsh-alias"
 # Set shortcut functions for Z shell
 # ----------------------------------
 
-case $(uname) in
-    'Darwin' )
-        # Supports the -O option: extra macOS flags.
-        # -G on macOS means colorize.
+# Topic: Alias: ls commands
+# -------------------------
 
-        # List directories
-        function lsd {
-            ls $1 -dGF *(/)
-        }
-
-        # lsl: list links
-        #  alias lsl='ls -lFGO *(@)'
-        # With a function it's possible to pass a command line argument (like lsl -l)
-        function lsl {
-            ls $1 -FGO *(@)
-        }
-        ;;
-
-    *)
-        # There's no support for the -O option normally.
-        # -G normally means to not display group info in long display (so we don't use this here)
-        # --color=auto activates colors
-        alias lt='ls -ltrF --color=auto'
-        # List directories
-        function lsd {
-            ls $1 -dF --color=auto *(/)
-        }
-
-        # lsl: list links
-        # With a function it's possible to pass a command line argument (like lsl -l)
-        function lsl {
-            ls $1 -F --color=auto *(@)
-        }
-        ;;
-esac
-
+# lsl: list links
+#  alias lsl='ls -lFGO *(@)'
+# With a function it's possible to pass a command line argument (like lsl -l)
+lsl()
+{
+    set_ls_options
+    ls $1 -F ${usrhome_ls_color_flag} ${usrhome_ls_option_flag} *(@)
+}
 
 # ----------------------------------------------------------------------------
 # Include the aliases available in all USRHOME supported shells.

@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 16:09:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 18:57:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -184,6 +184,89 @@ case $(uname) in
         alias lta='ls -ltraF --color=auto'
         ;;
 esac
+
+
+set_ls_options()
+{
+    case $(uname) in
+        'Darwin' )
+            # Supports the -O option: extra macOS flags.
+            # -G on macOS means colorize.
+            usrhome_ls_option_flag=-O
+            usrhome_ls_color_flag=-G
+            ;;
+        *)
+            # There's no support for the -O option normally.
+            # -G normally means to not display group info in long display (so we don't use this here)
+            # --color=auto activates colors
+            usrhome_ls_option_flag=
+            usrhome_ls_color_flag="--color=auto"
+            ;;
+    esac
+}
+
+# List directories
+lsd()
+{
+    set_ls_options
+    if [[ -z $1 ]]; then
+        ls -d ${usrhome_ls_color_flag} */
+    elif [[ $# > 1 ]]; then
+        echo "ERROR: lsd does not support glob, and more than 1 argument."
+        echo "  You provided $# argument."
+        echo " Usage: lsd [ARG]"
+        echo "  ARG: full or partial directory name."
+        return 1
+    else
+        ls -d ${usrhome_ls_color_flag} $1*/
+    fi
+}
+
+lsda()
+{
+    set_ls_options
+    if [[ -z $1 ]]; then
+        ls -d ${usrhome_ls_color_flag} */ .[^.]*/
+    elif [[ $# > 1 ]]; then
+        echo "ERROR: lsd does not support glob, and more than 1 argument."
+        echo "  You provided $# argument"
+        echo " Usage: lsda [ARG]"
+        echo "  ARG: full or partial directory name."
+        return 1
+    else
+        if $((echo $1*/  >&2) >/dev/null 2>&1 ); then
+            has_reg=1
+        else
+            has_reg=0
+        fi
+        if $((echo .$1*/ >&2) >/dev/null 2>&1 ); then
+            has_hid=1
+        else
+            has_hid=0
+        fi
+        # echo "has_reg: $has_reg, has_hid=$has_hid"
+        if [[ "$has_reg" = "1" ]]; then
+            if [[ "$has_hid" = "1" ]]; then
+                # has hidden and regular
+                ls -d ${usrhome_ls_color_flag} {.$1*/,$1*/}
+            else
+                # has regular only
+                ls -d ${usrhome_ls_color_flag} $1*/
+            fi
+        else
+            if [[ "$has_hid" = "1" ]]; then
+                # has hidden only
+                ls -d ${usrhome_ls_color_flag} .$1*/
+            else
+                # has nothing
+                return 1
+            fi
+        fi
+        #ls -dG {.$1*/,$1*/}
+        #ls -dG .$1*/
+    fi
+    #ls $1 -dGF *(/)
+}
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Environment Variables
