@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 15:19:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 15:39:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,11 +49,17 @@ alias \?='printf "%s\n" $?'
 
 info-shell-special-var()
 {
+    positionals=""
+    sep=""
+    pos=1
     all_words=""
     for word in "$@"; do
-        all_words="${all_words}\"${word}\" "
+        all_words="${all_words}${sep}\"${word}\""
+        positionals="${positionals}${sep}\$${pos}='${word}'"
+        sep=", "
+        pos=$(( pos + 1))
     done
-    all_words="$(echo "$all_words" | sed -e 's/[[:space:]]*$//')"
+    #all_words="$(echo "$all_words" | sed -e 's/[[:space:]]*$//')"
 
     case "$USRHOME_SHELL" in
         bash | zsh)
@@ -64,23 +70,35 @@ info-shell-special-var()
 The following shows the shell special shell parameters
 along with their values (except for positional parameters)
 shown within single quotes.
- - \$#: Positional parameter # value: \$1 is the first parameter. (None shown here).
- - \$0: Name of the shell or shell script.
- ----> '$0'
+ - \$#: Number of positional arguments.
+ ----> '$#'
+
+ - \$№: Positional parameter # value: \$1 is the first parameter.
+ ----> %s
+
  - \$*: In double quote: expand all positional parameters, they are all inside 1 word, each separated by \$IFS.
  ----> '\"%s\"'
+
  - \$@: In double quote: expand all positional parameters, each one inside it's own argument word.
  ----> '%s'
+
+ - \$0: Name of the shell or shell script.
+ ----> '$0'
+
  - \$?: Exit status of last executed command
  ----> '$?'
+
  - \$_: Last argument of previous command
  ----> '$_'
+
  - \$-: The current set of options
  ----> '$-'
+
  - \$!: Process ID of job most recently placed in foreground.
  ----> '$!'
+
  - \$\$: Process ID of the shell. $$
- ----> '$$'\n" "$*" "$all_words"
+ ----> '$$'\n" "$positionals" "$*" "$all_words"
             ;;
 
         *)
