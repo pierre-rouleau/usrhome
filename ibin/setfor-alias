@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 22:21:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 22:29:13 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -274,9 +274,17 @@ lsl()
             shift
             ;;
 
+        --help | -h)
+            echo "lsl : list symbolic links in current directory"
+            echo " Usage: lsl [-l] ['NAME']"
+            echo "   -l : list symlinks using the ls -l format."
+            echo "  NAME: glob identifying the names to list."
+            echo "        It *must* be enclosed with single quotes."
+            return 1
+            ;;
         # prevent any other option:
         # note that it also precludes having symlink names that start with a '-'
-        -[a-zA-Z0-9] | -- )
+        -?* )
             echo "ERROR: lsl does not support the $1 option."
             return 1
             ;;
