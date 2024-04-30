@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 22:03:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 22:09:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -265,7 +265,7 @@ lsda()
     fi
 }
 
-# lsl: list links
+# lsl: list symlinks
 lsl()
 {
     if [[ "$1" = "-l" ]]; then
