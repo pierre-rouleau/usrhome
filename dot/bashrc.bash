@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-04-30 18:18:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-30 18:26:19 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -225,6 +225,8 @@ bold_end()
     printf "%s" "$(tput sgr0)"
 }
 
+export bold_start
+export bold_end
 
 # PROMPT MODEL 1: very short. No color, no bolding, no logic.
 prompt1=">\h@\d@\t[\w]\n>\\$ "
