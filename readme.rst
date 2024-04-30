@@ -650,13 +650,45 @@ The following command shortcuts for specialized use of **ls** are provided by US
 USRHOME Command Name               Description
 ================================== ================================================================
 ``l``                              Colorized **ls** that also shows the file type symbol.
+
+                                   - Supports supplementation ls options and arguments.
+
 ``la``                             Same as ``l`` but also show hidden files.
+
+                                   - Supports supplementation ls options and arguments.
+
 ``ll``                             ``ls -l`` with colorized and  file type symbols.
+
+                                   - Supports supplementation ls options and arguments.
+
 ``lla``                            Same as ``ll`` but also show hidden files.
+
+                                   - Supports supplementation ls options and arguments.
+
 ``lt``                             ``ls -ltr`` with colorized and  file type symbols.
+
+                                   - Supports supplementation ls options and arguments.
+
 ``lta``                            Same as ``lt`` but also show hidden files.
-``lsd``                            List sub-directories in current directory.
-``lsl``                            List symbolic links in current directory.
+
+                                   - Supports any ls options.
+
+``lsd [NAME]``                     List sub-directories in current directory.
+
+                                   - NAME: optional name or first letters of the names.
+
+``lsda [NAME]``                    List sub-directories in current directory,
+                                   includes hidden directories.
+
+                                   - NAME: optional name or first letters of the names.
+
+``lsl [-l] ['NAME']``              List symbolic links in current directory.
+
+                                   - With ``-l``, list using the ``ls -l`` format.
+                                   - ``NAME``: optional symlink name glob pattern. Must be placed
+                                     withing single quotes.
+                                   - Also support the ``-h`` and ``--help`` options to show its
+                                     usage.
 ================================== ================================================================
 
 Command to Display and Manipulate Environment Variables
