@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 21:50:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 22:03:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -266,21 +266,34 @@ lsda()
 }
 
 # lsl: list links
-# TODO: It would be possible to support the -l option to list
-##      all symlinks with `ls -l`
 lsl()
 {
-    if [[ -z $1 ]]; then
-        find . -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
-    elif [[ $# > 1 ]]; then
+    if [[ "$1" = "-l" ]]; then
+        long_ls="true"
+        shift
+    else
+        long_ls="false"
+    fi
+    if [[ -z "$1" ]]; then
+        if [[ "$long_ls" = "true" ]]; then
+            find . -maxdepth 1 -type l | xargs -I % ls -l %
+        else
+            find . -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
+        fi
+    elif [[ "$#" > 1 ]]; then
         echo "ERROR: lsl does not support glob argument; it must be single quoted."
-        echo "  You provided $# argument."
-        echo " Usage: lsl [ARG]"
-        echo "  ARG: single quoted glob expression."
+        echo "  You provided $# arguments (the shell expands your glob)."
+        echo " Usage: lsl [-l] [NAME]"
+        echo "  -l : lst symlinks using ls -l format."
+        echo "  NAME: single quoted glob expression."
         echo " Example to list all symlink that start with .bas: : lsl '.bas*' "
         return 1
     else
-        find . -name "$1" -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
+        if [[ "$long_ls" = "true" ]]; then
+            find . -name "$1" -maxdepth 1 -type l | xargs -I % ls -l %
+        else
+            find . -name "$1" -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
+        fi
     fi
 }
 
