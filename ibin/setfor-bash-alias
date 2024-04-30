@@ -3,7 +3,7 @@
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 20:37:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 21:45:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,28 +42,6 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 # Create it as an alias to type
 alias where='type'
 
-# ----------------------------------------------------------------------------
-# Topic: Alias: ls commands
-# -------------------------
-
-lsl()
-{
-    case $(uname) in
-        'Darwin' )
-            # On macOS the ls -O option ensures that the symlinks are shown with a name
-            # that ends with the @ character.  Use that.
-            ls -FGO | grep '@$'
-            ;;
-        *)
-            # On Linux, use find:
-            # `find` output one directory per line and prints ./ in front of each directory
-            # - sed removes the leading './' from the names
-            # - sort places them in the same order ls would
-            # - echo (without double quote) removes all lines and add a newline at end.
-            echo $(find ! -name . -prune -type l | sed -e 's|\./||g' | sort )
-            ;;
-    esac
-}
 # ----------------------------------------------------------------------------
 # Cleanup
 usrhome_trace_out

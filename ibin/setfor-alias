@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 18:57:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 21:50:24 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -262,10 +262,26 @@ lsda()
                 return 1
             fi
         fi
-        #ls -dG {.$1*/,$1*/}
-        #ls -dG .$1*/
     fi
-    #ls $1 -dGF *(/)
+}
+
+# lsl: list links
+# TODO: It would be possible to support the -l option to list
+##      all symlinks with `ls -l`
+lsl()
+{
+    if [[ -z $1 ]]; then
+        find . -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
+    elif [[ $# > 1 ]]; then
+        echo "ERROR: lsl does not support glob argument; it must be single quoted."
+        echo "  You provided $# argument."
+        echo " Usage: lsl [ARG]"
+        echo "  ARG: single quoted glob expression."
+        echo " Example to list all symlink that start with .bas: : lsl '.bas*' "
+        return 1
+    else
+        find . -name "$1" -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
+    fi
 }
 
 # ----------------------------------------------------------------------------
