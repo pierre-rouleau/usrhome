@@ -3,7 +3,7 @@
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 18:57:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-29 20:37:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,6 +25,10 @@
 #
 usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 
+# ----------------------------------------------------------------------------
+# Include aliases available in all USRHOME supported shells.
+
+. "$USRHOME_DIR/ibin/setfor-alias"
 
 # ----------------------------------------------------------------------------
 # Set shortcut functions for Bash shell
@@ -39,15 +43,6 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 alias where='type'
 
 # ----------------------------------------------------------------------------
-# Include aliases available in all USRHOME supported shells.
-
-. "$USRHOME_DIR/ibin/setfor-alias"
-
-# --------
-#
-# Bash  specific aliases
-
-# ----------------------------------------------------------------------------
 # Topic: Alias: ls commands
 # -------------------------
 
@@ -55,10 +50,17 @@ lsl()
 {
     case $(uname) in
         'Darwin' )
-            ls -FGO | grep @
+            # On macOS the ls -O option ensures that the symlinks are shown with a name
+            # that ends with the @ character.  Use that.
+            ls -FGO | grep '@$'
             ;;
         *)
-            find ! -name . -prune -type l
+            # On Linux, use find:
+            # `find` output one directory per line and prints ./ in front of each directory
+            # - sed removes the leading './' from the names
+            # - sort places them in the same order ls would
+            # - echo (without double quote) removes all lines and add a newline at end.
+            echo $(find ! -name . -prune -type l | sed -e 's|\./||g' | sort )
             ;;
     esac
 }
