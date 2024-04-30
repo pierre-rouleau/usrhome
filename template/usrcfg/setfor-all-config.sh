@@ -3,7 +3,7 @@
 # Purpose   : Template for private USRHOME configuration command to Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-27 11:19:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-30 16:40:36 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -71,7 +71,7 @@ export USRHOME_DIR_TMP="$HOME/tmp"
 # Select Prompt
 # -------------
 
-if [ -z "$USRHOME__USRCFG_SEEN" ]; then
+if [ -z "$USRHOME__USRCFG_SEEN" ] || [ "$(id -u)" = 0 ]; then
     export USRHOME__USRCFG_SEEN=1
 
     # Set the persistent values of variables that can
