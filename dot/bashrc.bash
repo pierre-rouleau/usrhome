@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-04-30 16:31:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-30 18:18:41 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -173,6 +173,7 @@ fi
 #
 #  - Red         : '\[\e[0;31m\]'
 #  - Green       : '\[\e[0;32m\]'
+#  - Magenta     : '\[\e[0;35m\]'
 #  - End of Color: '\[\e[0m\]'
 
 # We can also use the tput command, which allows
@@ -183,6 +184,48 @@ fi
 # The code provides 2 already defined prompt, selected by the value
 # of USRHOME_PROMPT_MODEL
 
+# Initialize ec to nothing.  It will be set later and it's used bold_start().
+ec=
+
+# In sudo mode, the TERM_PROGRAM envvar is not set.
+# Therefore, remember whether bold with color is allowed
+# inside a variable which can be used in a sudo ran-bash.
+# Coloring is allowed in Linux and macOS for Apple Terminal,
+# it's not allowed on macOS iTerm2.
+if [ ! "$(uname)" = "Darwin" ] || [ "$TERM_PROGRAM" = "Apple_Terminal" ]; then
+    bold_start_with_color=1
+fi
+
+bold_start()
+{
+    # Arg1: - if none: just bold
+    #       - otherwise a color value for success.
+    #     The color for failure is red in normal mode, magenta for UID 0
+    #     On macOS, color is only allowed on Apple Terminal, because iTerm2
+    #     rendering of the 4-bit colors is not that nice.  With iTerm2, it's
+    #     better to re-implement bold_start and bold_end functions.
+    if [ -n "$bold_start_with_color" ]; then
+        if [ -n "$1" ]; then
+            if [ "${ec}" == 0 ]; then
+                printf "\e[0;%dm" "$1"
+            else
+                if [ "$(id -u)" -ne 0 ]; then
+                    printf "\e[0;31m"
+                else
+                    printf "\e[0;35m"
+                fi
+            fi
+        fi
+    fi
+    printf "%s" "$(tput bold)"
+}
+
+bold_end()
+{
+    printf "%s" "$(tput sgr0)"
+}
+
+
 # PROMPT MODEL 1: very short. No color, no bolding, no logic.
 prompt1=">\h@\d@\t[\w]\n>\\$ "
 
@@ -190,27 +233,28 @@ prompt1=">\h@\d@\t[\w]\n>\\$ "
 # shellcheck disable=SC2016
 prompt2='$(\
 ec=${?}; \
-if [ ${ec} == 0 ]; then \
-  echo -n "\[\e[0;32m\]"; \
-else \
-  echo -n "\[\e[0;31m\]"; \
-fi; \
-printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\],L${SHLVL},\[$(tput bold)\]" ${ec}; \
+bold_start 32; \
+printf ">%2X\[\e[0m\]" ${ec}; \
+bold_end ; \
+printf ",L${SHLVL}," ;
+bold_start ; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
-  printf "\h@\u@\t[\w]\[$(tput sgr0)\]\n";  \
+  printf "\h@\u@\t[\w]\n";  \
 else \
-  printf "\t[\w]\[$(tput sgr0)\]\n";  \
+  printf "\t[\w]\n";  \
 fi; \
-if [ "$EUID" -ne 0 ]; then \
-  if [ ${ec} == 0 ]; then \
-    echo "\[\e[0;32m\]\[$(tput bold)\]bash$\[$(tput sgr0)\]\[\e[0m\]"; \
-  else \
-    echo "\[\e[0;31m\]bash$\[\e[0m\]"; \
-  fi; \
+bold_end ; \
+if [ "$(id -u)" -ne 0 ]; then \
+    bold_start 32 ; \
+    printf "bash$"; \
+    bold_end ; \
 else \
-  echo "\[\e[0;35m\]\[$(tput bold)\]bash#\[$(tput sgr0)\]\[\e[0m\]"; \
+    bold_start 35 ; \
+    printf "bash#"; \
+    bold_end ; \
 fi;\
 ) '
+
 
 case $USRHOME_PROMPT_MODEL in
     0 )
@@ -235,6 +279,7 @@ esac
 
 unset prompt1
 unset prompt2
+unset ec
 
 
 # Topic: Title
