@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-04-25 09:13:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-30 16:31:38 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -101,16 +101,59 @@ usrhome_trace_in "~/.bashrc    --> \$USRHOME_DIR/dot/bashrc.bash"
 . "$USRHOME_DIR/ibin/setfor-bash-alias"
 
 # ----------------------------------------------------------------------------
-# Prompt control
-# ==============
+if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
+
+    # ----------------------------------------------------------------------------
+    # Update Path in sub-shells if not already done
+    # ---------------------------------------------
+    # source #4 (shown in diagram)
+    # shellcheck disable=SC1091
+    . "$USRHOME_DIR/ibin/setfor-path"
+
+    # ----------------------------------------------------------------------------
+    # Sanitize PATH
+    # -------------
+    #
+    # source #4a (not shown in the diagram)
+    # shellcheck disable=SC1091
+    . "$USRHOME_DIR/ibin/do-sanitize-path.sh"
+fi
+
+# ----------------------------------------------------------------------------
+# Topic: Prompt control
+# =====================
+#
+# Ref: Bash Prompt Escape Sequences:
+#  See: https://www.gnu.org/software/bash/manual/html_node/Controlling-the-Prompt.html
 #
 # \d - Current date
-# \h - Host name
-# \t - Current time
-# \# - Command number
+# \h - Host name (hostname -s)
+# \H - host name (hostname)
+# \j - number of jobs managed by the shell
+# \s - the name of the shell : basename of $0
+# \t - Current time - 24-hour HH:MM:SS
+# \T - Current time - 12-hour HH:MM:SS
+# \@ - Current time - 12-hour am/pm
 # \u - User name
+# \v - version of Bash
+# \V Release of Bash, version + patchlevel
 # \W - Current working directory (ie: Desktop/)
 # \w - Current working directory, full path (ie: /Users/Admin/Desktop)
+# \! - History number of this command
+# \# - Command number of this command
+# \\$ - if the effective uid is 0: #, otherwise $. NOTE: the \ has to be escaped for $
+# \\ - a backslash
+# \[ - Begin sequence of non-printing characters.  Could be used to embed terminal control sequence into the prompt.
+# \] - End of sequence
+#
+# Setting Terminal title to TITLE===>:    "\e]2;TITLE\a"
+# - TITLE can include prompt escape sequences shown above
+# - TITLE_TEXT := text taken from set-title arguments,
+#                 included inside TITLE within the escape sequence selected for the prompt.
+#
+# - The set-title() function set TITLE_TEXT from its arguments ("$*")
+#   and then update the PS1 prompt variable to create a terminal title
+#   that dynamically updates on each command (via the prompt).
 #
 # \$(?) : delay execution of $? when PS1 is evaluated (at the prompt)
 #         to show the exit code of the command that was just completed.
@@ -140,40 +183,34 @@ usrhome_trace_in "~/.bashrc    --> \$USRHOME_DIR/dot/bashrc.bash"
 # The code provides 2 already defined prompt, selected by the value
 # of USRHOME_PROMPT_MODEL
 
-case $LOGNAME in
-    root)
-        pb1="#"
-      ;;
-    *)
-        pb1="%"
-      ;;
-esac
+# PROMPT MODEL 1: very short. No color, no bolding, no logic.
+prompt1=">\h@\d@\t[\w]\n>\\$ "
 
-prompt1=">\h@\d@\t[\w]\n>$pb1 "
-
-if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = 1 ]; then
-    # shellcheck disable=SC2016
-    prompt2='$(\
+# PROMPT MODEL 2: With color, bolding and logic.
+# shellcheck disable=SC2016
+prompt2='$(\
 ec=${?}; \
-if [ ${ec} == 0 ]; then echo -n "\[\e[0;32m\]"; else echo -n "\[\e[0;31m\]"; fi; \
-printf ">%2X" ${ec}; \
-echo -n "\[\e[0m\]"; \
-echo -n ",L${SHLVL}," ; \
-echo \[$(tput bold)\]\h@\u@\t[\w]\[$(tput sgr0)\]; \
-if [ "$EUID" -ne 0 ]; then echo "bash%"; else echo "\[\e[0;31m\]bash#\[\e[0m\]"; fi;\
+if [ ${ec} == 0 ]; then \
+  echo -n "\[\e[0;32m\]"; \
+else \
+  echo -n "\[\e[0;31m\]"; \
+fi; \
+printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\],L${SHLVL},\[$(tput bold)\]" ${ec}; \
+if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
+  printf "\h@\u@\t[\w]\[$(tput sgr0)\]\n";  \
+else \
+  printf "\t[\w]\[$(tput sgr0)\]\n";  \
+fi; \
+if [ "$EUID" -ne 0 ]; then \
+  if [ ${ec} == 0 ]; then \
+    echo "\[\e[0;32m\]\[$(tput bold)\]bash$\[$(tput sgr0)\]\[\e[0m\]"; \
+  else \
+    echo "\[\e[0;31m\]bash$\[\e[0m\]"; \
+  fi; \
+else \
+  echo "\[\e[0;35m\]\[$(tput bold)\]bash#\[$(tput sgr0)\]\[\e[0m\]"; \
+fi;\
 ) '
-else
-    # shellcheck disable=SC2016,SC2089
-    prompt2='$(\
-ec=${?}; \
-if [ ${ec} == 0 ]; then echo -n "\[\e[0;32m\]"; else echo -n "\[\e[0;31m\]"; fi; \
-printf ">%2X" ${ec}; \
-echo -n "\[\e[0m\]"; \
-echo -n ",L${SHLVL}," ; \
-echo \[$(tput bold)\]\t[\w]\[$(tput sgr0)\]; \
-if [ "$EUID" -ne 0 ]; then echo "bash%"; else echo "\[\e[0;31m\]bash#\[\e[0m\]"; fi;\
-) '
-fi
 
 case $USRHOME_PROMPT_MODEL in
     0 )
@@ -199,28 +236,48 @@ esac
 unset prompt1
 unset prompt2
 
+
+# Topic: Title
+# ------------
+
+# Set terminal window title using current prompt when outside Emacs.
+function set-title()
+{
+    # Arguments: A list of words to use as title.
+    #  - Accepts no argument: clears the title text section..
+    #  - store into TITLE_TEXT as one shell 'word' string.
+    TITLE_TEXT="$*"
+    export TITLE_TEXT
+    if [ -n "$SSHPASS" ]; then
+        title_shell_depth="L${SHLVL}+"
+    else
+        title_shell_depth="L${SHLVL}"
+    fi
+
+    # Set the title by appending the title setting logic to the PS1.
+    title="\e]2;$TITLE_TEXT (Bash \v: ${title_shell_depth}: \h:\w)\a"
+    if [ -z "$INSIDE_EMACS" ]; then
+        PS1=$PS1${title}
+    fi
+
+    export PS1
+}
+
+# Activate dynamic tracking title as soon as Bash takes over.
+# Use a empty default Title Text
+set-title ""
+
+# ----------------------------------------------------------------------------
+# User Bash Specific Configuration
+# --------------------------------
+
 if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
-    # echo "--- bashrc.bash - proceeding with USRHOME config"
-
     # ----------------------------------------------------------------------------
-    # Update Path in sub-shells if not already done
-    # ---------------------------------------------
-    # source #4 (shown in diagram)
-    # shellcheck disable=SC1091
-    . "$USRHOME_DIR/ibin/setfor-path"
-
-    # ----------------------------------------------------------------------------
-    # Sanitize PATH
-    # -------------
-    #
-    # source #4a (not shown in the diagram)
-    # shellcheck disable=SC1091
-    . "$USRHOME_DIR/ibin/do-sanitize-path.sh"
-
-    # ----------------------------------------------------------------------------
-    # Source User Extra zshrc if it exists
-    # ------------------------------------
+    # Source User Extra Bash Configuration if it exists
+    # -------------------------------------------------
     # source #5 (shown in diagram)
+    #
+    # The user logic can override anything that was defined by the USRHOME logic.
     user_bashrc="$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
     if [[ -f "$user_bashrc" ]]; then
         # shellcheck disable=SC1090

@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-23 17:37:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-30 12:09:56 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -103,10 +103,13 @@ fi
 # Update prompt
 # -------------
 
+# Topic: Prompt
+# -------------
+
 # - Use PROMPT instead of PS1
 # - Use RPROMPT to get a git status on the right side.
 
-# It would be possible to display a prompmt on 2 lines with the following:
+# It would be possible to display a prompt on 2 lines with the following:
 #     precmd() { print -rP "%B%? [%D{%H:%M:%S}] L:%L %n@%m:%~ %#%b " }
 #     export PROMPT=""
 #
@@ -201,6 +204,42 @@ case $USRHOME_PROMPT_MODEL in
         ;;
 esac
 
+
+# Topic: Title
+# ------------
+
+set-title()
+{
+    # Credit:
+    # - Alvin Alexander for the macOS echo trick.
+    #   - https://alvinalexander.com/blog/post/mac-os-x/change-title-bar-of-mac-os-x-terminal-window/
+    if [ -z "$INSIDE_EMACS" ]; then
+        os_type=$(uname)
+        case $os_type in
+            'Darwin' )
+                # Supports all shells with a simple echo.
+                # On macOS, the escape sequences are passed properly by echo.
+                # shellcheck disable=SC2028
+                echo "\033]0;${1}\007\c"
+                ;;
+
+            'Linux')
+                # The following works on Gnome Terminal and Qt Terminal
+                # Unlike macOS Terminal, the terminal 'titles' do not have multiple
+                # sections .
+                # TODO: provide better support for dynamic terminal titles
+                #       that update as the result of commands.
+                printf "\e]2;%s\a" "$1"
+                ;;
+
+            *)
+                echo "ERROR: The $os_type Operating System is not yet supported!"
+                echo "       Please report the error on GitHub USRHOME website."
+                echo "       You may also provide a Pull Request."
+                return 1
+        esac
+fi}
+
 # ----------------------------------------------------------------------------
 # Update Path in sub-shells if not already done
 # ---------------------------------------------
@@ -215,6 +254,10 @@ esac
 # ----------------------------------------------------------------------------
 # Source User Extra zshrc if it exists
 # ------------------------------------
+#
+# This is done last.  Allowing user's code to overwrite variables and
+# functions defined by USRHOME logic.
+#
 user_zshrc="$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 if [ -e "$user_zshrc" ]; then
     . "$user_zshrc"

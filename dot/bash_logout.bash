@@ -1,9 +1,9 @@
-# Bash Configuration FILE: bash_login.bash
+# Bash Configuration FILE: bash_logout.bash
 #
 # Purpose   : Bash ~/.bash_logout Configuration File - Sourced in interactive logout shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 16:06:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-04-30 13:36:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -77,12 +77,19 @@ usrhome_trace_in "~/.bash_logout   --> \$USRHOME_DIR/dot/bash_logout.bash"
 
 # ----------------------------------------------------------------------------
 
-if [ "$(uname)" = "Linux" ]; then
-    # when leaving the console clear the screen to increase privacy
-    if [ "$SHLVL" = 1 ]; then
-        [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
-    fi
-fi
+case $(uname) in
+    'Darwin' )
+    # When leaving Bash, clear Bash related icon. Rest title.
+        set-title ""
+        ;;
+
+    'Linux' )
+        # when leaving the console clear the screen to increase privacy
+        if [ "$SHLVL" = 1 ]; then
+            [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
+        fi
+        ;;
+esac
 
 # ----------------------------------------------------------------------------
 # Cleanup
