@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 20:21:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-01 14:22:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -84,8 +84,11 @@ usrhome_trace_in "~/.profile   --> \$USRHOME_DIR/dot/profile.sh"
 # ----------------------------------------------------------------------------
 # User-Specific Logic
 # -------------------
-
-
+#
+# [:todo 2024-05-01, by Pierre Rouleau:  Add ability to source usrcfg file if it exists.
+#   The name of that file would probably be usrcfg/do-user-profile.sh
+#   When adding it, the diagram must also be updated.
+# ]
 
 # ----------------------------------------------------------------------------
 # Cleanup
