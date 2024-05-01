@@ -172,11 +172,11 @@ listed in the right column.
 ========================= =====================================================
 Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ========================= =====================================================
-``~/.profile``            ``$USRHOME_DIR/dot/profile.bash``
-``~/.bash_profile``       ``$USRHOME_DIR/dot/bash_profile.bash``
-``~/.bash_login``         ``$USRHOME_DIR/dot/bash_login.bash``
-``~/.bashrc``             ``$USRHOME_DIR/dot/bashrc.bash``
-``~/.bash_logout``        ``$USRHOME_DIR/dot/bash_logout.bash``
+``~/.profile``            ``$USRHOME_DIR/dot/``\ `profile.bash`_
+``~/.bash_profile``       ``$USRHOME_DIR/dot/``\ `bash_profile.bash`_
+``~/.bash_login``         ``$USRHOME_DIR/dot/``\ `bash_login.bash`_
+``~/.bashrc``             ``$USRHOME_DIR/dot/``\ `bashrc.bash`_
+``~/.bash_logout``        ``$USRHOME_DIR/dot/``\ `bash_logout.bash`_
 ========================= =====================================================
 
 
@@ -190,11 +190,11 @@ listed in the right column.
 ========================= =====================================================
 Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ========================= =====================================================
-``~/.zshenv``             ``$USRHOME_DIR/dot/zshenv.zsh``
-``~/.zprofile``           ``$USRHOME_DIR/dot/zprofile.zsh``
-``~/.zshrc``              ``$USRHOME_DIR/dot/zshrc.zsh``
-``~/.zlogin``             ``$USRHOME_DIR/dot/zlogin.zsh``
-``~/.zlogout``            ``$USRHOME_DIR/dot/zlogout.zsh``
+``~/.zshenv``             ``$USRHOME_DIR/dot/``\ `zshenv.zsh`_
+``~/.zprofile``           ``$USRHOME_DIR/dot/``\ `zprofile.zsh`_
+``~/.zshrc``              ``$USRHOME_DIR/dot/``\ `zshrc.zsh`_
+``~/.zlogin``             ``$USRHOME_DIR/dot/``\ `zlogin.zsh`_
+``~/.zlogout``            ``$USRHOME_DIR/dot/``\ `zlogout.zsh`_
 ========================= =====================================================
 
 USRHOME Internal Configuration Files
@@ -1897,6 +1897,26 @@ Thanks!
 .. _clrenv command:                                    `Command to Display and Manipulate Environment Variables`_
 .. _sanitize-path command:                             `Command to Display and Manipulate Environment Variables`_
 .. _setenv command:                                    `Command to Display and Manipulate Environment Variables`_
+.. _profile.bash:                                      https://github.com/pierre-rouleau/usrhome/blob/main/dot/profile.bash
+.. _bash_profile.bash:                                 https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
+.. _bash_login.bash:                                   https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_login.bash
+.. _bashrc.bash:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/bashrc.bash
+.. _bash_logout.bash:                                  https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_logout.bash
+.. _zshenv.zsh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshenv.zsh
+.. _zprofile.zsh:                                      https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
+.. _zshrc.zsh:                                         https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshrc.zsh
+.. _zlogin.zsh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogin.zsh
+.. _zlogout.zsh:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogout.zsh
+
+
+
+
+
+
+
+
+
+
 
 
 
