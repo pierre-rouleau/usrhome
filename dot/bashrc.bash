@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-01 16:06:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-01 16:37:13 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -215,7 +215,7 @@ fi;\
 ) '
 
 
-select-prompt()
+usrhome-select-bash-prompt()
 {
     case $USRHOME_PROMPT_MODEL in
         0 )
@@ -231,7 +231,8 @@ select-prompt()
             ;;
 
         *)
-            # default (also model 2)
+            # default (also model 2).  Activates that explicitly.
+            USRHOME_PROMPT_MODEL=2
             PS1=${USRHOME_BASH_PROMPT2}
             # shellcheck disable=SC2090
             export PS1
@@ -240,7 +241,7 @@ select-prompt()
 }
 
 # Activate selected prompt
-select-prompt
+usrhome-select-bash-prompt
 
 # Cleanup
 unset ec
