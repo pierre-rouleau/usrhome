@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-04-30 23:35:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-01 16:06:48 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -148,10 +148,10 @@ fi
 #
 # Setting Terminal title to TITLE===>:    "\e]2;TITLE\a"
 # - TITLE can include prompt escape sequences shown above
-# - TITLE_TEXT := text taken from set-title arguments,
+# - USRHOME_TITLE_TEXT := text taken from set-title arguments,
 #                 included inside TITLE within the escape sequence selected for the prompt.
 #
-# - The set-title() function set TITLE_TEXT from its arguments ("$*")
+# - The set-title() function set USRHOME_TITLE_TEXT from its arguments ("$*")
 #   and then update the PS1 prompt variable to create a terminal title
 #   that dynamically updates on each command (via the prompt).
 #
@@ -185,12 +185,12 @@ fi
 # of USRHOME_PROMPT_MODEL
 
 # PROMPT MODEL 1: very short. No color, no bolding, no logic.
-prompt1=">\h@\d@\t[\w]\n>\\$ "
+USRHOME_BASH_PROMPT1=">\h@\d@\t[\w]\n>\\$ "
 
 
 # PROMPT MODEL 2: With color, bolding and logic.
 # shellcheck disable=SC2016
-prompt2='$(\
+USRHOME_BASH_PROMPT2='$(\
 ec=${?}; \
 if [ ${ec} == 0 ]; then \
   echo -n "\[\e[0;32m\]"; \
@@ -214,43 +214,50 @@ else \
 fi;\
 ) '
 
-case $USRHOME_PROMPT_MODEL in
-    0 )
-    # No prompt identified by USRHOME
-    # It can be set by "$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
-    # which could be the original users ~/.bashrc file.
-    # If that is not set, the default bash prompt is used.
-    ;;
 
-    1)
-        PS1=${prompt1}
-        export PS1
+select-prompt()
+{
+    case $USRHOME_PROMPT_MODEL in
+        0 )
+        # No prompt identified by USRHOME
+        # It can be set by "$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
+        # which could be the original users ~/.bashrc file.
+        # If that is not set, the default bash prompt is used.
         ;;
 
-    *)
-        # default (also model 2)
-        PS1=${prompt2}
-        # shellcheck disable=SC2090
-        export PS1
-        ;;
-esac
+        1)
+            PS1=${USRHOME_BASH_PROMPT1}
+            export PS1
+            ;;
 
-unset prompt1
-unset prompt2
+        *)
+            # default (also model 2)
+            PS1=${USRHOME_BASH_PROMPT2}
+            # shellcheck disable=SC2090
+            export PS1
+            ;;
+    esac
+}
+
+# Activate selected prompt
+select-prompt
+
+# Cleanup
 unset ec
+
 
 
 # Topic: Title
 # ------------
 
 # Set terminal window title using current prompt when outside Emacs.
-function set-title()
+set-title()
 {
     # Arguments: A list of words to use as title.
     #  - Accepts no argument: clears the title text section..
-    #  - store into TITLE_TEXT as one shell 'word' string.
-    TITLE_TEXT="$*"
-    export TITLE_TEXT
+    #  - store into USRHOME_TITLE_TEXT as one shell 'word' string.
+    USRHOME_TITLE_TEXT="$*"
+    export USRHOME_TITLE_TEXT
     if [ -n "$SSHPASS" ]; then
         title_shell_depth="L${SHLVL}+"
     else
@@ -258,7 +265,7 @@ function set-title()
     fi
 
     # Set the title by appending the title setting logic to the PS1.
-    title="\e]2;$TITLE_TEXT (Bash \v: ${title_shell_depth}: \h:\w)\a"
+    title="\e]2;$USRHOME_TITLE_TEXT (Bash \v: ${title_shell_depth}: \h:\w)\a"
     if [ -z "$INSIDE_EMACS" ]; then
         PS1=$PS1${title}
     fi
