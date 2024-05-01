@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-30 12:09:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-01 17:38:28 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -36,6 +36,17 @@ usrhome_trace_in "~/.zshrc    --> \$USRHOME_DIR/dot/zshrc.zsh"
 # Set shortcut alias for Z shell
 # ------------------------------
 . $USRHOME_DIR/ibin/setfor-zsh-alias
+
+# ----------------------------------------------------------------------------
+# Update Path in sub-shells if not already done
+# ---------------------------------------------
+. "$USRHOME_DIR/ibin/setfor-path"
+
+# ----------------------------------------------------------------------------
+# Sanitize PATH
+# -------------
+#
+. $USRHOME_DIR/ibin/do-sanitize-path.zsh
 
 # ----------------------------------------------------------------------------
 # Activate the help for zsh builtins
@@ -149,15 +160,16 @@ case $USRHOME_PROMPT_MODEL in
 
     2 | 3 )
         # Select tail end of prompt.
-        # Model 2: just put the % or # in bold
-        # Model 3: print zsh followed by % or #, in bold and in color:
-        #          green when last command succeeded, red otherwise.
+        # Model 2: print zsh followed by % or #, in bold and in color:
+        #          - user mode: green when last command succeeded,  bold red otherwise.
+        #          - root     : magenta when last command succeeded, bold red otherwise.
+        # Model 3: print zsh followed by % or # in bold
         case $USRHOME_PROMPT_MODEL in
             2)
-                p3=%B%#%b
+                p3=%(?.%F{%(#.magenta.green)}zsh%#%F{reset}.%B%F{red}zsh%#%F{reset}%b)
                 ;;
             3)
-                p3=%B%(?.%F{green}zsh%#%F{reset}.%F{red}zsh%#%F{reset})%b
+                p3=%Bzsh%#%b
                 ;;
         esac
         autoload -Uz vcs_info
@@ -240,16 +252,6 @@ set-title()
         esac
 fi}
 
-# ----------------------------------------------------------------------------
-# Update Path in sub-shells if not already done
-# ---------------------------------------------
-. "$USRHOME_DIR/ibin/setfor-path"
-
-# ----------------------------------------------------------------------------
-# Sanitize PATH
-# -------------
-#
-. $USRHOME_DIR/ibin/do-sanitize-path.zsh
 
 # ----------------------------------------------------------------------------
 # Source User Extra zshrc if it exists
