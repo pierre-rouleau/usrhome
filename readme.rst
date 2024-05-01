@@ -273,7 +273,7 @@ these commands:
 ========================================== ========================================================
 `envfor-cbr`_                              Implements the `use-cbr command`_.
 `envfor-emacs-for-man`_                    Implements the `use-emacs-for-man command`_.
-`envfor-pel`_                              Implements the use-pel command.
+`envfor-pel`_                              Implements the `pel command`_.
 ========================================== ========================================================
 
 The user would probably want to create some extra ones;  the
@@ -284,14 +284,14 @@ The user would probably want to create some extra ones;  the
 ========================================== ========================================================
 ``$USRHOME/ibin`` File                     Purpose
 ========================================== ========================================================
-`do-cbr`_                                  Implements the cbr command.
-`do-cd-to`_                                Implements the cd-to command.
-`do-clrenv`_                               Implements the clrenv command.
-`do-sanitize-path.sh`_                     Implements the sanitize-path command for Bash and sh.
-`do-sanitize-path.zsh`_                    Implements the sanitize-path command for zsh.
-`do-setenv`_                               Implements the setenv command.
-`do-usrcfg`_                               Implements the usrcfg command.
-`do-usrhome`_                              Implements the usrhome command.
+`do-cbr`_                                  Implements the `cbr command`_.
+`do-cd-to`_                                Implements the `cd-to command`_.
+`do-clrenv`_                               Implements the `clrenv command`_.
+`do-sanitize-path.sh`_                     Implements the `sanitize-path command`_ for Bash and sh.
+`do-sanitize-path.zsh`_                    Implements the `sanitize-path command`_ for zsh.
+`do-setenv`_                               Implements the `setenv command`_.
+`do-usrcfg`_                               Implements the `usrcfg command`_.
+`do-usrhome`_                              Implements the `usrhome command`_.
 ========================================== ========================================================
 
 **Helper Sourced Files**
@@ -1859,6 +1859,7 @@ Thanks!
 .. _Emacs 'string-format' regular expression syntax:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
 .. _glob:                                              https://en.wikipedia.org/wiki/Glob_(programming)
 .. _usrhome/template/usrcfg/ibin:                      https://github.com/pierre-rouleau/usrhome/tree/main/template/usrcfg/ibin
+.. _cbr command:
 .. _use-cbr command:                                   `CBR -- Single commands to Check, Build or Run`_
 .. _use-emacs-for-man command:                         `Using Emacs as a man reader`_
 .. _USRHOME dot files:                                 https://github.com/pierre-rouleau/usrhome/tree/main/dot
@@ -1889,5 +1890,14 @@ Thanks!
 .. _usrhome/template/setfor-shell-tracing.sh:          https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-shell-tracing.sh
 .. _usrhome/template:                                  https://github.com/pierre-rouleau/usrhome/blob/main/template
 .. _which-shell:                                       https://github.com/pierre-rouleau/usrhome/blob/main/which-shell
+.. _cd-to command:                                     `Directory Navigation`_
+.. _usrcfg command:                                    `Directory Navigation`_
+.. _usrhome command:                                   `Directory Navigation`_
+.. _pel command:                                       `Directory Navigation`_
+.. _clrenv command:                                    `Command to Display and Manipulate Environment Variables`_
+.. _sanitize-path command:                             `Command to Display and Manipulate Environment Variables`_
+.. _setenv command:                                    `Command to Display and Manipulate Environment Variables`_
+
+
 
 .. ---------------------------------------------------------------------------
