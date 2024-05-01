@@ -197,8 +197,8 @@ Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ``~/.zlogout``            ``$USRHOME_DIR/dot/zlogout.zsh``
 ========================= =====================================================
 
-The Extra Internal USRHOME Configuration Files
-----------------------------------------------
+USRHOME Internal Configuration Files
+------------------------------------
 
 As shown by the diagram in the section titled
 `The Z and Bash Shell Startup, Dot Files and User Configuration`_,
@@ -209,46 +209,100 @@ both. All of these files are source and stored in USRHOME ibin directory.
 The following files are not meant to be used manually. They are executed when the shell starts.
 
 
-====================================== ============================================================
-USRHOME ibin File                      Purpose
-====================================== ============================================================
-``USRHOME_DIR/ibin/setfor-alias``      Defines USRHOME alias and shell functions that are common
-                                       to Bash and the Z Shell.
+===================================== ============================================================
+``$USRHOME/ibin`` File                Purpose
+===================================== ============================================================
+`setfor-alias`_                       Defines USRHOME alias and shell functions that are common
+                                      to Bash and the Z Shell.  The file defines several command
+                                      aliases, including the USRHOME-specific command aliases that
+                                      use the following ``ibin/setfor-`` files:
 
-``USRHOME_DIR/ibin/setfor-bash-alias`` Defines USRHOME alias and shell functions that are only used
-                                       in the Bash shell.
+                                      - ``$USRHOME_DIR/ibin/setfor-prompt-model-to``: sourced to
+                                        implement **setfor-prompt-model-to**
+                                      - ``$USRHOME_DIR/ibin/setfor-prompt-toggle-usr-host``:
+                                        sourced to implement **setfor-prompt-toggle-usr-host**
+                                      - ``$USRHOME_DIR/ibin/setfor-shell-toggle-tracing``:
+                                        sourced to implement **setfor-shell-toggle-tracing**
 
-``USRHOME_DIR/ibin/setfor-path``       Holds the USRHOME logic that controls modification of the
-                                       PATH environment variable and functions that deals with it.
-                                       Also defines and runs functions that perform a simple
-                                       security check that verifies for the presence of some known
-                                       compromised libraries in the system, printing a warning if
-                                       they are found.
+`setfor-bash-alias`_                  Defines USRHOME alias and shell functions that are only used
+                                      in the Bash shell.
 
-                                       It sources the following extra ibin files:
+`setfor-path`_                        Holds the USRHOME logic that controls modification of the
+                                      PATH environment variable and functions that deals with it.
+                                      Also defines and runs functions that perform a simple
+                                      security check that verifies for the presence of some known
+                                      compromised libraries in the system, printing a warning if
+                                      they are found.
 
-                                       - ``USRHOME_DIR/ibin/envfor-homebrew``, when
-                                         ``USRHOME_USE_HOMEBREW`` environment variable is set to 1
-                                         in the file ``usrcfg/setfor-all-config.sh``.
-                                         That prepends the Homebrew directory to the path.
-                                       - ``USRHOME_DIR/ibin/envfor_usrhome``, always, to prepend
-                                         the ``USRHOME_DIR/bin`` to PATH and ``~/bin`` if present.
+                                      It sources the following extra ibin files:
 
-
-``USRHOME_DIR/ibin/setfor-zsh-alias``  Defines USRHOME alias and shell functions that are only used
-                                       in the Z Shell.
-
-``USRHOME_DIR/ibin/shell-tracing.sh``  Defines the ``usrhome_trace_in()`` and
-                                       ``usrhome_trace_out()`` shell functions USRHOME executes to
-                                       print a trace of which configuration file is used when the
-                                       shell starts when the user activates shell tracing by the
-                                       ``$USRHOME_TRACE_SHELL_CONFIG`` environment variable to 1
-                                       inside the file ``usrcfg/setfor_shell_tracing.sh``.
-====================================== ============================================================
+                                      - ``USRHOME_DIR/ibin/envfor-homebrew``, when
+                                        ``USRHOME_USE_HOMEBREW`` environment variable is set to 1
+                                        in the file ``usrcfg/setfor-all-config.sh``.
+                                        That prepends the Homebrew directory to the path.
+                                      - ``USRHOME_DIR/ibin/envfor_usrhome``, always, to prepend
+                                        the ``USRHOME_DIR/bin`` to PATH and ``~/bin`` if present.
 
 
+`setfor-zsh-alias`_                   Defines USRHOME alias and shell functions that are only used
+                                      in the Z Shell.
+
+`shell-tracing.sh`_                   Defines the ``usrhome_trace_in()`` and
+                                      ``usrhome_trace_out()`` shell functions USRHOME executes to
+                                      print a trace of which configuration file is used when the
+                                      shell starts when the user activates shell tracing by the
+                                      ``$USRHOME_TRACE_SHELL_CONFIG`` environment variable to 1
+                                      inside the file ``usrcfg/setfor_shell_tracing.sh``.
+===================================== ============================================================
 
 
+Sourced Files Implementing USRHOME Provided Commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+USRHOME provides several commands that use shell sourced files, also stored in
+the USRHOME/ibin directory.  There are 3 groups of such files:
+
+**Shell Environment Control Commands**:
+
+The files used by the *use-ENV* commands.  These commands setup the current
+shell to use a specific set of commands or tools.  USRHOME provides some of
+these commands:
+
+========================================== ========================================================
+``$USRHOME/ibin`` File                     Purpose
+========================================== ========================================================
+`envfor-cbr`_                              Implements the `use-cbr command`_.
+`envfor-emacs-for-man`_                    Implements the `use-emacs-for-man command`_.
+`envfor-pel`_                              Implements the use-pel command.
+========================================== ========================================================
+
+The user would probably want to create some extra ones;  the
+`usrhome/template/usrcfg/ibin`_ directory provides some examples.
+
+**Simple Commands that affect the current shell**:
+
+========================================== ========================================================
+``$USRHOME/ibin`` File                     Purpose
+========================================== ========================================================
+`do-cbr`_                                  Implements the cbr command.
+`do-cd-to`_                                Implements the cd-to command.
+`do-clrenv`_                               Implements the clrenv command.
+`do-sanitize-path.sh`_                     Implements the sanitize-path command for Bash and sh.
+`do-sanitize-path.zsh`_                    Implements the sanitize-path command for zsh.
+`do-setenv`_                               Implements the setenv command.
+`do-usrcfg`_                               Implements the usrcfg command.
+`do-usrhome`_                              Implements the usrhome command.
+========================================== ========================================================
+
+**Helper Sourced Files**
+
+========================================== ========================================================
+``$USRHOME/ibin`` File                     Purpose
+========================================== ========================================================
+`which-shell`_                             Identifies the shell (Bash or Z Shell) and used by
+                                           other USRHOME shell functions.
+                                           Can also be used by user's shell functions.
+========================================== ========================================================
 
 
 
@@ -894,7 +948,7 @@ CBR -- Single commands to Check, Build or Run
 
 USRHOME supports 3 single letter commands for checking, building and running
 code: c, b and r.  These are command aliases that are installed inside the
-shell with the ``use-cbr`` command (which is an alias itself to
+shell with the `` use-cbr`` command (which is an alias itself to
 ``usrhome/ibin/envfor-cbr``).
 
 The 'c', 'b' and 'r' commands are aliases to the ``usrhome/ibin/do-cbr``
@@ -911,7 +965,7 @@ This currently supports the following construction methods:
 - Build Rust program with Cargo.
 - Build Rust single main.rs program.
 
-Once installed inside the shell with ``use-cbr``, the following commands are
+Once installed inside the shell with `` use-cbr``, the following commands are
 made available:
 
 =======  =============================================================
@@ -927,7 +981,7 @@ Command  Description
          from the source code in the current directory and run it.
 =======  =============================================================
 
-Once you have typed ``use-cbr``, simply ``cd`` into the code directory and
+Once you have typed `` use-cbr``, simply ``cd`` into the code directory and
 type one of the 3 letters.  For example, type ``r`` to compile, link and run a
 Rust program from the top directory of the Rust program.
 
@@ -937,7 +991,7 @@ returning with exit code of 1.
 
 **Using a local ``cbr`` executable file:**
 
-After executing ``use-cbr``, the  ``c``, ``b`` and ``r`` commands
+After executing `` use-cbr``, the  ``c``, ``b`` and ``r`` commands
 check if a local ``cbr`` executable file is located in the current directory.
 If they find one they pass control to it, as described below. If there's none,
 then the command try to detect how to build the files in the directory with
@@ -1779,41 +1833,61 @@ Thanks!
 
 
 .. _PEL:
-.. _Pragmatic Emacs Library:                      https://github.com/pierre-rouleau/pel#readme
-.. _numeric keypad:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
-.. _fd:                                           https://github.com/sharkdp/fd#readme
-.. _setup/setup-usrhome:                          https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
-.. _usrhome/template/setfor-shell-tracing.sh:     https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-shell-tracing.sh
-.. _usrhome/template:                             https://github.com/pierre-rouleau/usrhome/blob/main/template
-.. _USRHOME dot files:
-.. _usrhome/dot:                                  https://github.com/pierre-rouleau/usrhome/tree/main/dot
-.. _dot/zshrc.zsh:                                https://github.com/pierre-rouleau/usrhome/tree/main/dot/zshrc.zsh
+.. _Pragmatic Emacs Library:                           https://github.com/pierre-rouleau/pel#readme
+.. _numeric keypad:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
+.. _fd:                                                https://github.com/sharkdp/fd#readme
 .. _The Z Shell Startup, Dot Files and User Configuration: #the-z-shell-startup-dot-files-and-user-configuration
-.. _Z Shell:                                      https://en.wikipedia.org/wiki/Z_shell
-.. _files sourced by the Z Shell:                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
-.. _Aquamacs:                                     https://aquamacs.org
-.. _curl:                                         https://en.wikipedia.org/wiki/CURL
-.. _Homebrew:                                     https://en.wikipedia.org/wiki/Homebrew_(package_manager)
-.. _Rust:                                         https://en.wikipedia.org/wiki/Rust_(programming_language)
-.. _Rust installation procedure:                  https://doc.rust-lang.org/cargo/getting-started/installation.html
-.. _Mercurial:                                    https://en.wikipedia.org/wiki/Mercurial
-.. _manpath:                                      https://man7.org/linux/man-pages/man1/manpath.1.html
-.. _example:                                      `The zsh prompt`_
-.. _pngquant:                                     https://pngquant.org/
-.. _installation:                                 #how-to-set-it-up
-.. _xz version 5.6.0 and 5.6.1:                   https://nvd.nist.gov/vuln/detail/CVE-2024-3094
-.. _xz version 5.2.5:                             https://nvd.nist.gov/vuln/detail/CVE-2020-22916
-.. _man (or woman):                               https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
-.. _usrhome/template/bin/ge:                      https://github.com/pierre-rouleau/usrhome/blob/main/template/bin/ge
-.. _PDF index:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
-.. _help PDF:                                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf
+.. _Z Shell:                                           https://en.wikipedia.org/wiki/Z_shell
+.. _files sourced by the Z Shell:                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
+.. _Aquamacs:                                          https://aquamacs.org
+.. _curl:                                              https://en.wikipedia.org/wiki/CURL
+.. _Homebrew:                                          https://en.wikipedia.org/wiki/Homebrew_(package_manager)
+.. _Rust:                                              https://en.wikipedia.org/wiki/Rust_(programming_language)
+.. _Rust installation procedure:                       https://doc.rust-lang.org/cargo/getting-started/installation.html
+.. _Mercurial:                                         https://en.wikipedia.org/wiki/Mercurial
+.. _manpath:                                           https://man7.org/linux/man-pages/man1/manpath.1.html
+.. _example:                                           `The zsh prompt`_
+.. _pngquant:                                          https://pngquant.org/
+.. _installation:                                      #how-to-set-it-up
+.. _xz version 5.6.0 and 5.6.1:                        https://nvd.nist.gov/vuln/detail/CVE-2024-3094
+.. _xz version 5.2.5:                                  https://nvd.nist.gov/vuln/detail/CVE-2020-22916
+.. _man (or woman):                                    https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
+.. _PDF index:                                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
+.. _help PDF:                                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf
 .. _section that describe Emacs man and woman support: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf#page=5
-.. _emacsclient:                                  https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
-.. _usrhome/ibin/envfor-emacs-for-man:            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
-.. _Emacs 'string-format' regular expression syntax:              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
-.. _usrhome/dot/zprofile.zsh:                     https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
-.. _usrhome/dot/bash_profile.bash:                https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
-.. _usrcfg/setfor-all-config.sh:                  https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
-.. _glob:                                         https://en.wikipedia.org/wiki/Glob_(programming)
+.. _emacsclient:                                       https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
+.. _Emacs 'string-format' regular expression syntax:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
+.. _glob:                                              https://en.wikipedia.org/wiki/Glob_(programming)
+.. _usrhome/template/usrcfg/ibin:                      https://github.com/pierre-rouleau/usrhome/tree/main/template/usrcfg/ibin
+.. _use-cbr command:                                   `CBR -- Single commands to Check, Build or Run`_
+.. _use-emacs-for-man command:                         `Using Emacs as a man reader`_
+.. _USRHOME dot files:                                 https://github.com/pierre-rouleau/usrhome/tree/main/dot
+.. _do-cbr:                                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
+.. _do-cd-to:                                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cd-to
+.. _do-clrenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
+.. _do-sanitize-path.sh:                               https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-sanitize-path.sh
+.. _do-sanitize-path.zsh:                              https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-sanitize-path.zsh
+.. _do-setenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
+.. _do-usrcfg:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrcfg
+.. _do-usrhome:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrhome
+.. _dot/zshrc.zsh:                                     https://github.com/pierre-rouleau/usrhome/tree/main/dot/zshrc.zsh
+.. _envfor-cbr:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
+.. _envfor-emacs-for-man:                              https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
+.. _envfor-pel:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-pel
+.. _setfor-alias:                                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
+.. _setfor-bash-alias:                                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-bash-alias
+.. _setfor-path:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-path
+.. _setfor-zsh-alias:                                  https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-zsh-alias
+.. _setup/setup-usrhome:                               https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
+.. _shell-tracing.sh:                                  https://github.com/pierre-rouleau/usrhome/blob/main/ibin/shell-tracing.sh
+.. _usrcfg/setfor-all-config.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
+.. _usrhome/dot/bash_profile.bash:                     https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
+.. _usrhome/dot/zprofile.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
+.. _usrhome/dot:                                       https://github.com/pierre-rouleau/usrhome/tree/main/dot
+.. _usrhome/ibin/envfor-emacs-for-man:                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
+.. _usrhome/template/bin/ge:                           https://github.com/pierre-rouleau/usrhome/blob/main/template/bin/ge
+.. _usrhome/template/setfor-shell-tracing.sh:          https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-shell-tracing.sh
+.. _usrhome/template:                                  https://github.com/pierre-rouleau/usrhome/blob/main/template
+.. _which-shell:                                       https://github.com/pierre-rouleau/usrhome/blob/main/which-shell
 
 .. ---------------------------------------------------------------------------
