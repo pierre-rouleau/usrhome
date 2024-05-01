@@ -1,9 +1,9 @@
-# Sourced script: setfor-prompt-model-to  -*- mode: sh; -*-
+# Sourced script: setfor-usrhome-prompt-model-to  -*- mode: sh; -*-
 #
 # Purpose   : Change zsh prompt model in current shell.
 # Created   : Wednesday, April  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 23:36:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-01 16:34:11 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -23,33 +23,41 @@
 # ----
 #
 #
-if [[ -n "$(jobs)" ]]; then
-    # Don't allow re-starting zsh when there are running jobs
-    # inside the shell.  The exec zsh might kill them if they
-    # were not detached.  Warn the user and quit.
-    echo "Unfinished jobs running.  Terminate them first!"
-    return 1
-fi
-
-function print_usage {
-    echo " Supported NUMBER values:"
-    echo " - 0: Use usrcfg specified logic to select prompt."
-    echo " - 1: Use USRHOME 1-line prompt with short path."
-    echo " - 2: Use USRHOME 2-line prompt with full path."
+print_usage()
+{
+    echo "usrhome-prompt-model-to: Dynamically change shell prompt to another prompt model."
+    echo " Usage:  usrhome-prompt-model-to MODEL-NUMBER"
+    echo "  Supported NUMBER values:"
+    echo "  - 0: Use usrcfg specified logic to select prompt."
+    echo "  - 1: Use USRHOME 1-line prompt with short path."
+    echo "  - 2: Use USRHOME 2-line prompt with full path."
     if [[ -z "$USRHOME_PROMPT_MODEL" ]]; then
-        echo "The current prompt model number is undefined."
+        echo "  The current prompt model number is undefined."
     else
-        echo "The current prompt model number is: $USRHOME_PROMPT_MODEL"
+        echo "  The current prompt model number is: $USRHOME_PROMPT_MODEL"
     fi
 }
 
+# Validate user input
+# ------------------
 if [[ -z "$1" ]]; then
-    echo "ERROR: missing prompt model NUMBER."
+    echo "****ERROR: missing prompt model NUMBER."
     print_usage
     return 1
 fi
 
 case "$1" in
+    --help | -h)
+        print_usage
+        return 1
+        ;;
+    # prevent any other option:
+    # note that it also precludes having symlink names that start with a '-'
+    -?* )
+        echo "****ERROR: usrhome-prompt-model-to does not support the $1 option."
+        print_usage
+        return 1
+        ;;
     0)
         export USRHOME_PROMPT_MODEL=0
         ;;
@@ -59,12 +67,47 @@ case "$1" in
     2)
         export USRHOME_PROMPT_MODEL=2
         ;;
+
     *)
     echo "ERROR: invalid prompt number: $1"
     print_usage
     return 1
 esac
 
-exec zsh
+# ----------------------------------------------------------------------------
+# Proceed, using method required by shell
+# ---------------------------------------
+
+# Identify running shell
+#
+# Set usrhome__running_shell to zsh, bash or unknown
+source  "$USRHOME_DIR/ibin/which-shell"
+
+
+case $usrhome__running_shell in
+    "zsh")
+        # The current implementation for Zsh prompt modification needs to
+        # re-execute the sourcing of zsh configuration files.
+        # That's done with an exec zsh, which would kill running jobs.
+        # Protect against that.
+        if [[ -n "$(jobs)" ]]; then
+            # Don't allow re-starting zsh when there are running jobs
+            # inside the shell.  The exec zsh might kill them if they
+            # were not detached.  Warn the user and quit.
+            echo "Unfinished jobs running.  Terminate them first!"
+            return 1
+        fi
+        exec zsh
+        ;;
+
+    "bash")
+        # Under Bash; no need to restart the shell, just use the usrhome-select-bash-prompt
+        # shell function that was defined in usrhome/dot/bashrc.bash
+        usrhome-select-bash-prompt
+        ;;
+    *)
+        echo "Dynamic prompt modification is supported under '$usrhome__running_shell' shell."
+        ;;
+esac
 
 # ----------------------------------------------------------------------------
