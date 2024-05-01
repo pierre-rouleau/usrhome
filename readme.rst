@@ -165,7 +165,7 @@ The Bash Configuration Files
 ----------------------------
 
 The Bash shell uses the configuration files listed in the left column (which
-includes the ``~/.profile file also uses by sh).
+includes the ``~/.profile`` file also uses by sh).
 USRHOME replaces them to symbolic link files that point to the USRHOME files
 listed in the right column.
 
