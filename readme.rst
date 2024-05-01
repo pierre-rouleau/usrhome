@@ -568,6 +568,14 @@ USRHOME Command Name               Description
                                    the prompt.
 
 ``usrhome-prompt-model-to NUMBER`` Dynamically change the prompt model to the specified NUMBER.
+
+                                   - This command also supports the ``-h`` and ``--help`` command
+                                     line options which pint the usage.
+                                   - Note: under zsh, this command will not proceed if the shell
+                                     has any background running jobs.  This is due to the way the
+                                     command is currently implemented.  The command is not affected
+                                     by this limitation when issued in the Bash shell.
+
 ================================== ================================================================
 
 Note that the above commands will not execute if there are any running
