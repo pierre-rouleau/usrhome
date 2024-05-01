@@ -3,7 +3,7 @@
 # Purpose   : Change zsh prompt model in current shell.
 # Created   : Wednesday, April  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-01 16:34:11 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-01 17:46:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,10 +27,7 @@ print_usage()
 {
     echo "usrhome-prompt-model-to: Dynamically change shell prompt to another prompt model."
     echo " Usage:  usrhome-prompt-model-to MODEL-NUMBER"
-    echo "  Supported NUMBER values:"
-    echo "  - 0: Use usrcfg specified logic to select prompt."
-    echo "  - 1: Use USRHOME 1-line prompt with short path."
-    echo "  - 2: Use USRHOME 2-line prompt with full path."
+    echo "  Supported NUMBER values: 0, 1 ,2 and 3."
     if [[ -z "$USRHOME_PROMPT_MODEL" ]]; then
         echo "  The current prompt model number is undefined."
     else
@@ -66,6 +63,10 @@ case "$1" in
         ;;
     2)
         export USRHOME_PROMPT_MODEL=2
+        ;;
+
+    3)
+        export USRHOME_PROMPT_MODEL=3
         ;;
 
     *)
