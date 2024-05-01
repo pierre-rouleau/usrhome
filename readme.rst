@@ -161,9 +161,31 @@ directory and use ideas from there.
 USRHOME Organization
 ====================
 
+The Bash Configuration Files
+----------------------------
+
+The Bash shell uses the configuration files listed in the left column (which
+includes the ``~/.profile file also uses by sh).
+USRHOME replaces them to symbolic link files that point to the USRHOME files
+listed in the right column.
+
+========================= =====================================================
+Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
+========================= =====================================================
+``~/.profile``            ``$USRHOME_DIR/dot/profile.bash``
+``~/.bash_profile``       ``$USRHOME_DIR/dot/bash_profile.bash``
+``~/.bash_login``         ``$USRHOME_DIR/dot/bash_login.bash``
+``~/.bashrc``             ``$USRHOME_DIR/dot/bashrc.bash``
+``~/.bash_logout``        ``$USRHOME_DIR/dot/bash_logout.bash``
+========================= =====================================================
+
 
 The zsh Configuration Files
 ---------------------------
+
+The Z Shell uses the configuration files listed in the left column.
+USRHOME replaces them to symbolic link files that point to the USRHOME files
+listed in the right column.
 
 ========================= =====================================================
 Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
@@ -174,6 +196,61 @@ Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ``~/.zlogin``             ``$USRHOME_DIR/dot/zlogin.zsh``
 ``~/.zlogout``            ``$USRHOME_DIR/dot/zlogout.zsh``
 ========================= =====================================================
+
+The Extra Internal USRHOME Configuration Files
+----------------------------------------------
+
+As shown by the diagram in the section titled
+`The Z and Bash Shell Startup, Dot Files and User Configuration`_,
+USRHOME uses several other configuration files that are sourced when the shell
+starts.  Some are used by the Bash shell, some by the Z Shell some by
+both. All of these files are source and stored in USRHOME ibin directory.
+
+The following files are not meant to be used manually. They are executed when the shell starts.
+
+
+====================================== ============================================================
+USRHOME ibin File                      Purpose
+====================================== ============================================================
+``USRHOME_DIR/ibin/setfor-alias``      Defines USRHOME alias and shell functions that are common
+                                       to Bash and the Z Shell.
+
+``USRHOME_DIR/ibin/setfor-bash-alias`` Defines USRHOME alias and shell functions that are only used
+                                       in the Bash shell.
+
+``USRHOME_DIR/ibin/setfor-path``       Holds the USRHOME logic that controls modification of the
+                                       PATH environment variable and functions that deals with it.
+                                       Also defines and runs functions that perform a simple
+                                       security check that verifies for the presence of some known
+                                       compromised libraries in the system, printing a warning if
+                                       they are found.
+
+                                       It sources the following extra ibin files:
+
+                                       - ``USRHOME_DIR/ibin/envfor-homebrew``, when
+                                         ``USRHOME_USE_HOMEBREW`` environment variable is set to 1
+                                         in the file ``usrcfg/setfor-all-config.sh``.
+                                         That prepends the Homebrew directory to the path.
+                                       - ``USRHOME_DIR/ibin/envfor_usrhome``, always, to prepend
+                                         the ``USRHOME_DIR/bin`` to PATH and ``~/bin`` if present.
+
+
+``USRHOME_DIR/ibin/setfor-zsh-alias``  Defines USRHOME alias and shell functions that are only used
+                                       in the Z Shell.
+
+``USRHOME_DIR/ibin/shell-tracing.sh``  Defines the ``usrhome_trace_in()`` and
+                                       ``usrhome_trace_out()`` shell functions USRHOME executes to
+                                       print a trace of which configuration file is used when the
+                                       shell starts when the user activates shell tracing by the
+                                       ``$USRHOME_TRACE_SHELL_CONFIG`` environment variable to 1
+                                       inside the file ``usrcfg/setfor_shell_tracing.sh``.
+====================================== ============================================================
+
+
+
+
+
+
 
 The User Configuration Files used by USRHOME
 --------------------------------------------
