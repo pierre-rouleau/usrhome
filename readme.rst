@@ -172,7 +172,7 @@ listed in the right column.
 ========================= =====================================================
 Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ========================= =====================================================
-``~/.profile``            ``$USRHOME_DIR/dot/``\ `profile.bash`_
+``~/.profile``            ``$USRHOME_DIR/dot/``\ `profile.sh`_
 ``~/.bash_profile``       ``$USRHOME_DIR/dot/``\ `bash_profile.bash`_
 ``~/.bash_login``         ``$USRHOME_DIR/dot/``\ `bash_login.bash`_
 ``~/.bashrc``             ``$USRHOME_DIR/dot/``\ `bashrc.bash`_
@@ -1897,7 +1897,7 @@ Thanks!
 .. _clrenv command:                                    `Command to Display and Manipulate Environment Variables`_
 .. _sanitize-path command:                             `Command to Display and Manipulate Environment Variables`_
 .. _setenv command:                                    `Command to Display and Manipulate Environment Variables`_
-.. _profile.bash:                                      https://github.com/pierre-rouleau/usrhome/blob/main/dot/profile.bash
+.. _profile.sh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/profile.sh
 .. _bash_profile.bash:                                 https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
 .. _bash_login.bash:                                   https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_login.bash
 .. _bashrc.bash:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/bashrc.bash
