@@ -1554,6 +1554,36 @@ To support both shells, more configuration files are
 required and some logic is the same for both shells.  The following diagram
 shows all files currently used in the USRHOME system to support both shells.
 
+USRHOME is built on the principle that shell configuration logic is provided by
+**two** sets of files:
+
+- the files provided by the USRHOME repository, and
+- the files provided by another, user-provided, repository: the **usrcfg**
+  repository.
+
+The files provided by USRHOME provides the basic infra-structure logic and some
+commands that will be available in the shells.  The content of the files are not
+meant to be modified by the users (unless someone wants to change or add a
+feature to USRHOME).
+
+The user-specific logic is stored in the files stored in the **usrcfg**
+directory tree.
+
+Since the reason for the USRHOME project is to ease the shell configuration
+setup and distribution of many computers or Virtual Machines without *having* to
+use containers, the **usrcfg** directory tree should also be a VCS repository
+controlled by the user (and kept private).  It then becomes possible to keep an
+history of the shell configuration of multiple computers inside these 2
+repositories and it becomes easy to set computers by cloning or updating the two
+repositories inside these computers.
+
+The **usrcfg** stores logic that is common to all the users system in the files
+located in its root directory.  The logic that is specific to each computer must
+be stored inside a sub-directory of the **usrcfg/node** directory.
+
+The following diagram shows which configuration file is sourced when the Bash
+and Z shell start as a login or as a sub-shell.
+
 .. figure:: res/zsh-bash-startup-01.png
 
 Activate Tracing of the Sourcing of the Shell Configuration Files
