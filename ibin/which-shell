@@ -1,10 +1,9 @@
-#!/bin/sh
-# SH FILE: which-shell
+# Sourced script: which-shell  -*- mode: sh; -*-
 #
 # Purpose   : Identify active shell sourcing this file.  Store result in usrhome__running_shell
 # Created   : Thursday, April 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-11 14:44:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-01 11:41:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,11 +23,11 @@
 # shellcheck disable=SC2034
 
 if test -n "$ZSH_VERSION"; then
-  usrhome__running_shell=zsh
+  usrhome__running_shell="zsh"
 elif test -n "$BASH_VERSION"; then
-  usrhome__running_shell=bash
+  usrhome__running_shell="bash"
 else
-  usrhome__running_shell=unknown
+  usrhome__running_shell="unknown"
 fi
 
 # ----------------------------------------------------------------------------
