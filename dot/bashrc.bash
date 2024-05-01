@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-01 16:37:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-01 18:01:32 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -215,6 +215,28 @@ fi;\
 ) '
 
 
+# PROMPT MODEL 3: With bolding and logic, but no color unless in root.
+# shellcheck disable=SC2016
+USRHOME_BASH_PROMPT3='$(\
+ec=${?}; \
+printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\],L${SHLVL},\[$(tput bold)\]" ${ec}; \
+if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
+  printf "\h@\u@\t[\w]\[$(tput sgr0)\]\n";  \
+else \
+  printf "\t[\w]\[$(tput sgr0)\]\n";  \
+fi; \
+if [ "$EUID" -ne 0 ]; then \
+  echo "\[$(tput bold)\]bash$\[$(tput sgr0)\]"; \
+else \
+  if [ ${ec} == 0 ]; then \
+     echo "\[\e[0;35m\]\[$(tput bold)\]bash#\[$(tput sgr0)\]\[\e[0m\]"; \
+  else \
+     echo "\[\e[0;31m\]\[$(tput bold)\]bash#\[$(tput sgr0)\]\[\e[0m\]"; \
+  fi; \
+fi;\
+) '
+
+
 usrhome-select-bash-prompt()
 {
     case $USRHOME_PROMPT_MODEL in
@@ -226,11 +248,19 @@ usrhome-select-bash-prompt()
         ;;
 
         1)
+            USRHOME_PROMPT_MODEL=1
             PS1=${USRHOME_BASH_PROMPT1}
             export PS1
             ;;
 
-        *)
+        3)
+            USRHOME_PROMPT_MODEL=3
+            PS1=${USRHOME_BASH_PROMPT3}
+            # shellcheck disable=SC2090
+            export PS1
+            ;;
+
+        2 | *)
             # default (also model 2).  Activates that explicitly.
             USRHOME_PROMPT_MODEL=2
             PS1=${USRHOME_BASH_PROMPT2}
@@ -271,6 +301,7 @@ set-title()
         PS1=$PS1${title}
     fi
 
+    # shellcheck disable=SC2090
     export PS1
 }
 
