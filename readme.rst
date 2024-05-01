@@ -1889,7 +1889,7 @@ Thanks!
 .. _usrhome/template/bin/ge:                           https://github.com/pierre-rouleau/usrhome/blob/main/template/bin/ge
 .. _usrhome/template/setfor-shell-tracing.sh:          https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-shell-tracing.sh
 .. _usrhome/template:                                  https://github.com/pierre-rouleau/usrhome/blob/main/template
-.. _which-shell:                                       https://github.com/pierre-rouleau/usrhome/blob/main/which-shell
+.. _which-shell:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/which-shell
 .. _cd-to command:                                     `Directory Navigation`_
 .. _usrcfg command:                                    `Directory Navigation`_
 .. _usrhome command:                                   `Directory Navigation`_
