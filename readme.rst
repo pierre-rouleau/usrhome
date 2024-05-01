@@ -1236,11 +1236,11 @@ USRHOME Prompt
 ==============
 
 **NOTE**:
-  The descriptions of prompts in this section and its subsections is outdated and
+  *The descriptions of prompts in this section and its subsections is outdated and
   no longer corresponds to the current state of the project.
   This was first written when Bash was not supported.  Now Bash is fully
   supported and this section needs to be re-organized.
-  I will update the documentation soon.
+  I will update the documentation soon.*
 
 USRHOME provides control for the Z Shell and Bash prompts as described in this section.
 
