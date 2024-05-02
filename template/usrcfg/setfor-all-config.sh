@@ -3,7 +3,7 @@
 # Purpose   : Template for private USRHOME configuration command to Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 13:25:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 17:25:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -43,6 +43,13 @@ case $os_type in
     'Darwin' )
         # On macOS, Homebrew is quite useful.
         export USRHOME_USE_HOMEBREW=1
+
+        # Homebrew Google Analytics Disabling
+        # -----------------------------------
+        # Homebrew has started acquiring Google analytics with installations.
+        # See https://docs.brew.sh/Analytics
+        # They are disabled by default.  To allow them comment the next line.
+        export HOMEBREW_NO_ANALYTICS=1
         ;;
 
     *)
