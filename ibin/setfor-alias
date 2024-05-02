@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 08:30:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 16:52:24 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,6 +40,19 @@ else
   USRHOME_SHELL="sh"
 fi
 
+
+# Topic: Alias: showpath
+# ----------------------
+#
+# Note: USRHOME implements showpath as a script stored inside
+#      the $USRHOME/bin directory.  That's perfect for all shells
+#      that have an expanded PATH, but not for login shells when
+#      the user elected to leave USRHOME_CONFIG_AT_LOGIN undefined
+#      because they explicitly do not want PATH to be modified in
+#      login shells.  But showpath is very useful in those shells too.
+#      A alias is defined here to allow the command in these login shells as well.
+#
+alias showpath='$USRHOME_DIR/bin/showpath'
 
 # Topic: Info: Shell
 # ------------------
