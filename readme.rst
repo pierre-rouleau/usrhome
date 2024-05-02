@@ -272,6 +272,8 @@ these commands:
 ``$USRHOME/ibin`` File                     Purpose
 ========================================== ========================================================
 `envfor-cbr`_                              Implements the `use-cbr command`_.
+`envfor-diff`_                             Implements the `use-diff command`_ that sets up how
+                                           USRHOME diff_ operates in the current shell.
 `envfor-emacs-for-man`_                    Implements the `use-emacs-for-man command`_.
 `envfor-pel`_                              Implements the `pel command`_.
 ========================================== ========================================================
@@ -1179,16 +1181,10 @@ each one if you want.  Or just use one method.  The code is flexible.
 
   .. figure:: res/use-emacs-for-man-01.png
 
-
-
-
 *Side note*:
   My PEL_ project provides extensive information about Emacs (in form of extensive hyperlinked PDF
   files with a `PDF index`_ to a large set of topics and file format/language supports).
   The `help PDF`_ has a `section that describe Emacs man and woman support`_.
-
-
-
 
 
 Miscellaneous Commands
@@ -1198,6 +1194,15 @@ Miscellaneous Commands
 USRHOME Command Name               Description
 ================================== ================================================================
 ``cls``                            Shortcut for ``clear``; clear the content of the shell window.
+
+diff_                              USRHOME diff_ is a shell-based dispatcher program.
+
+                                   - By default it uses the standard ``/usr/bin/diff``q program
+                                   - You can change this behaviour in the current shell by
+                                     executing the ``use-diff`` command (an alias which sources
+                                     the `envfor-diff`_ script).  With it, you can select other
+                                     programs that will be invoked by the command.
+
 
 ``dsize [DPATH]``                  Compute and print the size of all files in the directory tree
                                    identified by DPATH, which defaults to the current directory.
@@ -1947,17 +1952,9 @@ Thanks!
 .. _zshrc.zsh:                                         https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshrc.zsh
 .. _zlogin.zsh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogin.zsh
 .. _zlogout.zsh:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogout.zsh
-
-
-
-
-
-
-
-
-
-
-
+.. _diff:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/diff
+.. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
+.. _use-diff command:                                  `Miscellaneous Command``_
 
 
 .. ---------------------------------------------------------------------------
