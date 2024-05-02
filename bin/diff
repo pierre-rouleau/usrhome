@@ -1,0 +1,105 @@
+#!/bin/sh
+# SH FILE: diff
+#
+# Purpose   : Adaptative diff program. Controlled by use-diff.  Defaults to diff.
+# Created   : Wednesday, May  1 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-05-01 23:09:43 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# This diff script is a command dispatcher that adapts to the environment and
+# uses the diff program selected by the USRHOME use-diff command previously
+# used in the current shell, or it was never issued, use the diff command.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+print_error()
+{
+    >&2 printf "\
+***ERROR***
+%s
+***********
+" "$1"
+}
+
+case "$USRHOME_DIFF" in
+    diff-u | "")
+        # default: use diff with unified format
+        /usr/bin/diff -u "$@"
+        ;;
+
+    diff)
+        # Use diff without pre-qualifiers.
+        /usr/bin/diff "$@"
+        ;;
+
+    bcomp)
+        # Use Beyond Compare launcher, waiting for completion.
+        # Assumed present; the use-diff (envfor-diff) checks it.
+        bcomp "$@"
+        ;;
+
+    bcompare)
+        # Use Beyond Compare main program.
+        # Assumed present; the use-diff (envfor-diff) checks it.
+        bcompare "$@"
+        ;;
+
+    # Subversion support.
+    # Subversion diff is a special case: subversion itself
+    # launches the diff program passing 7 arguments to the utility.
+    # The argument that subversion provides to the diff uitility
+    # program it uses are:
+    # - Arg 1:  option : -u
+    # - Arg 2:  option : -L
+    # - Arg 3:  Path and revision of the first file/revision
+    # - Arg 4:  option : -L
+    # - Arg 5:  Path and revision of the second file/revision
+    # - Arg 6:  Dirpath of the first file to compare
+    # - Arg 7:  Dirpath of the second file to compare
+    #
+    # Therefore the important arguments are 6 & 7 for the files to compare
+    # and 3 & 5 to display the file names and their revisions.
+
+    svndiff-diff)
+        # Subversion-compatible diff using diff.
+        diff -u "$6" "$7"
+        ;;
+
+    svndiff-bcomp)
+        # Subversion-compatible diff using Beyond-compare bcomp.
+        bcomp "$6" "$7" -title1="$3" -title2="$5" -readonly
+        ;;
+
+    svndiff-bcompare)
+        # Subversion-compatible diff using Beyond-compare bcompare.
+        bcompare "$6" "$7" -title1="$3" -title2="$5" -readonly
+        ;;
+
+    *)
+        # unknown
+        print_error "\
+ The diff command is currently controlled by USRHOME use-diff.
+ With it, the USRHOME_DIFF environment variable identifies the
+ actual program to use.
+ This is currently set to the unknown value of '$USRHOME_DIFF'.
+ Either execute use-diff again or do a clrenv USRHOME_DIFF
+ to fall back to use the standard diff command.
+"
+        exit 1
+        ;;
+esac
+
+# ----------------------------------------------------------------------------

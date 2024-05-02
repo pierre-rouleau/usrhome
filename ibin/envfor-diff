@@ -1,0 +1,97 @@
+# Sourced script: envfor-diff  -*- mode: sh; -*-
+#
+# Purpose   : Set the diff program to use in the current shell.
+# Created   : Wednesday, May  1 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-05-01 23:47:34 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# The USRHOME system provides the ability to pre-select one of several diff
+# programs for doing a file diff.  By default the /usr/bin/diff program is used.
+# But you can change that by executing the 'use-diff', sourced by this file,
+# to select another program.
+#
+# This sets the USRHOME_DIFF environment variable to a value that the script
+# usrhome/bin/diff uses.  When USRHOME is used, that directory is located in
+# the path before the /usr/bin directory, so the script will take over.
+#
+# If USRHOME_DIFF is not defined, the script defaults to /usr/bin/diff,
+# otherwise it uses the program identified by the value stored inside
+# USRHOME_DIFF.
+#
+# All of the programs supported accept 2 file names.
+# The USRHOME diff script passes the arguments to the program actually used,
+# and in some cases re-organizes them to adapt to the program being used.
+# This is quite useful in case of Subversion diff requirements for instance.
+# It's also useful when using other tools such as Beyond Compare.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf "\
+use-diff: Select the program used by the diff command in the current shell.
+          Stores this value inside the USRHOME_DIFF environment variable,
+          for use by the USRHOME diff script.
+
+Usage: use-diff PROGRAM_NICKNAME
+
+Supported PROGRAM_NICKNAME:
+  - diff            : The default.  Use /usr/bin/diff.
+  - diff-u          : Use /usr/bin/diff -u
+  - bcomp           : Use Beyond Compare launcher
+  - bcompare        : Use Beyond Compare main application.
+  - svndiff-diff    : Use diff, but expect arguments provided by svndiff.
+  - svndiff-bcomp   : Use bcomp, but expect arguments provided by svndiff.
+  - svndiff-bcompare: Use bcompare, but expect arguments provided by svndiff.
+"
+}
+
+print_error()
+{
+    >&2 printf "\
+***ERROR***
+ %s
+***********
+" "$1"
+}
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    return 0
+fi
+
+if [ -n "$2" ]; then
+    print_error "Too many arguments: $#. Only one is accepted."
+fi
+
+case "$1" in
+    diff-u | "")
+        # The default
+        USRHOME_DIFF="diff-u"
+        ;;
+
+    diff | bcomp | bcompare | svndiff-diff | svndiff-bcomp | svndiff-bcompare)
+        USRHOME_DIFF="$1"
+        ;;
+
+    *)
+        # unknown
+        print_error "\
+ Non supported diff program: $1"
+        return 1
+        ;;
+esac
+
+# If we get here a new value was selected
+export USRHOME_DIFF
+printf "USRHOME-controlled diff will now be using $USRHOME_DIFF\n"
+
+
+# ----------------------------------------------------------------------------
