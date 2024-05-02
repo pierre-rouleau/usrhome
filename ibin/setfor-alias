@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 16:52:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 18:06:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -53,6 +53,16 @@ fi
 #      A alias is defined here to allow the command in these login shells as well.
 #
 alias showpath='$USRHOME_DIR/bin/showpath'
+
+# Topic: Alias: usrhome-env
+# -------------------------
+#
+# This is the same as showpath, but for usrhome-env.
+alias usrhome-env='$USRHOME_DIR/bin/usrhome-env'
+
+# No other aliases for USRHOME/bin files as these other commands
+# are not only showing values.
+
 
 # Topic: Info: Shell
 # ------------------
