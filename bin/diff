@@ -4,7 +4,7 @@
 # Purpose   : Adaptative diff program. Controlled by use-diff.  Defaults to diff.
 # Created   : Wednesday, May  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-01 23:09:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 07:19:55 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -35,15 +35,16 @@ print_error()
 }
 
 case "$USRHOME_DIFF" in
-    diff-u | "")
-        # default: use diff with unified format
+    diff | "")
+        # default: use diff without pre-qualifiers, as if USRHOME was not present.
+        /usr/bin/diff "$@"
+        ;;
+
+    diff-u)
+        # use diff with unified format
         /usr/bin/diff -u "$@"
         ;;
 
-    diff)
-        # Use diff without pre-qualifiers.
-        /usr/bin/diff "$@"
-        ;;
 
     bcomp)
         # Use Beyond Compare launcher, waiting for completion.
