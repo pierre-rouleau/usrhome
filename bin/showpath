@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-22 17:15:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 14:44:57 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -55,7 +55,7 @@ show_path()
     if [ -z "$path_value" ]; then
         >&2 echo "WARNING: $vname is not defined!"
         if [ "$vname" = "MANPATH" ]; then
-            if which manpath > /dev/null; then
+            if command -v manpath > /dev/null 2>&1; then
                 if [ -n "$(manpath)" ]; then
                     >&2 echo " However the manpath command provides the list:"
                     if [ "$1" = "-n" ]; then

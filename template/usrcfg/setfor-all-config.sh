@@ -3,7 +3,7 @@
 # Purpose   : Template for private USRHOME configuration command to Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 11:16:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 13:25:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -51,11 +51,6 @@ case $os_type in
         ;;
 esac
 unset os_type
-
-# ----------------------------------------------------------------------------
-# Topic: EDITOR
-# -------------
-#export EDITOR='emacs -nw'
 
 # ----------------------------------------------------------------------------
 # Topic: Concept Directory Identification

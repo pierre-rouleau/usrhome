@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-01 11:41:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 14:39:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -72,7 +72,7 @@ print_usage()
 }
 
 # Check for availability of the fd command.
-if ! which fd > /dev/null; then
+if ! command -v fd > /dev/null 2>&1; then
     echo "ERROR: the fd command is not available!"
     echo "  See: https://github.com/sharkdp/fd "
     echo "  Install it with your package manager."

@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-01 22:03:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 14:43:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -106,7 +106,7 @@ if [[ -n "$1" ]]; then
             # modify it to fit the user's needs better.
             # later.  Activate the mode only if the user accepts.
             ge_path=
-            if ! which ge > /dev/null;  then
+            if ! command -v ge > /dev/null 2>&1; then
                 printf "ATTENTION! The 'ge' script is not in your PATH!\n"
                 printf " USRHOME will use %s/template/bin/ge\n" "$USRHOME_DIR"
                 printf " You may want to copy it in a directory in your PATH\n"
@@ -226,9 +226,10 @@ man()
             # Launch GUI Emacs in separate process; don't wait.
             # The shell can continue to be used.
             # Start Emacs with the -Q options when -G is requested.
-            if which ge > /dev/null; then
+            if command -v ge > /dev/null 2>&1; then
                 ge ${man_emacs_opt} --eval "(progn (man \"$topic\") (delete-window))"
             else
+                # If the ge command is not found on the system use the one distributed in USRHOME template.
                 "$USRHOME_DIR/template/bin/ge" ${man_emacs_opt} --eval "(progn (man \"$topic\") (delete-window))"
             fi
             ;;
