@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-01 21:45:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-01 22:45:36 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -99,7 +99,7 @@ shown within single quotes.
  - \$!: Process ID of job most recently placed in foreground.
  ----> '$!'
 
- - \$\$: Process ID of the shell. $$
+ - \$\$: Process ID of the shell.
  ----> '$$'\n" "$positionals" "$*" "$all_words"
             ;;
 
