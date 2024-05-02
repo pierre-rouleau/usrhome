@@ -3,7 +3,7 @@
 # Purpose   : Template for private USRHOME configuration command to Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-30 16:40:36 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 11:16:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -31,10 +31,11 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/setfor-all-config.sh"
 # variables. You may keep this code or modify it as long as the values of
 # these environment variables are set to something valid in your environment.
 
-#export EDITOR='emacs -nw'
+# ----------------------------------------------------------------------------
+# Topic: Homebrew
+# ---------------
 
 # Activate whether Homebrew is used
-# ---------------------------------
 # - 1 to use Homebrew,
 # - 0 (or not defined) to prevent using Homebrew.
 os_type=$(uname)
@@ -51,8 +52,14 @@ case $os_type in
 esac
 unset os_type
 
-# Concept Directory Identification
-# --------------------------------
+# ----------------------------------------------------------------------------
+# Topic: EDITOR
+# -------------
+#export EDITOR='emacs -nw'
+
+# ----------------------------------------------------------------------------
+# Topic: Concept Directory Identification
+# ---------------------------------------
 # The following environment variables identify the location of 4 important
 # concept directories used by USRHOME.
 #
@@ -67,9 +74,9 @@ export USRHOME_DIR_LIC="$HOME/my/licences"
 export USRHOME_DIR_LOG="$HOME/my/logs"
 export USRHOME_DIR_TMP="$HOME/tmp"
 
-
-# Select Prompt
-# -------------
+# ----------------------------------------------------------------------------
+# Topic: Prompt : Select Prompt Model
+# -----------------------------------
 
 if [ -z "$USRHOME__USRCFG_SEEN" ] || [ "$(id -u)" = 0 ]; then
     export USRHOME__USRCFG_SEEN=1
