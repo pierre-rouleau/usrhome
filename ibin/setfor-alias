@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-01 23:36:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 08:30:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -315,6 +315,19 @@ lsl()
         fi
     fi
 }
+
+# ----------------------------------------------------------------------------
+# Topic: Info: macOS Rosetta2
+# ---------------------------
+
+if [ "$(uname)" = "Darwin" ]; then
+    info-rosetta2()
+    {
+        printf "Rosetta 2 is %sinstalled.\n" $(/usr/bin/pgrep -q oahd && echo "" || echo "not ")
+        printf " More info is available at:\n"
+        printf "  https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/\n"
+    }
+fi
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Environment Variables

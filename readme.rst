@@ -603,6 +603,8 @@ USRHOME Command Name               Description
 
 ``info-prompt``                    Print information about shell's prompt controlling variables.
 
+``info-rosetta2``                  Available on macOS only.  Checks whether `Rosetta 2`_ is installed
+                                   and prints info about it.
 ``info-shell-special-var [ARGS]``  List the shell special variables like ``$*``, ``$@``, ``$?`` and
                                    others,  describing their purpose and showing their values.
 
@@ -1955,6 +1957,7 @@ Thanks!
 .. _diff:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/diff
 .. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
 .. _use-diff command:                                  `Miscellaneous Commands`_
+.. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
 
 
 .. ---------------------------------------------------------------------------
