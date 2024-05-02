@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-25 09:13:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 17:23:40 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,15 +26,18 @@
 #
 usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-path"
 
+# ------------
+
 if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
     # if not a login shell OR user allows configuration at login...
-    # echo "--- setfor-path - proceeding"
+
     if [ ! "$USRHOME__PATH_SET" = "1" ]; then
         # .. and it has not yet been done, then configure, otherwise don't.
         # ----------------------------------------------------------------------------
-        # Security Issue Check Functions
+        # Topic: Security Issue Check: Functions
 
-        function usrhome_xz_vulnerability {
+        usrhome_xz_vulnerability()
+        {
             echo ""
             echo "SECURITY ISSUE DETECTED By USRHOME:"
             echo " - Compromised version ${xz_ver} of xz installed!"
@@ -43,7 +46,8 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             echo "     - https://repology.org/project/xz/cves"
         }
 
-        function usrhome_security_check {
+        usrhome_security_check()
+        {
             # check and warn if known problematic versions are installed
             # xz version 5.6,0, 5.6.1 have backdoors
             os_type=$(uname)
@@ -77,12 +81,15 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
 
         # ----------------------------------------------------------------------------
         # Remember original PATH in USRHOME_ORIGINAL_PATH
+        # Topic: Path : Original Path
         export USRHOME_ORIGINAL_PATH="$PATH"
 
         # ----------------------------------------------------------------------------
-        # Define a function to switch back to original path and back
+        # Topic: Path : usrhome-switch-path
 
-        function usrhome-switch-path {
+        # Switch back to original path and back
+        usrhome-switch-path()
+        {
             local oldp
             oldp=$PATH
             export PATH="$USRHOME_ORIGINAL_PATH"
@@ -110,6 +117,8 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
         # ----------------------------------------------------------------------------
         # Add entries in PATH as required by user configuration
 
+        # Topic: Path: Homebrew
+        # ---------------------
         # Set Homebrew first, just above system's PATH, USRHOME and user's bin will
         # be prepended before; to take precedence over homebrew, over system.
 
@@ -117,6 +126,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             source $USRHOME_DIR/ibin/envfor-homebrew
         fi
 
+        # Topic: Path: USRHOME
         # Add usrhome directories in PATH
         source $USRHOME_DIR/ibin/envfor-usrhome
 
