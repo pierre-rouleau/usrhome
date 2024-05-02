@@ -1954,7 +1954,7 @@ Thanks!
 .. _zlogout.zsh:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogout.zsh
 .. _diff:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/diff
 .. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
-.. _use-diff command:                                  `Miscellaneous Command``_
+.. _use-diff command:                                  `Miscellaneous Commands`_
 
 
 .. ---------------------------------------------------------------------------
