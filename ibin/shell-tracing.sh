@@ -3,7 +3,7 @@
 # Purpose   : Define shell tracing functions.
 # Created   : Saturday, April 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 23:22:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 08:43:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,6 +62,7 @@ usrhome_trace_in()
         *)
             # Tracing, output to stdout and append to file named by $USRHOME_TRACE_SHELL_CONFIG
             printf -- "-%s-: Sourcing %s\n" "$USRHOME_TRACE_LEVEL"  "$title" | tee -a "$USRHOME_TRACE_SHELL_CONFIG"
+            printf -- "    : PATH= %s\n "$PATH" >> $USRHOME_TRACE_SHELL_CONFIG"
             ;;
     esac
 
