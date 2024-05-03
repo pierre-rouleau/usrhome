@@ -561,9 +561,9 @@ USRHOME Command Name               Description
                                    and vice-versa.
 
                                    - The original value of this environment variable is set inside
-                                     your usrcfg/setfor-shell-tracing.sh file.
+                                     your ``usrcfg/setfor-all-config.sh file.
                                      The default value is 0 as
-                                     identified by `usrhome/template/setfor-shell-tracing.sh`_
+                                     identified by `usrhome/template/setfor-all-config.sh`_
                                    used to initialize the usrcfg file.
 
 ``usrhome-prompt-toggle-usr-host`` Toggle the inclusion of the user name and host name inside
@@ -776,7 +776,7 @@ These environment variables are defined in the user persistent configuration
 file common to Bash and Z Shell: the ``usrcfg/setfor-all-config.sh`` file.
 
 During installation_, the `setup/setup-usrhome`_ script initializes them
-to the value stored in `usrhome/template/setfor-shell-tracing.sh`_ template file.
+to the value stored in `usrhome/template/setfor-all-config.sh`_ template file.
 You can change them or add logic in your file to control their values any way you need.
 
 The following commands are shortcuts to change the current directory to one of these
@@ -1612,10 +1612,15 @@ Activate Tracing of the Sourcing of the Shell Configuration Files
 -----------------------------------------------------------------
 
 By setting the value of ``USRHOME_TRACE_SHELL_CONFIG`` to 1 inside your
-``usrcfg/setfor-shell-tracing.sh`` file you activate USRHOME's shell
+``usrcfg/setfor-all-config.sh`` file you activate USRHOME's shell
 configuration file tracing.  Then when
 you open a new shell inside a terminal, or create a sub-shell, you can see
 which file is sourced.
+
+You can also set the value of ``USRHOME_TRACE_SHELL_CONFIG`` to the name of a
+file located inside an existing directory.  That activates the tracing to the
+shell stdout as for the value ``1`` but it also activates storing the trace
+lines inside the specified file.
 
 With all usrcfg files existing, this is what you'd see from macOS that uses the Z
 Shell as the default shell when you open a new terminal and then create a
@@ -1934,7 +1939,7 @@ Thanks!
 .. _usrhome/dot:                                       https://github.com/pierre-rouleau/usrhome/tree/main/dot
 .. _usrhome/ibin/envfor-emacs-for-man:                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
 .. _usrhome/template/bin/ge:                           https://github.com/pierre-rouleau/usrhome/blob/main/template/bin/ge
-.. _usrhome/template/setfor-shell-tracing.sh:          https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-shell-tracing.sh
+.. _usrhome/template/setfor-all-config.sh:             https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
 .. _usrhome/template:                                  https://github.com/pierre-rouleau/usrhome/blob/main/template
 .. _which-shell:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/which-shell
 .. _cd-to command:                                     `Directory Navigation`_
