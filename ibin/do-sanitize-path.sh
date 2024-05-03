@@ -3,7 +3,7 @@
 # Purpose   : Sanitize current shell PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 17:12:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 19:25:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -54,7 +54,7 @@ if [ "$path_entries" != "$sanitized_path_entries" ]; then
         showpath -n
     else
         echo "Set USRHOME_TRACE_SHELL_CONFIG to 1 in to see more info."
-        echo "- Edit: \$USRHOME_DIR_USRCFG/setfor-shell-tracing.sh"
+        echo "- Edit: \$USRHOME_DIR_USRCFG/setfor-all-config.sh"
     fi
 fi
 export PATH="$sanitized_path"
