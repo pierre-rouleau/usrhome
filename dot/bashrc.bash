@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-03 15:32:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 17:50:02 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -19,10 +19,10 @@
 #   - USRHOME_DIR_USRCFG
 #
 # - Determines if shell tracing is activated by sourcing user's controlled
-#   file: usrcfg/setfor-shell-tracing.sh
+#   file: usrcfg/setfor-all-config.sh
 #
-# - Defines the USRHOME shell tracing functions by sourcing
-#   file: usrhome/ibin/shell-tracing.sh
+#   - When tracing is required, that file must also define the USRHOME shell
+#     tracing functions by sourcing file: usrhome/ibin/shell-tracing.sh
 #
 # - If required print tracing of this file.
 #
@@ -54,33 +54,24 @@ if [[ -z $USRHOME_DIR ]]; then
 fi
 
 
-# 2 - Determine is shell tracing is activated
-# -------------------------------------------
+# 2 - Determine User Shell Configuration
+# --------------------------------------
 #
-# source #1 (shown in diagram)
-usrhome_trace_activation="$USRHOME_DIR_USRCFG/setfor-shell-tracing.sh"
-if [ -e "$usrhome_trace_activation" ]; then
+usrhome_config="$USRHOME_DIR_USRCFG/setfor-all-config.sh"
+if [ -e "$usrhome_config" ]; then
     # shellcheck disable=SC1090
-    . "$usrhome_trace_activation"
+    . "$usrhome_config"
 else
     printf "***USRHOME ERROR!!*********************************************\n"
-    printf "Cannot find the user's shell tracing configuration file!\n"
-    printf " Expected filet: %s\n" "$usrhome_trace_activation"
+    printf "Cannot find the user's configuration file!\n"
+    printf " Expected file: %s\n" "$usrhome_config"
     printf " Please write it, use the template example as basis.\n"
-    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-shell-tracing.sh"
+    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
     printf "***************************************************************\n"
 fi
-unset usrhome_trace_activation
+unset usrhome_config
 
-
-# 3 - Define USRHOME shell tracing functions
-# ------------------------------------------
-# source #2 (shown in diagram)
-# shellcheck disable=SC1091
-. "${USRHOME_DIR}/ibin/shell-tracing.sh"
-
-
-# 4 - Trace Shell Configuration if required
+# 3 - Trace Shell Configuration if required
 # -----------------------------------------
 #
 # This script needs to source user configuration scripts to

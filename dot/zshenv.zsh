@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-23 09:12:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 17:53:49 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -23,10 +23,10 @@
 #   - USRHOME_DIR_USRCFG
 #
 # - Determines if shell tracing is activated by sourcing user's controlled
-#   file: usrcfg/setfor-shell-tracing.sh
+#   file: usrcfg/setfor-all-config.sh
 #
-# - Defines the USRHOME shell tracing functions by sourcing
-#   file: usrhome/ibin/shell-tracing.sh
+#   - When tracing is required, that file must also define the USRHOME shell
+#     tracing functions by sourcing file: usrhome/ibin/shell-tracing.sh
 #
 # - If required print tracing of this file.
 #
@@ -51,7 +51,7 @@ if [[ -z $USRHOME_DIR ]]; then
     # - Identify the name of what bash executed (that should be the ~/.zshenv symlink)
     script=${(%):-%x}
     # - Then identify the real file pointed by that symlink: it should be
-    #   this file,the usrhome/dot/bashrc.bash, with the complete path.
+    #   this file, the usrhome/dot/bashrc.bash, with the complete path.
     original_script=`readlink $script`
     # - Then identify the parent directory of the file, that's the parent
     #   of the usrcfg directory too.
@@ -61,29 +61,23 @@ if [[ -z $USRHOME_DIR ]]; then
 fi
 
 
-# 2 - Determine is shell tracing is activated
-# -------------------------------------------
+# 2 - Determine User Shell Configuration
+# --------------------------------------
 #
-usrhome_trace_activation="$USRHOME_DIR_USRCFG/setfor-shell-tracing.sh"
-if [ -e $usrhome_trace_activation ]; then
-    . "$usrhome_trace_activation"
+usrhome_config="$USRHOME_DIR_USRCFG/setfor-all-config.sh"
+if [ -e $usrhome_config ]; then
+    . "$usrhome_config"
 else
     printf "***USRHOME ERROR!!*********************************************\n"
-    printf "Cannot find the user's shell tracing configuration file!\n"
-    printf " Expected file: %s\n" "$usrhome_trace_activation"
+    printf "Cannot find the user's configuration file!\n"
+    printf " Expected file: %s\n" "$usrhome_config"
     printf " Please write it, use the template example as basis.\n"
-    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-shell-tracing.sh"
+    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
     printf "***************************************************************\n"
 fi
-unset usrhome_trace_activation
+unset usrhome_config
 
-
-# 3 - Define USRHOME shell tracing functions
-# ------------------------------------------
-. $USRHOME_DIR/ibin/shell-tracing.sh
-
-
-# 4 - Trace Shell Configuration if required
+# 3 - Trace Shell Configuration if required
 # -----------------------------------------
 #
 # This script needs to source user configuration scripts to
