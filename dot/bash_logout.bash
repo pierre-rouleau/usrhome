@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_logout Configuration File - Sourced in interactive logout shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-30 13:36:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 19:29:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -44,27 +44,24 @@ if [[ -z $USRHOME_DIR ]]; then
     export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
 fi
 
-# 2 - Determine is shell tracing is activated
-# -------------------------------------------
+# 2 - Determine User Shell Configuration
+# --------------------------------------
 #
-usrhome_trace_activation="$USRHOME_DIR_USRCFG/setfor-shell-tracing.sh"
-if [ -e $usrhome_trace_activation ]; then
-    . "$usrhome_trace_activation"
+usrhome_config="$USRHOME_DIR_USRCFG/setfor-all-config.sh"
+if [ -e "$usrhome_config" ]; then
+    # shellcheck disable=SC1090
+    . "$usrhome_config"
 else
     printf "***USRHOME ERROR!!*********************************************\n"
-    printf "Cannot find the user's shell tracing configuration file!\n"
-    printf " Expected file: %s\n" "$usrhome_trace_activation"
+    printf "Cannot find the user's configuration file!\n"
+    printf " Expected file: %s\n" "$usrhome_config"
     printf " Please write it, use the template example as basis.\n"
-    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-shell-tracing.sh"
+    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
     printf "***************************************************************\n"
 fi
-unset usrhome_trace_activation
+unset usrhome_config
 
-# 3 - Define USRHOME shell tracing functions
-# ------------------------------------------
-. $USRHOME_DIR/dot/shell-tracing.sh
-
-# 4 - Trace Shell Configuration if required
+# 3 - Trace Shell Configuration if required
 # -----------------------------------------
 #
 # This script needs to source user configuration scripts to
