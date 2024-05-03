@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 14:39:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 17:10:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -39,7 +39,7 @@
 #
 
 # Set usrhome__running_shell to zsh, bash or unknown
-source  "$USRHOME_DIR/ibin/which-shell"
+. "$USRHOME_DIR/ibin/which-shell"
 
 
 prompt_yn_return=
