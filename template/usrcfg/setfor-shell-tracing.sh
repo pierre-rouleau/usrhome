@@ -3,7 +3,7 @@
 # Purpose   : Activate/Deactivate USRHOME Shell Tracing.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-25 08:47:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-02 23:30:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -16,13 +16,23 @@
 # Code
 # ----
 #
+# Topic: Shell Tracing Configuration
+# ----------------------------------
+
+# Activation control.
+# -------------------
 #
-# Activation control.  Value 0 deactivate, 1: activates
-# -----------------------------------------------------
+# USRHOME_TRACE_SHELL_CONFIG values:
+#  0        : Disable tracing
+#  1        : Enable tracing; only print on stdout
+#  file name: print on stdout and append text to that file.
+#           : IMPORTANT: - Do NOT use the tilde (~) in the file name,
+#           :              use $HOME instead as ~ is not expanded in double quotes.
+#           :            - The file name must be located in an existing directory.
 
 if [ -z $USRHOME_TRACE_SHELL_CONFIG ]; then
-    # Activate (1) / de-activate (0) the tracing of Shell configuration
-    # sourcing if the environment variable is not already set to a value (0, or 1).
+    # De-activate shell tracing by default.
+    # Change to 1 or a file name to activate.
     export USRHOME_TRACE_SHELL_CONFIG=0
 fi
 
