@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 18:06:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 16:39:30 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -469,9 +469,10 @@ $(tput bold)- PS2:$(tput sgr0) %s
 $(tput bold)- PS3:$(tput sgr0) %s
 $(tput bold)- PS4:$(tput sgr0) %s
 $(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
+$(tput bold)- USRHOME_PROMPT_MODEL_OVERRIDE:$(tput sgr0) %s
 
 See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequences
-" "$PS0" "$PS1" "$PS2" "$PS3" "$PS4" "$USRHOME_PROMPT_MODEL"
+" "$PS0" "$PS1" "$PS2" "$PS3" "$PS4" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
         }
         ;;
 
@@ -490,7 +491,9 @@ See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequ
 - PROMPT : %s
   - p1   : %s
   - p2   : %s
-- USRHOME_PROMPT_MODEL: %s\n" "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2" "$USRHOME_PROMPT_MODEL"
+  - p3   : %s
+- USRHOME_PROMPT_MODEL: %s
+- USRHOME_PROMPT_MODEL_OVERRIDE: %s\n" "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2" "$p3" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
         }
         ;;
     *)
