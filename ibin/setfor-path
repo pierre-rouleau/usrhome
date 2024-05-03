@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 17:23:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 14:17:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,6 +30,7 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-path"
 
 if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
     # if not a login shell OR user allows configuration at login...
+    echo "---- \$USRHOME_DIR/ibin/setfor-path processing "
 
     if [ ! "$USRHOME__PATH_SET" = "1" ]; then
         # .. and it has not yet been done, then configure, otherwise don't.
@@ -98,22 +99,25 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
                 echo "- Switch PATH with USRHOME_ORIGINAL_PATH"
             fi
         }
+    fi
 
-        # ----------------------------------------------------------------------------
-        # Source configuration logic that applies to Bash and Z Shell
+    # ----------------------------------------------------------------------------
+    # Source configuration logic that applies to Bash and Z Shell
 
-        all_config_fpathname="$USRHOME_DIR_USRCFG/setfor-all-config.sh"
-        if [ -e "$all_config_fpathname" ]; then
-            . "$USRHOME_DIR_USRCFG/setfor-all-config.sh"
-        else
-            printf "***USRHOME ERROR!!*********************************************\n"
-            printf "The user common shell configuration file is missing!\n"
-            printf " Expected file: %s\n" "$all_config_fpathname"
-            printf " Please write it, use the template example as basis.\n"
-            printf " The template is: %s\n" "$USRHOME/template/usrcfg/setfor-all-config.sh"
-            printf "***************************************************************\n"
-        fi
-        unset all_config_fpathname
+    all_config_fpathname="$USRHOME_DIR_USRCFG/setfor-all-config.sh"
+    if [ -e "$all_config_fpathname" ]; then
+        . "$USRHOME_DIR_USRCFG/setfor-all-config.sh"
+    else
+        printf "***USRHOME ERROR!!*********************************************\n"
+        printf "The user common shell configuration file is missing!\n"
+        printf " Expected file: %s\n" "$all_config_fpathname"
+        printf " Please write it, use the template example as basis.\n"
+        printf " The template is: %s\n" "$USRHOME/template/usrcfg/setfor-all-config.sh"
+        printf "***************************************************************\n"
+    fi
+    unset all_config_fpathname
+
+    if [ ! "$USRHOME__PATH_SET" = "1" ]; then
         # ----------------------------------------------------------------------------
         # Add entries in PATH as required by user configuration
 

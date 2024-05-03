@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-03 13:54:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 15:32:19 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -243,9 +243,19 @@ fi;\
 ) '
 
 
+# Dynamically change prompt.
+# Support "$USRHOME_DIR/ibin/setfor-prompt-model-to":
+#  Use  $USRHOME_PROMPT_MODEL_OVERRIDE if it exists,
+#   otherwise use $USRHOME_PROMPT_MODEL.
+
 usrhome-select-bash-prompt()
 {
-    case $USRHOME_PROMPT_MODEL in
+    if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
+        model="$USRHOME_PROMPT_MODEL_OVERRIDE"
+    else
+        model="$USRHOME_PROMPT_MODEL"
+    fi
+    case "$model" in
         0 )
         # No prompt identified by USRHOME
         # It can be set by "$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
@@ -254,13 +264,11 @@ usrhome-select-bash-prompt()
         ;;
 
         1)
-            USRHOME_PROMPT_MODEL=1
             PS1=${USRHOME_BASH_PROMPT1}
             export PS1
             ;;
 
         3)
-            USRHOME_PROMPT_MODEL=3
             PS1=${USRHOME_BASH_PROMPT3}
             # shellcheck disable=SC2090
             export PS1
@@ -268,7 +276,6 @@ usrhome-select-bash-prompt()
 
         2 | *)
             # default (also model 2).  Activates that explicitly.
-            USRHOME_PROMPT_MODEL=2
             PS1=${USRHOME_BASH_PROMPT2}
             # shellcheck disable=SC2090
             export PS1

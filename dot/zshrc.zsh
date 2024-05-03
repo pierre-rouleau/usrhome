@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-05-01 17:38:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 15:57:23 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -142,80 +142,108 @@ fi
 # - % for normal prompt, # for sudo      %#
 # - all of the above in bold: %B ... %b
 
-p1=$'>%?@%B%D{%H:%M:%S} L%L'
+# Dynamically change prompt.
+# Support "$USRHOME_DIR/ibin/setfor-prompt-model-to":
+#  Use  $USRHOME_PROMPT_MODEL_OVERRIDE if it exists,
+#   otherwise use $USRHOME_PROMPT_MODEL.
 
-if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then
-    p2=$'%n@%m:%~%b'
-else
-    p2=$'%~%b'
-fi
+usrhome-select-zsh-prompt()
+{
+    p1=$'>%?@%B%D{%H:%M:%S} L%L'
 
-case $USRHOME_PROMPT_MODEL in
-    0 )
-    # No prompt identified by USRHOME
-    # It can be set by "$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
-    # which could be the original users ~/.zshrc file.
-    # If that is not set, the default zsh prompt is used.
-    ;;
+    if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then
+        p2=$'%n@%m:%~%b'
+    else
+        p2=$'%~%b'
+    fi
 
-    2 | 3 )
-        # Select tail end of prompt.
-        # Model 2: print zsh followed by % or #, in bold and in color:
-        #          - user mode: green when last command succeeded,  bold red otherwise.
-        #          - root     : magenta when last command succeeded, bold red otherwise.
-        # Model 3: print zsh followed by % or # in bold
-        case $USRHOME_PROMPT_MODEL in
-            2)
-                p3=%(?.%F{%(#.magenta.green)}zsh%#%F{reset}.%B%F{red}zsh%#%F{reset}%b)
-                ;;
-            3)
-                p3=%Bzsh%#%b
-                ;;
-        esac
-        autoload -Uz vcs_info
-        precmd_vcs_info() { vcs_info }
-        precmd_functions+=( precmd_vcs_info )
-        setopt prompt_subst
-        zstyle ':vcs_info:hg:*'  formats '%F{240}hg:(%b)%r%f'
-        zstyle ':vcs_info:git:*' formats '%F{240}git:(%b)%r%f'
-        zstyle ':vcs_info:*' enable hg git
-        export PROMPT=$'$p1 $p2 \ \$vcs_info_msg_0_\n$p3 '
+    if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
+        model="$USRHOME_PROMPT_MODEL_OVERRIDE"
+    else
+        model="$USRHOME_PROMPT_MODEL"
+    fi
+    case "$model" in
+        0 )
+            # This is a special case.
+            #
+            # - If the user file "$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
+            #   defines a complex prompt that must be re-loaded with a
+            #   shell restart, the it must identify it by defining the
+            #   USRHOME_PROMPT_MODEL_REQUIRES_RESTART and set its value
+            #   to the shell model value; which is 0 in this case.
+            #   When this is the case no prompt definition logic is
+            #   provided here, but the setfor-prompt-model-to checks the
+            #   USRHOME_PROMPT_MODEL_REQUIRES_RESTART value and restart
+            #   the shell.
+            # - If the user configuration file does not set the
+            #   USRHOME_PROMPT_MODEL_REQUIRES_RESTART envvar, then
+            #   this code sets a simple prompt for zsh.
+            if [ -z "$USRHOME_PROMPT_MODEL_REQUIRES_RESTART" ] || [ ! "$USRHOME_PROMPT_MODEL_REQUIRES_RESTART" = "0" ]; then
+               export PROMPT='%n@%m %1~ :zsh%# '
+            fi
+            ;;
 
-        # Show the exit code and the current sub-process jobs
-        if [[ -z "$INSIDE_EMACS" ]]; then
-            #          exit code: value x on failure  #jobs when more than 1
-            RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
-        fi
-        ;;
-
-    * )
-        # Default (also model 1)
-        export PROMPT=$'$p1 $p2 '
-
-        # Note that the prompt starts with a '>', the exit code and a '@'.  It is
-        # therefore possible to create a regexp that identifies a prompt line.
-        #
-        # That is useful inside Emacs (in pel-shell-prompt-line-regexp) and inside
-        # scripts that can identify consecutive prompts from a log and then compute
-        # the elapsed time for a given command.
-        if [ -z $INSIDE_EMACS ]; then
-            # Unless inside Emacs, display full path at right
-            # followed by Git information if inside a Git repo directory.
-            # This is shown only if there is space in the window.
-            # The info can be shown in term-mode but not in shell-mode (I don't know why).
-            # Inside Emacs it's not that useful anyway because Emacs can display that information.
+        2 | 3 )
+            # Select tail end of prompt.
+            # Model 2: print zsh followed by % or #, in bold and in color:
+            #          - user mode: green when last command succeeded,  bold red otherwise.
+            #          - root     : magenta when last command succeeded, bold red otherwise.
+            # Model 3: print zsh followed by % or # in bold
+            case $USRHOME_PROMPT_MODEL in
+                2)
+                    p3=%(?.%F{%(#.magenta.green)}zsh%#%F{reset}.%B%F{red}zsh%#%F{reset}%b)
+                    ;;
+                3)
+                    p3=%Bzsh%#%b
+                    ;;
+            esac
             autoload -Uz vcs_info
             precmd_vcs_info() { vcs_info }
             precmd_functions+=( precmd_vcs_info )
             setopt prompt_subst
-            RPROMPT=%B%~%b\ \$vcs_info_msg_0_
-            zstyle ':vcs_info:hg:*'  formats 'hg:%F{240}(%b)%r%f'
-            zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
+            zstyle ':vcs_info:hg:*'  formats '%F{240}hg:(%b)%r%f'
+            zstyle ':vcs_info:git:*' formats '%F{240}git:(%b)%r%f'
             zstyle ':vcs_info:*' enable hg git
-        fi
-        ;;
-esac
+            export PROMPT=$'$p1 $p2 \ \$vcs_info_msg_0_\n$p3 '
 
+            # Show the exit code and the current sub-process jobs
+            if [[ -z "$INSIDE_EMACS" ]]; then
+                #          exit code: value x on failure  #jobs when more than 1
+                RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
+            fi
+            ;;
+
+        * )
+            # Default (also model 1)
+            export PROMPT=$'$p1 $p2 '
+
+            # Note that the prompt starts with a '>', the exit code and a '@'.  It is
+            # therefore possible to create a regexp that identifies a prompt line.
+            #
+            # That is useful inside Emacs (in pel-shell-prompt-line-regexp) and inside
+            # scripts that can identify consecutive prompts from a log and then compute
+            # the elapsed time for a given command.
+            if [ -z $INSIDE_EMACS ]; then
+                # Unless inside Emacs, display full path at right
+                # followed by Git information if inside a Git repo directory.
+                # This is shown only if there is space in the window.
+                # The info can be shown in term-mode but not in shell-mode (I don't know why).
+                # Inside Emacs it's not that useful anyway because Emacs can display that information.
+                autoload -Uz vcs_info
+                precmd_vcs_info() { vcs_info }
+                precmd_functions+=( precmd_vcs_info )
+                setopt prompt_subst
+                RPROMPT=%B%~%b\ \$vcs_info_msg_0_
+                zstyle ':vcs_info:hg:*'  formats 'hg:%F{240}(%b)%r%f'
+                zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
+                zstyle ':vcs_info:*' enable hg git
+            fi
+            ;;
+    esac
+}
+
+# Activate selected prompt
+usrhome-select-zsh-prompt
 
 # Topic: Title
 # ------------

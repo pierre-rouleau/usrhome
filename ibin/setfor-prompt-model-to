@@ -3,7 +3,7 @@
 # Purpose   : Change zsh prompt model in current shell.
 # Created   : Wednesday, April  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-01 21:54:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 16:10:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -23,16 +23,36 @@
 # ----
 #
 #
-print_usage()
+# Topic: Prompt: Control
+# ----------------------
+
+print_status()
 {
-    echo "usrhome-prompt-model-to: Dynamically change shell prompt to another prompt model."
-    echo " Usage:  usrhome-prompt-model-to MODEL-NUMBER"
-    echo "  Supported NUMBER values: 0, 1 ,2 and 3."
-    if [[ -z "$USRHOME_PROMPT_MODEL" ]]; then
+    if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
+        echo "  Using overridden prompt model number: $USRHOME_PROMPT_MODEL_OVERRIDE"
+    fi
+    if [ -z "$USRHOME_PROMPT_MODEL" ]; then
         echo "  The current prompt model number is undefined."
     else
-        echo "  The current prompt model number is: $USRHOME_PROMPT_MODEL"
+        echo "  Shell configured prompt model number: $USRHOME_PROMPT_MODEL"
     fi
+}
+
+print_usage()
+{
+    printf "\
+usrhome-prompt-model-to: Change prompt to another model. Print used model.
+
+Usage:  usrhome-prompt-model-to -h|--help
+        usrhome-prompt-model-to [MODEL-NUMBER
+        usrhome-prompt-model-to current
+        usrhome-prompt-model-to reset
+
+    - MODEL-NUMBER: 0, 1, 2 or 3.
+    - current     : print current prompt model.
+    - reset       : restore prompt model select by configuration.
+"
+    print_status
 }
 
 # Validate user input
@@ -52,6 +72,8 @@ case "$1" in
         print_usage
         return 0
         ;;
+
+
     # prevent any other option:
     # note that it also precludes having symlink names that start with a '-'
     -?* )
@@ -59,18 +81,43 @@ case "$1" in
         print_usage
         return 1
         ;;
+
+    current)
+        print_status
+        return 0
+        ;;
+
+    reset)
+        # stop overriding if that was already overridden
+        if [ -z "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
+            echo "The prompt model is already the one selected by configuration: $USRHOME_PROMPT_MODEL"
+            echo "Nothing to do."
+            return 0
+        else
+            if [ "$USRHOME_PROMPT_MODEL_OVERRIDE" = "$USRHOME_PROMPT_MODEL" ]; then
+                echo "Overridden prompt model is the same as the one selected by configuration: $USRHOME_PROMPT_MODEL"
+                unset USRHOME_PROMPT_MODEL_OVERRIDE
+                echo "Overriding cancelled, nothing else to do."
+                return 0
+            else
+                echo "Restoring configuration requested prompt model: $USRHOME_PROMPT_MODEL"
+                unset USRHOME_PROMPT_MODEL_OVERRIDE
+            fi
+        fi
+        ;;
+
     0)
-        export USRHOME_PROMPT_MODEL=0
+        export USRHOME_PROMPT_MODEL_OVERRIDE=0
         ;;
     1)
-        export USRHOME_PROMPT_MODEL=1
+        export USRHOME_PROMPT_MODEL_OVERRIDE=1
         ;;
     2)
-        export USRHOME_PROMPT_MODEL=2
+        export USRHOME_PROMPT_MODEL_OVERRIDE=2
         ;;
 
     3)
-        export USRHOME_PROMPT_MODEL=3
+        export USRHOME_PROMPT_MODEL_OVERRIDE=3
         ;;
 
     *)
@@ -91,18 +138,25 @@ source  "$USRHOME_DIR/ibin/which-shell"
 
 case $usrhome__running_shell in
     "zsh")
-        # The current implementation for Zsh prompt modification needs to
-        # re-execute the sourcing of zsh configuration files.
-        # That's done with an exec zsh, which would kill running jobs.
-        # Protect against that.
-        if [[ -n "$(jobs)" ]]; then
-            # Don't allow re-starting zsh when there are running jobs
-            # inside the shell.  The exec zsh might kill them if they
-            # were not detached.  Warn the user and quit.
-            echo "Unfinished jobs running.  Terminate them first!"
-            return 1
+        if [[ "$USRHOME_PROMPT_MODEL_OVERRIDE" = "$USRHOME_PROMPT_MODEL_REQUIRES_RESTART" ]]; then
+            # The implementation for the selected zsh prompt model requires
+            # re-executing the sourcing of zsh configuration files.
+            # That's done with an exec zsh, which would kill running jobs.
+            # Don't do it the shell has any running jobs.
+            if [[ -n "$(jobs)" ]]; then
+                # Don't allow re-starting zsh when there are running jobs
+                # inside the shell.  The exec zsh might kill them if they
+                # were not detached.  Warn the user and quit.
+                echo "***** WARNING! ** WARNING! *****"
+                echo "This shell has unfinished jobs running.  Terminate them first!"
+                return 1
+            fi
+            usrhome-select-zsh-prompt
+            exec zsh
+        else
+            usrhome-select-zsh-prompt
         fi
-        exec zsh
+
         ;;
 
     "bash")
