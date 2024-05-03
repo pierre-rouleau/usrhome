@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-01 18:01:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 13:54:46 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -174,7 +174,9 @@ fi
 #  - Red         : '\[\e[0;31m\]'
 #  - Green       : '\[\e[0;32m\]'
 #  - Magenta     : '\[\e[0;35m\]'
-#  - End of Color: '\[\e[0m\]'
+#  - End of Color: '\[\e[0m\]
+#  - Start bold  : '\[$(tput bold)\]'
+#  - End   bold  : '\[$(tput sgr0)\]'
 
 # We can also use the tput command, which allows
 # putting the prompt in bold. tput sgr0 resets the coloring.
@@ -188,6 +190,10 @@ fi
 USRHOME_BASH_PROMPT1=">\h@\d@\t[\w]\n>\\$ "
 
 
+# [:todo 2024-05-03, by Pierre Rouleau: Fix prompt 2, it wraps over current text.
+# The issue is most probably escape sequences for color,
+# but I can't find what is wrong.
+# ]
 # PROMPT MODEL 2: With color, bolding and logic.
 # shellcheck disable=SC2016
 USRHOME_BASH_PROMPT2='$(\
@@ -219,7 +225,7 @@ fi;\
 # shellcheck disable=SC2016
 USRHOME_BASH_PROMPT3='$(\
 ec=${?}; \
-printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\],L${SHLVL},\[$(tput bold)\]" ${ec}; \
+printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\],L${SHLVL},\[$(tput bold)\]" ${ec}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
   printf "\h@\u@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
