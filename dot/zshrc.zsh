@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-05-03 15:57:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 16:35:49 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -189,7 +189,7 @@ usrhome-select-zsh-prompt()
             #          - user mode: green when last command succeeded,  bold red otherwise.
             #          - root     : magenta when last command succeeded, bold red otherwise.
             # Model 3: print zsh followed by % or # in bold
-            case $USRHOME_PROMPT_MODEL in
+            case "$model" in
                 2)
                     p3=%(?.%F{%(#.magenta.green)}zsh%#%F{reset}.%B%F{red}zsh%#%F{reset}%b)
                     ;;
