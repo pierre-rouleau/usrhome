@@ -314,15 +314,15 @@ The User Configuration Files used by USRHOME
 ================================== ================================================================
 File Name                          Description
 ================================== ================================================================
-usrcfg/setfor-shell-tracing.sh     **Required** Defines USRHOME_TRACE_SHELL_CONFIG to 1,
-                                   to activate tracing of shell configuration files,
-                                   0 to disable it.
-
 usrcfg/setfor-all-config.sh        **Required** Holds user configuration that applies to the Bash
                                    and Z Shell.
 
                                    - This must be written in POSIX sh script, compatible with
                                      both Bash and Z Shell.
+                                   - Defines USRHOME_TRACE_SHELL_CONFIG to 0
+                                     to disable shell tracing, 1 to enable it
+                                     and a file name to enable it and activate
+                                     logging inside that file.
                                    - It also holds some USRHOME-specific logic to control optional
                                      shell config file tracing.
 
