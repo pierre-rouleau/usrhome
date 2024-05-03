@@ -3,7 +3,7 @@
 # Purpose   : Template for private USRHOME configuration command to Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 17:25:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 19:45:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -12,30 +12,59 @@
 # as the Z Shell.  One part corresponds to what is required by USRHOME. The
 # second part is for the user.
 #
-# This file is sourced by usrhome/ibin/setfor-path, which us sourced both by
-# the USRHOME files for Bash and the Z Shell.
+# Defines the value of USRHOME_TRACE_SHELL_CONFIG if it is not already
+# defined.  A value of 1 activates USRHOME shell configuration tracing,
+# any other value disables it.
+
+# This file is sourced by the following USRHOME files to set values of
+# important USRHOME environment variables:
+#
+# - usrhome/dot/bash_login.bash
+# - usrhome/dot/bash_profile.bash
+# - usrhome/dot/bashrc.bash
+# - usrhome/dot/profile.sh
+# - usrhome/dot/zshenv.zsh
 
 # ----------------------------------------------------------------------------
 # USRHOME-specific code
 # ---------------------
-#
-# Trace if requested by user.
-usrhome_trace_in "\$USRHOME_DIR_USRCFG/setfor-all-config.sh"
 
-# ----------------------------------------------------------------------------
-# User-Specific code
-# ------------------
+
+# Topic: Shell Tracing Configuration
+# ----------------------------------
+
+# Activation control.
+# -------------------
 #
-# Place your code inside this section before the next separator line.
-# Some code is already present and set the value of some USRHOME environment
-# variables. You may keep this code or modify it as long as the values of
-# these environment variables are set to something valid in your environment.
+# USRHOME_TRACE_SHELL_CONFIG values:
+#  0        : Disable tracing
+#  1        : Enable tracing; only print on stdout
+#  file name: print on stdout and append text to that file.
+#           : IMPORTANT: - Do NOT use the tilde (~) in the file name,
+#           :              use $HOME instead as ~ is not expanded in double quotes.
+#           :            - The file name must be located in an existing directory.
+
+if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
+    # Activate (1) / de-activate (0) the tracing of Shell configuration
+    # sourcing if the environment variable is not already set to a value (0, or 1).
+    #export USRHOME_TRACE_SHELL_CONFIG="$HOME/tmp/shell-trace.txt"
+    export USRHOME_TRACE_SHELL_CONFIG=1
+fi
+
+if [ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]; then
+    . "$USRHOME_DIR/ibin/shell-tracing.sh"
+
+    # Trace if requested by user.
+    usrhome_trace_in "\$USRHOME_DIR_USRCFG/setfor-all-config.sh"
+fi
+
+
 
 # ----------------------------------------------------------------------------
 # Topic: Homebrew
 # ---------------
 
-# Activate whether Homebrew is used
+# Activate whether Homebrew is used:
 # - 1 to use Homebrew,
 # - 0 (or not defined) to prevent using Homebrew.
 os_type=$(uname)
@@ -60,10 +89,16 @@ esac
 unset os_type
 
 # ----------------------------------------------------------------------------
+# Code : MODIFY IT TO SUIT YOUR NEEDS.
+# ------------------------------------
+#
+
+# ----------------------------------------------------------------------------
 # Topic: Concept Directory Identification
 # ---------------------------------------
-# The following environment variables identify the location of 4 important
-# concept directories used by USRHOME.
+#
+# The following environment variables identify the location of the important
+# concept directories:
 #
 # - Modify their values to suit your needs. You could also use logic to set
 # - the values according to what system runs this code.
@@ -87,7 +122,7 @@ if [ -z "$USRHOME__USRCFG_SEEN" ] || [ "$(id -u)" = 0 ]; then
     # be changed dynamically to modify behavior inside
     # sub-shells.
 
-    # Activate shell header display of path activations
+    # Activate shell header display of path activation
     export USRHOME_SHOW_PATH_ACTIVATION=1
 
     # For USRHOME prompts: select whether host name and user name are shown
@@ -96,6 +131,10 @@ if [ -z "$USRHOME__USRCFG_SEEN" ] || [ "$(id -u)" = 0 ]; then
     # Activate display of user name and host name on the prompt.
     export USRHOME_PROMPT_SHOW_USR_HOST=1
 
+# Define USRHOME_PROMPT_MODEL unless there's a reason to skip it.
+#   The reason would be that it was already defined and overridden
+#   by the usrhome-prompt_model-to command .
+if [ -z "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
     # Select prompt model.
     # --------------------
     #
@@ -125,5 +164,7 @@ fi
 
 # ----------------------------------------------------------------------------
 # cleanup
-usrhome_trace_out
+if [ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]; then
+    usrhome_trace_out
+fi
 # ----------------------------------------------------------------------------
