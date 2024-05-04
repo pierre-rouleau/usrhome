@@ -44,7 +44,7 @@ Unix shell configuration files that:
 
 With USRHOME, all user shell configuration dot files (such as your
 ``~/.bashrc``) are turned into symbolic links to `USRHOME dot files`_,
-allowing the logic to be under VCS control.
+allowing shell configuration logic to be under VCS control.
 
 USRHOME repository files provides the basic shell configuration infrastructure
 logic.  It uses your own personal/private configuration logic stored into your
