@@ -3,7 +3,7 @@
 # Purpose   : USRHOME template for user-specific Bash configuration.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-24 19:20:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 08:12:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -27,12 +27,16 @@
 # ---------------------
 usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
 
+# Source User's common shell logic.
+. "$USRHOME_DIR_USRCFG/do-user.sh"
+
 # ----------------------------------------------------------------------------
-# User-Specific code
+# User-Specific code - MODIFY TO YOUR NEEDS
 # ------------------
 #
-# Place your code inside this section before the next separator line.
-#  [HERE]
+# Place your Bash shell specific code inside this section before the next
+#  separator line.
+# [HERE]
 
 
 
@@ -40,8 +44,19 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
 
 
 
+
+
+
+
+# ----------------------------------------------------------------------------
+# USRHOME-specific Code
+# ---------------------
+#
+# Topic: Node-specific configuration: Bash RC
+# -------------------------------------------
+#
 # Source the node-specific logic if the file exists
-# -------------------------------------------------
+#
 node="$(hostname -s)"
 node_fname="$USRHOME_DIR_USRCFG/node/do-${node}-bashrc.bash"
 if [ -e "$node_fname" ]; then

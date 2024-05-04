@@ -3,7 +3,7 @@
 # Purpose   : Template of User-specific login bash configuration.
 # Created   : Wednesday, April 24 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-24 19:20:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 08:16:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -28,7 +28,7 @@
 #
 usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-bash_profile.bash"
 # ----------------------------------------------------------------------------
-# User-Specific code
+# User-Specific code - MODIFY TO YOUR NEEDS
 # ------------------
 #
 # Place your code inside this section before the next separator line.
@@ -39,9 +39,15 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-bash_profile.bash"
 
 
 
-
+# ----------------------------------------------------------------------------
+# USRHOME-specific Code
+# ---------------------
+#
+# Topic: Node-specific configuration: Bash Profile
+# ------------------------------------------------
+#
 # Source the node-specific logic if the file exists
-# -------------------------------------------------
+#
 node="$(hostname -s)"
 node_fname="$USRHOME_DIR_USRCFG/node/do-${node}-bash_profile.bash"
 if [ -e "$node_fname" ]; then

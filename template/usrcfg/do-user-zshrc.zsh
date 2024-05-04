@@ -3,7 +3,7 @@
 # Purpose   : Local setup.
 # Created   : Sunday, March 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-24 19:20:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 08:13:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,35 +30,33 @@
 #
 usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 
+# Source User's common shell logic.
+. "$USRHOME_DIR_USRCFG/do-user.sh"
+
 # ----------------------------------------------------------------------------
-# User-Specific code
+# User-Specific code  - MODIFY TO YOUR NEEDS
 # ------------------
 #
-# Place your code inside this section before the next separator line.
-#  [HERE]
-
-# Some example code is left in comment.
-#
-# # Manual Command for Setting Environments
-# # ----------------------------------------
-# alias use-rust='source $USRHOME_DIR_USRCFG/ibin/envfor-rust'
-#
-#
-# # My Extra Commands
-# # -----------------
-# alias cdbin='cd ~/my/bin'
-# alias cddoc='cd ~/Documents'
-#
-#
-# # Permanent Shell Configuration
-# # -----------------------------
-# . "$USRHOME_DIR_USRCFG/envfor-rust"
+# Place your Z Shell specific code inside this section before the next
+#  separator line.
+# [HERE]
 
 
 
 
+
+
+
+
+# ----------------------------------------------------------------------------
+# USRHOME-specific Code
+# ---------------------
+#
+# Topic: Node-specific configuration: zshrc
+# -----------------------------------------
+#
 # Source the node-specific logic if the file exists
-# -------------------------------------------------
+#
 node="$(hostname -s)"
 node_fname="$USRHOME_DIR_USRCFG/node/do-${node}-zshrc.zsh"
 if [ -e "$node_fname" ]; then

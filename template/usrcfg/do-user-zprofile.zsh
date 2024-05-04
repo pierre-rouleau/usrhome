@@ -3,7 +3,7 @@
 # Purpose   : Template that holds user-specific Z Shell logic invoked by ~/.zprofile
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-23 10:43:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 08:14:16 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -26,14 +26,18 @@
 usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-zprofile.zsh"
 #
 # ----------------------------------------------------------------------------
-# User-Specific code
+# User-Specific code - MODIFY TO YOUR NEEDS
 # ------------------
 #
-# Place your code inside this section before the next separator line.
+# Place your Z Shell profile code inside this section before the next
+# separator line.
+# [HERE]
 
 
 
 # ----------------------------------------------------------------------------
+# USRHOME-specific code
+# ---------------------
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
