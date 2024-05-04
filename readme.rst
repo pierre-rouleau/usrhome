@@ -37,47 +37,54 @@ Unix shell configuration files that:
   the `Z Shell`_ and Bash,
 - support multiple computers:
 
-  - the central configuration logic is inside this USRHOME Git repository,
+  - the configuration infrastructure logic is held inside this USRHOME Git repository,
   - the user-specific configuration logic for several computers or VMs
     is stored inside a *sibling*, private, repository; the *usrcfg*.
 
 - All shell configuration files are symbolic links to `USRHOME dot files`_,
   allowing the logic to be under VCS control.
 
-USRHOME allows you to use basic shell configuration infrastructure logic
-provided by USRHOME in the usrhome directory and your own personal/private
-configuration logic into your own usrcfg repository.
+USRHOME repository files provides the basic shell configuration infrastructure
+logic.  It uses your own personal/private configuration logic stored into your
+files located inside your *usrcfg* repository.
 
 - That can be used inside all the computers you use;
-  the usrcfg files can select logic based on host names or other criteria.d
+  the *usrcfg* files can select logic based on host names or other criteria.
   The goal is to be able to store all shell configuration logic
-  into two VCS repositories: the public one (this) and your private one.
+  into two VCS repositories: the public one (USRHOME) and your private one.
 
-At the moment it supports:
+At the moment USRHOME supports:
 
-- A basic configuration of zsh and bash for macOS and several Linux distributions.
+- A basic configuration of zsh and Bash for macOS and several Linux distributions.
 
-  - It works when Bash or zsh is used as the default shell.
+  - It works when Bash or zsh is used as the default shell for login and
+    non-login shells.
+  - It supports the latest versions of macOS where zsh is the default shell (since macOS 10.15 Catalina),
+    and older versions of macOS where an old version of Bash is the default shell.
+  - It also supports several Linux distributions where Bash is the default
+    shell and some where zsh is the default shell.
 
-    - It supports the latest versions of macOS where zsh is the default shell (since macOS 10.15 Catalina),
-      and older versions of macOS where an old version of Bash is the default shell.
-    - It also supports several Linux distributions where Bash is the default shell.
-
-USRHOME provides default prompt configurations that provide useful information.
-The intent is *not* to provide colourful configurations with fancy fonts and
-emoji but just provide a basic environment that will work over several
-versions of Operating Systems and will support the Z Shell as well as Bash
-running in the default terminal emulator programs provided by the OS.
+USRHOME provides several defined prompt configurations with ability to control
+the terminal title bar.  It comes with a default but you can select the prompt
+model for the Bash and Z shell independently.
+The intent of these prompts is *not* to provide colourful configurations with
+fancy fonts and emoji but just provide a basic environment that will work over
+several versions of Operating Systems and will support both shells in several
+terminal emulator programs.
 
 These are:
 
 - the default macOS Terminal.app,
 - the default Linux terminal applications,
-- inside Emacs various terminal shell modes,
+- inside Emacs various terminal shell modes.
 
-and work well when used with my `Pragmatic Emacs Library`_ which provides
-extensive key bindings for use in these Operating systems and allow extended
-use of the `numeric keypad`_.
+USRHOME is also designed to work well when used with Emacs using my `Pragmatic
+Emacs Library`_ which provides extensive key bindings for use in these
+Operating systems and allow extended use of the `numeric keypad`_.
+USRHOME logic is Emacs aware and uses the INSIDE_EMACS environment
+variable to control the behaviour of some features when they are invoked
+inside a shell running inside Emacs.
+
 
 USRHOME makes one important assumption about the organization of the
 directories in your file system: it specifically assumes that:
@@ -86,17 +93,15 @@ directories in your file system: it specifically assumes that:
   a directory tree called ``usrcfg`` that holds the user-specific
   and private configuration information.
 
+It is recommended to create a directory that only holds the USRHOME and your
+*usrcfg* repositories; this will help you perform search restricted to the
+content of the files stored inside these only.
+
 The sections titled `The zsh Configuration Files`_ and
 `The User Configuration Files used by USRHOME`_  describe the files used.
 
 On shell startup, USRHOME takes over and sets the value of several environment
 variables that identify the location of directories and USRHOME state.
-
-The code supports the Emacs editor, by using the INSIDE_EMACS environment
-variable to control the behaviour of some features when they are invoked
-inside a shell running inside Emacs.
-
-
 
 How to Set it Up
 ================
