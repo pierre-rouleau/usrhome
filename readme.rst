@@ -166,8 +166,10 @@ On Linux, Homebrew is not used.  But it also activates Rust.
 USRHOME does some check for vulnerabilities and it detects one in Rocky Linux
 9.3 and reports it. Then I use showpath, a USRHOME provided command, to print
 the path on numbered lines; it has 8 entries in the PATH and nothing is
-duplicated.  USRHOME reports sloppy PATH that has duplicate entries; it also
-sanitizes the PATH for you.
+duplicated.
+
+USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
+entries and empty entries. Here everything is fine.
 
 The second terminal is configured to launch Bash in login mode. Here, USRHOME
 does not add anything to the PATH; the Bash login shells are unmodified and do
