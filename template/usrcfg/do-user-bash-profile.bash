@@ -1,9 +1,9 @@
-# Sourced script: do-user.zsh  -*- mode: bash; -*-
+# Sourced script: do-user-bash-profile.bash  -*- mode: bash; -*-
 #
 # Purpose   : USRHOME template of User-specific login bash configuration.
 # Created   : Wednesday, April 24 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 08:27:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 08:28:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
