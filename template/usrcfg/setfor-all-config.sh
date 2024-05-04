@@ -3,7 +3,7 @@
 # Purpose   : Template for private USRHOME configuration command to Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-03 19:45:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 23:27:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -51,14 +51,13 @@ if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
     export USRHOME_TRACE_SHELL_CONFIG=1
 fi
 
-if [ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]; then
-    . "$USRHOME_DIR/ibin/shell-tracing.sh"
+# Get definitions of usrhome_trace_in() and usrhome_trace_out()
+. "$USRHOME_DIR/ibin/shell-tracing.sh"
 
-    # Trace if requested by user.
-    usrhome_trace_in "\$USRHOME_DIR_USRCFG/setfor-all-config.sh"
-fi
+. "$USRHOME_DIR/ibin/shell-tracing.sh"
 
-
+# Trace if requested by user.
+usrhome_trace_in "\$USRHOME_DIR_USRCFG/setfor-all-config.sh"
 
 # ----------------------------------------------------------------------------
 # Topic: Homebrew
@@ -164,7 +163,5 @@ fi
 
 # ----------------------------------------------------------------------------
 # cleanup
-if [ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]; then
-    usrhome_trace_out
-fi
+usrhome_trace_out
 # ----------------------------------------------------------------------------
