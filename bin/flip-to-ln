@@ -4,7 +4,7 @@
 # Purpose   : Move a file to a directory and create a symlink to it's new location.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-01 21:53:16 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 14:09:51 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -42,7 +42,9 @@
 print_usage()
 {
     printf "\
-Usage: flip-to-ln DPATH FILENAME
+flip-to-ln: move file to a directory and create symlink to it.
+
+ Usage: flip-to-ln DPATH FILENAME
         - Move FILENAME inside directory DPATH.
         - Create a symlink at FILENAME pointing to it's new location inside
           directory DPATH.
@@ -61,7 +63,6 @@ Usage: flip-to-ln DPATH FILENAME
               has the -r option to create relative links even when the
               arguments are absolute.
 "
-
 }
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
