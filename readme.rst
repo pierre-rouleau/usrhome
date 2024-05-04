@@ -127,6 +127,58 @@ template files`_ that correspond to what I use in my *usrcfg* repository.
 This also corresponds to what is shown in the diagram included in the section
 titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 
+Quick Overview Example
+======================
+
+Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
+9.3.
+
+**macOS shells**
+
+The macOS Sonoma default shell is zsh. I have installed the latest Bash
+shell via Homebrew and also installed Rust.   These are available on the
+default zsh shell, which is shown starting in the first terminal seen in the
+back (ttys000).  The PATH available in that shell has 17 entries.  It has
+access to Rust and several Homebrew directories.
+
+I have also configured Terminal to start a Bash login shell. That shell is
+also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
+anything on the PATH of the login shells.  They have 10 directories in their
+PATH; the first one being ``/usr/local/bin``.
+
+Then I start another terminal (ttys002) with macOS default zsh non-login
+interactive shell.   As for the first one (ttys000), it sets up Homebrew and
+Rust because my USRHOME setup is done that way for those shells.  It has 17
+directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
+prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
+shell nested level.
+
+.. figure:: res/macOS-shells.png
+
+**Rocky Linux 9.3 shells**
+
+The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
+default shell is Bash 5.1. Again here I
+started two terminal instances: the first one launches the default Bash,
+instrumented with the exact same USRHOME settings than my macOS one.
+On Linux, Homebrew is not used.  But it also activates Rust.
+
+USRHOME does some check for vulnerabilities and it detects one in Rocky Linux
+9.3 and reports it. Then I use showpath, a USRHOME provided command, to print
+the path on numbered lines; it has 8 entries in the PATH and nothing is
+duplicated.  USRHOME reports sloppy PATH that has duplicate entries; it also
+sanitizes the PATH for you.
+
+The second terminal is configured to launch Bash in login mode. Here, USRHOME
+does not add anything to the PATH; the Bash login shells are unmodified and do
+not have access for any extra tools.  They do not perform USRHOME simple (and
+quite limited) vulnerability check.
+
+.. figure:: res/RockyLinux-shells.png
+
+If you want to know how this all works, read on.
+
+
 How to Set it Up
 ================
 
