@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-05-04 17:04:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 17:20:37 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -248,6 +248,8 @@ usrhome-select-zsh-prompt
 # Topic: Title
 # ------------
 
+DISABLE_AUTO_TITLE="true"
+
 set-title()
 {
     # Arguments: A list of words to use as title.
@@ -265,17 +267,11 @@ set-title()
                 # Supports all shells with a simple echo.
                 # On macOS, the escape sequences are passed properly by echo.
                 # shellcheck disable=SC2028
-                echo "\033]0;${*}\007\c"
+                echo "\033]0;${title_text}\007\c"
                 ;;
 
             'Linux')
-                # The following works on Gnome Terminal and Qt Terminal
-                # Unlike macOS Terminal, the terminal 'titles' do not have multiple
-                # sections.  Just use the same terminal control as Bash, but
-                # use PROMPT.
-
-                # re-build the prompt into PROMPT
-                usrhome-select-zsh-prompt
+                # [:todo 2024-05-04, by Pierre Rouleau: Complete this. Currently under testing. ]
 
                 # Build the extra sequence that controls the title.
                 if [ -n "$SSHPASS" ]; then
@@ -283,15 +279,7 @@ set-title()
                 else
                     title_shell_depth="L${SHLVL}"
                 fi
-
-                # Set the title by appending the title setting logic to the PROMPT.
-                title="\[\e]2;${title_text} (zsh ${title_shell_depth})\a\]"
-                if [ -z "$INSIDE_EMACS" ]; then
-                    PROMPT=$PROMPT${title}
-                fi
-
-                # shellcheck disable=SC2090
-                export PROMPT
+                echo -en "\[\e]2;${title_text} ($USER@$(hostname -s), ${title_shell_depth},  $(pwd))\a\]"
                 ;;
 
             *)
