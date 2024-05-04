@@ -30,17 +30,30 @@ USRHOME -- Easily Clonable Unix Shell Configuration & Tools
 Introduction
 ============
 
-USRHOME is a starting project with the goal of holding a set of portable
-Unix shell configuration files that:
+USRHOME is Unix shell configuration project that provides a set of shell
+script tools.  It provides tools to *instrument* shells: specialize shells to
+add support for various tools, while leaving the main login shell intact if
+needed.
 
-- can be used in macOS and multiple Linux distributions under
-  the `Z Shell`_ and Bash,
-- support multiple computers:
+With USRHOME you can instrument multiple shells independently.
+Once the rules are set (in terms of sourced scripts) you can quickly open a
+shell and activate support for the tools you need *just for that shell*.
+You can for instance have a shell that supports Rust development, another that
+adds gcc-based C++ compiler on macOS while keeping the Clang as default for
+the normal shell.
+
+
+USRHOME support:
+
+- macOS and multiple Linux distributions.
+- The `Z Shell`_ and Bash shell.
+- Multiple computers:
 
   - the configuration infrastructure logic is held inside this USRHOME Git
     repository,
   - the user-specific configuration logic for several computers or VMs
-    is stored inside a *sibling*, private, repository; the *usrcfg*.
+    is stored inside a *sibling*, private, repository; the *usrcfg* (and
+    USRHOME provides template files for it).
 
 With USRHOME, all user shell configuration dot files (such as your
 ``~/.bashrc``) are turned into symbolic links to `USRHOME dot files`_,
