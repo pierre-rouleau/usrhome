@@ -1646,14 +1646,14 @@ Symbolic link  USRHOME File Identified
 
 The `files sourced by the Z Shell`_ depend on how the Z Shell is started.
 The files sourced by USRHOME take advantage of that behaviour to inject the
-user configuration, as shown in the following diagram.
+user configuration, as shown in the following diagram portion.
 
 .. figure:: res/zsh-startup-01.png
 
-- The ~/zshenv is sourced in all case.  Therefore the usrhome/dot/zshenv.zsh
-  sources the user's configuration file.  That file controls the configurable
-  aspects of USRHOME.
-- The file usrhome/ibin/setfor-path controls adding extra directories in the
+- The ``~/zshenv`` is sourced in all case.  Therefore the ``usrhome/dot/zshenv.zsh``
+  sources the user's basic configuration file that identifies the main USRHOME
+  configuration features.
+- The file ``usrhome/ibin/setfor-path`` controls adding extra directories in the
   PATH; the directories used by USRHOME and some other.  That file is sourced
   by the usrhome/dot/zprofile.zsh for a login shell and by the
   usrhome/dot/zshrc.zsh in a sub-shell.
