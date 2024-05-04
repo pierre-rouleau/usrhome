@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 14:44:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 14:14:17 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -44,12 +44,76 @@
 # ----
 #
 #
+print_usage()
+{
+    printf "\
+showpath: show content of PATH-like environment variable.
+
+ Usage: showpath [-n]  [[LIB|MAN]|PATH]
+        showpath [-h|--help]
+
+    - '-n' : print a numbered list.
+    - The other argument identifies the environment variable.
+      With noting specified, use PATH.
+      Otherwise, use LIB or LIBPATH for LIBPATH, or
+                 use MAN or MANPATH for MANPATH.
+    - When MANPATH is undefined, showpath displays
+      the information provided by manpath (if available).
+"
+}
+
+print_error()
+{
+    >&2 printf "\
+***ERROR***
+ - showpath: %s
+***********
+" "$1"
+    print_usage
+    exit 1
+}
+
+
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
+
+numbered='false'
+# Parse command line arguments
+if [ -n "$2" ]; then
+    # there's 2 arguments. Check if one of them is -n
+    if [ "$1" = "-n" ]; then
+        vname="$2"
+        numbered='true'
+    else
+        print_error "Unsupported option for 2 arguments"
+    fi
+else
+    if [ -z "$1" ]; then
+        # No argument
+        vname="PATH"
+    else
+        # 1 argument (or more than 2, but ignore the ones after 2)
+        # and don't support -n after the variable name.
+        if [ "$1" = "-n" ]; then
+            vname="PATH"
+            numbered='true'
+        else
+            vname="$1"
+        fi
+    fi
+fi
+
+
+
 show_path()
 {
-    # Arg 1: string: "-n" or nothing.
     # vname: string: name of path envvar: PATH, LIBPATH or MANPATH.
     #                It also supports: ORIGINAL, ORIGINAL_PATH or USRHOME_ORIGINAL_PATH
     #                to show the value of USRHOME_ORIGINAL_PATH
+    # numbered: 'true' or 'false'
 
     eval path_value='$'$vname
     if [ -z "$path_value" ]; then
@@ -58,7 +122,7 @@ show_path()
             if command -v manpath > /dev/null 2>&1; then
                 if [ -n "$(manpath)" ]; then
                     >&2 echo " However the manpath command provides the list:"
-                    if [ "$1" = "-n" ]; then
+                    if [ "$numbered" = "true" ]; then
                         manpath | tr ':' '\n' | nl -b a -n ln
                     else
                         printf -- "- "
@@ -70,7 +134,7 @@ show_path()
         fi
         exit 2
     else
-        if [ "$1" = "-n" ]; then
+        if [ "$numbered" = "true" ]; then
             echo "$path_value" | tr ':' '\n' | nl -b a -n ln
         else
             printf -- "- "
@@ -90,31 +154,6 @@ show_path()
 }
 
 
-# Parse command line arguments
-if [ -n "$2" ]; then
-    # there's 2 arguments. Check if one of them is -n
-    if [ "$1" = "-n" ]; then
-        vname="$2"
-    else
-        vname="$2"
-        shift
-    fi
-else
-    if [ -z "$1" ]; then
-        # No argument
-        vname="PATH"
-    else
-        # 1 argument (or more than 2, but ignore the ones after 2)
-        # and don't support -n after the variable name.
-        if [ "$1" = "-n" ]; then
-            vname="PATH"
-        else
-            vname="$1"
-        fi
-    fi
-
-fi
-
 # Parse further: check vname: only allow the valid ones
 # since their name will be passed to eval; don't allow
 # user input to be eval'ed; that would be a security risk.
@@ -123,27 +162,32 @@ fi
 case $vname in
     'PATH')
         vname="PATH"
-        show_path "$1"
+        show_path
         ;;
 
     'LIB'|'LIBPATH')
         vname="LIBPATH"
-        show_path "$1"
+        show_path
         ;;
 
     'MAN'|'MANPATH')
         vname="MANPATH"
-        show_path "$1"
+        show_path
         ;;
 
     'ORIGINAL' | 'ORIGINAL_PATH' | 'USRHOME_ORIGINAL_PATH')
         vname="USRHOME_ORIGINAL_PATH"
-        show_path "$1"
+        show_path
         ;;
     *)
-        >&2 echo "ERROR: showpath does not support $vname"
-        >&2 echo " usage: showpath [[LIB|MAN]|PATH] [-n]"
-        exit 1
+        print_error "does not support $vname"
 esac
+
+
+
+
+
+
+
 
 # ----------------------------------------------------------------------------
