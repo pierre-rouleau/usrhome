@@ -3,7 +3,7 @@
 # Purpose   : Template for private USRHOME configuration command to Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-03 23:27:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 07:43:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -52,8 +52,6 @@ if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
 fi
 
 # Get definitions of usrhome_trace_in() and usrhome_trace_out()
-. "$USRHOME_DIR/ibin/shell-tracing.sh"
-
 . "$USRHOME_DIR/ibin/shell-tracing.sh"
 
 # Trace if requested by user.
@@ -129,6 +127,7 @@ if [ -z "$USRHOME__USRCFG_SEEN" ] || [ "$(id -u)" = 0 ]; then
     # Set the persistent values of variables that can be toggled dynamically.
     # Activate display of user name and host name on the prompt.
     export USRHOME_PROMPT_SHOW_USR_HOST=1
+fi
 
 # Define USRHOME_PROMPT_MODEL unless there's a reason to skip it.
 #   The reason would be that it was already defined and overridden
@@ -136,9 +135,6 @@ if [ -z "$USRHOME__USRCFG_SEEN" ] || [ "$(id -u)" = 0 ]; then
 if [ -z "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
     # Select prompt model.
     # --------------------
-    #
-    # Example of logic to select the prompt.  MODIFY THIS TO YOUR NEEDS.
-    #
     # Prompt Models:
     # - 0 : Make no selection: use what's defined by user selection.
     # - 1 : original prompt. exit-code, 24-hour time, nesting level, [user@host] 2 or 3 path component [%#]
@@ -156,10 +152,39 @@ if [ -z "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
             ;;
 
         * )
-            export USRHOME_PROMPT_MODEL=3
+            # Select model 2 for zsh and model 3 for Bash
+            #
+            # Set usrhome__running_shell to zsh, bash or unknown
+            #
+            . "$USRHOME_DIR/ibin/which-shell"
+            case "$usrhome__running_shell" in
+                bash)
+                    export USRHOME_PROMPT_MODEL=3
+                    ;;
+                zsh)
+                    export USRHOME_PROMPT_MODEL=2
+
+                    ;;
+                *)
+                    export USRHOME_PROMPT_MODEL=2
+                    ;;
+            esac
             ;;
     esac
 fi
+
+# ----------------------------------------------------------------------------
+# Topic: Path in Login Shell
+# --------------------------
+#
+# Modified PATH in the Login shell?
+#
+# If you want USRHOME-controlled PATH  configuration to be available at the
+# login shell then set USRHOME_CONFIG_AT_LOGIN to 1.  Otherwise comment out
+# the following line; removing the definition: the login shell will use the
+# unmodified system PATH.
+#
+# export USRHOME_CONFIG_AT_LOGIN=1
 
 # ----------------------------------------------------------------------------
 # cleanup

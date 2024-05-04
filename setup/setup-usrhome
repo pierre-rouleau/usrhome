@@ -4,7 +4,7 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-03 19:24:16 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 07:56:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -172,6 +172,7 @@ do-user-bash-profile.bash \
 do-user-bashrc.bash       \
 do-user-zprofile.zsh      \
 do-user-zshrc.zsh         \
+do-user.sh                \
 setfor-all-config.sh
 
 clear
