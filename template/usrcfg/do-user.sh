@@ -3,7 +3,7 @@
 # Purpose   : User Configuration Common to all supported shells.
 # Created   : Thursday, May  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 07:55:26 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 08:21:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -62,7 +62,7 @@ export EDITOR='emacs -nw'
 
 
 # ----------------------------------------------------------------------------
-# Topic: Automatic Environment Setting
+# Topic: Automatic Environment Setting - MODIFY TO YOUR NEEDS
 # ------------------------------------
 #
 # If you want to automatically activate a environment inside your shells, like
