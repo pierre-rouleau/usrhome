@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-05-04 17:24:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 17:29:59 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -279,7 +279,7 @@ set-title()
                 else
                     title_shell_depth="L${SHLVL}"
                 fi
-                echo -n "\[\e]2;${title_text} ($USER@$(hostname -s), ${title_shell_depth},  $(pwd))\a\]"
+                echo -n -e "\e]2;${title_text} ($USER@$(hostname -s), ${title_shell_depth},  $(pwd))\a"
                 ;;
 
             *)
