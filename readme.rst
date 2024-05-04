@@ -107,8 +107,8 @@ The sections titled `The zsh Configuration Files`_ and
 On shell startup, USRHOME takes over and sets the value of several environment
 variables that identify the location of directories and USRHOME state.
 
-To help you create your *usrcfg* repository, USRHOME provides a set of
-`template files`_ that correspond to what I use in my *usrcfg* repository.
+To help you create your *usrcfg* repository, USRHOME provides a set of `usrcfg
+template files`_ that correspond to what I use in my *usrcfg* repository.
 This also corresponds to what is shown in the diagram included in the section
 titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 
@@ -1954,7 +1954,7 @@ Thanks!
 .. _usrhome/ibin/envfor-emacs-for-man:                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
 .. _usrhome/template/bin/ge:                           https://github.com/pierre-rouleau/usrhome/blob/main/template/bin/ge
 .. _usrhome/template/setfor-all-config.sh:             https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
-.. _template files:
+.. _usrcfg template files:                             https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg
 .. _usrhome/template:                                  https://github.com/pierre-rouleau/usrhome/blob/main/template
 .. _which-shell:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/which-shell
 .. _cd-to command:                                     `Directory Navigation`_
