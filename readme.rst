@@ -892,15 +892,17 @@ USRHOME Command Name               Description
                                    a leading or trailing separator or multiple consecutive
                                    separators.  The exit code are:
 
-                                   - 0 on success,
+                                   - 0 on success (or help),
                                    - 1 on invalid argument(s),
                                    - 2 when specified environment variable is not defined,
                                    - 3 when the format of the specified path is incorrect.
 
-                                   Note: when MANPATH is empty, ``showpath`` uses the manpath_
+                                   Note: when MANPATH is undefined, ``showpath`` uses the manpath_
                                    command (if available) and prints the path it returns.  It also
                                    prints a warning on stderr and exit with an
                                    exit-code of 0.
+
+                                   Help is printed when the ``-h`` or ``--help`` option is used.
 
 ``usrhome-env``                    Display the values of all USRHOME environment variables
                                    currently set in the shell.
