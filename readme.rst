@@ -180,6 +180,19 @@ quite limited) vulnerability check.
 
 If you want to know how this all works, read on.
 
+**Kali Linux zsh shells with tracing enable**
+
+You can activate shell tracing with USRHOME.
+When enabled, the shell prints what file is sourced when the shell starts,
+as this is shown in the Kali Linux, where zsh is the default shell.
+
+Rust is not installed in that system but it uses the same USRHOME
+configuration as the others (with the temporary exception of enabling
+tracing).
+
+
+.. figure:: res/Kali-Linux-zshell.png
+
 
 How to Set it Up
 ================
