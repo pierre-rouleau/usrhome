@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-05-03 16:35:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 17:04:42 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -250,6 +250,11 @@ usrhome-select-zsh-prompt
 
 set-title()
 {
+    # Arguments: A list of words to use as title.
+    #  - Accepts no argument: clears the title text section..
+    #  - store into title_text as one shell 'word' string.
+    title_text="$*"
+
     # Credit:
     # - Alvin Alexander for the macOS echo trick.
     #   - https://alvinalexander.com/blog/post/mac-os-x/change-title-bar-of-mac-os-x-terminal-window/
@@ -260,16 +265,33 @@ set-title()
                 # Supports all shells with a simple echo.
                 # On macOS, the escape sequences are passed properly by echo.
                 # shellcheck disable=SC2028
-                echo "\033]0;${1}\007\c"
+                echo "\033]0;${*}\007\c"
                 ;;
 
             'Linux')
                 # The following works on Gnome Terminal and Qt Terminal
                 # Unlike macOS Terminal, the terminal 'titles' do not have multiple
-                # sections .
-                # TODO: provide better support for dynamic terminal titles
-                #       that update as the result of commands.
-                printf "\e]2;%s\a" "$1"
+                # sections.  Just use the same terminal control as Bash, but
+                # use PROMPT.
+
+                # re-build the prompt into PROMPT
+                usrhome-select-zsh-prompt
+
+                # Build the extra sequence that controls the title.
+                if [ -n "$SSHPASS" ]; then
+                    title_shell_depth="L${SHLVL}+"
+                else
+                    title_shell_depth="L${SHLVL}"
+                fi
+
+                # Set the title by appending the title setting logic to the PROMPT.
+                title="\[\e]2;${title_text} (zsh ${title_shell_depth})\a\]"
+                if [ -z "$INSIDE_EMACS" ]; then
+                    PROMPT=$PROMPT${title}
+                fi
+
+                # shellcheck disable=SC2090
+                export PROMPT
                 ;;
 
             *)
