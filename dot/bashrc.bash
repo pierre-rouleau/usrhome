@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-03 17:50:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-03 23:00:05 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -139,10 +139,10 @@ fi
 #
 # Setting Terminal title to TITLE===>:    "\e]2;TITLE\a"
 # - TITLE can include prompt escape sequences shown above
-# - USRHOME_TITLE_TEXT := text taken from set-title arguments,
+# - title_text := text taken from set-title arguments,
 #                 included inside TITLE within the escape sequence selected for the prompt.
 #
-# - The set-title() function set USRHOME_TITLE_TEXT from its arguments ("$*")
+# - The set-title() function set title_text from its arguments ("$*")
 #   and then update the PS1 prompt variable to create a terminal title
 #   that dynamically updates on each command (via the prompt).
 #
@@ -181,10 +181,6 @@ fi
 USRHOME_BASH_PROMPT1=">\h@\d@\t[\w]\n>\\$ "
 
 
-# [:todo 2024-05-03, by Pierre Rouleau: Fix prompt 2, it wraps over current text.
-# The issue is most probably escape sequences for color,
-# but I can't find what is wrong.
-# ]
 # PROMPT MODEL 2: With color, bolding and logic.
 # shellcheck disable=SC2016
 USRHOME_BASH_PROMPT2='$(\
@@ -290,9 +286,13 @@ set-title()
 {
     # Arguments: A list of words to use as title.
     #  - Accepts no argument: clears the title text section..
-    #  - store into USRHOME_TITLE_TEXT as one shell 'word' string.
-    USRHOME_TITLE_TEXT="$*"
-    export USRHOME_TITLE_TEXT
+    #  - store into title_text as one shell 'word' string.
+    title_text="$*"
+
+    # re-build the prompt into PS1
+    usrhome-select-bash-prompt
+
+    # Build the extra sequence that controls the title.
     if [ -n "$SSHPASS" ]; then
         title_shell_depth="L${SHLVL}+"
     else
@@ -300,7 +300,7 @@ set-title()
     fi
 
     # Set the title by appending the title setting logic to the PS1.
-    title="\e]2;$USRHOME_TITLE_TEXT (Bash \v: ${title_shell_depth}: \h:\w)\a"
+    title="\[\e]2;${title_text} (Bash \v: ${title_shell_depth}: \h:\w)\a\]"
     if [ -z "$INSIDE_EMACS" ]; then
         PS1=$PS1${title}
     fi
