@@ -178,7 +178,6 @@ quite limited) vulnerability check.
 
 .. figure:: res/RockyLinux-shells.png
 
-If you want to know how this all works, read on.
 
 **Kali Linux zsh shells with tracing enable**
 
@@ -187,11 +186,21 @@ When enabled, the shell prints what file is sourced when the shell starts,
 as this is shown in the Kali Linux, where zsh is the default shell.
 
 Rust is not installed in that system but it uses the same USRHOME
-configuration as the others (with the temporary exception of enabling
-tracing).
-
+*common* configuration as the others (with the temporary exception of enabling
+tracing) and the shell prints a warning.
 
 .. figure:: res/Kali-Linux-zshell.png
+
+It would be possible to move the request to use Rust from the common
+configuration file (in this case the file usrcfg/do-user.sh, that has logic
+similar to the `example template file for do-user.sh`_ ) into a
+node-specific file that the usrcfg logic could identify.  That could be done
+by the do-user.sh in the way that the `usrcfg do-user-zshrc.sh example file
+does`_.
+
+
+If you want to know how this all works, read on (and see the section
+titled `The Z Shell Startup, Dot Files and User Configuration`_).
 
 
 How to Set it Up
@@ -207,7 +216,7 @@ How to Set it Up
   ``git clone https://github.com/pierre-rouleau/usrhome.git``
 - Change the current directory to the root of your USRHOME repository:
   ``cd usrhome``
-- Execute the setup script **from the root directory  of the USRHOME depot**.
+- Execute the setup script **from the root directory of the USRHOME depot**.
   This way the script can identify the location of your usrhome directory and
   create a usrcfg with some basic files can can later update to suit your
   needs.  So, do this from the directory like ``~/my/shell`` you selected
@@ -2062,6 +2071,8 @@ Thanks!
 .. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
 .. _use-diff command:                                  `Miscellaneous Commands`_
 .. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
+.. _example template file for do-user.sh:              https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user.sh#L72
+.. _usrcfg do-user-zshrc.sh example file does:         https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh#L55
 
 
 .. ---------------------------------------------------------------------------
