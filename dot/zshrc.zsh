@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-05-04 17:29:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 17:37:01 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -248,7 +248,6 @@ usrhome-select-zsh-prompt
 # Topic: Title
 # ------------
 
-DISABLE_AUTO_TITLE="true"
 
 set-title()
 {
@@ -273,13 +272,15 @@ set-title()
             'Linux')
                 # [:todo 2024-05-04, by Pierre Rouleau: Complete this. Currently under testing. ]
 
+                DISABLE_AUTO_TITLE="true"
+
                 # Build the extra sequence that controls the title.
                 if [ -n "$SSHPASS" ]; then
                     title_shell_depth="L${SHLVL}+"
                 else
                     title_shell_depth="L${SHLVL}"
                 fi
-                echo -n -e "\e]2;${title_text} ($USER@$(hostname -s), ${title_shell_depth},  $(pwd))\a"
+                echo -n -e "\e]2;${title_text} (${USER}@$(hostname -s), ${title_shell_depth}, $(pwd))\a"
                 ;;
 
             *)
