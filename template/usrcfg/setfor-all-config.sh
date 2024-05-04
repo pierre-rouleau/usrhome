@@ -1,9 +1,9 @@
 # Sourced script: setfor-all-config.sh  -*- mode: sh; -*-
 #
-# Purpose   : Template for private USRHOME configuration command to Bash and Z Shell.
+# Purpose   : USRHOME template for user's startup configuration of Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 07:43:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 08:26:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------

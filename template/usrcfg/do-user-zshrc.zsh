@@ -1,9 +1,9 @@
 # Sourced script: do-user-zshrc.zsh  -*- mode: sh; -*-
 #
-# Purpose   : Local setup.
+# Purpose   : USRHOME template to user's zsh specific configuration.
 # Created   : Sunday, March 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 08:13:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 08:25:36 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------

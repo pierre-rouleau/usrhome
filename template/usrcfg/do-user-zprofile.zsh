@@ -1,9 +1,9 @@
 # Sourced script: do-user-zprofile.zsh  -*- mode: sh; -*-
 #
-# Purpose   : Template that holds user-specific Z Shell logic invoked by ~/.zprofile
+# Purpose   : USRHOME template for user-specific Z Shell logic invoked by ~/.zprofile
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 08:14:16 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-04 08:25:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
