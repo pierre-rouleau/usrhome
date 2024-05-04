@@ -37,12 +37,14 @@ Unix shell configuration files that:
   the `Z Shell`_ and Bash,
 - support multiple computers:
 
-  - the configuration infrastructure logic is held inside this USRHOME Git repository,
+  - the configuration infrastructure logic is held inside this USRHOME Git
+    repository,
   - the user-specific configuration logic for several computers or VMs
     is stored inside a *sibling*, private, repository; the *usrcfg*.
 
-- All shell configuration files are symbolic links to `USRHOME dot files`_,
-  allowing the logic to be under VCS control.
+With USRHOME, all user shell configuration dot files (such as your
+``~/.bashrc``) are turned into symbolic links to `USRHOME dot files`_,
+allowing the logic to be under VCS control.
 
 USRHOME repository files provides the basic shell configuration infrastructure
 logic.  It uses your own personal/private configuration logic stored into your
@@ -55,12 +57,14 @@ files located inside your *usrcfg* repository.
 
 At the moment USRHOME supports:
 
-- A basic configuration of zsh and Bash for macOS and several Linux distributions.
+- A basic configuration of zsh and Bash for macOS and several Linux
+  distributions.
 
   - It works when Bash or zsh is used as the default shell for login and
     non-login shells.
-  - It supports the latest versions of macOS where zsh is the default shell (since macOS 10.15 Catalina),
-    and older versions of macOS where an old version of Bash is the default shell.
+  - It supports the latest versions of macOS where zsh is the default shell
+    (since macOS 10.15 Catalina), and older versions of macOS where an old
+    version of Bash is the default shell.
   - It also supports several Linux distributions where Bash is the default
     shell and some where zsh is the default shell.
 
