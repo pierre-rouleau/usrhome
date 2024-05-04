@@ -40,7 +40,9 @@ Once the rules are set (in terms of sourced scripts) you can quickly open a
 shell and activate support for the tools you need *just for that shell*.
 You can for instance have a shell that supports Rust development, another that
 adds gcc-based C++ compiler on macOS while keeping the Clang as default for
-the normal shell.
+its normal shell. Each shell can have its own, independent PATH easily set by
+the script that controls the shell environment.  You retain the standard shell
+untouched unless you want to activate some of these environments inside it.
 
 
 USRHOME support:
