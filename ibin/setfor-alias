@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-03 16:39:30 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 10:25:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -68,7 +68,7 @@ alias usrhome-env='$USRHOME_DIR/bin/usrhome-env'
 # ------------------
 
 # shellcheck disable=SC2142 # inside a function $0 refers to the function name.  Can't use that.
-alias ss='printf "\$0 : %s, \$SHELL : %s\n" $0 $SHELL'
+alias info-shell='printf "\$0 : %s, \$SHELL : %s\n" $0 $SHELL'
 alias \?='printf "%s\n" $?'
 
 
