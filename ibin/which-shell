@@ -3,7 +3,7 @@
 # Purpose   : Identify active shell sourcing this file.  Store result in usrhome__running_shell
 # Created   : Thursday, April 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-01 11:41:12 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 10:53:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,16 +18,31 @@
 #
 # Set usrhome__running_shell to zsh, bash or unknown
 
-# usrhome__running_shell is not used here, it is used in script that sources
-# it.
-# shellcheck disable=SC2034
+
+# Identify what (Bourne compatible) shell this  is running.
+# Store result in $USRHOME_SHELL so further code can depend
+# on the shell type.  Credit: https://unix.stackexchange.com/a/72475/473577
+# Not yet exported.
+# Also set usrhome__running_shell to "zsh", "bash" or "unsupported"
 
 if test -n "$ZSH_VERSION"; then
+  USRHOME_SHELL="zsh"
   usrhome__running_shell="zsh"
 elif test -n "$BASH_VERSION"; then
+  USRHOME_SHELL="bash"
   usrhome__running_shell="bash"
+elif test -n "$KSH_VERSION"; then
+  USRHOME_SHELL="ksh"
+  usrhome__running_shell="unsupported"
+elif test -n "$FCEDIT"; then
+  USRHOME_SHELL="ksh"
+  usrhome__running_shell="unsupported"
+elif test -n "$PS3"; then
+  USRHOME_SHELL="unknown"
+  usrhome__running_shell="unsupported"
 else
-  usrhome__running_shell="unknown"
+  USRHOME_SHELL="sh"
+  usrhome__running_shell="unsupported"
 fi
 
 # ----------------------------------------------------------------------------

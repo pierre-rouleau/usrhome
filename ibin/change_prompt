@@ -3,7 +3,7 @@
 # Purpose   : Internal helper file: change prompt.
 # Created   : Sunday, May  5 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 09:43:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 10:45:30 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -21,11 +21,11 @@
 #
 # Identify running shell
 #
-# Set usrhome__running_shell to zsh, bash or unknown
-source  "$USRHOME_DIR/ibin/which-shell"
+# Set USRHOME_SHELL to zsh, bash, ... or unknown
+.  "$USRHOME_DIR/ibin/which-shell"
 
 
-case $usrhome__running_shell in
+case $USRHOME_SHELL in
     "zsh")
         if [[ "$USRHOME_PROMPT_MODEL_OVERRIDE" = "$USRHOME_PROMPT_MODEL_REQUIRES_RESTART" ]]; then
             # The implementation for the selected zsh prompt model requires
@@ -54,7 +54,7 @@ case $usrhome__running_shell in
         usrhome-select-bash-prompt
         ;;
     *)
-        echo "Dynamic prompt modification is not supported under '$usrhome__running_shell' shell."
+        echo "Dynamic prompt modification is not supported under '$USRHOME_SHELL' shell."
         ;;
 esac
 

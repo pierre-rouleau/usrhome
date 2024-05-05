@@ -3,7 +3,7 @@
 # Purpose   : USRHOME template for user's startup configuration of Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 08:26:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 10:51:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -154,10 +154,10 @@ if [ -z "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
         * )
             # Select model 2 for zsh and model 3 for Bash
             #
-            # Set usrhome__running_shell to zsh, bash or unknown
+            # Set USRHOME_SHELL to zsh, bash or unknown
             #
             . "$USRHOME_DIR/ibin/which-shell"
-            case "$usrhome__running_shell" in
+            case "$USRHOME_SHELL" in
                 bash)
                     export USRHOME_PROMPT_MODEL=3
                     ;;
