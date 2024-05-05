@@ -1159,7 +1159,7 @@ If the commands cannot identify how to build the program it reports an error,
 returning with exit code of 1.
 
 
-**Using a local ``cbr`` executable file:**
+**Using a local cbr executable file:**
 
 After executing ``use-cbr``, the  ``c``, ``b`` and ``r`` commands
 check if a local ``cbr`` executable file is located in the current directory.
