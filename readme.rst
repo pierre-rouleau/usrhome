@@ -677,7 +677,7 @@ Shell Behavior Control
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``usrhome-shell-toggle-tracing``   Toggle tracing the execution of the shell configuration files
+`usrhome-shell-toggle-tracing`_    Toggle tracing the execution of the shell configuration files
                                    when a shell starts.  This toggles the value of the
                                    ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
                                    and vice-versa.
@@ -697,7 +697,7 @@ USRHOME Command Name               Description
                                    any running jobs and will not proceed if there are any.
 
 
-``usrhome-prompt-toggle-usr-host`` Toggle the inclusion of the user name and host name inside
+`usrhome-prompt-toggle-usr-host`_  Toggle the inclusion of the user name and host name inside
                                    the prompt.
 
                                    **Caution!!** Under zsh it might be necessary to
@@ -713,7 +713,7 @@ USRHOME Command Name               Description
                                    The command is not affected by this limitation when issued
                                    in the Bash shell.
 
-``usrhome-prompt-model-to NUMBER`` Dynamically change the prompt model to the specified NUMBER.
+`usrhome-prompt-model-to`_ NUMBER  Dynamically change the prompt model to the specified NUMBER.
 
                                    - This command also supports the ``-h`` and ``--help`` command
                                      line options which pint the usage.
@@ -730,7 +730,6 @@ USRHOME Command Name               Description
 
                                    The command is not affected by this limitation when issued
                                    in the Bash shell.
-
 ================================== ================================================================
 
 Note that the above commands will not execute if there are any running
@@ -743,9 +742,10 @@ making it difficult to bring them back into the foreground.
 Shell Status Info
 -----------------
 
-USRHOME provides the following special commands (implemented as shell functions or alias) that
-provide useful information about the current shell and can also serve as help reminders when
-writing shells script code.
+USRHOME provides the following special commands that provide useful information about the current
+shell and can also serve as help reminders when writing shells script code.
+
+These are implemented as shell functions or alias inside `usrhome/ibin/setfor-alias`_.
 
 ================================== ================================================================
 USRHOME Command Name               Description
@@ -766,7 +766,7 @@ USRHOME Command Name               Description
                                      ``"$@"``  helping you remember the basic differences.  Try it
                                      by passing a glob_ to it like ``*``.
 
-``ss``                             Show current and default shell environment variable names
+``info-shell``                     Show current and default shell environment variable names
                                    and values.
 ================================== ================================================================
 
@@ -2136,6 +2136,10 @@ Thanks!
 .. _usrcfg/do-user-zshrc.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh
 .. _usrcfg/do-user-bash_profile.bash:                  https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bash_profile.bash
 .. _usrcfg/do-user-bashrc.bash:                        https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bashrc.bash
+.. _usrhome-shell-toggle-tracing:                      https://github.com/pierre-rouleau/usrhome/blob/main/bin/usrhome-shell-toggle-tracing
+.. _usrhome-prompt-toggle-usr-host:                    https://github.com/pierre-rouleau/usrhome/blob/main/bin/usrhome-prompt-toggle-usr-host
+.. _usrhome-prompt-model-to:                           https://github.com/pierre-rouleau/usrhome/blob/main/bin/usrhome-prompt-model-to
+.. _usrhome/ibin/setfor-alias:                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
 
 
 .. ---------------------------------------------------------------------------
