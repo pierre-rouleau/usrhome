@@ -1198,10 +1198,10 @@ root directory and from its sub-directory.
 Using Emacs as a man reader
 ---------------------------
 
-Anyone that have used Emacs knows that its man support is really good.
+Anyone that have used Emacs knows that `Emacs man support`_ is really good.
 For instance, with Emacs, you can follow all links that appear in man
-pages; you essentially have access to a man page *browser*.
-And then you can also use all Emacs features.
+pages; you essentially have access to a man page *browser* with access
+of all Emacs features.
 
 You can use `man (or woman)`_ right inside Emacs.  But at the shell, the
 ``man`` command will use the default man pager. Being able to open the man
@@ -2147,6 +2147,7 @@ Thanks!
 .. _usrhome/ibin/setfor-alias:                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
 .. _usrhome/ibin/envfor-cbr:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
 .. _usrhome/ibin/do-cbr:                               https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
+.. _Emacs man support:                                 https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
 
 
 .. ---------------------------------------------------------------------------
