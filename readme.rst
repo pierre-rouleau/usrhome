@@ -416,91 +416,91 @@ The user would probably want to create some extra ones;  the
 The User Configuration Files used by USRHOME
 --------------------------------------------
 
-================================== ================================================================
-File Name                          Description
-================================== ================================================================
-usrcfg/setfor-all-config.sh        **Required** Holds user configuration that applies to the Bash
-                                   and Z Shell.  Therefore it must be written in POSIX sh script,
-                                   compatible with both Bash and Z Shell.
+=================================== ================================================================
+File Name (link to template)        Description
+=================================== ================================================================
+`usrcfg/setfor-all-config.sh`_      **Required** Holds user configuration that applies to the Bash
+                                    and Z Shell.  Therefore it must be written in POSIX sh script,
+                                    compatible with both Bash and Z Shell.
 
-                                   It defines:
+                                    It defines:
 
-                                   - USRHOME_TRACE_SHELL_CONFIG which controls shell tracing:
+                                    - USRHOME_TRACE_SHELL_CONFIG which controls shell tracing:
 
-                                     - 0 : disable shell tracing,
-                                     - 1 : enable shell tracing to shell stdout,
-                                     - file name: enable shell tracing to shell stdout and to the
-                                       specified file.  The file name must be an absolute file name
-                                       inside an existing directory.
+                                      - 0 : disable shell tracing,
+                                      - 1 : enable shell tracing to shell stdout,
+                                      - file name: enable shell tracing to shell stdout and to the
+                                        specified file.  The file name must be an absolute file name
+                                        inside an existing directory.
 
-                                   - USRHOME_USE_HOMEBREW:
+                                    - USRHOME_USE_HOMEBREW:
 
-                                     - 0: don't use Homebrew_,
-                                     - 1: to activate the use of (already installed) Homebrew_.
+                                      - 0: don't use Homebrew_,
+                                      - 1: to activate the use of (already installed) Homebrew_.
 
-                                   - The USRHOME concept directory variables (see next section)
-                                     which includes: USRHOME_DIR_MY, USRHOME_DIR_LIC,
-                                     USRHOME_DIR_LOG, USRHOME_DIR_DV, USRHOME_DIR_PRIV,
-                                     USRHOME_DIR_PUB, USRHOME_DIR_TMP.
+                                    - The USRHOME concept directory variables (see next section)
+                                      which includes: USRHOME_DIR_MY, USRHOME_DIR_LIC,
+                                      USRHOME_DIR_LOG, USRHOME_DIR_DV, USRHOME_DIR_PRIV,
+                                      USRHOME_DIR_PUB, USRHOME_DIR_TMP.
 
-                                   - USRHOME_PROMPT_MODEL which select the prompt model. As
-                                     described further in the `USRHOME Prompt`_ section, the
-                                     following values are supported:
+                                    - USRHOME_PROMPT_MODEL which select the prompt model. As
+                                      described further in the `USRHOME Prompt`_ section, the
+                                      following values are supported:
 
-                                     - 0: prompt is not defined by USRHOME logic, user code should
-                                       define it or use system's default.
-                                     - 1,2 or 3: USRHOME pre-defined prompt.
+                                      - 0: prompt is not defined by USRHOME logic, user code should
+                                        define it or use system's default.
+                                      - 1,2 or 3: USRHOME pre-defined prompt.
 
-                                   - USRHOME_CONFIG_AT_LOGIN:
+                                    - USRHOME_CONFIG_AT_LOGIN:
 
-                                     - Leave undefined, if you do not want to modify PATH in a
-                                       login shell.
-                                     - 1: define it to 1 if you want the PATH modified in the login
-                                       shell so it has the
-                                       same configuration than then non-login interactive shell.
+                                      - Leave undefined, if you do not want to modify PATH in a
+                                        login shell.
+                                      - 1: define it to 1 if you want the PATH modified in the login
+                                        shell so it has the
+                                        same configuration than then non-login interactive shell.
 
-                                   The file also sources the `usrhome/ibin/shell-tracing.sh`_ to define
-                                   USRHOME-specific logic to control optional shell config file tracing.
+                                    The file also sources the `usrhome/ibin/shell-tracing.sh`_ to define
+                                    USRHOME-specific logic to control optional shell config file tracing.
 
-usrcfg/do-user-zprofile.zsh        **Optional**. User-specific Z Shell zprofile logic.
+`usrcfg/do-user-zprofile.zsh`_      **Optional**. User-specific Z Shell zprofile logic.
 
-                                   - This must be written in Z Shell compatible logic.
-                                   - It also holds some USRHOME-specific logic to control optional
-                                     shell config file tracing.
+                                    - This must be written in Z Shell compatible logic.
+                                    - It also holds some USRHOME-specific logic to control optional
+                                      shell config file tracing.
 
-usrcfg/do-user-zshrc.zsh           **Required for Z Shell** User-specific Z Shell specific
-                                   configuration.
+`usrcfg/do-user-zshrc.zsh`_         **Required for Z Shell** User-specific Z Shell specific
+                                    configuration.
 
-                                   - This must be written in Z Shell compatible logic.
-                                   - It also holds some USRHOME-specific logic to control optional
-                                     shell config file tracing.
-                                   - That file could also source a node-specific file stored inside
-                                     the ``usrcfg/node/do-NODE-zshrc.zsh`` file where
-                                     ``NODE`` is identified with ``hostname -s``.
+                                    - This must be written in Z Shell compatible logic.
+                                    - It also holds some USRHOME-specific logic to control optional
+                                      shell config file tracing.
+                                    - That file could also source a node-specific file stored inside
+                                      the ``usrcfg/node/do-NODE-zshrc.zsh`` file where
+                                      ``NODE`` is identified with ``hostname -s``.
 
-usrcfg/do-user-bash_profile.bash   **Optional**. User-specific Bash Shell specific configuration.
-                                   In some system the ~/.bash_login is executed during login.
-                                   On those systems it might be useful to write configuration logic
-                                   that must only be executed once, at login, inside this file, as
-                                   one would do with the ``~/.bash_login``.
+`usrcfg/do-user-bash_profile.bash`_ **Optional**. User-specific Bash Shell specific configuration.
+                                    In some system the ~/.bash_login is executed during login.
+                                    On those systems it might be useful to write configuration logic
+                                    that must only be executed once, at login, inside this file, as
+                                    one would do with the ``~/.bash_login``.
 
-                                   - This must be written in Bash compatible logic.
-                                   - It should also hold some USRHOME-specific logic to control
-                                     optional shell config file tracing.
-                                   - That file could also source a node-specific file stored inside
-                                     the ``usrcfg/node/do-NODE-bash_profile.bash`` file where
-                                     ``NODE`` is identified with ``hostname -s``.
+                                    - This must be written in Bash compatible logic.
+                                    - It should also hold some USRHOME-specific logic to control
+                                      optional shell config file tracing.
+                                    - That file could also source a node-specific file stored inside
+                                      the ``usrcfg/node/do-NODE-bash_profile.bash`` file where
+                                      ``NODE`` is identified with ``hostname -s``.
 
-usrcfg/do-user-bashrc.bash         **Required for Bash** User-specific Bash Shell specific
-                                   configuration.
+`usrcfg/do-user-bashrc.bash`_       **Required for Bash** User-specific Bash Shell specific
+                                    configuration.
 
-                                   - This must be written in Bash compatible logic.
-                                   - It also holds some USRHOME-specific logic to control optional
-                                     shell config file tracing.
-                                   - That file could also source a node-specific file stored inside
-                                     the ``usrcfg/node/do-NODE-bashrc.bash`` file where
-                                     ``NODE`` is identified with ``hostname -s``.
-================================== ================================================================
+                                    - This must be written in Bash compatible logic.
+                                    - It also holds some USRHOME-specific logic to control optional
+                                      shell config file tracing.
+                                    - That file could also source a node-specific file stored inside
+                                      the ``usrcfg/node/do-NODE-bashrc.bash`` file where
+                                      ``NODE`` is identified with ``hostname -s``.
+=================================== ================================================================
 
 As said above, the usrcfg directory is expected to be a sibling to the usrhome
 directory; they must both be inside the same parent directory.
@@ -509,6 +509,7 @@ the full path of the usrcfg directory.
 It's recommended to place the USRHOME directory and the usrcfg directory inside a parent directory
 that only holds these two directories.  That simplifies your searches when you need to identify
 where some logic is placed.
+
 
 See the section titled
 `The Z Shell Startup, Dot Files and User Configuration`_
@@ -2117,6 +2118,11 @@ Thanks!
 .. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
 .. _example template file for do-user.sh:              https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user.sh#L72
 .. _usrcfg do-user-zshrc.sh example file does:         https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh#L55
+.. _usrcfg/setfor-all-config.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
+.. _usrcfg/do-user-zprofile.zsh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zprofile.zsh
+.. _usrcfg/do-user-zshrc.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh
+.. _usrcfg/do-user-bash_profile.bash:                  https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bash_profile.bash
+.. _usrcfg/do-user-bashrc.bash:                        https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bashrc.bash
 
 
 .. ---------------------------------------------------------------------------
