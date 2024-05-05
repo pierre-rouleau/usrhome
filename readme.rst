@@ -420,16 +420,47 @@ The User Configuration Files used by USRHOME
 File Name                          Description
 ================================== ================================================================
 usrcfg/setfor-all-config.sh        **Required** Holds user configuration that applies to the Bash
-                                   and Z Shell.
+                                   and Z Shell.  Therefore it must be written in POSIX sh script,
+                                   compatible with both Bash and Z Shell.
 
-                                   - This must be written in POSIX sh script, compatible with
-                                     both Bash and Z Shell.
-                                   - Defines USRHOME_TRACE_SHELL_CONFIG to 0
-                                     to disable shell tracing, 1 to enable it
-                                     and a file name to enable it and activate
-                                     logging inside that file.
-                                   - It also holds some USRHOME-specific logic to control optional
-                                     shell config file tracing.
+                                   It defines:
+
+                                   - USRHOME_TRACE_SHELL_CONFIG which controls shell tracing:
+
+                                     - 0 : disable shell tracing,
+                                     - 1 : enable shell tracing to shell stdout,
+                                     - file name: enable shell tracing to shell stdout and to the
+                                       specified file.  The file name must be an absolute file name
+                                       inside an existing directory.
+
+                                   - USRHOME_USE_HOMEBREW:
+
+                                     - 0: don't use Homebrew_,
+                                     - 1: to activate the use of (already installed) Homebrew_.
+
+                                   - The USRHOME concept directory variables (see next section)
+                                     which includes: USRHOME_DIR_MY, USRHOME_DIR_LIC,
+                                     USRHOME_DIR_LOG, USRHOME_DIR_DV, USRHOME_DIR_PRIV,
+                                     USRHOME_DIR_PUB, USRHOME_DIR_TMP.
+
+                                   - USRHOME_PROMPT_MODEL which select the prompt model. As
+                                     described further in the `USRHOME Prompt`_ section, the
+                                     following values are supported:
+
+                                     - 0: prompt is not defined by USRHOME logic, user code should
+                                       define it or use system's default.
+                                     - 1,2 or 3: USRHOME pre-defined prompt.
+
+                                   - USRHOME_CONFIG_AT_LOGIN:
+
+                                     - Leave undefined, if you do not want to modify PATH in a
+                                       login shell.
+                                     - 1: define it to 1 if you want the PATH modified in the login
+                                       shell so it has the
+                                       same configuration than then non-login interactive shell.
+
+                                   The file also sources the `usrhome/ibin/shell-tracing.sh`_ to define
+                                   USRHOME-specific logic to control optional shell config file tracing.
 
 usrcfg/do-user-zprofile.zsh        **Optional**. User-specific Z Shell zprofile logic.
 
@@ -471,10 +502,13 @@ usrcfg/do-user-bashrc.bash         **Required for Bash** User-specific Bash Shel
                                      ``NODE`` is identified with ``hostname -s``.
 ================================== ================================================================
 
-As said above the usrcfg directory is expected to be a sibling to the usrhome
+As said above, the usrcfg directory is expected to be a sibling to the usrhome
 directory; they must both be inside the same parent directory.
-USRHOME sets the ``USRHOME_DIR_USRCFG`` environment variable to hold the full
-path of the usrcfg directory.
+This allows USRHOME to automatically set the ``USRHOME_DIR_USRCFG`` environment variable to hold
+the full path of the usrcfg directory.
+It's recommended to place the USRHOME directory and the usrcfg directory inside a parent directory
+that only holds these two directories.  That simplifies your searches when you need to identify
+where some logic is placed.
 
 See the section titled
 `The Z Shell Startup, Dot Files and User Configuration`_
@@ -2043,6 +2077,7 @@ Thanks!
 .. _setfor-path:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-path
 .. _setfor-zsh-alias:                                  https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-zsh-alias
 .. _setup/setup-usrhome:                               https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
+.. _usrhome/ibin/shell-tracing.sh:                     https://github.com/pierre-rouleau/usrhome/blob/main/ibin/shell-tracing.sh
 .. _shell-tracing.sh:                                  https://github.com/pierre-rouleau/usrhome/blob/main/ibin/shell-tracing.sh
 .. _usrcfg/setfor-all-config.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
 .. _usrhome/ibin/setfor-zsh-alias:                     https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-zsh-alias
