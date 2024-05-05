@@ -757,7 +757,11 @@ USRHOME Command Name               Description
                                    Internally also set the shell variable USRHOME_DESKTOP which can
                                    later be used inside shell scripts.
 
-``info-prompt``                    Print information about shell's prompt controlling variables.
+``info-prompt [-q]``               Print information about shell's prompt controlling variables.
+                                   With ``-q``, only print the value of the ``USRHOME_PROMPT_MODEL``
+                                   and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
+                                   shows the value of the default prompt mode, the second one, if
+                                   set, is the model of the current prompt, overriding the default.
 
 ``info-rosetta2``                  Available on macOS only.  Checks whether `Rosetta 2`_ is installed
                                    and prints info about it.

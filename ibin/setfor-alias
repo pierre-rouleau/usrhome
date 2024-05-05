@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 10:56:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 16:32:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -445,7 +445,13 @@ case $USRHOME_SHELL in
     bash)
         info-prompt()
         {
-            printf "Bash prompt control variables:
+            if [ "$1" = "-q" ]; then
+                printf "Bash prompt model variables:
+$(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
+$(tput bold)- USRHOME_PROMPT_MODEL_OVERRIDE:$(tput sgr0) %s
+" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
+            else
+                printf "Bash prompt control variables:
 $(tput bold)- PS0:$(tput sgr0) %s
 $(tput bold)- PS1:$(tput sgr0) %s
 $(tput bold)- PS2:$(tput sgr0) %s
@@ -456,14 +462,21 @@ $(tput bold)- USRHOME_PROMPT_MODEL_OVERRIDE:$(tput sgr0) %s
 
 See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequences
 " "$PS0" "$PS1" "$PS2" "$PS3" "$PS4" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
+            fi
         }
         ;;
 
     zsh)
         info-prompt()
         {
-            # shellcheck disable=SC2154
-            printf "Z shell prompt control variables:
+            if [ "$1" = "-q" ]; then
+                printf "Bash prompt model variables:
+$(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
+$(tput bold)- USRHOME_PROMPT_MODEL_OVERRIDE:$(tput sgr0) %s
+" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
+            else
+                # shellcheck disable=SC2154
+                printf "Z shell prompt control variables:
 - PROMPT0: %s
 - PROMPT1: %s
 - PROMPT2: %s
@@ -477,6 +490,7 @@ See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequ
   - p3   : %s
 - USRHOME_PROMPT_MODEL: %s
 - USRHOME_PROMPT_MODEL_OVERRIDE: %s\n" "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2" "$p3" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
+            fi
         }
         ;;
     *)
