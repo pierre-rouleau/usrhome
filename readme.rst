@@ -812,7 +812,7 @@ USRHOME Command Name               Description
                                    - The FNAME and DNAME can be expressed with `fd`_ glob support.
                                    - By default, does not search into hidden directories.
                                      Specify the ``-H`` option to search into them.
-                                   - If **one** file/directiry is found, change the current
+                                   - If **one** file/directory is found, change the current
                                      directory to the directory that holds it and print the
                                      ``ls -l`` for it.
                                    - If several files/directories are found, print a cautionary
@@ -1442,11 +1442,12 @@ Prompt Model 0
 
 With the ``USRHOME_PROMPT_MODEL`` environment variable set to 0, USRHOME
 does **not** configure the zsh prompt and expects the prompt to be set inside
-the user provided configuration files located inside the usrcfg directory.
+the user provided configuration files located inside the usrcfg directory,
+otherwise it uses the system default.
 
 
-Prompt Model 1 -- USRHOME Default
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Prompt Model 1
+~~~~~~~~~~~~~~
 
 The default prompt, the prompt model 1, shows:
 
