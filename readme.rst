@@ -1065,7 +1065,7 @@ Dynamic Path Management
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 The USRHOME commands and environment variables allow the dynamic management of the PATH
-in the *current*  shell.  Here's a screen shot of this being done on a MacOS Computer running on
+in the *current*  shell.  Here's a screen shot of this being done on a macOS Computer running on
 Apple Silicon CPU architecture.
 
 .. figure:: res/dynamic-path-management.png
@@ -1081,9 +1081,9 @@ page on zsh; something not very useful.  On some Linux distributions, like
 Kali Linux, run-help is a shell function and will display the requested
 builtin help.
 
-USRHOME implements the help command as an alias to run-help.  It also sets the
-HELPDIR environment variable, used by run-help, to identify the location of
-the zsh help files directory.
+USRHOME implements the help command for zsh as an alias to run-help.  It also
+sets the HELPDIR environment variable, used by run-help, to identify the
+location of the zsh help files directory.
 
 - Under Linux, it's: ``/usr/share/zsh/help``
 - Under OS/X and macOS that's: ``/usr/share/zsh/VVV/help`` with ``VVV``
@@ -1117,11 +1117,11 @@ CBR -- Single commands to Check, Build or Run
 ---------------------------------------------
 
 USRHOME supports 3 single letter commands for checking, building and running
-code: c, b and r.  These are command aliases that are installed inside the
-shell with the `` use-cbr`` command (which is an alias itself to
-``usrhome/ibin/envfor-cbr``).
+code: ``c``, ``b`` and ``r``.  These are command aliases that are installed
+inside the shell by the ``use-cbr`` command (which is an alias itself to
+`usrhome/ibin/envfor-cbr`_).
 
-The 'c', 'b' and 'r' commands are aliases to the ``usrhome/ibin/do-cbr``
+The ``c``, ``b`` and ``r`` commands are aliases to the ``usrhome/ibin/do-cbr``
 sourced script that detect the mechanism required to perform the required action by
 inspecting the content of the current directory.
 
@@ -1135,7 +1135,7 @@ This currently supports the following construction methods:
 - Build Rust program with Cargo.
 - Build Rust single main.rs program.
 
-Once installed inside the shell with `` use-cbr``, the following commands are
+Once installed inside the shell with ``use-cbr``, the following commands are
 made available:
 
 =======  =============================================================
@@ -1151,7 +1151,7 @@ Command  Description
          from the source code in the current directory and run it.
 =======  =============================================================
 
-Once you have typed `` use-cbr``, simply ``cd`` into the code directory and
+Once you have typed ``use-cbr``, simply ``cd`` into the code directory and
 type one of the 3 letters.  For example, type ``r`` to compile, link and run a
 Rust program from the top directory of the Rust program.
 
@@ -1161,7 +1161,7 @@ returning with exit code of 1.
 
 **Using a local ``cbr`` executable file:**
 
-After executing `` use-cbr``, the  ``c``, ``b`` and ``r`` commands
+After executing ``use-cbr``, the  ``c``, ``b`` and ``r`` commands
 check if a local ``cbr`` executable file is located in the current directory.
 If they find one they pass control to it, as described below. If there's none,
 then the command try to detect how to build the files in the directory with
@@ -2143,6 +2143,7 @@ Thanks!
 .. _usrhome-prompt-toggle-usr-host:                    https://github.com/pierre-rouleau/usrhome/blob/main/bin/usrhome-prompt-toggle-usr-host
 .. _usrhome-prompt-model-to:                           https://github.com/pierre-rouleau/usrhome/blob/main/bin/usrhome-prompt-model-to
 .. _usrhome/ibin/setfor-alias:                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
+.. _usrhome/ibin/envfor-cbr:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
 
 
 .. ---------------------------------------------------------------------------
