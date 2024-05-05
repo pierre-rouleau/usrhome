@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 16:32:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 16:39:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -447,8 +447,8 @@ case $USRHOME_SHELL in
         {
             if [ "$1" = "-q" ]; then
                 printf "Bash prompt model variables:
-$(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
-$(tput bold)- USRHOME_PROMPT_MODEL_OVERRIDE:$(tput sgr0) %s
+- USRHOME_PROMPT_MODEL         : %s
+- USRHOME_PROMPT_MODEL_OVERRIDE: %s
 " "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
             else
                 printf "Bash prompt control variables:
@@ -471,8 +471,8 @@ See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequ
         {
             if [ "$1" = "-q" ]; then
                 printf "Bash prompt model variables:
-$(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
-$(tput bold)- USRHOME_PROMPT_MODEL_OVERRIDE:$(tput sgr0) %s
+- USRHOME_PROMPT_MODEL         : %s
+- USRHOME_PROMPT_MODEL_OVERRIDE: %s
 " "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
             else
                 # shellcheck disable=SC2154
