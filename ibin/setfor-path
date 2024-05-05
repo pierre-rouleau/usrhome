@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-03 18:09:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 12:07:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -38,9 +38,15 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
 
         usrhome_xz_vulnerability()
         {
+            # Arg1: optional: "disputed"
             echo ""
-            echo "SECURITY ISSUE DETECTED By USRHOME:"
-            echo " - Compromised version ${xz_ver} of xz installed!"
+            if [[ "$1" = "disputed" ]]; then
+                echo "Potential (disputed) security issue detected by usrhome:"
+                echo " - Possibly compromised version ${xz_ver} of xz installed!"
+            else
+                echo "SECURITY ISSUE DETECTED By USRHOME:"
+                echo " - Compromised version ${xz_ver} of xz installed!"
+            fi
             echo " - in: ${xz_path}"
             echo "   - See: "
             echo "     - https://repology.org/project/xz/cves"
@@ -69,7 +75,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
                     ;;
 
                 '5.2.5' )
-                    usrhome_xz_vulnerability
+                    usrhome_xz_vulnerability "disputed"
                     echo "     - https://nvd.nist.gov/vuln/detail/CVE-2020-22916"
                     ;;
 
