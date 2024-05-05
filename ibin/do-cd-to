@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 10:55:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 14:11:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -65,10 +65,21 @@ prompt_yn()
 
 print_usage()
 {
-    echo " Usage: cd-to [-H] FILENAME"
-    echo " Change the current directory to the sub-directory holding FILENAME."
-    echo " FILENAME may use gob syntax supported by fd."
-    echo " Does not search hidden directories unless -H option is passed."
+    printf "\
+cd-to : Search for file in current directory tree.
+        If ONE is found: change current directory to its parent.
+        If more than 1 file found, list them and offer to edit them.
+
+   Usage:  cd-to [-h|--help]
+           cd-to    [-H] FILENAME
+           cd-to -d [-H] DIRNAME
+
+     By default the search skips hidden directories unless the -H option
+     is specified.
+     FILENAME or DIRNAME may use the glob syntax supported by fd.
+
+     Limitation: does not support file or directory name that starts with -
+"
 }
 
 # Check for availability of the fd command.
@@ -79,45 +90,108 @@ if ! command -v fd > /dev/null 2>&1; then
     return 1
 fi
 
+
+# Set option default values, can be modified by check_option()
 search_hidden=false
-# Check for presence of file name argument.
-if [ -z "$1" ]; then
-    echo "ERROR: specify a file name."
-    print_usage
-    return 1
-elif [ -n "$2" ]; then
-    if [ -z "$3" ]; then
-        if [ "$1" = "-H" ]; then
-            search_hidden=true
-            shift
-        else
-            echo "ERROR: invalid arguments"
+search_for=files
+search_for1=file
+unset cd_to__exit_code
+
+check_option()
+{
+    # Arg1: option
+    case "$1" in
+        "-h" | "--help" )
             print_usage
-            return 1
-        fi
-    else
-        echo "ERROR: too many arguments."
+            cd_to__exit_code=0
+            ;;
+
+        "-H")
+            seach_hidden=true
+            ;;
+
+        "-d")
+            search_for1=directory
+            search_for=directories
+            ;;
+
+        -?*)
+            echo "ERROR: unsupported option: $1"
+            print_usage
+            cd_to__exit_code=1
+    esac
+}
+
+# Validate input
+case "$#" in
+    0)
+        echo "ERROR: specify a file name."
         print_usage
         return 1
+        ;;
+
+    1)
+        check_option "$1"
+        if [ -n "$cd_to__exit_code" ]; then
+
+            return "$cd_to__exit_code"
+        fi
+        the_fname="$1"
+        ;;
+
+      2)
+        check_option "$1"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        the_fname="$2"
+        ;;
+    3)
+        check_option "$1"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        check_option "$2"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        the_fname="$3"
+        ;;
+
+    *)
+        echo "ERROR: too many arguments ($#)."
+        print_usage
+        return 1
+esac
+
+# echo "PROCEEDING: the_fname=$the_fname, search_hidden=$search_hidden, search_for=$search_for"
+if [ "$search_hidden" = "true" ]; then
+    if [ "$search_for" = "directories" ]; then
+        the_filepath="$(fd -H --type d -g $the_fname)"
+    else
+        the_filepath="$(fd -H --type f -g $the_fname)"
+    fi
+else
+    if [ "$search_for" = "directories" ]; then
+        the_filepath="$(fd --type=d -g $the_fname)"
+    else
+        the_filepath="$(fd --type=f -g $the_fname)"
     fi
 fi
 
-# Search for the file.
-if [ "$search_hidden" = "true" ]; then
-   the_fname=$(fd -H -g "$1")
-else
-    the_fname=$(fd -g "$1")
-fi
-unset search_hidden
-file_count=$(printf "%s" "$the_fname" | grep -c . )
+file_count=$(printf "%s" "$the_filepath" | grep -c . )
+# echo "the_filepath = $the_filepath,  file_count=$file_count"
+
+
 
 # Report error if more than 1 location found.
 if [ "${file_count}" -gt  1 ]; then
-    echo "CAUTION: found ${file_count} files in directory tree for: $1"
-    echo "The files are:"
-    fd -g "$1" | nl
+    echo "CAUTION: found ${file_count} ${search_for} in directory tree for: $1"
+    echo "The ${search_for} are:"
+    printf "%s\n" "$the_filepath" | nl
     if [[ -n "$EDITOR" ]]; then
-        prompt_yn "Edit these files with '$EDITOR'"
+        printf "\n"
+        prompt_yn "Edit these ${search_for} with '$EDITOR'"
         if [ "$prompt_yn_return" = "y" ]; then
             case $EDITOR in
                 cd* | rm* | sudo* | disk* )
@@ -126,7 +200,7 @@ if [ "${file_count}" -gt  1 ]; then
                     ;;
 
                 *)
-                    the_fnames=$(printf "%s" "$the_fname" | tr '\n' ' ')
+                    the_fnames=$(printf "%s" "$the_filepath" | tr '\n' ' ')
                     case $USRHOME_SHELL in
                         "zsh")
                             read -A the_fnames_arr <<< "$the_fnames"
@@ -145,6 +219,8 @@ if [ "${file_count}" -gt  1 ]; then
                     unset the_fnames
                     ;;
             esac
+            # Edited the files, return with 0.
+            return 0
         fi
     fi
     return ${file_count}
@@ -152,16 +228,22 @@ fi
 
 # Otherwise extract the directory name.
 unset file_count
-the_fpath=$(dirname "${the_fname}")
-unset the_fname
+the_dirpath=$(dirname "${the_filepath}")
+unset the_filepath
 
-if [ "$the_fpath" = "." ]; then
-    echo "Error: Not found inside any sub-directory: $1"
+if [ "$the_dirpath" = "." ]; then
+    echo "Error: No ${search_for1} found inside any sub-directory with the name: $the_fname"
+    unset search_for
+    unset search_for1
     return 1
 fi
 
-# And jump to it.
-cd "${the_fpath}" || return 1
-unset the_fpath
+unset search_for
+unset search_for1
 
+# And jump to it.
+cd "${the_dirpath}" || return 1
+unset the_dirpath
+ls -l "${the_fname}"
+unset the_fname
 # ----------------------------------------------------------------------------
