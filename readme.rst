@@ -758,7 +758,9 @@ USRHOME Command Name               Description
                                    later be used inside shell scripts.
 
 ``info-prompt [-q]``               Print information about shell's prompt controlling variables.
-                                   With ``-q``, only print the value of the ``USRHOME_PROMPT_MODEL``
+                                   By default it prints the values of all variables.  With the
+                                   ``-q`` option it only prints the values of
+                                   the ``USRHOME_PROMPT_MODEL``
                                    and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
                                    shows the value of the default prompt mode, the second one, if
                                    set, is the model of the current prompt, overriding the default.
@@ -1410,23 +1412,9 @@ diff_                              USRHOME diff_ is a shell-based dispatcher pro
 USRHOME Prompt
 ==============
 
-**NOTE**:
-  *The descriptions of prompts in this section and its subsections is outdated and
-  no longer corresponds to the current state of the project.
-  This was first written when Bash was not supported.  Now Bash is fully
-  supported and this section needs to be re-organized.
-  I will update the documentation soon.*
-
 USRHOME provides control for the Z Shell and Bash prompts as described in this section.
 
 
-
-The zsh prompt
---------------
-
-USRHOME sets up a basic Z Shell prompt that does not need any zsh extension
-library. It supports several models of prompts, selected by the presence and
-value of the ``USRHOME_PROMPT_MODEL`` environment variable.
 
 Information About Prompt Control Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1437,7 +1425,13 @@ prompt.
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``info-prompt``                    Print information about shell's prompt controlling variables.
+``info-prompt [-q]``               Print information about shell's prompt controlling variables.
+                                   By default it prints the values of all variables.  With the
+                                   ``-q`` option it only prints the values of
+                                   the ``USRHOME_PROMPT_MODEL``
+                                   and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
+                                   shows the value of the default prompt mode, the second one, if
+                                   set, is the model of the current prompt, overriding the default.
 ================================== ================================================================
 
 
@@ -1450,66 +1444,72 @@ the user provided configuration files located inside the usrcfg directory,
 otherwise it uses the system default.
 
 
-Prompt Model 1
-~~~~~~~~~~~~~~
+Prompt Model 1, 2 and 3
+~~~~~~~~~~~~~~~~~~~~~~~
 
-The default prompt, the prompt model 1, shows:
+These prompt models are predefined prompts that show multiple values in various
+ways.  As these might evolve over time, it's best to try them and see them in
+your terminal.
+
+The ``user@host`` information is shown when enabled. This can be dynamically
+enabled or disabled with the ``usrhome-prompt-toggle-usr-host`` command.
+
+In the following sessions, the command ``info-prompt -q`` is used to show which
+one is the default prompt model and which one is the currently used prompt.
+
+**The bash prompts**
+
+.. figure:: res/macOS-bash-prompts-01.png
+
+**The zsh prompts**
+
+.. figure:: res/macOS-zsh-prompts-01.png
+
+**Notable prompt features**
+
+All provided prompts, show:
 
 - A leading '>' character,
-- the exit code of the last command, in decimal,
+- the exit code of the last command, in decimal or hexadecimal,
 - current time in 24-hour HH:MM:SS format,
 - the shell nested level, prefixed with 'L',
 - optional user-name @ host-name,
-- the last 3 directory components of the current directory,
+- the full or last 3 directory components of the current directory,
+- the shell name (bash, or zsh),
 - the last character is '#' if the current user has root privilege,
-  otherwise the '%' character is used.
+  otherwise the '$' character is used for bash and the '%' character is for zsh.
 
-When there is enough room, the right side prompt (RPROMPT) is shown with:
+Some also show the Week day and month date, the number of currently running jobs
+of the shell
 
-- The full path of the current directory.
-- If the current directory is inside a Git or Mercurial repository, the
-  repository branch and repository name.  In a Mercurial repository the 'hg:'
-  prefix is included.
+The zsh prompt can also print extra information:
 
-An example is shown here:
+- zsh prompt model 1 shows extra information on the right side of the line,
+  there is enough room: the full path of the current directory, and VCS (Git or
+  Mercurial) repository name.
+- The VCS (Git or Mercurial) repository name is shown in all zsh prompts.
 
+  - If the current directory is part of a Git or Mercurial repository, the
+    prompt shows 2 spaces followed by:
+
+    - 'git:' for Git repository and 'hg:' for Mercurial repository,
+    - the VCS branch name in parenthesis
+    - the VCS repository name.
+
+- Exit code of error and number of running jobs are  also shown in the right
+  hand side in zsh prompts.
+
+  - If the exit code of the last error is not 0, the exit code followed by
+    a red '⨯' character.
+  - If the shell has sub-process jobs, the number of jobs is shown,
+    followed by a yellow '⚙' character.
+
+**Examples**
+
+Some extra examples shown here:
 
 .. figure:: res/zsh-prompt-01.png
 
-What is shown above corresponds to USRHOME default prompt (model 1).
-
-Prompt Model 2
-~~~~~~~~~~~~~~
-
-Prompt model 2 provides the following features:
-
-- The prompt spans 2 lines:
-
-  - The first line shows:
-
-    - exit code of the last executed command,
-    - current time in 24-hour format,
-    - shell nesting level prefixed with a 'L',
-    - optional user name '@' host name,
-    - A colon followed by the complete path of the current working directory.
-    - If the current directory is part of a Git or Mercurial repository, the
-      prompt shows 2 spaces followed by:
-
-      - 'git:' for Git repository and 'hg:' for Mercurial repository,
-      - the VCS branch name in parenthesis
-      - the VCS repository name.
-
-  - The second line shows:
-
-    - The '%'  character (or '#' when current user has *sudo* privilege)
-      followed with a single space preceding where the typed commend is shown.
-    - If the shell is not running inside Emacs, the right prompt is also shown
-      with the following information:
-
-      - If the exit code of the last error is not 0, the exit code followed by
-        a red '⨯' character.
-      - If the shell has sub-process jobs, the number of jobs is shown,
-        followed by a yellow '⚙' character.
 
 Here's an example when the prompt model 2 is selected by user configuration
 and the user dynamically changes it inside the shell.
@@ -1531,15 +1531,6 @@ them active in the foreground again with ``fg`` and then closing Emacs).  Once
 there's no background process the ``usrhome-prompt-toggle-usr-host`` command
 can be used.
 
-Prompt Model 3
-~~~~~~~~~~~~~~
-
-This prompt is similar to prompt model 2,
-but model 3 is a little more colorful;
-it shows the shell type, ``zsh``, followed by ``%`` or ``#`` on the second
-prompt line,
-in bold green if the last command succeeded or bold red if it failed.
-
 Showing the shell type helps when capturing commands for logs: it explicitly
 identifies the shell.
 
@@ -1559,16 +1550,8 @@ inside Emacs configuration.
 ============================ ========================================
 Prompt                       Emacs Regular Expression
 ============================ ========================================
-zsh model 1                  ``^>[0-9]+@.+[%#]``
-zsh model 2                  ``^[%#]``
-zsh model 3                  ``^zsh[%#]``
-bash model 1                 ``^>[%#]``
-bash model 2                 ``^bash[%#]``
-zsh model 3 and bash model 2 ``^\(\(zsh\)\|\(bash\)\)[%#]``
+All models                   ``^\(\(zsh\)\|\(bash\)\)[%#$]``
 ============================ ========================================
-
-Note that when using the zsh prompt model 3 is very similar to the
-bash prompt model 2 and it's easy to create a regexp that supports both.
 
 
 
