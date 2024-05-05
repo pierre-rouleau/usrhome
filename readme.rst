@@ -803,7 +803,7 @@ USRHOME Command Name               Description
 ``.... [DIR]``                     Performs ``cd ../../../DIR``
                                    If DIR is not specified, performs ``cd ../../..``
 
-``cd-to``:                         Search for file specified by file FNAME or directory DNAME in
+``cd-to``                          Search for file specified by file FNAME or directory DNAME in
                                    current directory tree.
   - ``cd-to [-h|--help]``
   - ``cd-to [-H] FNAME``
