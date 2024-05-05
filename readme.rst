@@ -805,9 +805,9 @@ USRHOME Command Name               Description
 
 ``cd-to``:                         Search for file specified by file FNAME or directory DNAME in
                                    current directory tree.
- - ``cd-to [-h|--help]``
- - ``cd-to [-H] FNAME``
- - ``cd-to -d [-H] DNAME``
+  - ``cd-to [-h|--help]``
+  - ``cd-to [-H] FNAME``
+  - ``cd-to -d [-H] DNAME``
 
                                    - The FNAME and DNAME can be expressed with `fd`_ glob support.
                                    - By default, does not search into hidden directories.
