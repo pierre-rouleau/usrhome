@@ -1121,7 +1121,7 @@ code: ``c``, ``b`` and ``r``.  These are command aliases that are installed
 inside the shell by the ``use-cbr`` command (which is an alias itself to
 `usrhome/ibin/envfor-cbr`_).
 
-The ``c``, ``b`` and ``r`` commands are aliases to the ``usrhome/ibin/do-cbr``
+The ``c``, ``b`` and ``r`` commands are aliases to the `usrhome/ibin/do-cbr`_
 sourced script that detect the mechanism required to perform the required action by
 inspecting the content of the current directory.
 
@@ -2144,6 +2144,7 @@ Thanks!
 .. _usrhome-prompt-model-to:                           https://github.com/pierre-rouleau/usrhome/blob/main/bin/usrhome-prompt-model-to
 .. _usrhome/ibin/setfor-alias:                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
 .. _usrhome/ibin/envfor-cbr:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
+.. _usrhome/ibin/do-cbr:                               https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
 
 
 .. ---------------------------------------------------------------------------
