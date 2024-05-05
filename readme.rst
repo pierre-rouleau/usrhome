@@ -803,19 +803,24 @@ USRHOME Command Name               Description
 ``.... [DIR]``                     Performs ``cd ../../../DIR``
                                    If DIR is not specified, performs ``cd ../../..``
 
-``cd-to [-H] FNAME``               Search for file specified by FNAME in current directory tree.
+- ``cd-to``:                       Search for file specified by file FNAME or directory DNAME in
+                                   current directory tree.
+  - ``cd-to [-h|--help]``
+  - ``cd-to [-H] FNAME``
+  - ``cd-to -d [-H] DNAME``
 
-                                   - The FNAME can be expressed with `fd`_ glob support.
+                                   - The FNAME and DNAME can be expressed with `fd`_ glob support.
                                    - By default, does not search into hidden directories.
                                      Specify the ``-H`` option to search into them.
-                                   - If **one** file is found, change the current directory to
-                                     the directory that holds it.
-                                   - If several files are found, print a cautionary note with the
-                                     number of files found and their path names (relative to
-                                     current directory).
+                                   - If **one** file/directiry is found, change the current
+                                     directory to the directory that holds it and print the
+                                     ``ls -l`` for it.
+                                   - If several files/directories are found, print a cautionary
+                                     note with the number of found items and their path names
+                                     (relative to current directory).
 
                                      - If the ``EDITOR`` environment variable is set, the script
-                                       prompts the user for editing the files.  On a 'y' answer it
+                                       prompts the user for editing the items.  On a 'y' answer it
                                        edits the files found using the editor selected by ``EDITOR``.
 
                                    - File search performed by the `fd`_ utility.  If it's not
@@ -825,8 +830,7 @@ USRHOME Command Name               Description
 
                                      - 0: one file was found, the current directory was changed.
                                      - 1: no file found.
-                                     - n: the number of files found, regardless of whether they
-                                       were edited.
+                                     - n: the number of files found if they were not edited.
 
 
 ``pel [SUBDIR]``                   Change current directory to PEL_ depot directory or its SUBDIR
