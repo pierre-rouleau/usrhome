@@ -1,0 +1,61 @@
+# Sourced script: change_prompt  -*- mode: sh; -*-
+#
+# Purpose   : Internal helper file: change prompt.
+# Created   : Sunday, May  5 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-05-05 09:43:23 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# This is a helper code that proceed to changing the prompt in a shell.  It is
+# invoked by several sourced scripts:
+#
+# - usrhome/ibin/setfor-prompt-model-to
+# - usrhome/ibin/setfor-prompt-toggle-usr-host
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Identify running shell
+#
+# Set usrhome__running_shell to zsh, bash or unknown
+source  "$USRHOME_DIR/ibin/which-shell"
+
+
+case $usrhome__running_shell in
+    "zsh")
+        if [[ "$USRHOME_PROMPT_MODEL_OVERRIDE" = "$USRHOME_PROMPT_MODEL_REQUIRES_RESTART" ]]; then
+            # The implementation for the selected zsh prompt model requires
+            # re-executing the sourcing of zsh configuration files.
+            # That's done with an exec zsh, which would kill running jobs.
+            # Don't do it the shell has any running jobs.
+            if [[ -n "$(jobs)" ]]; then
+                # Don't allow re-starting zsh when there are running jobs
+                # inside the shell.  The exec zsh might kill them if they
+                # were not detached.  Warn the user and quit.
+                echo "***** WARNING! ** WARNING! *****"
+                echo "This shell has unfinished jobs running.  Terminate them first!"
+                return 1
+            fi
+            usrhome-select-zsh-prompt
+            exec zsh
+        else
+            usrhome-select-zsh-prompt
+        fi
+
+        ;;
+
+    "bash")
+        # Under Bash; no need to restart the shell, just use the usrhome-select-bash-prompt
+        # shell function that was defined in usrhome/dot/bashrc.bash
+        usrhome-select-bash-prompt
+        ;;
+    *)
+        echo "Dynamic prompt modification is not supported under '$usrhome__running_shell' shell."
+        ;;
+esac
+
+# ----------------------------------------------------------------------------

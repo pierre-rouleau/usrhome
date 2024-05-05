@@ -3,7 +3,7 @@
 # Purpose   : Toggle tracing of shell configuration file sourcing.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-03 22:02:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 09:41:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,7 +42,26 @@ else
     echo "Now trace shell configuration sourcing."
 fi
 
-exec zsh
+
+# Identify running shell
+#
+# Set usrhome__running_shell to zsh, bash or unknown
+source  "$USRHOME_DIR/ibin/which-shell"
+
+
+case $usrhome__running_shell in
+    "zsh")
+        exec zsh
+        ;;
+
+    "bash")
+        exec bash
+        ;;
+    *)
+        echo "USRHOME does not support tracing in '$usrhome__running_shell' shell."
+        ;;
+esac
+
 
 
 # ----------------------------------------------------------------------------
