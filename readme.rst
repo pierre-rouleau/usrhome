@@ -1650,16 +1650,19 @@ user configuration, as shown in the following diagram portion.
 
 .. figure:: res/zsh-startup-01.png
 
-- The ``~/zshenv`` is sourced in all case.  Therefore the ``usrhome/dot/zshenv.zsh``
-  sources the user's basic configuration file that identifies the main USRHOME
+- The ``~/zshenv`` is sourced in all case.  Therefore the
+  `usrhome/dot/zshenv.zsh`_ sources the user's basic configuration file
+  (``usrcfg/setfor-all-config.sh``) that identifies the main USRHOME
   configuration features.
-- The file ``usrhome/ibin/setfor-path`` controls adding extra directories in the
-  PATH; the directories used by USRHOME and some other.  That file is sourced
-  by the usrhome/dot/zprofile.zsh for a login shell and by the
-  usrhome/dot/zshrc.zsh in a sub-shell.
-- Since the usrhome/dot/zshrc.zsh is used both in the login and the sub-shell,
-  it's the file that sources the usrhome/ibin/setfor-zsh-alias to inject
-  the USRHOME commands inside the shell.  That's also the file that sanitizes
+- The file `usrhome/ibin/setfor-path`_ controls adding extra directories in the
+  PATH; the directories used by USRHOME and some other.  That file is
+  optionally sourced  by the `usrhome/dot/zprofile.zsh`_ for a login shell and by the
+  usrhome/dot/zshrc.zsh in a sub-shell.  For the login shell the PATH is
+  modified only when the USRHOME_CONFIG_AT_LOGIN variable is set to 1.
+- Since the `usrhome/dot/zshrc.zsh`_ is used both in the login and the sub-shell,
+  it's the file that sources the `usrhome/ibin/setfor-zsh-alias`_ to inject
+  the USRHOME alias commands and sell functions inside the shell.
+  That's also the file that sanitizes
   the PATH; it removes empty entries and duplicates if there's any.  And in
   that case it prints a warning.  That's an indication to take a look at your
   configuration files (or to the application that launched a sub-shell).
@@ -1671,8 +1674,9 @@ managed usrcfg directory:
 - usrcfg/do-user-zprofile.zsh
 - usrcfg/do-user-zshrc.zsh
 
-Each of these files is sourced if they exist. The diagram shows the order in
-which the files are sourced.
+Each of these files is sourced if they exist. In turn these files could source
+files for the specific node if the user wants to support several hosts.  The
+diagram shows the order in which the files are sourced.
 
 The Z and Bash Shell Startup, Dot Files and User Configuration
 --------------------------------------------------------------
@@ -2041,6 +2045,11 @@ Thanks!
 .. _setup/setup-usrhome:                               https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
 .. _shell-tracing.sh:                                  https://github.com/pierre-rouleau/usrhome/blob/main/ibin/shell-tracing.sh
 .. _usrcfg/setfor-all-config.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
+.. _usrhome/ibin/setfor-zsh-alias:                     https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-zsh-alias
+.. _usrhome/ibin/setfor-path:                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-path
+.. _usrhome/dot/zprofile.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
+.. _usrhome/dot/zshenv.zsh:                            https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshenv.zsh
+.. _usrhome/dot/zshrc.zsh:                             https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshrc.zsh
 .. _usrhome/dot/bash_profile.bash:                     https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
 .. _usrhome/dot/zprofile.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
 .. _usrhome/dot:                                       https://github.com/pierre-rouleau/usrhome/tree/main/dot
