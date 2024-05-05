@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-03 23:00:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-05 16:18:01 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -177,8 +177,15 @@ fi
 # The code provides 2 already defined prompt, selected by the value
 # of USRHOME_PROMPT_MODEL
 
-# PROMPT MODEL 1: very short. No color, no bolding, no logic.
-USRHOME_BASH_PROMPT1=">\h@\d@\t[\w]\n>\\$ "
+# PROMPT MODEL 1: No color, no bolding, exit code, shell level, jobs, date, time.
+USRHOME_BASH_PROMPT1='$(\
+ec=${?}; \
+if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
+  printf ">%d, L${SHLVL}, \jj, \u@\h, \d@\t [\w]\nbash\\$" ${ec};  \
+else \
+  printf ">%s, L${SHLVL}, \jj, \d,\t [\w]\nbash\\$" ${ec};  \
+fi; \
+) '
 
 
 # PROMPT MODEL 2: With color, bolding and logic.
@@ -192,7 +199,7 @@ else \
 fi; \
 printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\],L${SHLVL},\[$(tput bold)\]" ${ec}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
-  printf "\h@\u@\t[\w]\[$(tput sgr0)\]\n";  \
+  printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
   printf "\t[\w]\[$(tput sgr0)\]\n";  \
 fi; \
@@ -214,7 +221,7 @@ USRHOME_BASH_PROMPT3='$(\
 ec=${?}; \
 printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\],L${SHLVL},\[$(tput bold)\]" ${ec}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
-  printf "\h@\u@\t[\w]\[$(tput sgr0)\]\n";  \
+  printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
   printf "\t[\w]\[$(tput sgr0)\]\n";  \
 fi; \
