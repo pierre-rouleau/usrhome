@@ -419,7 +419,7 @@ The User Configuration Files used by USRHOME
 =================================== ================================================================
 File Name (link to template)        Description
 =================================== ================================================================
-`usrcfg/setfor-all-config.sh`_      **Required** Holds user configuration that applies to the Bash
+`usrcfg/setfor-all-config.sh`_      **Required**. Holds user configuration that applies to the Bash
                                     and Z Shell.  Therefore it must be written in POSIX sh script,
                                     compatible with both Bash and Z Shell.
 
@@ -468,7 +468,7 @@ File Name (link to template)        Description
                                     - It also holds some USRHOME-specific logic to control optional
                                       shell config file tracing.
 
-`usrcfg/do-user-zshrc.zsh`_         **Required for Z Shell** User-specific Z Shell specific
+`usrcfg/do-user-zshrc.zsh`_         **Required for Z Shell**. User-specific Z Shell specific
                                     configuration.
 
                                     - This must be written in Z Shell compatible logic.
@@ -491,7 +491,7 @@ File Name (link to template)        Description
                                       the ``usrcfg/node/do-NODE-bash_profile.bash`` file where
                                       ``NODE`` is identified with ``hostname -s``.
 
-`usrcfg/do-user-bashrc.bash`_       **Required for Bash** User-specific Bash Shell specific
+`usrcfg/do-user-bashrc.bash`_       **Required for Bash**. User-specific Bash Shell specific
                                     configuration.
 
                                     - This must be written in Bash compatible logic.
@@ -568,51 +568,33 @@ USRHOME_DIR_HELPDIR             Optional environment variable.  If defined it
                                 operate like it would under Bash.
 
 USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
-                                syntax of the prompt used by the shell. The
-                                supported values are:
+                                syntax of the prompt used by the shell.
+                                The prompts for zsh and Bash are independent and you can
+                                define a different prompt model value for each.
+                                The supported values are:
 
-                                - **0** : no prompt defined by USRHOME. The user
-                                  can defined a prompt inside the
-                                  ``usrcfg/do-user-zshrc.zsh`` file.
-                                  If nothing is defined, zsh will use it's
+                                - **0** : no prompt defined by USRHOME.
+                                  Either use the shell default or a user
+                                  specified prompt inside the shell specific
+                                  usrcfg file.
                                   default prompt.
 
-                                - **1** : (or not defined).
-                                  Selects the default USRHOME prompt style
-                                  shown in the example_. This is on one line
-                                  but uses the ``RPROMPT`` to show the VCS
-                                  information.
-                                  The search regexp for that prompt model is
-                                  ``^>[0-9]+@.+[%#]``
-
-                                - **2** : A 2-line prompt that displays the
-                                  complete path and the VCS info on the
-                                  left-hand side.  Commands are typed on the
-                                  second line right after a "%' or '#' leading
-                                  character followed by a space.
-                                  The search regexp for that prompt model is
-                                  ``^[%#]``
+                                - **1** (or not defined), **2** or **3**,
+                                  a USRHOME pre-defined shell prompt.
 
                                 Users can change the prompt dynamically by
                                 issuing a ``usrhome-prompt-model-to NUMBER``
                                 command.
 
-                                **Warning!!** executing ``exec zsh`` you
-                                replace the old shell with a new one and all
-                                shell knowledge in its variables is lost!
-                                If you have running background jobs under that
-                                shell you won't be able to join then with the
-                                ``fg`` command!  You will be able to see the
-                                running processes with  the ``ps`` command but
-                                may not be able to bring them to the
-                                foreground.
+                                **Caution!!** Under zsh it might be necessary to
+                                execute ``exec zsh`` to update the prompt.
+                                This depends on how the prompt is implemented.
 
-                                The USRHOME commands, like
-                                ``usrhome-prompt-model``
-                                use ``exec zsh`` but
-                                won't proceed when they detect running
-                                background jobs to prevent running into this
-                                problem.
+                                - You can identify a prompt number that would
+                                  require restarting zsh in the environment
+                                  variable USRHOME_PROMPT_MODEL_REQUIRES_RESTART.
+                                - The command will check if the zsh has any
+                                  running job and will proceed only if there are none.
 
 USRHOME_ORIGINAL_PATH           Set to the value of PATH before USRHOME adds to it.
                                 You can restore that value with the
@@ -700,23 +682,54 @@ USRHOME Command Name               Description
                                    ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
                                    and vice-versa.
 
+                                   Note that if the variable value was a file name, toggling it
+                                   twice will simply re-activate the tracing to stdout, not to the
+                                   file.
+
                                    - The original value of this environment variable is set inside
                                      your ``usrcfg/setfor-all-config.sh file.
                                      The default value is 0 as
                                      identified by `usrhome/template/setfor-all-config.sh`_
-                                   used to initialize the usrcfg file.
+                                     used to initialize the usrcfg file.
+
+                                   **Caution** this command perform an exec command for the current
+                                   shell, which will wipe history.  The command check if there a re
+                                   any running jobs and will not proceed if there are any.
+
 
 ``usrhome-prompt-toggle-usr-host`` Toggle the inclusion of the user name and host name inside
                                    the prompt.
+
+                                   **Caution!!** Under zsh it might be necessary to
+                                   execute ``exec zsh`` to update the prompt.
+                                   This depends on how the prompt is implemented.
+
+                                   - You can identify a prompt number that would
+                                     require restarting zsh in the environment
+                                     variable USRHOME_PROMPT_MODEL_REQUIRES_RESTART.
+                                   - The command will check if the zsh has any
+                                     running job and will proceed only if there are none.
+
+                                   The command is not affected by this limitation when issued
+                                   in the Bash shell.
 
 ``usrhome-prompt-model-to NUMBER`` Dynamically change the prompt model to the specified NUMBER.
 
                                    - This command also supports the ``-h`` and ``--help`` command
                                      line options which pint the usage.
-                                   - Note: under zsh, this command will not proceed if the shell
-                                     has any background running jobs.  This is due to the way the
-                                     command is currently implemented.  The command is not affected
-                                     by this limitation when issued in the Bash shell.
+
+                                   **Caution!!** Under zsh it might be necessary to
+                                   execute ``exec zsh`` to update the prompt.
+                                   This depends on how the prompt is implemented.
+
+                                   - You can identify a prompt number that would
+                                     require restarting zsh in the environment
+                                     variable USRHOME_PROMPT_MODEL_REQUIRES_RESTART.
+                                   - The command will check if the zsh has any
+                                     running job and will proceed only if there are none.
+
+                                   The command is not affected by this limitation when issued
+                                   in the Bash shell.
 
 ================================== ================================================================
 
