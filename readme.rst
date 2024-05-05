@@ -406,8 +406,11 @@ The user would probably want to create some extra ones;  the
 ========================================== ========================================================
 ``$USRHOME/ibin`` File                     Purpose
 ========================================== ========================================================
-`which-shell`_                             Identifies the shell (Bash or Z Shell) and used by
-                                           other USRHOME shell functions.
+`which-shell`_                             Identifies the shell (Bash, Z Shell, or other): sets the
+                                           USRHOME_SHELL environment variable to "zsh", "bash",
+                                           etc.
+
+                                           It is used by other USRHOME shell functions.
                                            Can also be used by user's shell functions.
 ========================================== ========================================================
 
