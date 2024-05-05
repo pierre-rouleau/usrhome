@@ -1189,8 +1189,8 @@ sub-directory that contains something like this::
   cd ..
   source "$USRHOME_DIR/ibin/do-cbr" $1
 
-With this the c, b and r commands can be executed from the root and the
-sub-directory.
+With this the ``c``, ``b`` and ``r`` commands can be executed from the project
+root directory and from its sub-directory.
 
 
 Using Emacs as a man reader
