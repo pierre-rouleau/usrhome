@@ -1183,11 +1183,13 @@ For example, assuming you have a project where the build command is issued
 from the project root directory and that you also want to be able from a
 sub-directory.  To be able to issue the ``c``, ``b`` or ``r`` command from
 that sub-directory create a ``cbr`` or ``.cbr`` executable file inside the
-sub-directory that contains something like this::
+sub-directory that contains something like this:
 
-  #!/bin/sh
-  cd ..
-  source "$USRHOME_DIR/ibin/do-cbr" $1
+.. code:: sh
+
+          #!/bin/sh
+          cd ..
+          source "$USRHOME_DIR/ibin/do-cbr" $1
 
 With this the ``c``, ``b`` and ``r`` commands can be executed from the project
 root directory and from its sub-directory.
