@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-05-04 17:37:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 10:04:20 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -117,6 +117,43 @@ fi
 # Topic: Prompt
 # -------------
 
+# To measure and display execution time of commands in milliseconds
+# and print it inside the RPROMPT in hours, minutes, seconds, milliseconds
+# with only what is relevant.  The very first time, nothing is printed.
+
+
+preexec()
+{
+    timer=$(($(print -P %D{%s%6.})/1000))
+}
+
+precmd()
+{
+    if [ $timer ]; then
+        # get time with millisecond resolution
+        now=$(($(print -P %D{%s%6.})/1000))
+
+        # compute time elements
+        local e_ms=$(($now-$timer))
+        local e_s=$((e_ms / 1000))
+        local ms=$((e_ms % 1000))
+        local s=$((e_s % 60))
+        local m=$(((e_s / 60) % 60))
+        local h=$((e_s / 3600))
+
+        # Format elapsed according to the elapsed time elements
+        if   ((h > 0)); then elapsed=${h}h${m}m${s}s                      # example: 1h2m3s
+        elif ((m > 0)); then elapsed=${m}m${s}.$(printf $(($ms / 100)))s  # example: 1m12.3s
+        elif ((s > 9)); then elapsed=${s}.$(printf %02d $(($ms / 10)))s   # example: 12.34s
+        elif ((s > 0)); then elapsed=${s}.$(printf %03d $ms)s             # example: 1.234s
+        else elapsed=${ms}ms
+        fi
+        unset timer
+    fi
+}
+
+
+
 # - Use PROMPT instead of PS1
 # - Use RPROMPT to get a git status on the right side.
 
@@ -209,7 +246,7 @@ usrhome-select-zsh-prompt()
             # Show the exit code and the current sub-process jobs
             if [[ -z "$INSIDE_EMACS" ]]; then
                 #          exit code: value x on failure  #jobs when more than 1
-                RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
+                RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}. %F{cyan}${elapsed} %{$reset_color%})'
             fi
             ;;
 

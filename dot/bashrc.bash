@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-05 16:18:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 09:09:44 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -114,6 +114,30 @@ fi
 # Topic: Prompt control
 # =====================
 #
+# Timing the command: define 2 functions to store the Bash SECOND variable
+# (number of seconds since Bash started) in a
+#
+
+usrhome_start_timer()
+{
+  usrhome_cmd_start_time=${usrhome_cmd_start_time:-$SECONDS}
+}
+
+usrhome_stop_timer()
+{
+  usrhome_cmd_exec_time=$(($SECONDS - $usrhome_cmd_start_time))
+  unset usrhome_cmd_start_time
+}
+
+# Schedule execution of usrhome_start_timer when a command is about to execute.
+trap 'usrhome_start_timer' DEBUG
+
+# PROMPT_COMMAND is a command executed just before the prompt
+# Use it to compute execution time and store result inside
+# the variable usrhome_cmd_exec_time to use inside the prompt itself: PS1
+PROMPT_COMMAND="usrhome_stop_timer"
+
+
 # Ref: Bash Prompt Escape Sequences:
 #  See: https://www.gnu.org/software/bash/manual/html_node/Controlling-the-Prompt.html
 #
@@ -189,6 +213,7 @@ fi; \
 
 
 # PROMPT MODEL 2: With color, bolding and logic.
+#                 This prompt reports last command execute time in seconds.
 # shellcheck disable=SC2016
 USRHOME_BASH_PROMPT2='$(\
 ec=${?}; \
@@ -197,7 +222,7 @@ if [ ${ec} == 0 ]; then \
 else \
   echo -n "\[\e[0;31m\]"; \
 fi; \
-printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\],L${SHLVL},\[$(tput bold)\]" ${ec}; \
+printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\],in:%ds,L${SHLVL},\[$(tput bold)\]" ${ec} ${usrhome_cmd_exec_time}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
   printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
@@ -216,10 +241,11 @@ fi;\
 
 
 # PROMPT MODEL 3: With bolding and logic, but no color unless in root.
+#                 This prompt reports last command execute time in seconds.
 # shellcheck disable=SC2016
 USRHOME_BASH_PROMPT3='$(\
 ec=${?}; \
-printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\],L${SHLVL},\[$(tput bold)\]" ${ec}; \
+printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\],in:%ds,L${SHLVL},\[$(tput bold)\]" ${ec} ${usrhome_cmd_exec_time}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
   printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
@@ -235,6 +261,7 @@ else \
   fi; \
 fi;\
 ) '
+
 
 
 # Dynamically change prompt.
