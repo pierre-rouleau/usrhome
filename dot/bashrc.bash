@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-27 09:09:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 11:01:28 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -125,7 +125,7 @@ usrhome_start_timer()
 
 usrhome_stop_timer()
 {
-  usrhome_cmd_exec_time=$(($SECONDS - $usrhome_cmd_start_time))
+  usrhome_cmd_exec_time=",et:$(($SECONDS - $usrhome_cmd_start_time))s"
   unset usrhome_cmd_start_time
 }
 
@@ -222,7 +222,7 @@ if [ ${ec} == 0 ]; then \
 else \
   echo -n "\[\e[0;31m\]"; \
 fi; \
-printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\],in:%ds,L${SHLVL},\[$(tput bold)\]" ${ec} ${usrhome_cmd_exec_time}; \
+printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\]%s,L${SHLVL},\[$(tput bold)\]" ${ec} ${usrhome_cmd_exec_time}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
   printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
@@ -245,7 +245,7 @@ fi;\
 # shellcheck disable=SC2016
 USRHOME_BASH_PROMPT3='$(\
 ec=${?}; \
-printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\],in:%ds,L${SHLVL},\[$(tput bold)\]" ${ec} ${usrhome_cmd_exec_time}; \
+printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\]%s,L${SHLVL},\[$(tput bold)\]" ${ec} ${usrhome_cmd_exec_time}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
   printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
