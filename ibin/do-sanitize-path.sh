@@ -3,7 +3,7 @@
 # Purpose   : Sanitize current shell PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-03 19:25:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:52:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -65,3 +65,6 @@ unset sanitized_path
 unset sanitized_path_entries
 
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

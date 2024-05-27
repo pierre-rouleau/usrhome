@@ -3,7 +3,7 @@
 # Purpose   : Toggle tracing of shell configuration file sourcing.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 10:44:21 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:58:16 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,6 +62,7 @@ case "$USRHOME_SHELL" in
         ;;
 esac
 
-
-
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

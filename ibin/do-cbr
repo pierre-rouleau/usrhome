@@ -3,7 +3,7 @@
 # Purpose   : CBR: check, build or run files in current directory.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-17 10:37:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:51:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -245,3 +245,6 @@ unset bt
 unset dname
 unset cbr_error
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

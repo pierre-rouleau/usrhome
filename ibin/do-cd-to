@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 14:11:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:51:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -246,4 +246,8 @@ cd "${the_dirpath}" || return 1
 unset the_dirpath
 ls -l "${the_fname}"
 unset the_fname
+
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

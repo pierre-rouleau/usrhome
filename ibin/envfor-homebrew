@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-19 18:40:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:55:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -75,4 +75,8 @@ if !  echo $PATH | grep "/homebrew/" > /dev/null; then
 fi
 
 usrhome_trace_out
+
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

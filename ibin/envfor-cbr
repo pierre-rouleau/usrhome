@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use the c, b and r commands.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-14 16:22:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:53:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -31,3 +31,6 @@ alias r='source $USRHOME_DIR/ibin/do-cbr r'
 echo ". CBR single letter commands installed in shell:"
 echo "   c := check, b:= build, r:=run"
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

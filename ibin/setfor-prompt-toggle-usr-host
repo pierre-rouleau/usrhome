@@ -3,7 +3,7 @@
 # Purpose   : Toggle showing host and user name in the prompt.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 09:36:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:58:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -46,3 +46,6 @@ source  "$USRHOME_DIR/ibin/change_prompt"
 
 
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

@@ -3,7 +3,7 @@
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 00:00:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:57:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -46,3 +46,6 @@ alias where='type -a'
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: bash
+#  End:

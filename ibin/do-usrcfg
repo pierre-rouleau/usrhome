@@ -3,7 +3,7 @@
 # Purpose   : Change current directory to USRHOME's usrcfg root.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-06 10:51:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:52:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,3 +28,6 @@ cd $USRHOME_DIR/../usrcfg/$1
 set-title USRHOME:usrcfg
 
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

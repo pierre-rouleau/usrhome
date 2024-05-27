@@ -3,7 +3,7 @@
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-29 21:50:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:58:35 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,4 +40,8 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-zsh-alias"
 # ----------------------------------------------------------------------------
 # Cleanup
 usrhome_trace_out
+
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: zsh
+#  End:

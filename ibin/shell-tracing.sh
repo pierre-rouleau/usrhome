@@ -3,7 +3,7 @@
 # Purpose   : Define shell tracing functions.
 # Created   : Saturday, April 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-03 08:43:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:58:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -96,5 +96,7 @@ usrhome_trace_out()
 
 }
 
-
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

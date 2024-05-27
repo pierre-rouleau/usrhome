@@ -3,7 +3,7 @@
 # Purpose   : Identify active shell sourcing this file.  Store result in usrhome__running_shell
 # Created   : Thursday, April 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 10:53:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 14:59:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -46,3 +46,6 @@ else
 fi
 
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
