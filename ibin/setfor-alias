@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 16:39:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 13:35:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -23,6 +23,10 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-alias"
 
 # Set USRHOME_SHELL to zsh, bash, ... or unknown
 . "$USRHOME_DIR/ibin/which-shell"
+
+# Set variables that will be used later
+os_name="$(uname)"
+
 
 # Topic: Alias: showpath
 # ----------------------
@@ -326,7 +330,7 @@ lsl()
 # Topic: Info: macOS Rosetta2
 # ---------------------------
 
-if [ "$(uname)" = "Darwin" ]; then
+if [ "${os_name}" = "Darwin" ]; then
     info-rosetta2()
     {
         printf "Rosetta 2 is %sinstalled.\n" $(/usr/bin/pgrep -q oahd && echo "" || echo "not ")
@@ -375,7 +379,7 @@ usrhome_cd()
 }
 
 
-if [ "$(uname)" = "Darwin" ]; then
+if [ "${os_name}" = "Darwin" ]; then
     cdv()
     {
         cd "/Volumes/$1" || return 1
@@ -460,7 +464,11 @@ $(tput bold)- PS4:$(tput sgr0) %s
 $(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
 $(tput bold)- USRHOME_PROMPT_MODEL_OVERRIDE:$(tput sgr0) %s
 
-See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequences
+NOTE:
+ - Prompt model 2 and 3 print Execution Time of the command, in seconds.
+   The value is printed as 'et:S' where S is the number of seconds.
+SEE ALSO:
+-  https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequences
 " "$PS0" "$PS1" "$PS2" "$PS3" "$PS4" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
             fi
         }
@@ -489,7 +497,28 @@ See: https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequ
   - p2   : %s
   - p3   : %s
 - USRHOME_PROMPT_MODEL: %s
-- USRHOME_PROMPT_MODEL_OVERRIDE: %s\n" "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2" "$p3" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
+- USRHOME_PROMPT_MODEL_OVERRIDE: %s
+
+NOTE:
+ - Prompt model 2 and 3 print Git and Mercurial VCS information
+   at the tail end of the prompt, after the current directory,
+   when the current directory is inside a Git or Mercurial repository.
+   The info printed is the VCS branch name in parentheses
+   followed by the repository name.
+ - Prompt model 2 and 3 print valuable information inside the
+   right-hand side of the prompt if there is enough space (RPROMPT).
+   This includes:
+   - Failing command exit code in decimal,
+     followed by a red ⨯.
+   - Number of background processes attached to the shell,
+     followed by a yellow ⚙.
+   - Execution Time of the just completed command
+     in hour, minutes, seconds, milliseconds format,
+     colored in cyan.
+     Nothing is printed when no command was executed, as when
+     the shell is started or when you have just hit RETURN.
+
+"  "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2" "$p3" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
             fi
         }
         ;;
@@ -553,7 +582,9 @@ alias use-homebrew='source $USRHOME_DIR/ibin/envfor-homebrew'
 alias use-cbr='source $USRHOME_DIR/ibin/envfor-cbr'
 alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
 alias use-diff='source $USRHOME_DIR/ibin/envfor-diff'
+
 # ----------------------------------------------------------------------------
 # Cleanup
+unset os_name
 usrhome_trace_out
 # ----------------------------------------------------------------------------
