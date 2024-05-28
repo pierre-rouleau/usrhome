@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-27 11:01:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 20:17:24 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -114,27 +114,113 @@ fi
 # Topic: Prompt control
 # =====================
 #
-# Timing the command: define 2 functions to store the Bash SECOND variable
-# (number of seconds since Bash started) in a
+# There are several ways to compute elapsed time in Bash.
+# - Using the SECOND variable: number of seconds since Bash started.
+# - Using the GNU coreutil date to compute date in seconds with milliseconds resolution:
+#    - on Linux:   `date +%s%3N`
+#    - on macOS:  `gdate +%s%3N`
 #
 
-usrhome_start_timer()
-{
-  usrhome_cmd_start_time=${usrhome_cmd_start_time:-$SECONDS}
-}
+# Set variables that will be used later
 
-usrhome_stop_timer()
-{
-  usrhome_cmd_exec_time=",et:$(($SECONDS - $usrhome_cmd_start_time))s"
-  unset usrhome_cmd_start_time
-}
+timer_fct=none
+case "$(uname)" in
+    Darwin)
+        if gdate 2> /dev/null; then
+            # gdate is available
+            timer_fct="gdate"
+        else
+            timer_fct="none"
+        fi
+        ;;
+
+    Linux)
+        timer_fct="date"
+        ;;
+
+    *)
+        # By default use a resolution of 1 second
+        timer_fct="none"
+        ;;
+esac
+
+if [ "${timer_fct}" = "none" ]; then
+    # No definition yet. Use functions with a resolution of 1 second.
+    usrhome_start_timer()
+    {
+        usrhome_cmd_start_time=${usrhome_cmd_start_time:-$SECONDS}
+    }
+
+    usrhome_stop_timer()
+    {
+        local e_s=$((SECONDS - usrhome_cmd_start_time))
+
+        local s=$((e_s % 60))
+        local m=$(((e_s / 60) % 60))
+        local h=$((e_s / 3600))
+
+        # Format elapsed according to the elapsed time elements
+        if   ((h > 0)); then et=${h}h${m}m${s}s  # example: 1h2m3s
+        elif ((m > 0)); then et=${m}m${s}s       # example: 1m2s
+        else  et=${s}s                           # example: 1s
+        fi
+        elapsed=",et:${et}"
+
+        unset usrhome_cmd_start_time
+    }
+else
+    # Use the date or gdate program, as identified in ${timer_fct}
+    # This provides millisecond resolution.
+    get_current_time()
+    {
+        if [ "$timer_fct" = "gdate" ]; then
+            current_time=+"$(gdate +%s%3N)"
+        else
+            current_time=+"$(date +%s%3N)"
+        fi
+    }
+
+    usrhome_start_timer()
+    {
+        get_current_time
+        usrhome_cmd_start_time=${usrhome_cmd_start_time:-$current_time}
+        unset current_time
+    }
+
+    usrhome_stop_timer()
+    {
+        get_current_time
+        local e_ms="$((current_time - usrhome_cmd_start_time))"
+
+        # compute time elements
+        local e_s=$((e_ms / 1000))
+        local ms=$((e_ms % 1000))
+        local s=$((e_s % 60))
+        local m=$(((e_s / 60) % 60))
+        local h=$((e_s / 3600))
+
+        # Format elapsed according to the elapsed time elements
+        if   ((h > 0)); then et=${h}h${m}m${s}s                           # example: 1h2m3s
+        elif ((m > 0)); then et=${m}m${s}.$(printf "%d" $((ms / 100)))s   # example: 1m12.3s
+        elif ((s > 9)); then et=${s}.$(printf %02d $((ms / 10)))s         # example: 12.34s
+        elif ((s > 0)); then et=${s}.$(printf %03d $ms)s                  # example: 1.234s
+        else et=${ms}ms
+        fi
+        elapsed=",et:${et}"
+
+        unset usrhome_cmd_start_time
+        unset current_time
+    }
+fi
+
+
 
 # Schedule execution of usrhome_start_timer when a command is about to execute.
 trap 'usrhome_start_timer' DEBUG
 
 # PROMPT_COMMAND is a command executed just before the prompt
 # Use it to compute execution time and store result inside
-# the variable usrhome_cmd_exec_time to use inside the prompt itself: PS1
+# the variable elapsed to use inside the prompt itself: PS1
 PROMPT_COMMAND="usrhome_stop_timer"
 
 
@@ -222,7 +308,7 @@ if [ ${ec} == 0 ]; then \
 else \
   echo -n "\[\e[0;31m\]"; \
 fi; \
-printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\]%s,L${SHLVL},\[$(tput bold)\]" ${ec} ${usrhome_cmd_exec_time}; \
+printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\]%s,L${SHLVL},\[$(tput bold)\]" ${ec} ${elapsed}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
   printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
@@ -245,7 +331,7 @@ fi;\
 # shellcheck disable=SC2016
 USRHOME_BASH_PROMPT3='$(\
 ec=${?}; \
-printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\]%s,L${SHLVL},\[$(tput bold)\]" ${ec} ${usrhome_cmd_exec_time}; \
+printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\]%s,L${SHLVL},\[$(tput bold)\]" ${ec} ${elapsed}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
   printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
