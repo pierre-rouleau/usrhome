@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 14:14:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-28 17:09:06 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -49,14 +49,16 @@ print_usage()
     printf "\
 showpath: show content of PATH-like environment variable.
 
- Usage: showpath [-n]  [[LIB|MAN]|PATH]
+ Usage: showpath [-n]  [[LIB|MAN|envvar]|PATH]
         showpath [-h|--help]
 
     - '-n' : print a numbered list.
     - The other argument identifies the environment variable.
       With noting specified, use PATH.
       Otherwise, use LIB or LIBPATH for LIBPATH, or
-                 use MAN or MANPATH for MANPATH.
+                 use MAN or MANPATH for MANPATH, or
+                 use the name of the environment variable
+                 specified as argument.
     - When MANPATH is undefined, showpath displays
       the information provided by manpath (if available).
 "
@@ -180,7 +182,7 @@ case $vname in
         show_path
         ;;
     *)
-        print_error "does not support $vname"
+        show_path
 esac
 
 

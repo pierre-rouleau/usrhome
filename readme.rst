@@ -1026,8 +1026,16 @@ USRHOME Command Name               Description
                                    common shell configuration file
                                    ``usrcfg/setfor-all-config.sh`` .
 
-``showpath [-n] [MAN|LIB][PATH]``  Print the value of PATH, MANPATH or LIBPATH, placing each directory
+``showpath [-n] [varname][PATH]``  Print the value of PATH, MANPATH or LIBPATH, or any PATH
+                                   specific environment variable placing each directory
                                    in its own line.
+
+                                   The command accepts shortcut names for MANPATH and LIBPATH
+                                   as MAN and LIB respectively.
+
+                                   The command also accepts the name of any other environment
+                                   variable that exists in the environment.
+
                                    With the optional ``-n``: print a left justified number on
                                    each line.
                                    Examples:
@@ -2024,6 +2032,25 @@ You can see the prompts inside the Emacs shell-mode and term-mode buffers.
 
 
 
+..
+   Using USRHOME on macOS
+   ======================
+
+   On macOS several tools that are available on Linux are missing.
+
+   I am using Homebrew_ to install these tools.  When used on macOS running on
+   Apple Silicon CPU, Homebrew_ does require sudo access because it places all
+   files inside the ``/opt/homebrew`` directory tree, with ``/opt/homebrew/bin``
+   the location of the executable files (or symlinks to the executable files).
+   This directory is not on PATH unless you place it.  USRHOME adds it for macOS.
+
+   USRHOME provides several features to enhance the command line experience on
+   macOS without affecting macOS default environment.  It becomes possible to use
+   macOS as it was when first installed or use it with the USRHOME provided
+   features inside the USRHOME extended shells.
+
+   More information about the extra features are described in the following
+   sections.
 
 
 
