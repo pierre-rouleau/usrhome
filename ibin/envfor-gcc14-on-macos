@@ -1,0 +1,104 @@
+# Sourced script: envfor-gcc14-on-macos  -*- mode: sh; -*-
+#
+# Purpose   : Install GCC executable files in the current macOS shell.
+# Created   : Sunday, May 26 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-05-28 17:02:40 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# The default C/C++ compilaer chain available on macOS is the Apple-modified
+# Clang. This version of Clang is specifc to Apple and it is a little
+# difficult to know exactly wat version of Clang is being used; Apple includes
+# features and excliudes others and it is difficult to find information about
+# this.
+#
+# This script installs support for GCC.  The standard GCC provided by Hombre,
+# that must be installed using the `brew install gcc' command, separately.
+#
+# The script does not impose the version of GCC, it depends on the presence of
+# a directory that holds a set of symlinks to the GCC toolchain binaries.
+# That directory is $HOME/bin/gcc
+#
+# To help you setup your macOS system for GCC, see the example setup script
+# usrhome/setup/macos/create-gcc-as-gcc14.sh
+#
+# This file is meant to be invoked via the use-gcc14 alias.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+# The $HOME/bin/gcc-14 directory must exists and hold symlinks to the gcc
+# toolchain binaries.
+#
+# See usrhome/setup/macos/create-gcc-as-gcc14.sh : it does what's required
+# once you have executed 'brew install gcc' for GCC-14 (which is the current
+# GCC version at the time this was written).
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+verbose="true"
+if [ "$1" = "--quiet" ]; then
+    verbose="false"
+fi
+
+if [ -z "$USRHOME_USING_GCC14_ON_MACOS" ]; then
+    if [ ! -d "$HOME/bin/gcc-14" ]; then
+        echo "*** use-gcc14 ERROR***"
+        echo " Missing directory: $HOME/bin/gcc-14"
+        echo " Please execute:"
+        echo "   $USRHOME_DIR/setup/macOS/create-gcc-as-gcc14.sh"
+        return 1
+    fi
+    if [ ! -d "$HOME/bin/gcc-14/man/man1" ]; then
+        echo "*** use-gcc14 ERROR***"
+        echo " Missing directory: $HOME/bin/gcc-14/man/man1"
+        echo " Please execute:"
+        echo "   $USRHOME_DIR/setup/macOS/create-gcc-as-gcc14.sh"
+        return 1
+    fi
+
+    USRHOME_USING_GCC14_ON_MACOS="$PATH"
+    export USRHOME_USING_GCC14_ON_MACOS
+    PATH="$HOME/bin/gcc-14:$PATH"
+    export PATH
+
+    # Add man directories to MANPATH for this shell
+    # The $HOME/bin/gcc/man contains the directories with symlinks to
+    # appropriate man files.
+    # Note that manpath will detect the man sub-directory of ~/bin/gcc-14
+    # and fill add it to MANPATH.
+    . "$USRHOME_DIR/ibin/do-extend-manpath"
+
+    if [ "${verbose}" = "true" ]; then
+        echo "-------------------------------------------------------------------"
+        echo "Using GNU GCC-14 as the compiler chain in this shell."
+        gcc --version
+        gcc -dumpmachine
+        echo ""
+        echo "- PATH is now:"
+        showpath -n
+        echo "- And MANPATH is:"
+        showpath -n MAN
+        echo "-------------------------------------------------------------------"
+    else
+        echo "- Using GNU GCC-14 as the compiler chain in this shell."
+    fi
+else
+    echo "*** Warning!! ***"
+    echo "GCC-14 is already set up for this shell"
+    echo "The original PATH is in: USRHOME_USING_GCC14_ON_MACOS"
+    echo "*****************"
+    return 1
+fi
+
+# ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

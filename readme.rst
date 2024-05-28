@@ -2032,25 +2032,64 @@ You can see the prompts inside the Emacs shell-mode and term-mode buffers.
 
 
 
-..
-   Using USRHOME on macOS
-   ======================
+Using USRHOME on macOS
+======================
 
-   On macOS several tools that are available on Linux are missing.
+On macOS several tools that are available on Linux are missing.
 
-   I am using Homebrew_ to install these tools.  When used on macOS running on
-   Apple Silicon CPU, Homebrew_ does require sudo access because it places all
-   files inside the ``/opt/homebrew`` directory tree, with ``/opt/homebrew/bin``
-   the location of the executable files (or symlinks to the executable files).
-   This directory is not on PATH unless you place it.  USRHOME adds it for macOS.
+I am using Homebrew_ to install these tools.  When used on macOS running on
+Apple Silicon CPU, Homebrew_ does require sudo access because it places all
+files inside the ``/opt/homebrew`` directory tree, with ``/opt/homebrew/bin``
+the location of the executable files (or symlinks to the executable files).
+This directory is not on PATH unless you place it.  USRHOME adds it for macOS.
 
-   USRHOME provides several features to enhance the command line experience on
-   macOS without affecting macOS default environment.  It becomes possible to use
-   macOS as it was when first installed or use it with the USRHOME provided
-   features inside the USRHOME extended shells.
+USRHOME provides several features to enhance the command line experience on
+macOS without affecting macOS default environment.  It becomes possible to use
+macOS as it was when first installed or use it with the USRHOME provided
+features inside the USRHOME extended shells.
 
-   More information about the extra features are described in the following
-   sections.
+More information about the extra features are described in the following
+sections.
+
+Using GCC on macOS
+------------------
+
+The following commands specializes the shell to use a specific version of the
+GCC tool chain inside the shell.  That shell can then build using the specified
+tool chain instead of the Apple-supplied Clang tool chain.
+
+= ===================================== =============================================================
+. Command                               Description
+= ===================================== =============================================================
+. ``use-gcc14 [--quiet]``               Installs GCC 14 tool chain inside the current directory.
+
+                                        - By default it is a little verbose, printing the actual
+                                          version of GCC installed, the resulting PATH and MANPATH.
+                                          You can use the ``--quiet`` option; it will only print one
+                                          line.
+                                        - It can only be executed once inside a shell.  It will print
+                                          an error if you try to run it again.
+                                        - It requires a ``~/bin`` directory to exists.
+                                        - The first time executed, it checks for the presence of a
+                                          ``~/bin/gcc-14`` directory and other files.  If these are
+                                          not found, it will print an error message showing that you
+                                          must execute the script `create-gcc-as-gcc14.sh`_.
+
+                                          - `create-gcc-as-gcc14.sh`_ checks the requirements, which
+                                            includes the Homebrew-installed GCC 14.  If it is not
+                                            found the script will tell you to install it with
+                                            the ``brew install gcc@14`` command.
+                                          - Once this is done it will create the required symbolic
+                                            link files inside your ``~/bin/gcc-14`` directory which
+                                            will later be placed in your PATH.
+                                          - Upon success, `create-gcc-as-gcc14.sh`_ will instruct you
+                                            to execute ``use-gcc14`` again.
+
+                                        - The ``use-gcc14`` command is a an alias that sources the
+                                          `usrhome/ibin/envfor-gcc14-on-macos`_ script.  That script
+                                          puts the ``~/bin/gcc-14`` at the beginning of the shell's
+                                          PATH, effectively activating the GCC commands.
+= ===================================== =============================================================
 
 
 
@@ -2167,6 +2206,8 @@ Thanks!
 .. _usrhome/ibin/envfor-cbr:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
 .. _usrhome/ibin/do-cbr:                               https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
 .. _Emacs man support:                                 https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
+.. _create-gcc-as-gcc14.sh:                            https://github.com/pierre-rouleau/usrhome/blob/main/setup/macOS/create-gcc-as-gcc14.sh
+.. _usrhome/ibin/envfor-gcc14-on-macos:                https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gcc14-on-macos
 
 
 .. ---------------------------------------------------------------------------
