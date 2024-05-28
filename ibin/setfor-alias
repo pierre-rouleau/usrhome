@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 13:35:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-27 20:31:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -57,7 +57,6 @@ alias usrhome-env='$USRHOME_DIR/bin/usrhome-env'
 # shellcheck disable=SC2142 # inside a function $0 refers to the function name.  Can't use that.
 alias info-shell='printf "\$0 : %s, \$SHELL : %s\n" $0 $SHELL'
 alias \?='printf "%s\n" $?'
-
 
 info-shell-special-var()
 {
@@ -119,8 +118,6 @@ shown within single quotes.
     esac
     echo "-----------------------------------"
 }
-
-
 
 # Topic: Alias: Clear Screen
 # --------------------------
@@ -465,8 +462,12 @@ $(tput bold)- USRHOME_PROMPT_MODEL:$(tput sgr0) %s
 $(tput bold)- USRHOME_PROMPT_MODEL_OVERRIDE:$(tput sgr0) %s
 
 NOTE:
- - Prompt model 2 and 3 print Execution Time of the command, in seconds.
-   The value is printed as 'et:S' where S is the number of seconds.
+ - Prompt model 2 and 3 prints the command elapsed time (et:ttt)
+   right after the exit code value and before the shell nested level.
+   - On Linux and on macOS with GNU coreutils gdate, time resolution
+     is in milliseconds. On macOS without gdate, time resolution is
+     in seconds.
+
 SEE ALSO:
 -  https://wiki.archlinux.org/title/Bash/Prompt_customization#Bash_escape_sequences
 " "$PS0" "$PS1" "$PS2" "$PS3" "$PS4" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
@@ -583,8 +584,17 @@ alias use-cbr='source $USRHOME_DIR/ibin/envfor-cbr'
 alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
 alias use-diff='source $USRHOME_DIR/ibin/envfor-diff'
 
+# [:todo 2024-05-27, by Pierre Rouleau: Add GCC support for macOS]
+# if [ "${os_name}" = "Darwin" ]; then
+#     alias use-gcc='source $USRHOME_DIR/ibin/envfor-gcc-on-macos'
+# fi
+
 # ----------------------------------------------------------------------------
 # Cleanup
 unset os_name
 usrhome_trace_out
+
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
