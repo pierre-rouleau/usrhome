@@ -138,20 +138,24 @@ Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
 The macOS Sonoma default shell is zsh. I have installed the latest Bash
 shell via Homebrew and also installed Rust.   These are available on the
 default zsh shell, which is shown starting in the first terminal seen in the
-back (ttys000).  The PATH available in that shell has 17 entries.  It has
+back (ttys013).  The PATH available in that shell has 17 entries.  It has
 access to Rust and several Homebrew directories.
 
-I have also configured Terminal to start a Bash login shell. That shell is
+I have also configured Terminal to start a Bash login shell. That shell
+(ttys014) is
 also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
 anything on the PATH of the login shells.  They have 10 directories in their
 PATH; the first one being ``/usr/local/bin``.
 
-Then I start another terminal (ttys002) with macOS default zsh non-login
-interactive shell.   As for the first one (ttys000), it sets up Homebrew and
+Then I start another terminal (ttys015) with macOS default zsh non-login
+interactive shell.   As for the first one (ttys013), it sets up Homebrew and
 Rust because my USRHOME setup is done that way for those shells.  It has 17
 directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
 prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
-shell nested level.
+shell nested level.  From bash I create a zsh sub-shell from where I launch a
+``sleep 100`` command in the background.  The zsh shows ``1 ⚙`` identifying a
+running background job.  And when I issue an invalid command, it prints the
+exit code (127) followed by a red ⨯.
 
 .. figure:: res/macOS-shells.png
 
@@ -1488,7 +1492,11 @@ All provided prompts, show:
   otherwise the '$' character is used for bash and the '%' character is for zsh.
 
 Some also show the Week day and month date, the number of currently running jobs
-of the shell
+of the shell.
+
+Prompt model 2 and 3 prints the elapsed time of the last command with
+millisecond resolution.  On macOS without GNU coreutils gdate available the
+resolution is in seconds.
 
 The zsh prompt can also print extra information:
 
