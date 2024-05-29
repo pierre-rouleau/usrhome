@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-05-03 17:53:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-28 22:44:50 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -48,7 +48,7 @@
 # USRHOME_DIR environment variable, then skip this part.
 #
 if [[ -z $USRHOME_DIR ]]; then
-    # - Identify the name of what bash executed (that should be the ~/.zshenv symlink)
+    # - Identify the name of what zsh executed (that should be the ~/.zshenv symlink)
     script=${(%):-%x}
     # - Then identify the real file pointed by that symlink: it should be
     #   this file, the usrhome/dot/bashrc.bash, with the complete path.
