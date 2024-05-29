@@ -761,16 +761,28 @@ USRHOME Command Name               Description
                                    Internally also set the shell variable USRHOME_DESKTOP which can
                                    later be used inside shell scripts.
 
+                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
+                                     function.
+
 ``info-prompt [-q]``               Print information about shell's prompt controlling variables.
                                    By default it prints the values of all variables.  With the
                                    ``-q`` option it only prints the values of
                                    the ``USRHOME_PROMPT_MODEL``
                                    and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
                                    shows the value of the default prompt mode, the second one, if
-                                   set, is the model of the current prompt, overriding the default.
+                                   set, is the model of the current prompt,
+                                   overriding the default.
+
+                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
+                                     function.
 
 ``info-rosetta2``                  Available on macOS only.  Checks whether `Rosetta 2`_ is installed
                                    and prints info about it.
+
+                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
+                                     function.
+
+
 ``info-shell-special-var [ARGS]``  List the shell special variables like ``$*``, ``$@``, ``$?`` and
                                    others,  describing their purpose and showing their values.
 
@@ -778,9 +790,16 @@ USRHOME Command Name               Description
                                      prints the positional arguments, the value of ``"$*"`` and
                                      ``"$@"``  helping you remember the basic differences.  Try it
                                      by passing a glob_ to it like ``*``.
+                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
+                                     function.
+
+
 
 ``info-shell``                     Show current and default shell environment variable names
                                    and values.
+
+                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a simple
+                                     alias.
 ================================== ================================================================
 
 Terminal Window Control
