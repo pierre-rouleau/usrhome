@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-03 17:51:11 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-30 16:20:26 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -60,7 +60,6 @@
 # ----
 #
 #
-
 # 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
 # ------------------------------------------
 #
@@ -125,11 +124,21 @@ usrhome_trace_in "~/.bash_profile   --> \$USRHOME_DIR/dot/bash_profile.bash"
 #     does exists: it is implemented as usrhome/dot/bashrc.bash
 #
 
-# Set USRHOME__IN_LOGIN to 1; this can be used within usrhome/dot/bashrc.bash
-# to determine if it is running during a login or not.
+# Set USRHOME__IN_LOGIN to 1 when this is a Bash login shell.
+# - On Linux, when this file is executed, it's always a login bash shell.
+# - On macOS, for Bash, it is always executed, even for interactive shells.
+#   Therefore, to be able to distinguish between a login and a non-login
+#   shell on macOS, we don't set USRHOME__IN_LOGIN to 1 here.
+#   Instead configure your terminal application to use one of
+#   the following bash launchers:
+#
+#   - usrhome/ibin/macos_bin_bash.sh
+#   - usrhome/ibin/macos_homebrew_gnu_bash.bash
 
-# shellcheck disable=SC2034
-USRHOME__IN_LOGIN=1
+if [ "$(uname)" != "Darwin" ]; then
+    # shellcheck disable=SC2034
+    USRHOME__IN_LOGIN=1
+fi
 
 if [ -f "$USRHOME_DIR_USRCFG/do-user-bash_profile.bash" ]; then
     # shellcheck disable=SC1091
@@ -139,9 +148,14 @@ fi
 # Inform other files the shell configuration is done during the setup of a login shell.
 # shellcheck disable=SC1091
 . "$USRHOME_DIR/dot/bashrc.bash"
-unset USRHOME__IN_LOGIN
+if [ "$(uname)" != "Darwin" ]; then
+    unset USRHOME__IN_LOGIN
+fi
 
 # ----------------------------------------------------------------------------
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: bash
+# End:
