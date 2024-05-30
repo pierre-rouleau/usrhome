@@ -167,18 +167,37 @@ started two terminal instances: the first one launches the default Bash,
 instrumented with the exact same USRHOME settings than my macOS one.
 On Linux, Homebrew is not used.  But it also activates Rust.
 
-USRHOME does some check for vulnerabilities and it detects one in Rocky Linux
-9.3 and reports it. Then I use showpath, a USRHOME provided command, to print
-the path on numbered lines; it has 8 entries in the PATH and nothing is
-duplicated.
+USRHOME does some check for vulnerabilities and it detects a possible one in
+Rocky Linux 9.3 and reports it when it is executing as the first level.
+The prompt prints:
+
+- the exit code of the last command,
+- the elapsed time (duration) of the completed command,
+- the shell nested level,
+- the number of background jobs running,
+- the user name @ hostname @ current time in 24-hour format
+- the current directory in side square brackets.
+
+The second non-login shell is executing a terminal-based Emacs process, which
+runs a terminal mode shell.  The USRHOME shell is Emacs-aware.
+The bash prompt is not affected when running inside Emacs.
+It can display the same information.
+You can see the PATH components shown by the showpath command.
 
 USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
 entries and empty entries. Here everything is fine.
 
-The second terminal is configured to launch Bash in login mode. Here, USRHOME
+When the shell is placed in sudo mode, the prompt changes color and shows a
+``#`` instead of a ``$`` after the word ``bash``.
+
+The third terminal is configured to launch Bash in login mode. Here, USRHOME
 does not add anything to the PATH; the Bash login shells are unmodified and do
-not have access for any extra tools.  They do not perform USRHOME simple (and
-quite limited) vulnerability check.
+not have access for any extra tools, therefore the PATH is shorter.
+These shells do not perform USRHOME simple (and quite limited) vulnerability
+check.
+
+Also note that, to help distinguish the login shell, I set the login shell
+prompt to red and the color of the non-login prompt to blue.
 
 .. figure:: res/RockyLinux-shells.png
 
@@ -2038,7 +2057,7 @@ environment, which they select by checking the host name and other values.
 
 This way, I can **centralize the shell setting of all computers or VMs** I use
 inside **a single repository** that I clone inside the usrcfg directory of these
-computers and VMs.  I can design the logic once, specialize it for varius
+computers and VMs.  I can design the logic once, specialize it for various
 environments and distribute it through the VCS.
 
 Here's a Kali Linux terminal with the Z shell using USRHOME selecting the
