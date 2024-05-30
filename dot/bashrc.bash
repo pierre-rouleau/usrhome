@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-27 20:17:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-30 17:09:29 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -126,7 +126,7 @@ fi
 timer_fct=none
 case "$(uname)" in
     Darwin)
-        if gdate 2> /dev/null; then
+        if gdate > /dev/null 2>&1; then
             # gdate is available
             timer_fct="gdate"
         else
@@ -297,7 +297,6 @@ else \
 fi; \
 ) '
 
-
 # PROMPT MODEL 2: With color, bolding and logic.
 #                 This prompt reports last command execute time in seconds.
 # shellcheck disable=SC2016
@@ -308,7 +307,7 @@ if [ ${ec} == 0 ]; then \
 else \
   echo -n "\[\e[0;31m\]"; \
 fi; \
-printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\]%s,L${SHLVL},\[$(tput bold)\]" ${ec} ${elapsed}; \
+printf "\[$(tput bold)\]>%2X\[\e[0m\]\[$(tput sgr0)\]%s,L${SHLVL},\jj \[$(tput bold)\]" ${ec} ${elapsed}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
   printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
@@ -331,7 +330,7 @@ fi;\
 # shellcheck disable=SC2016
 USRHOME_BASH_PROMPT3='$(\
 ec=${?}; \
-printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\]%s,L${SHLVL},\[$(tput bold)\]" ${ec} ${elapsed}; \
+printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\]%s,L${SHLVL},\jj \[$(tput bold)\]" ${ec} ${elapsed}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
   printf "\u@\h@\t[\w]\[$(tput sgr0)\]\n";  \
 else \
