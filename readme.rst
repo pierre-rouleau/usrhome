@@ -1462,12 +1462,12 @@ diff_                              USRHOME diff_ is a shell-based dispatcher pro
 USRHOME Prompt
 ==============
 
-USRHOME provides control for the Z Shell and Bash prompts as described in this section.
-
-
+USRHOME provides control for the Z Shell and Bash prompts as described in this
+section. USRHOME provides 3 pre-defined prompt models (model 1, 2 and 3) and
+reserves prompt model number 0 to be user-defined.
 
 Information About Prompt Control Variables
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------------
 
 URSHOME provides the following commands to get information about the shell
 prompt.
@@ -1484,9 +1484,42 @@ USRHOME Command Name               Description
                                    set, is the model of the current prompt, overriding the default.
 ================================== ================================================================
 
+USRHOME prompt model control logic supports the environment variables
+described here:
+
+================================== ================================================================
+Environment variable               Description
+================================== ================================================================
+USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use of 1-second
+                                   resolution timer for the Bash prompt.
+
+                                   This is done by ignoring the potential availability of the GNU
+                                   coreutils ``gdate`` command and use the macOS supplied ``date``
+                                   command.
+
+                                   You may want to do this if the Bash prompt on macOS runs into a
+                                   race condition and prints a message similar to::
+
+                                     bash: child setpgid (75144 to 75141): Operation not permitted
+
+                                   This might occur when you are executing a fast command and pipe
+                                   it into another.
+
+                                   Setting USRHOME_SLOW_TIMER should prevent this problem.  You can
+                                   do it dynamically inside the Bash shell like this::
+
+                                     setenv USRHOME_SLOW_TIMER
+                                     bash
+
+                                   Or you can set it inside your usrcfg/setfor-all-config.sh by
+                                   including the following lines:
+
+                                     USRHOME_SLOW_TIMER=1
+                                     export USRHOME_SLOW_TIMER
+================================== ================================================================
 
 Prompt Model 0
-~~~~~~~~~~~~~~
+--------------
 
 With the ``USRHOME_PROMPT_MODEL`` environment variable set to 0, USRHOME
 does **not** configure the zsh prompt and expects the prompt to be set inside
@@ -1495,7 +1528,7 @@ otherwise it uses the system default.
 
 
 Prompt Model 1, 2 and 3
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 These prompt models are predefined prompts that show multiple values in various
 ways.  As these might evolve over time, it's best to try them and see them in
@@ -1591,7 +1624,7 @@ identifies the shell.
 .. figure:: res/zsh-prompt-model-3.png
 
 Prompt Search Regexp
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 Use the following regular expressions to search a prompt, or
 to install them in editors, like Emacs, to navigate through
