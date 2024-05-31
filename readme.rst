@@ -1072,7 +1072,7 @@ USRHOME Command Name               Description
                                    the ``INFOPATH`` environment variable.  Use it to extend
                                    the ``INFOPATH`` when using the `stand-alone GNU info reader`_
                                    or info within Emacs.
-                                   This is an alias to the `usrhome/bin/envfor-info`_
+                                   This is an alias to the `usrhome/ibin/envfor-info`_
 
 ``showpath [-n] [varname][PATH]``  Print the value of PATH, MANPATH or LIBPATH, or any PATH
                                    specific environment variable placing each directory
@@ -1440,8 +1440,7 @@ diff_                              USRHOME diff_ is a shell-based dispatcher pro
                                    and print the size in units of 1024 bytes multiples.
 
 find-dir_                         Find and print directories DIR inside directory tree ROOT.
-
-                                  ::
+                                  Its help is::
 
                                       Usage: find-dir [--inc-hidden|-H] DIR [ROOT]
                                              find-dir [-h|--help]
@@ -2313,7 +2312,7 @@ Thanks!
 .. _create-gcc-as-gcc14.sh:                            https://github.com/pierre-rouleau/usrhome/blob/main/setup/macOS/create-gcc-as-gcc14.sh
 .. _usrhome/ibin/envfor-gcc14-on-macos:                https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gcc14-on-macos
 .. _find-dir:                                          https://github.com/pierre-rouleau/usrhome/blob/main/bin/find-dir
-.. _usrhome/bin/envfor-info:                           https://github.com/pierre-rouleau/usrhome/blob/main/bin/envfor-info
+.. _usrhome/ibin/envfor-info:                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-info
 .. _stand-alone GNU info reader:                       https://www.gnu.org/software/texinfo/manual/info-stnd/info-stnd.html
 
 
