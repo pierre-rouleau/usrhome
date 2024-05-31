@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:57:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-31 17:00:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -115,7 +115,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
         # Topic: Path: Homebrew
         # ---------------------
         # Set Homebrew first, just above system's PATH, USRHOME and user's bin will
-        # be prepended before; to take precedence over homebrew, over system.
+        # be prepended before that; to take precedence over homebrew and over system.
 
         if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
             source $USRHOME_DIR/ibin/envfor-homebrew
