@@ -1433,6 +1433,25 @@ diff_                              USRHOME diff_ is a shell-based dispatcher pro
                                    count. Otherwise it uses the ``du`` command, which runs faster,
                                    and print the size in units of 1024 bytes multiples.
 
+find-dir_                         Find and print directories DIR inside directory tree ROOT.
+
+                                  ::
+
+                                      Usage: find-dir [--inc-hidden|-H] DIR [ROOT]
+                                             find-dir [-h|--help]
+
+                                      Find and print all directories with name 'DIR'
+                                      inside the specified directory tree ('ROOT').
+
+                                      - By default ROOT is the current directory.
+                                      - By default exclude all hidden directories (such as .git)
+                                        unless --inc-hidden option is specified.
+
+                                      Exit codes: 0 if at least one directory found.
+                                                : 1 if nothing is found.
+                                                : 2 if the command line is invalid.
+
+
 ``flip-to-ln DPATH FNAME``         Move file FNAME into directory DPATH and create a symbolic link
                                    FNAME that points to its new location inside directory DPATH.
 
@@ -2287,6 +2306,7 @@ Thanks!
 .. _Emacs man support:                                 https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
 .. _create-gcc-as-gcc14.sh:                            https://github.com/pierre-rouleau/usrhome/blob/main/setup/macOS/create-gcc-as-gcc14.sh
 .. _usrhome/ibin/envfor-gcc14-on-macos:                https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gcc14-on-macos
+.. _find-dir:                                          https://github.com/pierre-rouleau/usrhome/blob/main/bin/find-dir
 
 
 .. ---------------------------------------------------------------------------

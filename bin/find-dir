@@ -1,0 +1,111 @@
+#!/bin/sh
+# SH FILE: find-dir
+#
+# Purpose   : Find directories in current directory tree.
+# Created   : Friday, May 31 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-05-31 15:15:14 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Search for directories with a specific name inside a specified
+# directory tree and print the names of the found directories.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# POSIX compliant: find and printf.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "\
+find-dir: Find and print all directories DIR in specified ROOT directory tree.
+
+ Usage: find-dir [--inc-hidden|-H] DIR [ROOT]
+        find-dir [-h|--help]
+
+ Find and print all directories with name 'DIR'
+ inside the specified  directory tree ('ROOT').
+
+ - By default ROOT is the current directory.
+ - By default exclude all hidden directories (such as .git)
+   unless --inc-hidden option is specified.
+
+ Exit codes: 0 if at least one directory found.
+           : 1 if nothing is found.
+           : 2 if the command line is invalid.
+
+"
+}
+
+print_error()
+{
+    # $0 : error message
+    printf -- "
+*** find-dir ERROR:
+      %s
+******************
+
+" "$0"
+    print_usage
+    exit 2
+}
+
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+fi
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+search_hidden="false"
+if [ "$1" = "--inc-hidden" ] || [ "$1" = "-H" ] ; then
+    search_hidden="true"
+    shift
+fi
+
+case "$1" in
+    -*)
+       print_error "Invalid argument: $1"
+
+esac
+dirname="$1"
+shift
+rootname="."
+
+
+if [ -n "$1" ]; then
+    rootname="$1"
+    if [ ! -d "$rootname" ]; then
+        print_error "Specified root does not exists: ${rootname}"
+    fi
+fi
+if [ -n "$2" ]; then
+    print_error "Too many arguments."
+fi
+
+
+if [ "$search_hidden" = "true" ]; then
+    find "${rootname}" -type d  -name "${dirname}"
+
+else
+    find "${rootname}" -type d \( ! -path '*/.*' \) -name "${dirname}"
+fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
