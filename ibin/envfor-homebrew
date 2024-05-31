@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-31 12:17:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-31 15:24:32 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -115,8 +115,6 @@ if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
                 echo "ERROR: Homebrew requested but not found in /opt/homebrew"
             fi
             ;;
-        *)
-
     esac
 
     unset usrhome_homebrew_path
