@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:55:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-31 12:17:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -14,7 +14,7 @@
 # Dependencies
 # ------------
 #
-#
+# Support Homebrew for macOS on Intel and Apple Silicon architectures.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -31,27 +31,51 @@
 # /usr/local/Cellar and /usr/local/Caskroom and symlinks to these are stored
 # inside /usr/local/bin which IS on the system PATH.
 #
-# The new way is much more flexible but we have to add the /opt/homebrew directories
-# in the PATH, while this does not have to be done on the old architecture.
+# The new way is much more flexible but we have to add the /opt/homebrew
+# directories in the PATH, while this does not have to be done on the old
+# architecture.
+#
+# Also note that once installed you can run the `brew shellenv` which prints
+# what should be added to the shell configuration. It would be possible to
+# execute that but the content was added here instead.
 
 usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-homebrew"
 
-if !  echo $PATH | grep "/homebrew/" > /dev/null; then
-    # If Homebrew has not already been installed (as seen in PATH)
-    # then install it.  Otherwise skip.
-
-    usrhome_homebrew_path=\
-/opt/homebrew/opt/make/libexec/gnubin:\
-/opt/homebrew/bin:\
-/opt/homebrew/sbin:\
-/opt/homebrew/opt/m4/bin
+if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
+    # If Homebrew has not already been placed inside PATH
+    # then place it and set the homebrew environment.
+    # Otherwise skip.
 
     arch="$(uname -m)"
     case "$arch" in
-        'x86_64' )
+        # Intel Architecture
+        'x86_64' | 'i386' )
             if [ -d /usr/local/Cellar ]; then
+                HOMEBREW_PREFIX="/usr/local"
+                HOMEBREW_CELLAR="/usr/local/Cellar"
+                HOMEBREW_REPOSITORY="/usr/local/Homebrew"
+                HOMEBREW_SHELLENV_PREFIX="/usr/local"
+                usrhome_homebrew_path=\
+/usr/local/opt/make/libexec/gnubin:\
+/usr/local/bin:\
+/usr/local/sbin:\
+/usr/local/opt/m4/bin
+                PATH=${usrhome_homebrew_path}:$PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
-                    echo "- Using Homebrew tools from 'usr/local/Cellar via /usr/local/bin "
+                    echo "- Using Homebrew tools from 'usr/local and /usr/local/Cellar"
+                fi
+                # Extend MANPATH
+                #   with new man directories that may be
+                #   in the new directories placed in PATH.
+                #   It exports the new MANPATH value.
+                #   This should include the /opt/homebrew/share/man
+                . "$USRHOME_DIR/ibin/do-extend-manpath"
+                #
+                MANPATH="/usr/local/share/man${MANPATH+:$MANPATH}:"
+                if [ "$INFOPATH" = "" ]; then
+                    export INFOPATH="/usr/local/share/info"
+                else
+                    export INFOPATH="/usr/local/share/info:$INFOPATH"
                 fi
             else
                 echo "ERROR: Homebrew requested but not found in /usr/local/Cellar"
@@ -59,10 +83,33 @@ if !  echo $PATH | grep "/homebrew/" > /dev/null; then
         ;;
 
         'arm64' | 'aarch64' )
+            # Apple Silicon architecture
             if [ -d /opt/homebrew ]; then
+                # Activate Homebrew path and environment variables
+                export HOMEBREW_PREFIX="/opt/homebrew";
+                export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+                export HOMEBREW_REPOSITORY="/opt/homebrew";
+                usrhome_homebrew_path=\
+/opt/homebrew/opt/make/libexec/gnubin:\
+/opt/homebrew/bin:\
+/opt/homebrew/sbin:\
+/opt/homebrew/opt/m4/bin
                 PATH=${usrhome_homebrew_path}:$PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
                     echo "- Using Homebrew tools from /opt/homebrew."
+                fi
+                # Extend MANPATH
+                #   with new man directories that may be
+                #   in the new directories placed in PATH.
+                #   It exports the new MANPATH value.
+                #   This should include the /opt/homebrew/share/man
+                . "$USRHOME_DIR/ibin/do-extend-manpath"
+                #
+                # Extend or set INFOPATH
+                if [ "$INFOPATH" = "" ]; then
+                    export INFOPATH="/opt/homebrew/share/info"
+                else
+                    export INFOPATH="/opt/homebrew/share/info:$INFOPATH"
                 fi
             else
                 echo "ERROR: Homebrew requested but not found in /opt/homebrew"
@@ -71,6 +118,7 @@ if !  echo $PATH | grep "/homebrew/" > /dev/null; then
         *)
 
     esac
+
     unset usrhome_homebrew_path
 fi
 
