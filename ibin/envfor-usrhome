@@ -3,7 +3,7 @@
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:55:36 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-31 17:05:54 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -21,7 +21,7 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-usrhome"
 # Add usrhome/bin at beginning of PATH if not already there.
 # Also add ~/bin to the beginning od PATH if that directory is present
 
-if ! echo "$PATH" | grep "$USRHOME_DIR" > /dev/null; then
+if ! echo "$PATH" | grep -q "$USRHOME_DIR"; then
     # If USRHOME has not already been installed (as seen in PATH),
     # then install it.  Otherwise skip.
 
@@ -31,7 +31,12 @@ if ! echo "$PATH" | grep "$USRHOME_DIR" > /dev/null; then
         echo "- Adding usrhome support."
     fi
 
-    the_path="$USRHOME_DIR/bin":$PATH
+    if [ "$(uname)" = "Darwin" ]; then
+        the_path="$USRHOME_DIR/bin:$USRHOME_DIR/bin/macOS":$PATH
+    else
+        the_path="$USRHOME_DIR/bin":$PATH
+    fi
+    # Add user's ~/bin if it exists
     if [ -d "$HOME/bin" ]; then
         if ! echo "$PATH" | grep "$HOME/bin" > /dev/null; then
             the_path="$HOME/bin":$the_path
