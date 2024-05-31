@@ -1,0 +1,65 @@
+# Sourced script: envfor-info  -*- mode: sh; -*-
+#
+# Purpose   : Extend the INFOPATH to all directories that contain some.
+# Created   : Friday, May 31 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-05-31 16:01:29 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Find info directories in standard locations and add them to the INFOPATH
+# environment variable.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - $USRHOME_DIR/bin/find-dir
+# - printf
+#
+# Invoke it as:  use-info
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+if [ -n "$HOMEBREW_PREFIX" ]; then
+    potential_roots="$HOMEBREW_PREFIX"
+else
+    potential_roots=
+fi
+
+orig_INFOPATH="$INFOPATH"
+new_dir_count=0
+for root_dname in $potential_roots; do
+    for dname in $(find-dir info ${root_dname}); do
+        r_dname="$(realpath ${dname})"
+        if [ -z "$INFOPATH" ]; then
+            INFOPATH="${r_dname}"
+            new_dir_count=$(( new_dir_count + 1 ))
+        else
+            already_in="false"
+            case "$INFOPATH" in
+                *"${r_dname}"*)
+                    already_in="true"
+                    ;;
+            esac
+            if [ "$already_in" = "false" ]; then
+                INFOPATH="$INFOPATH":"${r_dname}"
+                new_dir_count=$(( new_dir_count + 1 ))
+            fi
+        fi
+    done
+done
+printf -- "Added %d directories to INFOPATH.\n" ${new_dir_count}
+printf -- "Print INFOPATH with: showpath INFOPATH\n"
+export INFOPATH
+unset already_in
+unset orig_INFOPATH
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

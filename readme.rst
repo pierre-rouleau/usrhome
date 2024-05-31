@@ -1068,6 +1068,12 @@ USRHOME Command Name               Description
                                    common shell configuration file
                                    ``usrcfg/setfor-all-config.sh`` .
 
+``use-info``                       Add ``info`` directories located in standard places to
+                                   the ``INFOPATH`` environment variable.  Use it to extend
+                                   the ``INFOPATH`` when using the `stand-alone GNU info reader`_
+                                   or info within Emacs.
+                                   This is an alias to the `usrhome/bin/envfor-info`_
+
 ``showpath [-n] [varname][PATH]``  Print the value of PATH, MANPATH or LIBPATH, or any PATH
                                    specific environment variable placing each directory
                                    in its own line.
@@ -2307,6 +2313,8 @@ Thanks!
 .. _create-gcc-as-gcc14.sh:                            https://github.com/pierre-rouleau/usrhome/blob/main/setup/macOS/create-gcc-as-gcc14.sh
 .. _usrhome/ibin/envfor-gcc14-on-macos:                https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gcc14-on-macos
 .. _find-dir:                                          https://github.com/pierre-rouleau/usrhome/blob/main/bin/find-dir
+.. _usrhome/bin/envfor-info:                           https://github.com/pierre-rouleau/usrhome/blob/main/bin/envfor-info
+.. _stand-alone GNU info reader:                       https://www.gnu.org/software/texinfo/manual/info-stnd/info-stnd.html
 
 
 .. ---------------------------------------------------------------------------
