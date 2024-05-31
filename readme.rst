@@ -1440,7 +1440,8 @@ diff_                              USRHOME diff_ is a shell-based dispatcher pro
                                    and print the size in units of 1024 bytes multiples.
 
 find-dir_                         Find and print directories DIR inside directory tree ROOT.
-                                  Its help is::
+
+                                  - Its help is::
 
                                       Usage: find-dir [--inc-hidden|-H] DIR [ROOT]
                                              find-dir [-h|--help]
