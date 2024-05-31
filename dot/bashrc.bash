@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-30 17:09:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-31 10:40:04 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -126,11 +126,25 @@ fi
 timer_fct=none
 case "$(uname)" in
     Darwin)
-        if gdate > /dev/null 2>&1; then
-            # gdate is available
-            timer_fct="gdate"
+        if [ -n "$USRHOME_SLOW_TIMER" ]; then
+            # On macOS, the fast timer using gdate may cause a race condition
+            # during piped commands which will be reported on the shell by the
+            # following (or similar) message:
+            #
+            #  bash: child setpgid (71244 to 71241): Operation not permitted
+            #
+            # To prevent that, either do not install gdate or set the
+            # USRHOME_SLOW_TIMER environment variable, forcing the prompt
+            # logic to use the 1-second resolution date command.
+            timer_fct="macOS-date"
+
         else
-            timer_fct="none"
+            if gdate > /dev/null 2>&1; then
+                # gdate is available
+                timer_fct="gdate"
+            else
+                timer_fct="macOS-date"
+            fi
         fi
         ;;
 
@@ -140,11 +154,11 @@ case "$(uname)" in
 
     *)
         # By default use a resolution of 1 second
-        timer_fct="none"
+        timer_fct="macOS-date"
         ;;
 esac
 
-if [ "${timer_fct}" = "none" ]; then
+if [ "${timer_fct}" = "macOS-date" ]; then
     # No definition yet. Use functions with a resolution of 1 second.
     usrhome_start_timer()
     {
@@ -170,13 +184,16 @@ if [ "${timer_fct}" = "none" ]; then
     }
 else
     # Use the date or gdate program, as identified in ${timer_fct}
-    # This provides millisecond resolution.
+    # The Linux date and GNU gdate provides millisecond resolution.
     get_current_time()
     {
         if [ "$timer_fct" = "gdate" ]; then
-            current_time=+"$(gdate +%s%3N)"
+            current_time="$(gdate +%s%3N)"
+        elif [ "$timer_fct" = "date" ]; then
+            current_time="$(date +%s%3N)"
         else
-            current_time=+"$(date +%s%3N)"
+            printf -- "BUG detected in time management in %s\n" "$USRHOME_DIR/dot/bashrc.bash"
+            printf -- " Please report it.\n"
         fi
     }
 
@@ -187,33 +204,41 @@ else
         unset current_time
     }
 
+    # Stop timer and compute elapsed time.
+    # Format `elapsed' according to the elapsed time elements.
+    # Use quickest code possible (all internal bash code)
+    # to prevent race condition problems when a fast command
+    # is piped into another.
+    # Also unset usrhome_cmd_start_time and current_time to prevent
+    # use of an old value (some sort of use-after-free problem) and
+    # unset them as soon as possible to also limit probability of
+    # race condition of their reuse.
     usrhome_stop_timer()
     {
         get_current_time
         local e_ms="$((current_time - usrhome_cmd_start_time))"
+        unset usrhome_cmd_start_time
+        unset current_time
 
-        # compute time elements
         local e_s=$((e_ms / 1000))
         local ms=$((e_ms % 1000))
         local s=$((e_s % 60))
         local m=$(((e_s / 60) % 60))
         local h=$((e_s / 3600))
-
-        # Format elapsed according to the elapsed time elements
-        if   ((h > 0)); then et=${h}h${m}m${s}s                           # example: 1h2m3s
-        elif ((m > 0)); then et=${m}m${s}.$(printf "%d" $((ms / 100)))s   # example: 1m12.3s
-        elif ((s > 9)); then et=${s}.$(printf %02d $((ms / 10)))s         # example: 12.34s
-        elif ((s > 0)); then et=${s}.$(printf %03d $ms)s                  # example: 1.234s
-        else et=${ms}ms
+        if ((ms < 10)); then
+            ms="00${ms}"
+        elif ((ms < 100)); then
+            ms="0${ms}"
         fi
-        elapsed=",et:${et}"
 
-        unset usrhome_cmd_start_time
-        unset current_time
+        if   ((s < 60)); then et=${s}.${ms}s        # example: 12.345s
+        elif ((m < 60)); then et=${m}m${s}.${ms}s   # example: 1m12.023s
+        else              et=${h}h${m}m${s}s        # example: 1h2m3s
+        fi
+        # shellcheck disable=SC2034
+        elapsed=",et:${et}"
     }
 fi
-
-
 
 # Schedule execution of usrhome_start_timer when a command is about to execute.
 trap 'usrhome_start_timer' DEBUG
@@ -458,3 +483,6 @@ unset script
 
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: bash
+# End:
