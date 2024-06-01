@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-31 15:26:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-01 10:15:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -234,7 +234,7 @@ alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
 # -O : include file macOS flags
 #
 
-case $(uname) in
+case ${os_name} in
     'Darwin' )
         # Supports the -O option:
         # -G on macOS means colorize.
@@ -410,7 +410,6 @@ fi
 alias setenv='source $USRHOME_DIR/ibin/do-setenv'
 alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
 alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.zsh'
-
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Change Current Directory
@@ -595,8 +594,8 @@ NOTE:
 esac
 
 # ----------------------------------------------------------------------------
-# Topic: Info: Terminal Type
-# --------------------------
+# Topic: Info: Terminal: Desktop Type
+# -----------------------------------
 #
 # Environment variables:
 # Gnome: DESKTOP_SESSION
@@ -641,6 +640,23 @@ inside: %s/ibin/setfor-alias
 " "$USRHOME_DIR"
     fi
 }
+
+# ----------------------------------------------------------------------------
+# Topic: Emacs shells : eat terminal configuration
+# ------------------------------------------------
+#
+# For: https://codeberg.org/akib/emacs-eat
+# Fix emacs-eat term behaviour under macOS/arm64
+# Without this zsh delete key does not work, zsh and bash prompt
+# also fail in various ways.
+if [ "${INSIDE_EMACS/*,/}" = "eat" ]; then
+    if [ "${os_name}" = "Darwin" ]; then
+        if [ "$(arch)" = "arm64" ]; then
+            TERM=xterm-256color
+            export TERM
+        fi
+    fi
+fi
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Environment Setup Control
