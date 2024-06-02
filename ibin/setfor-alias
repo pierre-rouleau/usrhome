@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-01 10:15:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-02 18:35:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -284,7 +284,7 @@ lsd()
 {
     set_ls_options
     if [[ -z $1 ]]; then
-        ls -d ${usrhome_ls_color_flag} */
+        ( ls -d ${usrhome_ls_color_flag} */ ) 2> /dev/null
     elif [[ $# > 1 ]]; then
         echo "ERROR: lsd does not support glob, and more than 1 argument."
         echo "  You provided $# argument."
@@ -292,7 +292,7 @@ lsd()
         echo "  ARG: full or partial directory name."
         return 1
     else
-        ls -d ${usrhome_ls_color_flag} $1*/
+        ( ls -d ${usrhome_ls_color_flag} $1*/ ) 2> /dev/null
     fi
 }
 
@@ -300,7 +300,7 @@ lsda()
 {
     set_ls_options
     if [[ -z $1 ]]; then
-        ls -d ${usrhome_ls_color_flag} */ .[^.]*/
+        ( ls -d ${usrhome_ls_color_flag} */ .[^.]*/ ) 2> /dev/null
     elif [[ $# > 1 ]]; then
         echo "ERROR: lsd does not support glob, and more than 1 argument."
         echo "  You provided $# argument"
@@ -322,15 +322,15 @@ lsda()
         if [[ "$has_reg" = "1" ]]; then
             if [[ "$has_hid" = "1" ]]; then
                 # has hidden and regular
-                ls -d ${usrhome_ls_color_flag} {.$1*/,$1*/}
+                ( ls -d ${usrhome_ls_color_flag} {.$1*/,$1*/} ) 2> /dev/null
             else
                 # has regular only
-                ls -d ${usrhome_ls_color_flag} $1*/
+                ( ls -d ${usrhome_ls_color_flag} $1*/ ) 2> /dev/null
             fi
         else
             if [[ "$has_hid" = "1" ]]; then
                 # has hidden only
-                ls -d ${usrhome_ls_color_flag} .$1*/
+                ( ls -d ${usrhome_ls_color_flag} .$1*/ ) 2> /dev/null
             else
                 # has nothing
                 return 1
