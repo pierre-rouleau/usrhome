@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-05-31 10:40:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-02 15:32:09 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -456,6 +456,17 @@ set-title()
 # Activate dynamic tracking title as soon as Bash takes over.
 # Use a empty default Title Text
 set-title ""
+
+# ----------------------------------------------------------------------------
+# Topic: emacs-eat integration
+# ----------------------------
+
+if [ "${INSIDE_EMACS/*,/}" = "eat" ] && [ -n "$EAT_SHELL_INTEGRATION_DIR" ]; then
+    if [ -d "$EAT_SHELL_INTEGRATION_DIR" ]; then
+        echo ".  Activating emacs-eat integration."
+        . "$EAT_SHELL_INTEGRATION_DIR/bash"
+    fi
+fi
 
 # ----------------------------------------------------------------------------
 # User Bash Specific Configuration

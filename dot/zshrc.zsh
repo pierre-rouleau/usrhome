@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-05-27 10:04:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-02 15:35:30 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -189,9 +189,9 @@ usrhome-select-zsh-prompt()
     p1=$'>%?@%B%D{%H:%M:%S} L%L'
 
     if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then
-        p2=$'%n@%m:%~%b'
+        p2=$'%n@%m:[%~%b]'
     else
-        p2=$'%~%b'
+        p2=$'[%~%b]'
     fi
 
     if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
@@ -243,8 +243,9 @@ usrhome-select-zsh-prompt()
             zstyle ':vcs_info:*' enable hg git
             export PROMPT=$'$p1 $p2 \ \$vcs_info_msg_0_\n$p3 '
 
-            # Show the exit code and the current sub-process jobs
-            if [[ -z "$INSIDE_EMACS" ]]; then
+            # Show the exit code and the current sub-process jobs inside the RPROMPT
+            # but only when the shell is not used inside Emacs or used inside an Emacs vterm shell.
+            if [[ -z "$INSIDE_EMACS" ]] || [[ -n "$EMACS_VTERM_PATH" ]] ; then
                 #          exit code: value x on failure  #jobs when more than 1
                 RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}. %F{cyan}${elapsed} %{$reset_color%})'
             fi
@@ -281,6 +282,17 @@ usrhome-select-zsh-prompt()
 
 # Activate selected prompt
 usrhome-select-zsh-prompt
+
+# ----------------------------------------------------------------------------
+# Topic: emacs-eat integration
+# ----------------------------
+
+if [ "${INSIDE_EMACS/*,/}" = "eat" ] && [ -n "$EAT_SHELL_INTEGRATION_DIR" ]; then
+    if [ -d "$EAT_SHELL_INTEGRATION_DIR" ]; then
+        echo ".  Activating emacs-eat integration."
+        . "$EAT_SHELL_INTEGRATION_DIR/zsh"
+    fi
+fi
 
 # Topic: Title
 # ------------
@@ -352,3 +364,6 @@ unset user_zshrc
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: zsh
+# End:
