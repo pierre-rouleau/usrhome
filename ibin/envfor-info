@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-31 16:01:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-04 09:46:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -53,8 +53,8 @@ for root_dname in $potential_roots; do
         fi
     done
 done
-printf -- "Added %d directories to INFOPATH.\n" ${new_dir_count}
-printf -- "Print INFOPATH with: showpath INFOPATH\n"
+printf -- ". Using info: added %d directories to INFOPATH.\n" ${new_dir_count}
+printf -- "   Print INFOPATH with: showpath INFOPATH\n"
 export INFOPATH
 unset already_in
 unset orig_INFOPATH
