@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-05 14:41:35 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-05 15:33:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -223,8 +223,9 @@ else
     fi
 fi
 
+# Use grep -c to count number of lines on stdout.  Accept anything.
+file_count=$(printf "%s" "$the_filepath" | grep -c . )
 
-file_count=$(printf "%s" "$the_filepath" | wc -l  | awk '{print $1}'  )
 
 # Report error if more than 1 location found.
 if [ "${file_count}" -gt  1 ]; then
