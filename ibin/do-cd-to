@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:51:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-05 14:41:35 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -71,11 +71,16 @@ cd-to : Search for file in current directory tree.
         If more than 1 file found, list them and offer to edit them.
 
    Usage:  cd-to [-h|--help]
-           cd-to    [-H] FILENAME
-           cd-to -d [-H] DIRNAME
+           cd-to    [-H] [-I] FILENAME
+           cd-to -d [-H] [-I] DIRNAME
 
-     By default the search skips hidden directories unless the -H option
-     is specified.
+     By default:
+
+     - skips searching hidden directories unless the -H option is
+       specified.
+     - skips searching ignored directories unless the -I option is
+       specified.
+
      FILENAME or DIRNAME may use the glob syntax supported by fd.
 
      Limitation: does not support file or directory name that starts with -
@@ -93,6 +98,7 @@ fi
 
 # Set option default values, can be modified by check_option()
 search_hidden=false
+search_ignored=false
 search_for=files
 search_for1=file
 unset cd_to__exit_code
@@ -107,7 +113,11 @@ check_option()
             ;;
 
         "-H")
-            seach_hidden=true
+            search_hidden=true
+            ;;
+
+        "-I")
+            search_ignored=true
             ;;
 
         "-d")
@@ -139,7 +149,7 @@ case "$#" in
         the_fname="$1"
         ;;
 
-      2)
+    2)
         check_option "$1"
         if [ -n "$cd_to__exit_code" ]; then
             return "$cd_to__exit_code"
@@ -158,6 +168,23 @@ case "$#" in
         the_fname="$3"
         ;;
 
+    4)
+        check_option "$1"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        check_option "$2"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        check_option "$3"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        the_fname="$4"
+        ;;
+
+
     *)
         echo "ERROR: too many arguments ($#)."
         print_usage
@@ -165,24 +192,39 @@ case "$#" in
 esac
 
 # echo "PROCEEDING: the_fname=$the_fname, search_hidden=$search_hidden, search_for=$search_for"
-if [ "$search_hidden" = "true" ]; then
+
+if [ "${search_hidden}" = "true" ]; then
     if [ "$search_for" = "directories" ]; then
-        the_filepath="$(fd -H --type d -g $the_fname)"
+        if [ "$search_ignored" = "true" ]; then
+            the_filepath="$(fd -H -I --type d -g $the_fname)"
+        else
+            the_filepath="$(fd -H --type d -g $the_fname)"
+        fi
     else
-        the_filepath="$(fd -H --type f -g $the_fname)"
+        if [ "$search_ignored" = "true" ]; then
+            the_filepath="$(fd -H -I --type f -g $the_fname)"
+        else
+            the_filepath="$(fd -H --type f -g $the_fname)"
+        fi
     fi
 else
     if [ "$search_for" = "directories" ]; then
-        the_filepath="$(fd --type=d -g $the_fname)"
+        if [ "$search_ignored" = "true" ]; then
+            the_filepath="$(fd -I --type=d -g $the_fname)"
+        else
+            the_filepath="$(fd --type=d -g $the_fname)"
+        fi
     else
-        the_filepath="$(fd --type=f -g $the_fname)"
+        if [ "$search_ignored" = "true" ]; then
+            the_filepath="$(fd -I --type=f -g $the_fname)"
+        else
+            the_filepath="$(fd --type=f -g $the_fname)"
+        fi
     fi
 fi
 
-file_count=$(printf "%s" "$the_filepath" | grep -c . )
-# echo "the_filepath = $the_filepath,  file_count=$file_count"
 
-
+file_count=$(printf "%s" "$the_filepath" | wc -l  | awk '{print $1}'  )
 
 # Report error if more than 1 location found.
 if [ "${file_count}" -gt  1 ]; then
