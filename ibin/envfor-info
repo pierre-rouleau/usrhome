@@ -3,20 +3,25 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-04 09:46:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-07 15:28:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Find info directories in standard locations and add them to the INFOPATH
 # environment variable.
+#
+# The Emacs source code is expected to be identified by the
+# USRHOME_EMACS_SRC_DIR environment variable.  If it exists and the identified
+# directory has a src and info sub-directories, the info directory is added to
+# the INFOPATH.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
 # - $USRHOME_DIR/bin/find-dir
-# - printf
+# - printf, realpath
 #
 # Invoke it as:  use-info
 
@@ -25,17 +30,19 @@
 # ----
 #
 #
-if [ -n "$HOMEBREW_PREFIX" ]; then
-    potential_roots="$HOMEBREW_PREFIX"
-else
-    potential_roots=
-fi
 
 orig_INFOPATH="$INFOPATH"
 new_dir_count=0
-for root_dname in $potential_roots; do
-    for dname in $(find-dir info ${root_dname}); do
-        r_dname="$(realpath ${dname})"
+
+append_to_infopath()
+{
+    # Arg1 : root directory name
+    root_dname="$1"
+
+    # echo "TOP Checking: ${root_dname}"
+    for dname in $(find-dir info "${root_dname}"); do
+        # echo "Checking: ${dname}"
+        r_dname="$(realpath "${dname}")"
         if [ -z "$INFOPATH" ]; then
             INFOPATH="${r_dname}"
             new_dir_count=$(( new_dir_count + 1 ))
@@ -52,9 +59,36 @@ for root_dname in $potential_roots; do
             fi
         fi
     done
-done
-printf -- ". Using info: added %d directories to INFOPATH.\n" ${new_dir_count}
-printf -- "   Print INFOPATH with: showpath INFOPATH\n"
+}
+
+
+# --
+
+printf -- ". Checking for info..."
+
+if [ -n "$USRHOME_DIR_EMACS_SRC" ] &&
+       [ -d "$USRHOME_DIR_EMACS_SRC/src" ] &&
+       [ -d "$USRHOME_DIR_EMACS_SRC/info" ]; then
+    append_to_infopath "${USRHOME_DIR_EMACS_SRC}"
+fi
+
+if [ -n "$HOMEBREW_PREFIX" ] &&
+       [ -d "$HOMEBREW_PREFIX" ]; then
+    append_to_infopath "${HOMEBREW_PREFIX}"
+fi
+
+if [ "${new_dir_count}" != "0" ]; then
+   printf -- " added %d directories to INFOPATH.\n" ${new_dir_count}
+   printf -- "   Use 'showpath INFOPATH' to see it.\n"
+   if [  "${orig_INFOPATH}" != "" ]; then
+       printf -- "   Original INFOPATH was: %s\n" "${orig_INFOPATH}"
+   fi
+else
+    printf "\n"
+fi
+
+# -- Cleanup
+
 export INFOPATH
 unset already_in
 unset orig_INFOPATH
