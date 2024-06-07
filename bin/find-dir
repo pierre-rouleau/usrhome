@@ -4,7 +4,7 @@
 # Purpose   : Find directories in current directory tree.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-31 15:15:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-07 14:41:11 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -99,10 +99,10 @@ fi
 
 
 if [ "$search_hidden" = "true" ]; then
-    find "${rootname}" -type d  -name "${dirname}"
+    find -L "${rootname}" -type d  -name "${dirname}"
 
 else
-    find "${rootname}" -type d \( ! -path '*/.*' \) -name "${dirname}"
+    find -L "${rootname}" -type d \( ! -path '*/.*' \) -name "${dirname}"
 fi
 
 # ----------------------------------------------------------------------------
