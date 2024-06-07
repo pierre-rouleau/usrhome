@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-07 15:28:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-07 15:51:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -63,28 +63,31 @@ append_to_infopath()
 
 
 # --
+if [ -z "$USRHOME__INFO_IS_SET" ]; then
+    printf -- ". Checking for info..."
 
-printf -- ". Checking for info..."
+    if [ -n "$USRHOME_DIR_EMACS_SRC" ] &&
+           [ -d "$USRHOME_DIR_EMACS_SRC/src" ] &&
+           [ -d "$USRHOME_DIR_EMACS_SRC/info" ]; then
+        append_to_infopath "${USRHOME_DIR_EMACS_SRC}"
+    fi
 
-if [ -n "$USRHOME_DIR_EMACS_SRC" ] &&
-       [ -d "$USRHOME_DIR_EMACS_SRC/src" ] &&
-       [ -d "$USRHOME_DIR_EMACS_SRC/info" ]; then
-    append_to_infopath "${USRHOME_DIR_EMACS_SRC}"
-fi
+    if [ -n "$HOMEBREW_PREFIX" ] &&
+           [ -d "$HOMEBREW_PREFIX" ]; then
+        append_to_infopath "${HOMEBREW_PREFIX}"
+    fi
 
-if [ -n "$HOMEBREW_PREFIX" ] &&
-       [ -d "$HOMEBREW_PREFIX" ]; then
-    append_to_infopath "${HOMEBREW_PREFIX}"
-fi
-
-if [ "${new_dir_count}" != "0" ]; then
-   printf -- " added %d directories to INFOPATH.\n" ${new_dir_count}
-   printf -- "   Use 'showpath INFOPATH' to see it.\n"
-   if [  "${orig_INFOPATH}" != "" ]; then
-       printf -- "   Original INFOPATH was: %s\n" "${orig_INFOPATH}"
-   fi
-else
-    printf "\n"
+    if [ "${new_dir_count}" != "0" ]; then
+        printf -- " added %d directories to INFOPATH.\n" ${new_dir_count}
+        printf -- "   Use 'showpath INFOPATH' to see it.\n"
+        if [  "${orig_INFOPATH}" != "" ]; then
+            printf -- "   Original INFOPATH was: %s\n" "${orig_INFOPATH}"
+        fi
+    else
+        printf "\n"
+    fi
+    USRHOME__INFO_IS_SET=1
+    export USRHOME__INFO_IS_SET
 fi
 
 # -- Cleanup
