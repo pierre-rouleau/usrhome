@@ -1053,12 +1053,20 @@ USRHOME Command Name               Description
 ``clrenv VARNAME``                 Clear (remove) the environment variable specified by name from
                                    the environment of the *current* shell.
 
+                                   - This is an alias to `usrhome/ibin/do-clrenv`_
+
+
 ``setenv VARNAME VALUE``           Set the environment variable named VARNAME to the specified
                                    VALUE and inject it inside the *current* shell.
+
+                                   - This is an alias to `usrhome/ibin/do-setenv`_
+
 
 ``use-usrhome``                    Add USRHOME binary directory and ``~/bin`` to PATH if present.
                                    This command is automatically executed for zsh shell started
                                    under USRHOME control.
+
+                                   - This is an alias to `usrhome/ibin/envfor-usrhome`_
 
 ``use-homebrew``                   Add Homebrew directories to PATH if required for the CPU
                                    architecture.
@@ -1068,11 +1076,23 @@ USRHOME Command Name               Description
                                    common shell configuration file
                                    ``usrcfg/setfor-all-config.sh`` .
 
+                                   - This is an alias to `usrhome/ibin/envfor-homebrew`_
+
+
 ``use-info``                       Add ``info`` directories located in standard places to
                                    the ``INFOPATH`` environment variable.  Use it to extend
                                    the ``INFOPATH`` when using the `stand-alone GNU info reader`_
-                                   or info within Emacs.
-                                   This is an alias to the `usrhome/ibin/envfor-info`_
+                                   or info within Emacs.  It searches for info directories once
+                                   per process tree inside the following potential locations:
+
+                                   - Homebrew
+                                   - Emacs source repository, which must be identified by the
+                                     USRHOME_DIR_EMACS_SRC environment variable.
+
+                                   Currently this list of locations is hard coded inside the
+                                   `usrhome/ibin/envfor-info`_ file.
+
+                                   - This is an alias to `usrhome/ibin/envfor-info`_
 
 ``showpath [-n] [varname][PATH]``  Print the value of PATH, MANPATH or LIBPATH, or any PATH
                                    specific environment variable placing each directory
@@ -2315,6 +2335,10 @@ Thanks!
 .. _find-dir:                                          https://github.com/pierre-rouleau/usrhome/blob/main/bin/find-dir
 .. _usrhome/ibin/envfor-info:                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-info
 .. _stand-alone GNU info reader:                       https://www.gnu.org/software/texinfo/manual/info-stnd/info-stnd.html
+.. _usrhome/ibin/do-clrenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
+.. _usrhome/ibin/do-setenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
+.. _usrhome/ibin/envfor-usrhome:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-usrhome
+.. _usrhome/ibin/envfor-homebrew:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-homebrew
 
 
 .. ---------------------------------------------------------------------------
