@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-07 15:51:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-08 17:43:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -15,6 +15,13 @@
 # USRHOME_EMACS_SRC_DIR environment variable.  If it exists and the identified
 # directory has a src and info sub-directories, the info directory is added to
 # the INFOPATH.
+#
+# The scanning for info directories may take some time.  Therefore its' only
+# done once per shell process tree.  Also, the list of directories is stored
+# inside the ~/.infopath.txt file.  On next invocations, the content of the
+# file is used and no scanning is performed.
+#
+# To force a scan, use the --refresh option.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -23,15 +30,22 @@
 # - $USRHOME_DIR/bin/find-dir
 # - printf, realpath
 #
-# Invoke it as:  use-info
+# Invoke it as:  use-info [--refresh]
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
-#
+
+# --
+# Initialize
 
 orig_INFOPATH="$INFOPATH"
+config_filepath="$HOME/.infopath.txt"
+
+# --
+# Define variable and function
+
 new_dir_count=0
 
 append_to_infopath()
@@ -55,45 +69,71 @@ append_to_infopath()
             esac
             if [ "$already_in" = "false" ]; then
                 INFOPATH="$INFOPATH":"${r_dname}"
+                echo "${r_dname}" >> "${config_filepath}"
                 new_dir_count=$(( new_dir_count + 1 ))
             fi
         fi
     done
+    unset already_in
 }
 
-
 # --
-if [ -z "$USRHOME__INFO_IS_SET" ]; then
-    printf -- ". Checking for info..."
+#
+# Proceed: do the processing once per shell tree unless a --refresh
+#          is requested. Don't repeat in a sub-shell unless a --refresh is
+#          requested.
+#
 
-    if [ -n "$USRHOME_DIR_EMACS_SRC" ] &&
-           [ -d "$USRHOME_DIR_EMACS_SRC/src" ] &&
-           [ -d "$USRHOME_DIR_EMACS_SRC/info" ]; then
-        append_to_infopath "${USRHOME_DIR_EMACS_SRC}"
-    fi
+if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
+    if [ "$1" = "--refresh" ] || [ ! -f "${config_filepath}" ]; then
+        # perform a new scan
+        printf -- ". Scanning for info directories..."
+        if [ -f "${config_filepath}" ]; then
+            # delete existing config file
+            rm -f "${config_filepath}"
+            INFOPATH=
+        fi
 
-    if [ -n "$HOMEBREW_PREFIX" ] &&
-           [ -d "$HOMEBREW_PREFIX" ]; then
-        append_to_infopath "${HOMEBREW_PREFIX}"
-    fi
+        if [ -n "$USRHOME_DIR_EMACS_SRC" ] &&
+               [ -d "$USRHOME_DIR_EMACS_SRC/src" ] &&
+               [ -d "$USRHOME_DIR_EMACS_SRC/info" ]; then
+            append_to_infopath "${USRHOME_DIR_EMACS_SRC}"
+        fi
 
-    if [ "${new_dir_count}" != "0" ]; then
-        printf -- " added %d directories to INFOPATH.\n" ${new_dir_count}
-        printf -- "   Use 'showpath INFOPATH' to see it.\n"
-        if [  "${orig_INFOPATH}" != "" ]; then
-            printf -- "   Original INFOPATH was: %s\n" "${orig_INFOPATH}"
+        # If Homebrew is used, add Homebrew files.
+        if [ -n "$HOMEBREW_PREFIX" ] &&
+               [ -d "$HOMEBREW_PREFIX" ]; then
+            append_to_infopath "${HOMEBREW_PREFIX}"
+        fi
+
+        if [ ! "${new_dir_count}" = "0" ]; then
+            printf -- " added %d directories to INFOPATH.\n" ${new_dir_count}
+            printf -- "   Use 'showpath INFOPATH' to see it.\n"
+            if [  "${orig_INFOPATH}" != "" ]; then
+                printf -- "   Original INFOPATH was: \n"
+                showpath -n "${orig_INFOPATH}"
+            fi
+        else
+            printf "No info directory found!\n"
         fi
     else
-        printf "\n"
+        # set INFOPATH from the paths stored in the ${config_filepath} file.
+        dir_count=0
+        while IFS='' read -r infopath_line || [ -n "${infopath_line}" ]; do
+            # echo "processing line: ${infopath_line}"
+            INFOPATH="$INFOPATH":"${infopath_line}"
+            dir_count=$(( dir_count + 1 ))
+        done < "${config_filepath}"
+        printf -- ". Setting INFOPATH from ~/.infopath.txt: %d directories" "${dir_count}"
+        unset dir_count
     fi
+    export INFOPATH
     USRHOME__INFO_IS_SET=1
     export USRHOME__INFO_IS_SET
 fi
 
 # -- Cleanup
 
-export INFOPATH
-unset already_in
 unset orig_INFOPATH
 
 # ----------------------------------------------------------------------------
