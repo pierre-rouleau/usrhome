@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-08 17:43:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-08 22:42:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -124,7 +124,9 @@ if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
             INFOPATH="$INFOPATH":"${infopath_line}"
             dir_count=$(( dir_count + 1 ))
         done < "${config_filepath}"
-        printf -- ". Setting INFOPATH from ~/.infopath.txt: %d directories" "${dir_count}"
+        printf -- "\
+. Setting INFOPATH from ~/.infopath.txt with %d directories.
+" "${dir_count}"
         unset dir_count
     fi
     export INFOPATH
