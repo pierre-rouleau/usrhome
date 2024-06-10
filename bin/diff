@@ -4,7 +4,7 @@
 # Purpose   : Adaptative diff program. Controlled by use-diff.  Defaults to diff.
 # Created   : Wednesday, May  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 07:19:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-10 14:49:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -104,3 +104,6 @@ case "$USRHOME_DIFF" in
 esac
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
