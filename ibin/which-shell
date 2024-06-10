@@ -3,7 +3,7 @@
 # Purpose   : Identify active shell sourcing this file.  Store result in usrhome__running_shell
 # Created   : Thursday, April 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:59:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-10 11:41:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -16,14 +16,16 @@
 # Code
 # ----
 #
-# Set usrhome__running_shell to zsh, bash or unknown
+# Set `usrhome__running_shell' to zsh, bash or unsupported.
+# Set `USRHOME_SHELL'          to zsh, bash, ksh, sh, or unknown
 
-
-# Identify what (Bourne compatible) shell this  is running.
+# Identify what (Bourne compatible) shell this is running.
 # Store result in $USRHOME_SHELL so further code can depend
 # on the shell type.  Credit: https://unix.stackexchange.com/a/72475/473577
 # Not yet exported.
 # Also set usrhome__running_shell to "zsh", "bash" or "unsupported"
+
+# shellcheck disable=SC2034
 
 if test -n "$ZSH_VERSION"; then
   USRHOME_SHELL="zsh"
