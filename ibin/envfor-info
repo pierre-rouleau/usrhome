@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 09:03:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-10 09:20:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,7 +40,7 @@
 # --
 # Initialize
 
-orig_INFOPATH="$INFOPATH"
+orig_INFOPATH=${INFOPATH}
 config_filepath="$HOME/.infopath.txt"
 
 # --
@@ -62,23 +62,29 @@ append_to_infopath()
 "
     for dname in $(find-dir info "${root_dname}"); do
         # echo "Checking: ${dname}"
-        r_dname="$(realpath "${dname}")"
-        if [ -z "$INFOPATH" ]; then
-            INFOPATH="${r_dname}"
-            new_dir_count=$(( new_dir_count + 1 ))
-        else
-            already_in="false"
-            case "$INFOPATH" in
-                *"${r_dname}"*)
-                    already_in="true"
-                    ;;
-            esac
-            if [ "$already_in" = "false" ]; then
-                INFOPATH="$INFOPATH":"${r_dname}"
-                echo "${r_dname}" >> "${config_filepath}"
+        # Extra consistency check
+        if [ -d "${dname}" ]; then
+            r_dname="$(realpath "${dname}")"
+            if [ -z "$INFOPATH" ]; then
+                INFOPATH="${r_dname}"
                 new_dir_count=$(( new_dir_count + 1 ))
+            else
+                already_in="false"
+                case "$INFOPATH" in
+                    *"${r_dname}"*)
+                        already_in="true"
+                        ;;
+                esac
+                if [ "$already_in" = "false" ]; then
+                    INFOPATH="$INFOPATH":"${r_dname}"
+                    echo "${r_dname}" >> "${config_filepath}"
+                    new_dir_count=$(( new_dir_count + 1 ))
+                fi
             fi
+        else
+            printf -- "Skipping invalid dname: %s\n" "${dname}"
         fi
+
     done
     unset already_in
 }
@@ -117,7 +123,8 @@ if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
             printf -- "   Use 'showpath INFOPATH' to see it.\n"
             if [  "${orig_INFOPATH}" != "" ]; then
                 printf -- "   Original INFOPATH was: \n"
-                showpath -n "${orig_INFOPATH}"
+                export orig_INFOPATH
+                showpath -n orig_INFOPATH
             fi
         else
             printf "No info directory found!\n"
