@@ -1,0 +1,59 @@
+# Sourced script: envfor-git-extra  -*- mode: sh; -*-
+#
+# Purpose   : Activate extra Git support.
+# Created   : Monday, June 10 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-10 14:06:51 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# Activate extra features for Git commands.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# Bash:  - complete; the internal complete command
+#        - cut
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+
+# Set USRHOME_SHELL to zsh, bash, ... or unknown
+# shellcheck disable=SC1091 # shellcheck does not find source
+.  "$USRHOME_DIR/ibin/which-shell"
+
+# Define completion for the arguments of some of the extra git commands available
+# in $USRHOME_DIR/bin
+
+# shellcheck disable=SC3044 # complete is not known in sh or zsh; it's Bash specific
+case "$USRHOME_SHELL" in
+    bash)
+        complete -W "graph tree name stat patch short" git-log
+        complete -W "remote local local-tracking local-non-tracking remote-tracking" git-lbr
+        complete -W "\`git branch | cut -c 3-\`" git-sw
+        ;;
+
+    zsh)
+        printf -- "*** envfor-git-extra WARNING: no support for %s shell\n" "$USRHOME_SHELL"
+        case "$(uname)" in
+            Darwin)
+                if [ -f "${HOMEBREW_PREFIX}/opt/git-extras/share/git-extras/git-extras-completion.zsh" ]; then
+                    . "${HOMEBREW_PREFIX}/opt/git-extras/share/git-extras/git-extras-completion.zsh"
+                fi
+                ;;
+        esac
+    ;;
+    *)
+        printf -- "*** envfor-git-extra WARNING: no support for %s shell\n" "$USRHOME_SHELL"
+        ;;
+esac
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
