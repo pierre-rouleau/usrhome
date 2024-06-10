@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-08 22:42:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-10 09:03:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -54,6 +54,12 @@ append_to_infopath()
     root_dname="$1"
 
     # echo "TOP Checking: ${root_dname}"
+
+    # To support path with embedded spaces, set IFS to new line.
+    # Do it in a POSIX way.  IFS=$'\n' is not supported in POSIX.
+    # One POSIX way is to use printf.  Another is to use an explicit new line.
+    IFS="
+"
     for dname in $(find-dir info "${root_dname}"); do
         # echo "Checking: ${dname}"
         r_dname="$(realpath "${dname}")"
