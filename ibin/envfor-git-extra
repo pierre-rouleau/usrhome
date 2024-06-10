@@ -3,7 +3,7 @@
 # Purpose   : Activate extra Git support.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 14:06:51 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-10 15:13:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -33,6 +33,7 @@
 # shellcheck disable=SC3044 # complete is not known in sh or zsh; it's Bash specific
 case "$USRHOME_SHELL" in
     bash)
+        printf -- ".  git extra command completion activated.\n"
         complete -W "graph tree name stat patch short" git-log
         complete -W "remote local local-tracking local-non-tracking remote-tracking" git-lbr
         complete -W "\`git branch | cut -c 3-\`" git-sw
