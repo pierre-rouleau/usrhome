@@ -1,0 +1,33 @@
+#!/bin/sh
+# SH FILE: git-status
+#
+# Purpose   : Print Git Status with extra information.
+# Created   : Monday, June 10 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-10 14:49:09 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print Git Status with extra information
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - git
+# - git-log
+# - head
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+git status
+# Also show the HEAD and other pointers like the branches
+printf -- "\nHEAD commit:\n"
+git-log graph --decorate | head -1
+
+# ----------------------------------------------------------------------------

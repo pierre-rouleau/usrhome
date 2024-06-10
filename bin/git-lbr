@@ -1,0 +1,152 @@
+#!/bin/sh
+# SH FILE: git-lbr
+#
+# Purpose   : List Git Branches.
+# Created   : Monday, June 10 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-10 14:50:33 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Git command to listr local or remote branches.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# cat, git, printf, tree
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+git-lbr:  List Git branch information.
+
+ Usage:   git-lbr BRANCH-TYPE
+          git-lbr --help|-h
+
+   BRANCH-TYPE := remote|local|local-tracking|local-non-tracking||remote-tracking
+
+"
+}
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+fi
+
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    print_usage
+    exit 0
+fi
+
+commands='
+local
+local-non-tracking
+local-tracking
+remote
+remote-tracking'
+
+is_valid_command=no
+command=
+for cmd in $commands
+do
+    if [ "$1" = "$cmd" ]; then
+        is_valid_command=yes
+        command="$1"
+    fi
+done
+if [ "$is_valid_command" = "yes" ]; then
+    shift
+else
+    printf -- "*** git-lbr: unknown command: %s\n" "$1"
+    print_usage
+    exit 2
+fi
+
+case "${command}" in
+    local)
+        printf -- "All local branches:"
+        git branch
+        printf -- "
+
+Note: Each local branch has a file under .git/refs/heads/
+      A local branch can be tracking or non-tracking.
+      The .git/config provides information about the setup.
+.git/config content:
+"
+        cat .git/config
+        printf -- "
+
+For more info about local tracking branches: git-lbr local-tracking
+"
+        ;;
+    local-non-tracking)
+        printf -- "
+Note: Non-tracking local branches are not associated with any other branch.
+      Create one by running git branch <branchname>.
+      However, try to push from those will fail with the following message:
+        \"There is no tracking information for the current branch.\"
+        \"Please specify which branch you want to merge with.\"
+"
+        ;;
+    local-tracking)
+        printf -- "
+Note: Tracking local branches are associated with another branch, usually a remote-tracking branch.
+      Create one by running git branch --track <branchname> [<start-point>].
+Local tracking branches:"
+        git branch -vv
+        printf -- "
+
+Note:  - The .git/config provides information about the setup.
+       - use 'git-lbr local' which prints it.
+"
+        ;;
+
+    remote)
+        printf -- "All remote branches:"
+        git remote
+        printf -- "
+All remote branches with their shortcuts are shown below.
+Note: - 'origin' is the synonym for the remote repository.
+        - It's shorter to use that than the complete URL.
+"
+        git remote -v
+        printf -- "
+Note: Each remote has a directory under .git/refs/remotes/
+"
+        tree -F .git/refs/remotes/
+        printf -- "
+Note: Add remote with: 'git remote add <repo-name> <repo-url>'
+      There are also several command options.
+      It's also possible to remove or rename a remote.
+
+Note: to see the remote-tracking branches seen from here, use:
+      'git-lbr remote-tracking'
+"
+        ;;
+
+    remote-tracking)
+        printf -- "Note: remote-tracking branches as seen by the local computer.
+      See .git/refs/remote for the hierarchy. Shown after the list of remote-tracking branches.
+
+Remote-tracking branches:
+"
+        git branch -r
+        printf -- "\nDirectory tree of .git/refs/remotes/:\n"
+        tree -F .git/refs/remotes/
+        printf -- "\n"
+        ;;
+esac
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

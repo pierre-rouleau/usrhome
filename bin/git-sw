@@ -1,0 +1,77 @@
+#!/bin/sh
+# SH FILE: git-sw
+#
+# Purpose   : Switch Git branch : git checkout with branch name completion.
+# Created   : Monday, June 10 2024
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-10 12:16:54 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# This implements a Git command to switch branch: git-sw
+#
+# This is equivalent to git checkout
+#
+# By using a separate command it becomes possible to provide tab completion
+# of its arguments, listing the available local branches, which depends on the
+# shell used (Bash or zsh).
+#
+# On Bash:
+#
+# To provide the tab completion functionality you must also have, inside your
+# Bash setup script, a complete command that sets it up.
+#
+# Use the following, which lists and extracts the branch names:
+#
+#    complete -W "\`git branch | cut -c 3-\`" git-sw
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Git
+# - Optional: Bash setup with complete command to support tab completion
+#             of branch name argument.  In USRHOME this is provided by the
+#             ibin/envfor-git-extra
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+git-sw:  Switch Git to specified branch.  Similar to git checkout.
+
+ Usage:   git-sw BRANCH
+
+ BRANCH: the Git branch name.  One that is shown by 'git branch'
+
+Completion support:  use tab to complete the branch name.
+- It is activated by %s, in Bash with:
+  'complete -W \"\`git branch | cut -c 3-\`\" git-sw'
+
+" "\$USRHOME_DIR/ibin/envfor-git-extra"
+}
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+fi
+
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+    print_usage
+    exit 0
+fi
+
+
+git checkout "$1"
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

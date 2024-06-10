@@ -1,0 +1,177 @@
+#!/bin/sh
+# SH FILE: git-log
+#
+# Purpose   : Show pretty print log with branch info.
+# Created   : Monday, June 10 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-10 14:26:08 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Format the Git log output in several pre-canned ways, using a short argument
+# to select the format.  The default format prints the hash, author, date
+# and message in nicely lined-up columns.
+#
+# The user can specify extra arguments that are appended to the one used.  For
+# example, you can specify --since=2.years or any other arguments accepted by
+# git log.
+#
+#
+# Useful arguments:
+#
+#
+#  -<n>                Show only the last n commits
+#
+#  --since, --after    Limit the commits to those made after the specified date.
+#
+#  --until, --before   Limit the commits to those made before the specified date.
+#
+#  --author            Only show commits in which the author entry matches the specified string.
+#
+#  --committer         Only show commits in which the committer entry matches the specified string.
+#
+#  --grep              Only show commits with a commit message containing the string
+#
+#  -S                  Only show commits adding or removing code matching the string
+#
+#  --no-merges         Exclude merge commits
+#
+#  -- file_spec        Commit for specified file specifications
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# git, read, printf
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+git-log:  Print Git Log with pre-canned formatting.
+
+ Usage: git-log [graph|name|stat|patch|short] [GIT_LOG-OPTIONS...] [-- FILE_SPEC]
+
+  where:
+   - A first optional argument is one of:
+     - graph  Print graphical evolution
+     - tree   Print branch tree of commit history: the decorated graph
+              view of one liner summarized commits from all branches.
+     - name   One-line pretty format with author name
+     - stat   Print line stats (using the --stat option)
+     - patch  Print the patch for each entry
+     - short  Print oneline format with iso date
+     - with nothing, the default is to print the hash, author, date, message
+
+After this you can enter any other git log options and
+if necessary to specify a file specification type -- followed
+by the file specification.
+"
+}
+
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    print_usage
+    exit 0
+fi
+
+commands='
+graph
+name
+patch
+short
+stat
+tree'
+
+# Identify the command and remove it from the normal command line argument
+is_a_command=no
+command=
+for cmd in $commands
+do
+    if [ "$1" = "$cmd" ]; then
+        is_a_command=yes
+        command="$1"
+    fi
+done
+if [ "$is_a_command" = "yes" ]; then
+    shift
+fi
+
+case "${command}" in
+    graph)
+        git log --pretty=format:"%h - %an, %ai : %s"  --graph  "$@"
+        ;;
+
+    name)
+        git log --pretty=format:"%h - %an, %ar : %s" "$@"
+        ;;
+
+    patch)
+        git log -p "$@"
+        ;;
+
+    short)
+        git log --oneline --date=iso "$@"
+        ;;
+
+    stat)
+        git log --stat "$@"
+        ;;
+
+    tree)
+        if ! which git-show-tree > /dev/null; then
+            echo "***ERROR: This requires git-extras which is not available."
+            case "$(uname)" in
+                Darwin)
+                    echo " Install it with: 'brew install git_extras'"
+                    ;;
+                Linux)
+                    echo " Install it with: 'sudo apt install git_extras'"
+                    ;;
+                *)
+            esac
+            exit 1
+        fi
+        git-show-tree
+        ;;
+
+    *)
+        # By default print the hash, author, date and message in nicely separated columns.
+
+        # %h = abbreviated commit hash
+        # %an = author name
+        # %ai = author date (ISO format)
+        # %s = subject
+
+        git log --pretty=format:'%h|%an|%ai|%s' "$@" |
+            while IFS='|' read -r hash author date message
+            do
+                # The width of non-ascii characters like ü are counted by printf in numbers of
+                # bytes unfortunately, instead of characters.
+                # This breaks the nice column alignment when a name has these characters.
+                # Since most names have a small number of these characters, using a tab after
+                # the name solves most of the problems but not all.
+                #
+                # One way would be to replace the '\t' inside the printf format string by a
+                # a special character that is not likely to be in a name, like '|' and then
+                # pipe the output of the while loop into ``column -t -s $'|'``
+                # That would work for names with several non-ASCII characters but the command
+                # would have to process the entire log before starting to output something.
+                #
+                # It might also be possible to use awk, but I'm not familiar enough with it.
+
+                printf "%-8s %-25s\t%25s %s\n" "$hash" "$author" "$date" "$message"
+            done | less
+      ;;
+esac
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
