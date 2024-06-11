@@ -4,7 +4,7 @@
 # Purpose   : Search for specified language files.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 13:27:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-11 14:08:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -55,7 +55,7 @@ rgf - ripgrep search for specified file types.
         - rust                Rust, TOML, Cargo
         - zig                 Zig
         - doc                 Documentation: resTructuredText, org, markdow,
-                                             readme, txt, graphviz DOT
+                                             readme, txt
         - doc+                Same as doc, plus PDF files.
         - html                HTML, CSS files
         - pdf                 PDF files
