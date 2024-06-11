@@ -4,7 +4,7 @@
 # Purpose   : Search for specified language files.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 10:05:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-11 13:27:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -44,13 +44,21 @@ rgf - ripgrep search for specified file types.
         - c                   C
         - cpp                 C++
         - c/cpp | C           C and C++
-        - c/cpp/make | CM     C, C++ and make files
+        - c/cpp/make | CM     C, C++, make, swig, config
+        - d                   D
+        - make | M            make, mk, amkae, cmake, m4
         - sh                  sh, bash, and zsh
         - el | elisp          Emacs Lisp
         - erl | erlang        Erlang and C
-        - go
-        - rust
-        - zig
+        - py | python         Python
+        - go                  Go
+        - rust                Rust, TOML, Cargo
+        - zig                 Zig
+        - doc                 Documentation: resTructuredText, org, markdow,
+                                             readme, txt, graphviz DOT
+        - doc+                Same as doc, plus PDF files.
+        - html                HTML, CSS files
+        - pdf                 PDF files
 "
 }
 
@@ -76,19 +84,19 @@ if [ "$1" = "--use-rga" ]; then
     shift
     if [ "$1" = "--abs" ]; then
         shift
-        "$USRHOME_DIR/bin/sub/rga-f" "$@" "$(pwd)"
+        "$USRHOME_DIR/bin/sub/rg-f" rga "$@" "$(pwd)"
         exit_code="$?"
     else
-        "$USRHOME_DIR/bin/sub/rga-f" "$@"
+        "$USRHOME_DIR/bin/sub/rg-f" rga "$@"
         exit_code="$?"
     fi
 else
     if [ "$1" = "--abs" ]; then
         shift
-        "$USRHOME_DIR/bin/sub/rg-f" "$@" "$(pwd)"
+        "$USRHOME_DIR/bin/sub/rg-f" rg "$@" "$(pwd)"
         exit_code="$?"
     else
-        "$USRHOME_DIR/bin/sub/rg-f" "$@"
+        "$USRHOME_DIR/bin/sub/rg-f" rg "$@"
         exit_code="$?"
     fi
 fi

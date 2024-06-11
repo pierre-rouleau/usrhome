@@ -4,7 +4,7 @@
 # Purpose   : Ripgrep search for specific file type.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 10:08:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-11 13:27:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -19,6 +19,16 @@
 
 # Validate args
 case "$1" in
+    rg)  cmd=rg   ;;
+    rga) cmd=rga  ;;
+    *)
+        printf -- "*** INTERNAL ERROR in rg-f\n"
+        exit 4
+        ;;
+esac
+shift
+
+case "$1" in
     --type=*)
         type="$(echo "$1" | sed 's/--type=//g')"
         shift
@@ -29,43 +39,71 @@ esac
 
 case ${type} in
     c)
-        rg -t c "$@"
+        ${cmd} -t c "$@"
         ;;
 
     cpp)
-        rg -t cpp "$@"
+        ${cmd} -t cpp "$@"
         ;;
 
     c/cpp | C)
-        rg -t c -t cpp "$@"
+        ${cmd} -t c -t cpp "$@"
         ;;
 
     c/cpp/make | CM)
-        rg -t c -t cpp -t make -t mk -t config "$@"
+        ${cmd} -t c -t cpp -t make -t mk -t config -t swig "$@"
+        ;;
+
+    d)
+        ${cmd} -t d "$@"
+        ;;
+
+    make | M)
+        ${cmd} -t make -t m4 -t mk -t amake -t cmake "$@"
         ;;
 
     sh)
-        rg -t sh -t zsh  "$@"
+        ${cmd} -t sh -t zsh  "$@"
         ;;
 
     el | elisp)
-        rg -t elisp "$@"
+        ${cmd} -t elisp "$@"
         ;;
 
     erl | erlang)
-        rg -t erlang -t c "$@"
+        ${cmd} -t erlang -t c "$@"
         ;;
 
     go)
-        rg -t go "$@"
+        ${cmd} -t go "$@"
+        ;;
+
+    py | python)
+        ${cmd} -t python "$@"
         ;;
 
     rust)
-        rg -t rust "$@"
+        ${cmd} -t rust -t toml "$@"
         ;;
 
     zig)
-        rg -t zig "$@"
+        ${cmd} -t zig "$@"
+        ;;
+
+    doc)
+        ${cmd} -t org -t markdown -t readme -t rst -t txt -e -g '*.stxt' -g '*.dot' "$@"
+        ;;
+
+    doc+)
+        ${cmd} -t org -t markdown -t readme -t rst -t txt -e -t pdf -g '*.stxt' -g '*.dot' "$@"
+        ;;
+
+    pdf)
+        ${cmd} -t pdf "$@"
+        ;;
+
+    html)
+        ${cmd} -t html -t css "$@"
         ;;
 
     *)
