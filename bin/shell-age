@@ -4,7 +4,7 @@
 # Purpose   : Print age of shell.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 15:32:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-11 15:39:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -76,7 +76,9 @@ elif [ "$days" = "1" ]; then
 else
     printf -- "%dd,%S\n" "${days}" "${duration_formatted}"
 fi
-echo ""
 
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
