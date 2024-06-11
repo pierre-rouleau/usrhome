@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-31 17:00:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-11 15:24:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,7 +40,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
         {
             # Arg1: optional: "disputed"
             echo ""
-            if [[ "$1" = "disputed" ]]; then
+            if [ "$1" = "disputed" ]; then
                 echo "Potential (disputed) security issue detected by usrhome:"
                 echo " - Possibly compromised version ${xz_ver} of xz installed!"
             else
@@ -56,7 +56,6 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
         {
             # check and warn if known problematic versions are installed
             # xz version 5.6,0, 5.6.1 have backdoors
-            os_type=$(uname)
             xz_ver=$(xz --version | grep liblzma | awk '{print $2 }')
             xz_path=$(which xz)
             case $xz_ver in
@@ -66,7 +65,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
                     echo "     - https://www.wired.com/story/jia-tan-xz-backdoor/"
                     echo "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor"
                     echo ""
-                    case $os_type in
+                    case "$(uname)" in
                         'Darwin')
                             echo "Run: 'brew update; brew upgrade' AS SOON AS POSSIBLE to downgrade xz!"
                             echo ""
@@ -80,7 +79,6 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
                     ;;
 
             esac
-            unset os_type
             unset xz_ver
             unset xz_path
         }
@@ -94,16 +92,19 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
         # Topic: Path : usrhome-switch-path
 
         # Switch back to original path and back
-        usrhome-switch-path()
+        usrhome_switch_path()
         {
-            local oldp
             oldp=$PATH
             export PATH="$USRHOME_ORIGINAL_PATH"
             export USRHOME_ORIGINAL_PATH="$oldp"
-            if [[ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]]; then
+            if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
                 echo "- Switch PATH with USRHOME_ORIGINAL_PATH"
             fi
+            unset oldp
         }
+        # The function uses valid sh syntax to allow shellcheck verification.
+        # Use an easier to type command.
+        alias usrhome-switch-path=usrhome_switch_path
     fi
 
     # ----------------------------------------------------------------------------
@@ -117,13 +118,13 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
         # Set Homebrew first, just above system's PATH, USRHOME and user's bin will
         # be prepended before that; to take precedence over homebrew and over system.
 
-        if [[ "$USRHOME_USE_HOMEBREW" = "1" ]]; then
-            source $USRHOME_DIR/ibin/envfor-homebrew
+        if [ "$USRHOME_USE_HOMEBREW" = "1" ]; then
+            . "$USRHOME_DIR/ibin/envfor-homebrew"
         fi
 
         # Topic: Path: USRHOME
         # Add usrhome directories in PATH
-        source $USRHOME_DIR/ibin/envfor-usrhome
+        . "$USRHOME_DIR/ibin/envfor-usrhome"
 
         # Remember that PATH was set.  Prevent setting it again.
         export USRHOME__PATH_SET=1
@@ -131,6 +132,28 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
         # Check and report if there are any security issues
         usrhome_security_check
     fi
+
+    # ----------------------------------------------------------------------------
+    # Topic: Shell Age
+    # ----------------
+
+    USRHOME_SHELL_OPEN_DATE="$(date)"
+    export USRHOME_SHELL_OPEN_DATE
+
+    case "$(uname)" in
+        Darwin)
+            if [ "$USRHOME_USE_HOMEBREW" = "1" ]; then
+                if which gdate > /dev/null; then
+                    USRHOME_SHELL_OPEN_TIME=$(gdate +%s)
+                fi
+            fi
+            ;;
+
+        Linux)
+            USRHOME_SHELL_OPEN_TIME=$(date +%s)
+            ;;
+    esac
+    export USRHOME_SHELL_OPEN_TIME
 fi
 
 # ----------------------------------------------------------------------------

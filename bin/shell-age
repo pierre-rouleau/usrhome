@@ -1,0 +1,82 @@
+#!/bin/sh
+# SH FILE: shell-age
+#
+# Purpose   : Print age of shell.
+# Created   : Tuesday, June 11 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-11 15:32:32 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+#  Print how long the shell has been active.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# The shell configuration file must set the USRHOME_SHELL_OPEN environment
+# variables.
+#
+# - On macOS:  gdate, installed with Homebrew
+# - On Linux:  date
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+if [ -z "$USRHOME_SHELL_OPEN_DATE" ]; then
+    echo "***ERROR****"
+    echo "To use this command, you shell startup script must first"
+    echo "initialize USRHOME_SHELL_OPEN_DATE and USRHOME_SHELL_OPEN_TIME environment variables."
+    echo "Add the following lines to that file:"
+    echo "# "
+    echo "USRHOME_SHELL_OPEN_DATE=\$(date)"
+    echo "USRHOME_SHELL_OPEN_TIME=\$(date +%s)"
+    echo "export USRHOME_SHELL_OPEN_DATE"
+    echo "export USRHOME_SHELL_OPEN_TIME"
+    echo "# "
+    exit 1
+fi
+
+
+printf -- "Shell opened: %s\n" "$USRHOME_SHELL_OPEN_DATE"
+start_time=${USRHOME_SHELL_OPEN_TIME}
+
+case "$(uname)" in
+    Darwin)
+        if [ "$USRHOME_USE_HOMEBREW" = "1" ]; then
+            if which gdate > /dev/null; then
+                end_time=$(gdate +%s)
+            fi
+        fi
+        if [ -z "$end_time" ]; then
+            printf -- "
+*** shell-age ERROR: on macOS, gdate must be available; it is not.
+"
+            exit 2
+        fi
+        ;;
+
+    Linux)
+        end_time=$(date +%s)
+        ;;
+esac
+
+duration=$((end_time - start_time))
+days=$((duration / 86400))
+duration_formatted=$(gdate -d@${duration} -u +%Hh%Mm%Ss)
+printf -- "Shell age   : "
+if [ "$days" = "0" ]; then
+    printf -- "%s\n" "${duration_formatted}"
+elif [ "$days" = "1" ]; then
+    printf -- "1d,%S\n" "${duration_formatted}"
+else
+    printf -- "%dd,%S\n" "${days}" "${duration_formatted}"
+fi
+echo ""
+
+
+# ----------------------------------------------------------------------------
