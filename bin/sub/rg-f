@@ -1,0 +1,83 @@
+#!/bin/sh
+# SH FILE: rg-f
+#
+# Purpose   : Ripgrep search for specific file type.
+# Created   : Tuesday, June 11 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-11 10:08:25 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# This is a sub-command of ../rgf
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Validate args
+case "$1" in
+    --type=*)
+        type="$(echo "$1" | sed 's/--type=//g')"
+        shift
+        ;;
+    *)
+    exit 3
+esac
+
+case ${type} in
+    c)
+        rg -t c "$@"
+        ;;
+
+    cpp)
+        rg -t cpp "$@"
+        ;;
+
+    c/cpp | C)
+        rg -t c -t cpp "$@"
+        ;;
+
+    c/cpp/make | CM)
+        rg -t c -t cpp -t make -t mk -t config "$@"
+        ;;
+
+    sh)
+        rg -t sh -t zsh  "$@"
+        ;;
+
+    el | elisp)
+        rg -t elisp "$@"
+        ;;
+
+    erl | erlang)
+        rg -t erlang -t c "$@"
+        ;;
+
+    go)
+        rg -t go "$@"
+        ;;
+
+    rust)
+        rg -t rust "$@"
+        ;;
+
+    zig)
+        rg -t zig "$@"
+        ;;
+
+    *)
+        printf -- "
+*** rgf ERROR: unsupported TYPE: %s
+" "$type"
+        exit 2
+        ;;
+
+esac
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

@@ -1,0 +1,119 @@
+#!/bin/sh
+# SH FILE: rgf
+#
+# Purpose   : Search for specified language files.
+# Created   : Tuesday, June 11 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-11 10:05:27 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# Specialized Ripgrep search with pre-canned types, ability to add absolute
+# path and use Ripgrep-all (rga).
+#
+# This is an early implementation.  The real goal for this is to provide the
+# ability to specialize the search based on a local configuration file.
+# And the command would do a specialized search based on the definition from
+# the configuration file.  This is not yet done.  TODO
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - rg  : ripgrep     : https://github.com/BurntSushi/ripgrep
+# - rga : ripgrep-all : https://github.com/phiresky/ripgrep-all
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+rgf - ripgrep search for specified file types.
+
+ Usage:  rgf [--use-rga] [--abs] --type=TYPE PATTERN
+
+ --use-rga : use rga instead of rg.  rga searches in zip and tar.gz files.
+ --abs  : print absolute path to files
+ --type : TYPE specifies the type of files from one of the following groups:
+        - c                   C
+        - cpp                 C++
+        - c/cpp | C           C and C++
+        - c/cpp/make | CM     C, C++ and make files
+        - sh                  sh, bash, and zsh
+        - el | elisp          Emacs Lisp
+        - erl | erlang        Erlang and C
+        - go
+        - rust
+        - zig
+"
+}
+
+# --
+# Validate args
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+fi
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# --
+# Select the sub-command to execute.
+#  That sub-command is stored in a directory not in PATH.
+
+if [ "$1" = "--use-rga" ]; then
+    shift
+    if [ "$1" = "--abs" ]; then
+        shift
+        "$USRHOME_DIR/bin/sub/rga-f" "$@" "$(pwd)"
+        exit_code="$?"
+    else
+        "$USRHOME_DIR/bin/sub/rga-f" "$@"
+        exit_code="$?"
+    fi
+else
+    if [ "$1" = "--abs" ]; then
+        shift
+        "$USRHOME_DIR/bin/sub/rg-f" "$@" "$(pwd)"
+        exit_code="$?"
+    else
+        "$USRHOME_DIR/bin/sub/rg-f" "$@"
+        exit_code="$?"
+    fi
+fi
+
+# When the --type  is invalid, sub/rg_f exits with 2.
+# When the --type is missing, it exists with 3
+# On a failed search it exists with 1, on success 0
+case "$exit_code" in
+    3)
+        printf -- "
+*** rgf ERROR: TYPE is not specified.
+"
+        print_usage
+        exit 3
+        ;;
+    2)
+        print_usage
+        exit 2
+        ;;
+    *)
+        exit "$exit_code"
+        ;;
+esac
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
