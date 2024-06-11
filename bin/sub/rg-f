@@ -4,7 +4,7 @@
 # Purpose   : Ripgrep search for specific file type.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 13:27:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-11 13:48:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -91,15 +91,15 @@ case ${type} in
         ;;
 
     doc)
-        ${cmd} -t org -t markdown -t readme -t rst -t txt -e -g '*.stxt' -g '*.dot' "$@"
+        ${cmd} -t org -t markdown -t readme -t rst -t txt -- "$@"
         ;;
 
     doc+)
-        ${cmd} -t org -t markdown -t readme -t rst -t txt -e -t pdf -g '*.stxt' -g '*.dot' "$@"
+        rga -t org -t markdown -t readme -t rst -t txt -t pdf -- "$@"
         ;;
 
     pdf)
-        ${cmd} -t pdf "$@"
+        rga -t pdf "$@"
         ;;
 
     html)
