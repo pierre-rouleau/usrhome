@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 13:39:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-12 14:24:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -47,6 +47,9 @@ diffo -- Compare 2 object files by comparing their assembler code.
         - To include embedded C/C++ source code inside the object
           file, the files MUST be compiled with debugging activated.
           Usually this is the -g option for the compiler.
+        - With USRHOME, you can inject command line options into the cc
+          command line of the current shell with the 'use-cc-options'.
+          Do:  'use-cc-options -g'
 "
 }
 

@@ -1,0 +1,91 @@
+# Sourced script: envfor-cc-options  -*- mode: sh; -*-
+#
+# Purpose   : Force use of extra command line options for cc.
+# Created   : Wednesday, June 12 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-12 14:47:23 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# This script sets a set of command line options that are forced in the use of
+# the `cc' command line, effectively forcing a set of compiler options when
+# the `cc' compiler command is used inside the current shell.
+#
+# The extra command options are stored in the USRHOME_CC_OPTIONS environment
+# variable, and the `cc' command is turned into a script that is placed in
+# front of the shells PATH.  That cc script places the extra command line
+# options before all others specified by the command.
+#
+# Why?
+#
+# You can use this when building a single-file C or C++ program with GNU Make.
+# GNU Make is able to build a single-file C or C++ program without a makefile.
+# When it does that, however, it uses the default rules and you do not have
+# control over the command line it generates.  Setting the environment to
+# invoke  a `cc' script that invokes the regular `cc' program and adding the
+# extra arguments helps controlling the compiler in that scenario.
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#  - Presence of the use-cc-options alias in USRHOME shell configuration
+#    files.
+#  - The cc compiler.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+envfor-cc-options -- Add extra compiler options to cc invocations.
+
+ Usage:  use-cc-options OPTION [OPTION...]
+
+  OPTION: cc command line option.  You can specify several.
+
+ Note: ibin/envfor-cc-options is best invoked via its alias: use-cc-options
+
+"
+}
+
+# --
+# validate arguments
+
+if [ -z "$1" ]; then
+    printf -- "*** use-cc-options ERROR: missing arguments.\n"
+    print_usage
+    return 1
+fi
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    return 0
+fi
+
+
+if [ -z "$USRHOME_CC_OPTIONS" ]; then
+    # On first invocation place the specialized cc in front of PATH
+    USRHOME_CC_PGM=$(which cc)
+    export USRHOME_CC_PGM
+    PATH="$USRHOME_DIR/bin/augmented":"$PATH"
+    printf -- ". Activated %s in PATH for this shell!
+" "$USRHOME_DIR/bin/augmented"
+fi
+
+USRHOME_CC_OPTIONS="$*"
+export USRHOME_CC_OPTIONS
+
+printf -- ".  Using augmented cc with %s
+" "$*"
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

@@ -1,0 +1,39 @@
+#!/bin/sh
+# SH FILE: cc
+#
+# Purpose   : Compile with cc and extra compiler flags identified by USRHOME_CC_OPTIONS.
+# Created   : Wednesday, June 12 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-12 15:15:16 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# Augmented cc compiler:
+#
+# - Executes the cc compiler identified by USRHOME_CC_PGM
+# - Add the compiler command line options specified by USRHOME_CC_OPTIONS
+#
+# This is used when the shell has been augmented by the use-cc-options
+# command.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - $USRHOME_DIR/ibin/setfor-alias       : defines use-cc-options
+# - $USRHOME_DIR/ibin/envfor-cc-options  : the script itself
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+echo "${USRHOME_CC_PGM} ${USRHOME_CC_OPTIONS} $*"
+
+# shellcheck disable=2086 # USRHOME_CC_OPTIONS must NOT be a single string.
+${USRHOME_CC_PGM} ${USRHOME_CC_OPTIONS} "$@"
+
+# ----------------------------------------------------------------------------
