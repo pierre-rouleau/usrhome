@@ -41,6 +41,10 @@ Examples
 Augmenting compilation with cc
 ------------------------------
 
+The following example show how to force the use of the ``-g`` compiler
+option for a Make build without changing any files.  This only affects the
+current shell.
+
 .. figure::
    ../../res/augmented-cc.png
 
