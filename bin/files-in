@@ -4,7 +4,7 @@
 # Purpose   : List files in specified directory tree.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 07:53:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-12 07:55:11 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -39,7 +39,7 @@ files-in - list files present in specified directory tree.
         and pipe the output to 'grep \"^d\"'.
         To list only the directory names in the current
         tree: do this:
-              files-in -l | grep \"^d\" | awk '{print $9 }'
+              files-in -l | grep \"^d\" | awk '{print \$9 }'
 
 "
 }
