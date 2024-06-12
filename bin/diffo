@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 12:25:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-12 12:27:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -16,8 +16,7 @@
 # Dependencies
 # ------------
 #
-# - diff, objdump
-
+# - diff, objdump, strings, heads
 
 # ----------------------------------------------------------------------------
 # Code
@@ -120,6 +119,7 @@ fi
 diff_exit_code=0
 if [ "$with_source" = "" ]; then
     printf -- "diffo - Differences in assembler:\n"
+    # use tail +3 to remove the name of the file printed in the second line.
     if ${objdumper}  --disassemble --demangle --no-addresses     "$objf_old" | tail +3 > "$asmf_old"; then
         if ${objdumper} --disassemble --demangle --no-addresses  "$objf_new" | tail +3 > "$asmf_new"; then
             diff "$asmf_old" "$asmf_new"
