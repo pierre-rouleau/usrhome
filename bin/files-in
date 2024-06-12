@@ -4,7 +4,7 @@
 # Purpose   : List files in specified directory tree.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 22:54:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-11 23:00:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -37,11 +37,21 @@ files-in - list files present in specified directory tree with 'ls -l -d'.
 "
 }
 
+# --
+# validate arguments
+
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     # help requested explicitly: no error.
     exit 0
 fi
+if [ ! -d "$1" ]; then
+    printf -- "*** files-in ERROR: no such file or directory: %s\n" "$1"
+    exit 1
+fi
+
+# --
+# proceed
 
 if [ -z "$1" ]; then
     find . -type f -or -type l -or -type d | xargs -I $ ls -l -d $
@@ -50,3 +60,6 @@ else
 fi
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
