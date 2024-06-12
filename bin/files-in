@@ -4,7 +4,7 @@
 # Purpose   : List files in specified directory tree.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 07:24:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-12 07:34:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -70,7 +70,7 @@ fi
 
 list_files()
 {
-    find "$1" -type f -or -type l -or -type d
+    find "$1" -type f -or -type l -or -type d -not -path "$1"
 }
 
 if [ "$long_display" = "true" ]; then
