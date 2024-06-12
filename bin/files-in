@@ -4,7 +4,7 @@
 # Purpose   : List files in specified directory tree.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 23:00:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-12 07:24:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -26,11 +26,12 @@
 print_usage()
 {
     printf -- "
-files-in - list files present in specified directory tree with 'ls -l -d'.
+files-in - list files present in specified directory tree.
            Includes symbolic links and sub-directories.
 
- Usage: files-in [DIRPATH]
+ Usage: files-in [-l|--long] [DIRPATH]
 
+  -l | --long : long display.
   DIRPATH : Path of directory tree to inspect.
             Defaults to current directory.
 
@@ -45,18 +46,37 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     # help requested explicitly: no error.
     exit 0
 fi
-if [ ! -d "$1" ]; then
-    printf -- "*** files-in ERROR: no such file or directory: %s\n" "$1"
+
+long_display=
+if [ "$1" = "-l" ] || [ "$1" = --long ]; then
+    long_display="true"
+    shift
+fi
+
+if [ -z "$1" ]; then
+    dirpath=.
+else
+    dirpath="$1"
+fi
+
+if [ ! -d "$dirpath" ]; then
+    printf -- "*** files-in ERROR: no such file or directory: %s\n" "$dirpath"
     exit 1
 fi
+
 
 # --
 # proceed
 
-if [ -z "$1" ]; then
-    find . -type f -or -type l -or -type d | xargs -I $ ls -l -d $
+list_files()
+{
+    find "$1" -type f -or -type l -or -type d
+}
+
+if [ "$long_display" = "true" ]; then
+    list_files "$dirpath" | xargs -I $ ls -l -d $
 else
-    find "$1" -type f -or -type l -or -type d | xargs -I $ ls -l -d $
+    list_files "$dirpath"
 fi
 
 # ----------------------------------------------------------------------------
