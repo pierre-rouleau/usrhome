@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 10:01:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-12 12:25:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,11 +30,13 @@ print_usage()
     printf -- "
 diffo -- Compare 2 object files by comparing their assembler code.
 
- Usage: diffo [-w | --with-source] OBJ-OLD OBJ-NEW
+ Usage: diffo [[-w | --with-source] | [-s | --string]] OBJ-OLD OBJ-NEW
+        diffo -h | --help
 
    - OBJ-OLD            : path of the old object file.
    - OBJ-NEW            : path of the new object file.
    - -w | --with-source : insert C/C++ source code in the generated assembler.
+   - -s | --string      : also compare strings extracted from files.
 
   Note: - diffo requires a version of objdump which supports the
           --no-addresses option, preventing a diff from simply
@@ -55,10 +57,27 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     exit 0
 fi
 
+
+# check for optional switches.
 with_source=
-if [ "$1" = "-w" ] || [ "$1" = "--with-source" ]; then
-    with_source="true"
-    shift
+with_strings=
+options=2
+while [ "$options" -ge 1 ]; do
+    if [ "$1" = "-w" ] || [ "$1" = "--with-source" ]; then
+        with_source="true"
+        shift
+    elif [ "$1" = "-s" ] || [ "$1" = "--strings" ]; then
+        with_strings="true"
+        shift
+    fi
+    options=$(( options - 1 ))
+done
+
+# Check if remaining arguments are 2 file names
+if [ "$#" -ge 3 ]; then
+    printf -- "*** diffo ERROR: too many arguments: %s\n" "$*"
+    print_usage
+    exit 1
 fi
 
 if [ -z "$1" ] || [ -z "$2" ]; then
@@ -68,6 +87,7 @@ if [ -z "$1" ] || [ -z "$2" ]; then
     exit 1
 fi
 
+# get file names and check their validity
 objf_old=
 objf_new=
 if  [ -f "$1" ]; then
@@ -85,16 +105,6 @@ fi
 shift
 shift
 
-if [ -n "$2" ]; then
-    printf -- "*** diffo ERROR: unexpected arguments: %s\n" "$*"
-    print_usage
-    exit 1
-elif [ -n "$1" ]; then
-    printf -- "*** diffo ERROR: unexpected argument: %s\n" "$1"
-    print_usage
-    exit 1
-fi
-
 # --
 # proceed
 
@@ -106,19 +116,42 @@ if [ -n "$OBJDUMP" ]; then
     objdumper="$OBJDUMP"
 fi
 
+
+diff_exit_code=0
 if [ "$with_source" = "" ]; then
-    if ${objdumper}  --disassemble --demangle --no-addresses     "$objf_old" > "$asmf_old"; then
-        if ${objdumper} --disassemble --demangle --no-addresses  "$objf_new" > "$asmf_new"; then
+    printf -- "diffo - Differences in assembler:\n"
+    if ${objdumper}  --disassemble --demangle --no-addresses     "$objf_old" | tail +3 > "$asmf_old"; then
+        if ${objdumper} --disassemble --demangle --no-addresses  "$objf_new" | tail +3 > "$asmf_new"; then
             diff "$asmf_old" "$asmf_new"
+            diff_exit_code=$?
         fi
     fi
 else
-    printf -- "diffo - Generating assembler intermixed with C/C++ source.\n"
-    if ${objdumper}  --disassemble --demangle --source --no-addresses    "$objf_old" > "$asmf_old"; then
-        if ${objdumper} --disassemble --demangle --source --no-addresses "$objf_new" > "$asmf_new"; then
+    printf -- "diffo - Differences in assembler intermixed with C/C++ source:\n"
+    if ${objdumper}  --disassemble --demangle --source --no-addresses    "$objf_old" | tail +3 > "$asmf_old"; then
+        if ${objdumper} --disassemble --demangle --source --no-addresses "$objf_new" | tail +3 > "$asmf_new"; then
             diff "$asmf_old" "$asmf_new"
+            diff_exit_code=$?
         fi
     fi
+fi
+
+if [ "$with_strings" = "true" ]; then
+    txtf_old="${objf_old%.*}".txt
+    txtf_new="${objf_new%.*}".txt
+
+    strings "$objf_old" > "$txtf_old"
+    strings "$objf_new" > "$txtf_new"
+
+    printf -- "\ndiffo - Difference in text sections:\n"
+    diff "$txtf_old" "$txtf_new"
+    ec="$?"
+    if [ "$ec" = "0" ]; then
+        ec=$diff_exit_code
+    fi
+    exit $ec
+else
+    exit $diff_exit_code
 fi
 
 # ----------------------------------------------------------------------------
