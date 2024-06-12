@@ -1,0 +1,127 @@
+#!/bin/sh
+# SH FILE: diffo
+#
+# Purpose   : Compare 2 object files by comparing their assembler code.
+# Created   : Wednesday, June 12 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-12 09:34:25 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+diffo -- Compare 2 object files by comparing their assembler code.
+
+ Usage: diffo [-w | --with-source] OBJ-OLD OBJ-NEW
+
+   - OBJ-OLD            : path of the old object file.
+   - OBJ-NEW            : path of the new object file.
+   - -w | --with-source : insert C/C++ source code in the generated assembler.
+
+  Note: - diffo requires a version of objdump which supports the
+          --no-addresses option, preventing a diff from simply
+          detecting different addresses.
+        - If the OBJDUMP environment variable is defined, it
+          is taken as the name (or path name) of the objdump
+          program to use.  Otherwise it uses the objdump
+          program accessible on PATH.
+"
+}
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+with_source=
+if [ "$1" = "-w" ] || [ "$1" = "--with-source" ]; then
+    with_source="true"
+    shift
+fi
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+
+    printf -- "*** diffo ERROR: missing arguments.\n"
+    print_usage
+    exit 1
+fi
+
+objf_old=
+objf_new=
+if  [ -f "$1" ]; then
+    objf_old="$1"
+else
+    printf -- "*** diffo ERROR: File does not exist: %s\n" "$1"
+    exit 2
+fi
+if  [ -f "$2" ]; then
+    objf_new="$2"
+else
+    printf -- "*** diffo ERROR: File does not exist: %s\n" "$2"
+    exit 2
+fi
+shift
+shift
+
+if [ -n "$2" ]; then
+    printf -- "*** diffo ERROR: unexpected arguments: %s\n" "$*"
+    print_usage
+    exit 1
+elif [ -n "$1" ]; then
+    printf -- "*** diffo ERROR: unexpected argument: %s\n" "$1"
+    print_usage
+    exit 1
+fi
+
+# --
+# proceed
+
+asmf_old="${objf_old%.*}".asm
+asmf_new="${objf_new%.*}".asm
+
+objdumper=objdump
+if [ -n "$OBJDUMP" ]; then
+    objdumper="$OBJDUMP"
+fi
+
+if [ "$with_source" = "" ]; then
+    if ${objdumper}  --disassemble --demangle      "$objf_old" > "$asmf_old"; then
+        if ${objdumper} --disassemble --demangle   "$objf_new" > "$asmf_new"; then
+            diff "$asmf_old" "$asmf_new"
+        fi
+    fi
+else
+    printf -- "diffo - Generating assembler intermixed with C/C++ source.\n"
+    if ${objdumper}  --disassemble --demangle --source     "$objf_old" > "$asmf_old"; then
+        if ${objdumper} --disassemble --demangle --source  "$objf_new" > "$asmf_new"; then
+            diff "$asmf_old" "$asmf_new"
+        fi
+    fi
+fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
