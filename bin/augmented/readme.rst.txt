@@ -41,7 +41,8 @@ Examples
 Augmenting compilation with cc
 ------------------------------
 
-.. figure:: ../../res/aumented-cc.png
+.. figure::
+   ../../res/augmented-cc.png
 
 
 .. ---------------------------------------------------------------------------
