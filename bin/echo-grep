@@ -1,0 +1,47 @@
+#!/bin/sh
+# SH FILE: echo-grep
+#
+# Purpose   : Echo argument and grep using all arguments except the first one.
+# Created   : Wednesday, June 12 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-12 08:06:00 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# Grep for a string specified in the first argument into the file name
+# specified by the second argument.  But also echo the name of the file (the
+# first argument).
+#
+# This script is mainly used within a `xargs -I $ echo-grep PATTERN $'
+# used to grep the list of files found by a find or `fd -g' seach.  For
+# example:
+#
+#    fd -H -g '.config' | xargs -I $ echo-grep "^CONFIG_ENV" $
+#
+#
+# The above command line uses the Fast Finder `fg' to find all .config files
+# that have a line that configures the ENV.  It prints a separator line
+# between each found file name making it obvious to see which file has them.
+#
+# An alternative would be to use the ---with-filename option of grep, listing
+# only the matching outputs and showing the file name on each line.  That
+# output might be useful but it is harder to read.
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - GNU grep
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+printf -- "--------------------------------------------\n%s\n" "$2"
+grep --line-number "$1" "$2"
+
+# ----------------------------------------------------------------------------
