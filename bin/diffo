@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 12:27:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-12 13:39:40 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -44,6 +44,9 @@ diffo -- Compare 2 object files by comparing their assembler code.
           is taken as the name (or path name) of the objdump
           program to use.  Otherwise it uses the objdump
           program accessible on PATH.
+        - To include embedded C/C++ source code inside the object
+          file, the files MUST be compiled with debugging activated.
+          Usually this is the -g option for the compiler.
 "
 }
 
