@@ -4,7 +4,7 @@
 # Purpose   : List files in specified directory tree.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 07:34:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-12 07:39:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -57,6 +57,18 @@ if [ -z "$1" ]; then
     dirpath=.
 else
     dirpath="$1"
+fi
+shift
+
+
+if [ -n "$2" ]; then
+    printf -- "*** files-in ERROR: unexpected arguments: %s\n" "$*"
+    print_usage
+    exit 1
+elif [ -n "$1" ]; then
+    printf -- "*** files-in ERROR: unexpected argument: %s\n" "$1"
+    print_usage
+    exit 1
 fi
 
 if [ ! -d "$dirpath" ]; then
