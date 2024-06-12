@@ -1,0 +1,52 @@
+#!/bin/sh
+# SH FILE: files-in
+#
+# Purpose   : List files in specified directory tree.
+# Created   : Tuesday, June 11 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-11 22:54:33 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# List files in a directory
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - find
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+files-in - list files present in specified directory tree with 'ls -l -d'.
+           Includes symbolic links and sub-directories.
+
+ Usage: files-in [DIRPATH]
+
+  DIRPATH : Path of directory tree to inspect.
+            Defaults to current directory.
+
+"
+}
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+if [ -z "$1" ]; then
+    find . -type f -or -type l -or -type d | xargs -I $ ls -l -d $
+else
+    find "$1" -type f -or -type l -or -type d | xargs -I $ ls -l -d $
+fi
+
+# ----------------------------------------------------------------------------
