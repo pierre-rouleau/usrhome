@@ -1,0 +1,299 @@
+#!/bin/sh
+# SH FILE: mk-diffo
+#
+# Purpose   : Make a new object file diff to track evolution of a source file.
+# Created   : Thursday, June 13 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-13 17:59:24 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+
+# Module Description
+# ------------------
+#
+# Setup and construct the evolution tree of a source code file and its
+# corresponding object file, comparing the generated assembler as the file
+# evolves from version to version.
+#
+# **To use it**:
+#
+#  - Make sure you compile the C/C++ source files with debugging activated.
+#  - Specialize your shell by executing: use-mkdiffo
+#
+#        - That is an alias to the file $USRHOME_DIR/ibin/envfor-mkdiffo
+#        - This identifies the following:
+#
+#          - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
+#          - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
+#                                    in the main directory tree.
+#          - USRHOME_DIFFO_FNAME   : The full path to the source code file checked.
+#
+#        - When executing mk-diffo, the extra information is passed:
+#
+#          - The file version number, starting at 0 and incremented each time
+#            the mk-diffo command is issued for the specific project.
+#
+# **Directory Tree**:
+#
+# All files are stored inside a single directory tree. The directory tree has
+# four directory levels:
+#  - The root directory identified by USRHOME_DIFFO_ROOT_DIR (here, ~/my/results/diffo).
+#  - The project name, identified by USRHOME_DIFFO_PROJECT (in the following
+#    diagram you can see two projects: proj-1 and proj-2.)  Any name can be
+#    used.
+#  - The file name, identified by USRHOME_DIFFO_FNAME.  Inside the proj-1, we
+#     can see file-a.c and file-b.c.  In project-2 we can see pel.cpp.
+#  - The test number, starting at 0.
+#
+# Here's an example:
+#
+#          ~/my/results
+#          └── diffo
+#              ├── proj-1
+#              │   ├── file-a.c
+#              │   │   ├── 000
+#              │   │   │   ├── file-a.asm
+#              │   │   │   ├── file-a.c
+#              │   │   │   └── file-a.o
+#              │   │   └── 001
+#              │   │       ├── file-a.asm
+#              │   │       ├── file-a.c
+#              │   │       └── file-a.o
+#              │   └── file-b.c
+#              │       ├── 000
+#              │       │   ├── file-b.asm
+#              │       │   ├── file-b.c
+#              │       │   └── file-b.o
+#              │       ├── 001
+#              │       │   ├── file-b.asm
+#              │       │   ├── file-b.c
+#              │       │   └── file-b.o
+#              │       └── 002
+#              │           ├── file-b.asm
+#              │           ├── file-b.c
+#              │           └── file-b.o
+#              └── proj-2
+#                  └── pel.cpp
+#                      └── 000
+#                          ├── pel.asm
+#                          ├── pel.cpp
+#                          └── pel.o
+#
+#
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - The shell environment must have been previously setup by sourcing
+#   $USRHOME_DIR/ibin/envfor-mkdiffo to set up the following environment
+#   variables:
+#
+#          - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
+#          - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
+#                                    in the main directory tree.
+#          - USRHOME_DIFFO_FNAME   : The source code file name.
+
+# ----------------------------------------------------------------------------
+
+refno=
+print_usage()
+{
+    printf -- "
+mk-diffo - Store another file set and compare object files.
+
+  Usage mk-diffo [[-w | --with-source] | [-s | --string]] [REFNO]
+        mk-diffo -h | --help
+
+     Store the source and object file inside the mk-diffo directory tree
+     for the current file and reference number, then compare the object file
+     with the object file for the previous version or the version specified by
+     REFNO.
+
+     REFNO : optional reference number.  Default is last one created.
+
+     Options passed to diffo:
+     - -w | --with-source : insert C/C++ source code in the generated assembler.
+     - -s | --string      : also compare strings extracted from files.
+
+  ENVIRONMENT:
+
+    - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
+    - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
+                              in the main directory tree.
+    - USRHOME_DIFFO_FNAME   : The source code file name.
+
+    The current setup is:
+
+    - USRHOME_DIFFO_ROOT_DIR: %s
+    - USRHOME_DIFFO_PROJECT : %s
+    - USRHOME_DIFFO_FNAME   : %s
+    - Last reference number : %s
+" "$USRHOME_DIFFO_ROOT_DIR" "$USRHOME_DIFFO_PROJECT" "$USRHOME_DIFFO_FNAME" "$refno"
+}
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# check for optional switches.
+with_source=
+with_strings=
+options=2
+while [ "$options" -ge 1 ]; do
+    if [ "$1" = "-w" ] || [ "$1" = "--with-source" ]; then
+        with_source="-w"
+        shift
+    elif [ "$1" = "-s" ] || [ "$1" = "--strings" ]; then
+        with_strings="-s"
+        shift
+    fi
+    options=$(( options - 1 ))
+done
+
+# Check that REFNO is a valid integer (no leading 0 allowed)
+if [ -n "$1" ]; then
+    case "$1" in
+        00*)
+            # leading 0 is not allowed
+            printf -- "*** mk-info ERROR: %s is not a valid integer!\n" "$1"
+            print_usage
+            exit 1
+            ;;
+
+        (*[!0123456789]*)
+            # anything before or after a ASCII digit is not allowed
+            printf -- "*** mk-info ERROR: %s is not a valid integer!\n" "$1"
+            print_usage
+            exit 1
+            ;;
+
+        *)
+            # only numbers are allowed.
+            refno="$1"
+            ;;
+    esac
+fi
+
+# --
+# Check environment
+
+# Create short variable names
+db_root="${USRHOME_DIFFO_ROOT_DIR}"
+project_name="${USRHOME_DIFFO_PROJECT}"
+fpathname="$USRHOME_DIFFO_FNAME"
+
+# First check if the name of the tested source code file is identified.
+if [ -z "$fpathname" ]; then
+    printf -- "\
+*** mk-diffo ERROR: tested file, USRHOME_DIFFO_FNAME, name not defined!\n"
+    print_usage
+    exit 1
+fi
+if [ ! -f "$fpathname" ]; then
+    printf -- "\
+*** mk-diffo ERROR: tested source code file name,
+                    identified by USRHOME_DIFFO_FNAME, does not exists!
+                    USRHOME_DIFFO_FNAME: %s
+" "$fpathname"
+    print_usage
+    exit 1
+fi
+
+# Identify the basename of the tested source code file;
+# it will be used as a directory name.
+fbasename=$(basename "$fpathname")
+filename_noext="${USRHOME_DIFFO_FNAME%.*}"
+obj_filename="${filename_noext}.o"
+obj_basename="$(basename "$obj_filename")"
+printf "filename_noext = %s\n" "$filename_noext"
+printf "obj_filename = %s\n" "$obj_filename"
+
+# Now check the validity of the result directory tree named by the environment
+if [ -z "$db_root" ]; then
+    printf -- "\
+*** mk-diffo ERROR: USRHOME_DIFFO_ROOT_DIR is not defined!\n"
+    print_usage
+    exit 1
+elif [ ! -d "$db_root" ]; then
+    printf -- "\
+*** mk-diffo ERROR: USRHOME_DIFFO_ROOT_DIR is invalid: %s
+" "$db_root"
+    exit 1
+fi
+if [ -z "$USRHOME_DIFFO_PROJECT" ]; then
+    printf -- "\
+*** mk-diffo ERROR: USRHOME_DIFFO_PROJECT is not defined!\n"
+    print_usage
+    exit 1
+elif [ ! -d "${db_root}/${project_name}" ]; then
+    printf -- "\
+*** mk-diffo ERROR: USRHOME_DIFFO_PROJECT is invalid: %s
+     %s/%s : does not exist!
+" "$USRHOME_DIFFO_PROJECT" "$db_root" "$USRHOME_DIFFO_PROJECT"
+    exit 1
+fi
+
+# Check if the directory for the source file exists.
+# If it does not exists, create it, and set the reference number to 0.
+if [ ! -d "${db_root}/${project_name}/${fbasename}" ]; then
+    if ! mkdir -p "${db_root}/${project_name}/${fbasename}"; then
+       printf -- "\
+*** mk-diffo ERROR: Failed creating %s
+" "${db_root}/${project_name}/${fbasename}"
+       exit 1
+    elif mkdir -p "${db_root}/${project_name}/${fbasename}/000"; then
+        refno=0
+    else
+       printf -- "\
+*** mk-diffo ERROR: Failed creating %s/000
+" "${db_root}/${project_name}/${fbasename}"
+       exit 1
+    fi
+fi
+
+# --
+# Identify the last reference number for the current root/project/file
+if [ "$refno" = "0" ]; then
+    # NEW FILE!
+    # ---------
+    # This is a new file.  There's no previous recorded files.
+    # No comparison is possible yet for this source code file.
+    # Copy the source code and object file here.
+    printf -- "\
+mk-diffo - Creating a new entry: %s/%s/%s/000
+" "${db_root}" "${project_name}" "${fbasename}"
+
+    target_dir=$(printf -- "%s/%s/%s/000" "${db_root}" "${project_name}" "${fbasename}")
+    cp "$fpathname" "$target_dir"     || exit 1
+    cp "$obj_filename" "$target_dir"  || exit 1
+
+else
+    # EXITING FILE - New VERSION
+    # --------------------------
+    rootdir="${db_root}/${project_name}/${fbasename}"
+    nextref=0
+    for dname in $(find "${rootdir}" -type d ); do
+        if [ ! "$dname" = "${rootdir}" ]; then
+            number="$(basename "$dname")"
+            next=$(( number + 1))
+            if [ ${next} -gt ${nextref} ]; then
+                nextref=${next}
+            fi
+            printf -- "--> [%s] --> [%s] --> [%03d]\n" "$dname" "$number" "$next"
+        fi
+    done
+    orig_dir=$(printf -- "%s/%s/%s/000" "${db_root}" "${project_name}" "${fbasename}")
+    target_dir=$(printf -- "%s/%s/%s/%03d" "${db_root}" "${project_name}" "${fbasename}" "${nextref}")
+    printf -- "\
+mk-diffo - New version: %s\n" "${target_dir}"
+    mkdir -p "${target_dir}"
+    cp "$fpathname"    "$target_dir"  || exit 1
+    cp "$obj_filename" "$target_dir"  || exit 1
+
+    echo "diffo ${with_source} ${with_strings} ${orig_dir}/${obj_basename} ${target_dir}/${obj_basename}"
+    diffo ${with_source} ${with_strings} "${orig_dir}/${obj_basename}" "${target_dir}/${obj_basename}"
+fi
