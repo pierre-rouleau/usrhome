@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 14:24:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-13 17:53:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -28,6 +28,7 @@ print_usage()
 {
     printf -- "
 diffo -- Compare 2 object files by comparing their assembler code.
+         Print the diff output on stdout.
 
  Usage: diffo [[-w | --with-source] | [-s | --string]] OBJ-OLD OBJ-NEW
         diffo -h | --help
