@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-13 17:59:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-14 09:54:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -91,6 +91,12 @@
 #          - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
 #                                    in the main directory tree.
 #          - USRHOME_DIFFO_FNAME   : The source code file name.
+#
+# - Uses the following idiom to remove leading zeroes and prevent
+#   interpretation as octal:
+#
+#          var=$( expr "$var" + 0 )
+#
 
 # ----------------------------------------------------------------------------
 
@@ -109,6 +115,8 @@ mk-diffo - Store another file set and compare object files.
      REFNO.
 
      REFNO : optional reference number.  Default is last one created.
+             It must be a valid integer.
+             Leading 0 are accepted, but remain a base-10 value.
 
      Options passed to diffo:
      - -w | --with-source : insert C/C++ source code in the generated assembler.
@@ -126,8 +134,7 @@ mk-diffo - Store another file set and compare object files.
     - USRHOME_DIFFO_ROOT_DIR: %s
     - USRHOME_DIFFO_PROJECT : %s
     - USRHOME_DIFFO_FNAME   : %s
-    - Last reference number : %s
-" "$USRHOME_DIFFO_ROOT_DIR" "$USRHOME_DIFFO_PROJECT" "$USRHOME_DIFFO_FNAME" "$refno"
+" "$USRHOME_DIFFO_ROOT_DIR" "$USRHOME_DIFFO_PROJECT" "$USRHOME_DIFFO_FNAME"
 }
 
 # --
@@ -157,25 +164,33 @@ done
 # Check that REFNO is a valid integer (no leading 0 allowed)
 if [ -n "$1" ]; then
     case "$1" in
-        00*)
-            # leading 0 is not allowed
-            printf -- "*** mk-info ERROR: %s is not a valid integer!\n" "$1"
-            print_usage
+        -*)
+            # unexpected option?
+            printf -- "*** mk-info ERROR: %s is not a valid option!\n" "$1"
+            printf -- "    print usage with -h\n"
             exit 1
             ;;
 
         (*[!0123456789]*)
             # anything before or after a ASCII digit is not allowed
             printf -- "*** mk-info ERROR: %s is not a valid integer!\n" "$1"
-            print_usage
+            printf -- "    print usage with -h\n"
             exit 1
             ;;
 
         *)
             # only numbers are allowed.
-            refno="$1"
+            # shellcheck disable=SC2003 # $(()) consider leading zeroes as octal
+            refno=$( expr "$1" + 0)
             ;;
     esac
+fi
+
+# Check if there are any extra argument.
+if [ -n "$2" ]; then
+    printf -- "*** mk-diffo ERROR: too many arguments.\n"
+    printf -- "    print usage with -h\n"
+    exit 1
 fi
 
 # --
@@ -190,7 +205,7 @@ fpathname="$USRHOME_DIFFO_FNAME"
 if [ -z "$fpathname" ]; then
     printf -- "\
 *** mk-diffo ERROR: tested file, USRHOME_DIFFO_FNAME, name not defined!\n"
-    print_usage
+    printf -- "    print usage with -h\n"
     exit 1
 fi
 if [ ! -f "$fpathname" ]; then
@@ -199,7 +214,7 @@ if [ ! -f "$fpathname" ]; then
                     identified by USRHOME_DIFFO_FNAME, does not exists!
                     USRHOME_DIFFO_FNAME: %s
 " "$fpathname"
-    print_usage
+    printf -- "    print usage with -h\n"
     exit 1
 fi
 
@@ -209,31 +224,33 @@ fbasename=$(basename "$fpathname")
 filename_noext="${USRHOME_DIFFO_FNAME%.*}"
 obj_filename="${filename_noext}.o"
 obj_basename="$(basename "$obj_filename")"
-printf "filename_noext = %s\n" "$filename_noext"
-printf "obj_filename = %s\n" "$obj_filename"
+# printf "filename_noext = %s\n" "$filename_noext"
+# printf "obj_filename = %s\n" "$obj_filename"
 
 # Now check the validity of the result directory tree named by the environment
 if [ -z "$db_root" ]; then
     printf -- "\
 *** mk-diffo ERROR: USRHOME_DIFFO_ROOT_DIR is not defined!\n"
-    print_usage
+    printf -- "    print usage with -h\n"
     exit 1
 elif [ ! -d "$db_root" ]; then
     printf -- "\
 *** mk-diffo ERROR: USRHOME_DIFFO_ROOT_DIR is invalid: %s
 " "$db_root"
+    printf -- "    print usage with -h\n"
     exit 1
 fi
 if [ -z "$USRHOME_DIFFO_PROJECT" ]; then
     printf -- "\
 *** mk-diffo ERROR: USRHOME_DIFFO_PROJECT is not defined!\n"
-    print_usage
+    printf -- "    print usage with -h\n"
     exit 1
 elif [ ! -d "${db_root}/${project_name}" ]; then
     printf -- "\
 *** mk-diffo ERROR: USRHOME_DIFFO_PROJECT is invalid: %s
      %s/%s : does not exist!
 " "$USRHOME_DIFFO_PROJECT" "$db_root" "$USRHOME_DIFFO_PROJECT"
+    printf -- "    print usage with -h\n"
     exit 1
 fi
 
@@ -244,6 +261,7 @@ if [ ! -d "${db_root}/${project_name}/${fbasename}" ]; then
        printf -- "\
 *** mk-diffo ERROR: Failed creating %s
 " "${db_root}/${project_name}/${fbasename}"
+       printf -- "    print usage with -h\n"
        exit 1
     elif mkdir -p "${db_root}/${project_name}/${fbasename}/000"; then
         refno=0
@@ -251,12 +269,15 @@ if [ ! -d "${db_root}/${project_name}/${fbasename}" ]; then
        printf -- "\
 *** mk-diffo ERROR: Failed creating %s/000
 " "${db_root}/${project_name}/${fbasename}"
+       printf -- "    print usage with -h\n"
        exit 1
     fi
 fi
 
 # --
 # Identify the last reference number for the current root/project/file
+# and proceed.
+
 if [ "$refno" = "0" ]; then
     # NEW FILE!
     # ---------
@@ -267,33 +288,55 @@ if [ "$refno" = "0" ]; then
 mk-diffo - Creating a new entry: %s/%s/%s/000
 " "${db_root}" "${project_name}" "${fbasename}"
 
-    target_dir=$(printf -- "%s/%s/%s/000" "${db_root}" "${project_name}" "${fbasename}")
-    cp "$fpathname" "$target_dir"     || exit 1
-    cp "$obj_filename" "$target_dir"  || exit 1
+    trgt_dir=$(printf -- "%s/%s/%s/000" "${db_root}" "${project_name}" "${fbasename}")
+    cp "$fpathname" "$trgt_dir"     || exit 1
+    cp "$obj_filename" "$trgt_dir"  || exit 1
 
 else
     # EXITING FILE - New VERSION
     # --------------------------
     rootdir="${db_root}/${project_name}/${fbasename}"
     nextref=0
+    # shellcheck disable=SC2044 # the find-based loop fragility is prevented
+    #                           # by the content of the directory: only
+    #                           # sub-directories with numbers as names
     for dname in $(find "${rootdir}" -type d ); do
         if [ ! "$dname" = "${rootdir}" ]; then
-            number="$(basename "$dname")"
+            n1="$(basename "$dname")"
+            # shellcheck disable=SC2003 # $(()) consider leading zeroes as octal
+            number=$(expr "$n1" + 0)
             next=$(( number + 1))
             if [ ${next} -gt ${nextref} ]; then
                 nextref=${next}
             fi
-            printf -- "--> [%s] --> [%s] --> [%03d]\n" "$dname" "$number" "$next"
+            # printf -- "-> [%s] -> [%s] -> [%03d]\n" "$dname" "$number" "$next"
         fi
     done
-    orig_dir=$(printf -- "%s/%s/%s/000" "${db_root}" "${project_name}" "${fbasename}")
-    target_dir=$(printf -- "%s/%s/%s/%03d" "${db_root}" "${project_name}" "${fbasename}" "${nextref}")
+    tdir="${db_root}/${project_name}/${fbasename}"
+    if [ -z "$refno" ]; then
+        refno=0
+    elif [ "${refno}" -ge "${nextref}" ]; then
+        printf -- "\
+*** mk-diffo ERROR: specified REFNO (%s) is invalid: must be smaller than %s.
+" "$refno" "$nextref"
+        printf -- "    print usage with -h\n"
+        exit 1
+    fi
+    orig_dir=$(printf -- "%s/%03d" "$tdir" "${refno}")
+    trgt_dir=$(printf -- "%s/%03d" "$tdir" "${nextref}")
     printf -- "\
-mk-diffo - New version: %s\n" "${target_dir}"
-    mkdir -p "${target_dir}"
-    cp "$fpathname"    "$target_dir"  || exit 1
-    cp "$obj_filename" "$target_dir"  || exit 1
+mk-diffo - New version: %s\n" "${trgt_dir}"
+    mkdir -p "${trgt_dir}"
+    cp "$fpathname"    "$trgt_dir"  || exit 1
+    cp "$obj_filename" "$trgt_dir"  || exit 1
 
-    echo "diffo ${with_source} ${with_strings} ${orig_dir}/${obj_basename} ${target_dir}/${obj_basename}"
-    diffo ${with_source} ${with_strings} "${orig_dir}/${obj_basename}" "${target_dir}/${obj_basename}"
+    obj1="${orig_dir}/${obj_basename}"
+    obj2="${trgt_dir}/${obj_basename}"
+    echo "diffo ${with_source} ${with_strings} ${obj1} ${obj2}"
+    diffo ${with_source} ${with_strings} "${obj1}" "${obj2}"
 fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
