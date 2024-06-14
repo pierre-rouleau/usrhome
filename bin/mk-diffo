@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-14 09:54:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-14 11:53:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -103,7 +103,7 @@
 refno=
 print_usage()
 {
-    printf -- "
+    printf -- "\
 mk-diffo - Store another file set and compare object files.
 
   Usage mk-diffo [[-w | --with-source] | [-s | --string]] [REFNO]
@@ -128,13 +128,22 @@ mk-diffo - Store another file set and compare object files.
     - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
                               in the main directory tree.
     - USRHOME_DIFFO_FNAME   : The source code file name.
+    - USRHOME_DIFFO_OBJEXT  : Object file extension. Include leading period.
+                              Defaults to \".o\".
+                              Use \" \" for extension-less files
+                              if you want to analyze single source file
+                              executable files.
 
     The current setup is:
 
     - USRHOME_DIFFO_ROOT_DIR: %s
     - USRHOME_DIFFO_PROJECT : %s
     - USRHOME_DIFFO_FNAME   : %s
-" "$USRHOME_DIFFO_ROOT_DIR" "$USRHOME_DIFFO_PROJECT" "$USRHOME_DIFFO_FNAME"
+    - USRHOME_DIFFO_OBJEXT  : '%s'
+" "$USRHOME_DIFFO_ROOT_DIR" \
+           "$USRHOME_DIFFO_PROJECT" \
+           "$USRHOME_DIFFO_FNAME" \
+           "$USRHOME_DIFFO_OBJEXT"
 }
 
 # --
@@ -222,10 +231,17 @@ fi
 # it will be used as a directory name.
 fbasename=$(basename "$fpathname")
 filename_noext="${USRHOME_DIFFO_FNAME%.*}"
-obj_filename="${filename_noext}.o"
+if [ -z "$USRHOME_DIFFO_OBJEXT" ]; then
+    obj_ext=".o"
+elif [ "$USRHOME_DIFFO_OBJEXT" = " " ]; then
+    obj_ext=""
+else
+    obj_ext="${USRHOME_DIFFO_OBJEXT}"
+fi
+obj_filename="${filename_noext}${obj_ext}"
 obj_basename="$(basename "$obj_filename")"
-# printf "filename_noext = %s\n" "$filename_noext"
-# printf "obj_filename = %s\n" "$obj_filename"
+printf "filename_noext = %s\n" "$filename_noext"
+printf "obj_filename = %s\n" "$obj_filename"
 
 # Now check the validity of the result directory tree named by the environment
 if [ -z "$db_root" ]; then
