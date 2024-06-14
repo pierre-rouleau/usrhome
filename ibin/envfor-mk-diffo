@@ -1,0 +1,218 @@
+# Sourced script: envfor-mk-diffo  -*- mode: sh; -*-
+#
+# Purpose   : Setup the shell to use mk-diffo: compare evolution of object code of a file.
+# Created   : Friday, June 14 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-14 11:58:10 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Setup and construct the evolution tree of a source code file and its
+# corresponding object file, comparing the generated assembler as the file
+# evolves from version to version.
+#
+# **To use it**:
+#
+#  - Make sure you compile the C/C++ source files with debugging activated.
+#  - Specialize your shell by executing: use-mkdiffo
+#
+#        - That is an alias to the file $USRHOME_DIR/ibin/envfor-mkdiffo
+#        - This identifies the following:
+#
+#          - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
+#          - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
+#                                    in the main directory tree.
+#          - USRHOME_DIFFO_FNAME   : The full path to the source code file checked.
+#
+#        - When executing mk-diffo, the extra information is passed:
+#
+#          - The file version number, starting at 0 and incremented each time
+#            the mk-diffo command is issued for the specific project.
+#
+# **Directory Tree**:
+#
+# All files are stored inside a single directory tree. The directory tree has
+# four directory levels:
+#  - The root directory identified by USRHOME_DIFFO_ROOT_DIR (here, ~/my/results/diffo).
+#  - The project name, identified by USRHOME_DIFFO_PROJECT (in the following
+#    diagram you can see two projects: proj-1 and proj-2.)  Any name can be
+#    used.
+#  - The file name, identified by USRHOME_DIFFO_FNAME.  Inside the proj-1, we
+#     can see file-a.c and file-b.c.  In project-2 we can see pel.cpp.
+#  - The test number, starting at 0.
+#
+# Here's an example:
+#
+#          ~/my/results
+#          └── diffo
+#              ├── proj-1
+#              │   ├── file-a.c
+#              │   │   ├── 000
+#              │   │   │   ├── file-a.asm
+#              │   │   │   ├── file-a.c
+#              │   │   │   └── file-a.o
+#              │   │   └── 001
+#              │   │       ├── file-a.asm
+#              │   │       ├── file-a.c
+#              │   │       └── file-a.o
+#              │   └── file-b.c
+#              │       ├── 000
+#              │       │   ├── file-b.asm
+#              │       │   ├── file-b.c
+#              │       │   └── file-b.o
+#              │       ├── 001
+#              │       │   ├── file-b.asm
+#              │       │   ├── file-b.c
+#              │       │   └── file-b.o
+#              │       └── 002
+#              │           ├── file-b.asm
+#              │           ├── file-b.c
+#              │           └── file-b.o
+#              └── proj-2
+#                  └── pel.cpp
+#                      └── 000
+#                          ├── pel.asm
+#                          ├── pel.cpp
+#                          └── pel.o
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "\
+use-mk-diffo - Setup the shell to use mk-diffo to track evolution
+               of the object code of a source code file.
+
+ Usage use-mk-diffo DB-ROOT-DIR PROJECT SRC_FNAME [OBJ-EXT]
+       use-mk-diffo -h | --help
+
+  where:
+    - DB-ROOT-DIR: The directory tree where all files are stored.
+    - PROJECT    : The name of the project to which SRC_FNAME belongs.
+                   That name is used as the name of the sub-directory
+                   of the main directory tree, identified by DB-ROOT_DIR
+    - SRC_FNAME  : The source code file name.
+                   Identify the absolute path of the file or
+                   the path relative to the directory from where the
+                   mk-diffo commands will be issued.
+   - OBJ-EXT     : Object file extension. Include the leading period.
+                   If not specified it defaults to \".o\".
+                   To specify empty extension, if you want to track the
+                   evolution of single source file program executable,
+                   use \" \".
+
+  Note: use-mk-diffo is a command alias to \$USRHOME_DIR/ibin/envfor-mk-diffo
+        which is: %s/ibin/envfor-mk-diffo
+" "$USRHOME_DIR"
+}
+
+# --
+# Validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    return 0
+fi
+
+
+if [ -z "$1" ]; then
+    printf -- "\
+*** use-mk-diffo ERROR: Missing arguments.
+"
+    print_usage
+    return 1
+elif [ ! -d "$1" ]; then
+    printf -- "\
+*** use-mk-diffo ERROR: Invalid directory: %s
+    Print usage with -h
+" "$1"
+    return 1
+else
+    USRHOME_DIFFO_ROOT_DIR=$(realpath "$1")
+fi
+shift
+
+
+if [ -z "$1" ]; then
+    printf -- "\
+*** use-mk-diffo ERROR: Missing arguments.
+"
+    print_usage
+    return 1
+elif [ ! -d "${USRHOME_DIFFO_ROOT_DIR}/$1" ]; then
+    if mkdir -p "${USRHOME_DIFFO_ROOT_DIR}/$1"; then
+        USRHOME_DIFFO_PROJECT="$1"
+    else
+        printf -- "\
+*** use-mk-diffo ERROR: Failed creating directory: %s
+    Print usage with -h
+" "${USRHOME_DIFFO_ROOT_DIR}/$1"
+        return 1
+    fi
+else
+    USRHOME_DIFFO_PROJECT="$1"
+fi
+shift
+
+
+if [ -z "$1" ]; then
+    printf -- "\
+*** use-mk-diffo ERROR: Missing argument: no file name specified.
+"
+    print_usage
+    return 1
+elif [ ! -f "$1" ]; then
+    printf -- "\
+*** use-mk-diffo ERROR: Invalid file name: %s
+    Print usage with -h
+" "$1"
+    return 1
+else
+    USRHOME_DIFFO_FNAME="$1"
+fi
+shift
+
+if [ -z "$1" ]; then
+    USRHOME_DIFFO_OBJEXT=".o"
+elif [ "$1" = " " ]; then
+    USRHOME_DIFFO_OBJEXT=" "
+else
+    USRHOME_DIFFO_OBJEXT="$1"
+fi
+shift
+
+if [ -n "$1" ]; then
+    printf -- "\
+*** use-mk-diffo ERROR: Too many arguments.
+"
+    return 1
+fi
+
+export USRHOME_DIFFO_ROOT_DIR
+export USRHOME_DIFFO_PROJECT
+export USRHOME_DIFFO_FNAME
+export USRHOME_DIFFO_OBJEXT
+
+printf -- "\
+-- Shell setup for mk-diffo with: -------------------------------------------
+- USRHOME_DIFFO_ROOT_DIR : %s
+- USRHOME_DIFFO_PROJECT  : %s
+- USRHOME_DIFFO_FNAME    : %s
+- USRHOME_DIFFO_OBJEXT   : '%s'
+-----------------------------------------------------------------------------
+" "$USRHOME_DIFFO_ROOT_DIR" \
+  "$USRHOME_DIFFO_PROJECT" \
+  "$USRHOME_DIFFO_FNAME" \
+  "$USRHOME_DIFFO_OBJEXT" \
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
