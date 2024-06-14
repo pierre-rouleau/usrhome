@@ -106,8 +106,8 @@ diffo_               Perform the object file difference between two object
 .. _use-cc-options:            https://github.com/pierre-rouleau/usrhome/tree/main/ibin/envfor-cc-options
 .. _use-mk-diffo:              https://github.com/pierre-rouleau/usrhome/tree/main/ibin/envfor-mk-diffo
 .. _cc:                        https://github.com/pierre-rouleau/usrhome/tree/main/bin/augmented/cc
-.. _mk-diffo:                  https://github.com/pierre-rouleau/usrhome/tree/main/bin/augmented/mk-diffo
-.. _diffo:                     https://github.com/pierre-rouleau/usrhome/tree/main/bin/augmented/diffo
+.. _mk-diffo:                  https://github.com/pierre-rouleau/usrhome/tree/main/bin/mk-diffo
+.. _diffo:                     https://github.com/pierre-rouleau/usrhome/tree/main/bin/diffo
 .. _USRHOME augmented commands: https://github.com/pierre-rouleau/usrhome/blob/main/bin/augmented/readme.rst.txt
 
 .. ---------------------------------------------------------------------------
