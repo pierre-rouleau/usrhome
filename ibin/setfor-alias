@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-14 11:30:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-21 11:01:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -430,6 +430,10 @@ alias usrcfg='source $USRHOME_DIR/ibin/do-usrcfg'
 
 usrhome_cd()
 {
+    # Arguments:
+    # - 1: string: name of the environment variable identifying directory
+    # - 2: string: dirpath: value of the environment variable identifying directory
+    # - 3: optional: sub-directory name.
     if [ -n "$2" ]; then
         if [[ -d "$2/$3" ]]; then
             cd "$2/$3" || return 1
