@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-05 15:33:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-24 11:16:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -71,8 +71,8 @@ cd-to : Search for file in current directory tree.
         If more than 1 file found, list them and offer to edit them.
 
    Usage:  cd-to [-h|--help]
-           cd-to    [-H] [-I] FILENAME
-           cd-to -d [-H] [-I] DIRNAME
+           cd-to    [-H] [-I] [-e] FILENAME
+           cd-to -d [-H] [-I] [-e] DIRNAME
 
      By default:
 
@@ -80,6 +80,9 @@ cd-to : Search for file in current directory tree.
        specified.
      - skips searching ignored directories unless the -I option is
        specified.
+     - -e: edit file(s).  If several file/directories are found
+                          it ignores that option and prompts
+                          for editing the files anyway.
 
      FILENAME or DIRNAME may use the glob syntax supported by fd.
 
@@ -101,6 +104,7 @@ search_hidden=false
 search_ignored=false
 search_for=files
 search_for1=file
+edit_files=false
 unset cd_to__exit_code
 
 check_option()
@@ -123,6 +127,10 @@ check_option()
         "-d")
             search_for1=directory
             search_for=directories
+            ;;
+
+        "-e")
+            edit_files=true
             ;;
 
         -?*)
@@ -182,6 +190,26 @@ case "$#" in
             return "$cd_to__exit_code"
         fi
         the_fname="$4"
+        ;;
+
+    5)
+        check_option "$1"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        check_option "$2"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        check_option "$3"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        check_option "$4"
+        if [ -n "$cd_to__exit_code" ]; then
+            return "$cd_to__exit_code"
+        fi
+        the_fname="$5"
         ;;
 
 
@@ -288,6 +316,10 @@ unset search_for1
 cd "${the_dirpath}" || return 1
 unset the_dirpath
 ls -l "${the_fname}"
+if [ "$edit_files" = "true" ]; then
+    echo "$EDITOR ${the_fname}"
+    eval $EDITOR "${the_fname}"
+fi
 unset the_fname
 
 # ----------------------------------------------------------------------------
