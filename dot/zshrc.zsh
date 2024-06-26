@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-06-02 15:35:30 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-25 22:18:58 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -85,29 +85,46 @@ else
 
         *)
             # This works on Kali Linux, Ubuntu,
-            export HELPDIR=/usr/share/zsh/help
+            # On Rocky Linux zsh may not be available, and if it is,
+            # the help files may not be present in this directory
+            if [[ -d /usr/share/zsh/help ]]; then
+                export HELPDIR=/usr/share/zsh/help
+            else
+                printf -- "\
+WARNING! The zsh help files expected in /usr/share/zsh/help
+         are not present!
+         It might be a problem with the Linux distribution of zsh.
+         You can get the files from the zsh source tarball in the
+         Doc/help directory at:
+           https://sourceforge.net/projects/zsh/files/zsh/
+"
+            fi
             ;;
     esac
     unset os_type
 fi
+if [[ -n "$HELPDIR" ]]; then
 #
 # Check the validity of HELPDIR and proceed if it's OK.
-if [[ -d "$HELPDIR" ]]; then
-    # 2 - If necessary, Un-alias run-help, then autoload run-help
-    if type run-help | grep alias > /dev/null; then
-        unalias run-help 2> /dev/null
-        autoload run-help
+    if [[ -d "$HELPDIR" ]]; then
+        # 2 - If necessary, Un-alias run-help, then autoload run-help
+        if type run-help | grep alias > /dev/null; then
+            unalias run-help 2> /dev/null
+            autoload run-help
+        fi
+        #
+        # 3 - Set an help alias
+        alias help=run-help
+    else
+        printf -- "\
+WARNING! The value of HELPDIR variable is invalid!
+         It should identify the location of zsh help directory,
+         but the directory it identifies does not exist!
+         Please investigate -- report the problem to USRHOME
+                               by filing a bug report."
     fi
-    #
-    # 3 - Set an help alias
-    alias help=run-help
-else
-    echo "WARNING! The value of HELPDIR variable is invalid!"
-    echo " It should identify the location of zsh help directory,"
-    echo " but the directory it identifies does not exist!"
-    echo " Please investigate -- report the problem to USRHOME"
-    echo "                       by filing a bug report."
 fi
+
 
 #
 # ------------------------------------------
