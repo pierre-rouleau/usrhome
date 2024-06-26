@@ -4,7 +4,7 @@
 # Purpose   : Build the ~/bin/gcc-14 directory with symlinks to homebrew gcc.
 # Created   : Saturday, May 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-28 17:27:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-26 09:17:29 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -91,6 +91,7 @@ if [ "$(arch)" = "arm64" ]; then
     ln -s  /opt/homebrew/Cellar/gcc/14.1.0/bin/cpp-14        cpp          || exit 1
     ln -s  /opt/homebrew/Cellar/gcc/14.1.0/bin/g++-14        g++          || exit 1
     ln -s  /opt/homebrew/Cellar/gcc/14.1.0/bin/gcc-14        gcc          || exit 1
+    ln -s  /opt/homebrew/Cellar/gcc/14.1.0/bin/gcc-14        cc           || exit 1
     ln -s  /opt/homebrew/Cellar/gcc/14.1.0/bin/gcc-ar-14     ar           || exit 1
     ln -s  /opt/homebrew/Cellar/gcc/14.1.0/bin/gcc-nm-14     nm           || exit 1
     ln -s  /opt/homebrew/Cellar/gcc/14.1.0/bin/gcc-ranlib-14 ranlib       || exit 1
@@ -107,6 +108,7 @@ if [ "$(arch)" = "arm64" ]; then
     ln -s /opt/homebrew/Cellar/gcc/14.1.0/bin/aarch64-apple-darwin23-c++-14        c++         || exit 1
     ln -s /opt/homebrew/Cellar/gcc/14.1.0/bin/aarch64-apple-darwin23-g++-14        g++         || exit 1
     ln -s /opt/homebrew/Cellar/gcc/14.1.0/bin/aarch64-apple-darwin23-gcc-14        gcc         || exit 1
+    ln -s /opt/homebrew/Cellar/gcc/14.1.0/bin/aarch64-apple-darwin23-gcc-14        cc          || exit 1
     ln -s /opt/homebrew/Cellar/gcc/14.1.0/bin/aarch64-apple-darwin23-gcc-ar-14     ar          || exit 1
     ln -s /opt/homebrew/Cellar/gcc/14.1.0/bin/aarch64-apple-darwin23-gcc-nm-14     nm          || exit 1
     ln -s /opt/homebrew/Cellar/gcc/14.1.0/bin/aarch64-apple-darwin23-gcc-ranlib-14 ranlib      || exit 1
@@ -146,6 +148,7 @@ else
     ln -s /usr/local/bin/cpp-14         cpp        || exit 1
     ln -s /usr/local/bin/g++-14         g++        || exit 1
     ln -s /usr/local/bin/gcc-14         gcc        || exit 1
+    ln -s /usr/local/bin/gcc-14         cc         || exit 1
     ln -s /usr/local/bin/gcc-ar-14      ar         || exit 1
     ln -s /usr/local/bin/gcc-nm-14      nm         || exit 1
     ln -s /usr/local/bin/gcc-ranlib-14  ranlib     || exit 1

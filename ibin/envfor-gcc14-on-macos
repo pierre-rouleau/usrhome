@@ -3,7 +3,7 @@
 # Purpose   : Install GCC executable files in the current macOS shell.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-28 17:02:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-26 09:15:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,7 +34,7 @@
 # The $HOME/bin/gcc-14 directory must exists and hold symlinks to the gcc
 # toolchain binaries.
 #
-# See usrhome/setup/macos/create-gcc-as-gcc14.sh : it does what's required
+# See $USRHOME_DIR/setup/macos/create-gcc-as-gcc14.sh : it does what's required
 # once you have executed 'brew install gcc' for GCC-14 (which is the current
 # GCC version at the time this was written).
 
