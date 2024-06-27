@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 09:20:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-27 12:40:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -36,6 +36,17 @@
 # Code
 # ----
 #
+
+# 0 - Check if shell is interactive
+# ---------------------------------
+case "$-" in
+    *i*)
+        SHELL_IS_INTERACTIVE=true
+        ;;
+    *)
+        SHELL_IS_INTERACTIVE=false
+        ;;
+esac
 
 # --
 # Initialize
@@ -82,7 +93,9 @@ append_to_infopath()
                 fi
             fi
         else
-            printf -- "Skipping invalid dname: %s\n" "${dname}"
+            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                printf -- "Skipping invalid dname: %s\n" "${dname}"
+            fi
         fi
 
     done
@@ -99,7 +112,9 @@ append_to_infopath()
 if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
     if [ "$1" = "--refresh" ] || [ ! -f "${config_filepath}" ]; then
         # perform a new scan
-        printf -- ". Scanning for info directories..."
+        if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+            printf -- ". Scanning for info directories..."
+        fi
         if [ -f "${config_filepath}" ]; then
             # delete existing config file
             rm -f "${config_filepath}"
@@ -119,15 +134,21 @@ if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
         fi
 
         if [ ! "${new_dir_count}" = "0" ]; then
-            printf -- " added %d directories to INFOPATH.\n" ${new_dir_count}
-            printf -- "   Use 'showpath INFOPATH' to see it.\n"
+            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                printf -- " added %d directories to INFOPATH.\n" ${new_dir_count}
+                printf -- "   Use 'showpath INFOPATH' to see it.\n"
+            fi
             if [  "${orig_INFOPATH}" != "" ]; then
-                printf -- "   Original INFOPATH was: \n"
                 export orig_INFOPATH
-                showpath -n orig_INFOPATH
+                if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                    printf -- "   Original INFOPATH was: \n"
+                    showpath -n orig_INFOPATH
+                fi
             fi
         else
-            printf "No info directory found!\n"
+            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                printf "No info directory found!\n"
+            fi
         fi
     else
         # set INFOPATH from the paths stored in the ${config_filepath} file.
@@ -137,9 +158,11 @@ if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
             INFOPATH="$INFOPATH":"${infopath_line}"
             dir_count=$(( dir_count + 1 ))
         done < "${config_filepath}"
-        printf -- "\
+        if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+            printf -- "\
 . Setting INFOPATH from ~/.infopath.txt with %d directories.
 " "${dir_count}"
+        fi
         unset dir_count
     fi
     export INFOPATH

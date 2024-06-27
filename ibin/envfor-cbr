@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use the c, b and r commands.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:53:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-27 12:59:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,12 +24,29 @@
 # ----
 #
 #
+# 0 - Check if shell is interactive
+# ---------------------------------
+case "$-" in
+    *i*)
+        SHELL_IS_INTERACTIVE=true
+        ;;
+    *)
+        SHELL_IS_INTERACTIVE=false
+        ;;
+esac
+
+
 alias c='source $USRHOME_DIR/ibin/do-cbr c'
 alias b='source $USRHOME_DIR/ibin/do-cbr b'
 alias r='source $USRHOME_DIR/ibin/do-cbr r'
 
-echo ". CBR single letter commands installed in shell:"
-echo "   c := check, b:= build, r:=run"
+if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+    printf -- "\
+. CBR single letter commands installed in shell:
+  c := check, b:= build, r:=run
+"
+fi
+
 # ----------------------------------------------------------------------------
 #  Local Variables:
 #  sh-shell: sh

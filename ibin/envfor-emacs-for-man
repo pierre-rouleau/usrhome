@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:53:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-27 13:10:30 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -36,6 +36,17 @@
 # ----
 #
 #
+# 0 - Check if shell is interactive
+# ---------------------------------
+case "$-" in
+    *i*)
+        SHELL_IS_INTERACTIVE=true
+        ;;
+    *)
+        SHELL_IS_INTERACTIVE=false
+        ;;
+esac
+
 
 print_man_usage()
 {
@@ -55,7 +66,7 @@ print_man_usage()
   You can also specify the same options to man() to
   override the option passed to use-emacs-for-man.\n" "$1"
 
-    if [[ "$1" = "man" ]]; then
+    if [ "$1" = "man" ]; then
         printf "\
 
   ATTENTION!!
@@ -89,13 +100,13 @@ print_error()
 
 # Initialize USRHOME_MAN_MODE to unknown if it is not already set from previous
 # execution of the sourcing of the script.
-if [[ -z $USRHOME_MAN_MODE ]]; then
+if [ -z "$USRHOME_MAN_MODE" ]; then
     prefix_msg=". Using"
     USRHOME_MAN_MODE=
 else
     prefix_msg="Now using"
 fi
-if [[ -n "$1" ]]; then
+if [ -n "$1" ]; then
     case $1 in
         -g | -G)
             # This will use the 'ge' script.
@@ -105,58 +116,74 @@ if [[ -n "$1" ]]; then
             # copy it inside a directory present on PATH and may want to
             # modify it to fit the user's needs better.
             # later.  Activate the mode only if the user accepts.
-            ge_path=
             if ! command -v ge > /dev/null 2>&1; then
-                printf "ATTENTION! The 'ge' script is not in your PATH!\n"
-                printf " USRHOME will use %s/template/bin/ge\n" "$USRHOME_DIR"
-                printf " You may want to copy it in a directory in your PATH\n"
-                printf " and possibly modify it to better suit you.\n\n"
+                if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                    printf "ATTENTION! The 'ge' script is not in your PATH!\n"
+                    printf " USRHOME will use %s/template/bin/ge\n" "$USRHOME_DIR"
+                    printf " You may want to copy it in a directory in your PATH\n"
+                    printf " and possibly modify it to better suit you.\n\n"
+                fi
             fi
             USRHOME_MAN_MODE="$1"
-            case $1 in
-                -g)
-                    printf "%s Emacs in graphics mode as man reader.\n" "$prefix_msg"
-                    ;;
-                -G)
-                    printf "%s Emacs quickly in graphics mode as man reader.\n" "$prefix_msg"
-                    ;;
-            esac
+            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                case $1 in
+                    -g)
+                        printf "%s Emacs in graphics mode as man reader.\n" "$prefix_msg"
+                        ;;
+                    -G)
+                        printf "%s Emacs quickly in graphics mode as man reader.\n" "$prefix_msg"
+                        ;;
+                esac
+            fi
             ;;
         -s | -S)
             # Requesting to use Emacs client/server mechanism.
             # Check if the Emacs daemon is running.  If it is not, start it.
             if ! emacsclient -a false -e 't' > /dev/null 2>&1; then
-                echo "ATTENTION: Emacs Daemon was not running, starting it!"
+                if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                    printf -- "ATTENTION: Emacs Daemon was not running, starting it!\n"
+                fi
                 emacs --daemon
             fi
             USRHOME_MAN_MODE="$1"
-            printf "%s Emacs server as man reader.\n" "$prefix_msg"
-
+            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                printf "%s Emacs server as man reader.\n" "$prefix_msg"
+            fi
             ;;
         -t)
             USRHOME_MAN_MODE='-t'
-            printf "%s Emacs in text mode as man reader.\n" "$prefix_msg"
+            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                printf "%s Emacs in text mode as man reader.\n" "$prefix_msg"
+            fi
             ;;
 
         -T)
             USRHOME_MAN_MODE='-T'
-            printf "%s Emacs quickly in text mode as man reader.\n" "$prefix_msg"
+            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                printf "%s Emacs quickly in text mode as man reader.\n" "$prefix_msg"
+            fi
             ;;
 
         -h | --help )
             unset prefix_msg
-            print_man_usage "use-emacs-for-man"
+            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                print_man_usage "use-emacs-for-man"
+            fi
             return 0
             ;;
 
         *)
-            print_error "use-emacs-for-man invalid option: $1"
+            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+                print_error "use-emacs-for-man invalid option: $1"
+            fi
             unset prefix_msg
             return 2
     esac
 else
     USRHOME_MAN_MODE='-t'
-    echo ". Using Emacs in text mode as man reader."
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+        printf -- ". Using Emacs in text mode as man reader.\n"
+    fi
 fi
 unset prefix_msg
 
@@ -173,16 +200,14 @@ man()
             ;;
     esac
 
-    local man_mode
     man_mode="$USRHOME_MAN_MODE"
 
-    local topic
     topic="$1"
 
     # Check for the case where man was issued with a sole argument
     # that is a switch not supported by the function and not yet caught.
-    if [[ -n "$2" ]]; then
-        if [[ "$1" = "-man" ]]; then
+    if [ -n "$2" ]; then
+        if [ "$1" = "-man" ]; then
             man_mode='-man'
         else
             man_mode="$1"
@@ -190,7 +215,7 @@ man()
         fi
     fi
     if [[ "$topic" =~ ^- ]]; then
-        if [[ "$topic" = "-man" ]]; then
+        if [ "$topic" = "-man" ]; then
             man_mode='-man'
         else
             print_man_usage "man"
@@ -200,7 +225,6 @@ man()
 
     #echo "man_mode:= $man_mode , topic:= $topic"
 
-    local man_emacs_opt
     man_emacs_opt=
 
     case $man_mode in
@@ -211,7 +235,7 @@ man()
             ;;
 
         -man)
-            echo "Using man executable"
+            printf -- "Using man executable\n"
             ;;
 
         *)
@@ -259,7 +283,7 @@ man()
                                                              (when (search-backward (format \"%s man page formatted\" \"$topic\") nil :noerror) t)))")
                         ;;
                 esac
-                if [[ "$found" = "nil" ]]; then
+                if [ "$found" = "nil" ]; then
                     printf "ERROR: No man page found for %s\n" "$topic" >&2
                     return 4
                 fi
@@ -284,5 +308,5 @@ man()
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
-#  sh-shell: sh
+#  sh-shell: bash
 #  End:

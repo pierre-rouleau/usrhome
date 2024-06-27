@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-03 19:27:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-27 12:15:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -24,6 +24,18 @@
 # ---------------------
 #
 #
+
+# 0 - Check if shell is interactive
+# ---------------------------------
+case "$-" in
+    *i*)
+        SHELL_IS_INTERACTIVE=true
+        ;;
+    *)
+        SHELL_IS_INTERACTIVE=false
+        ;;
+esac
+
 # 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
 # ------------------------------------------
 #
@@ -56,12 +68,15 @@ if [ -e "$usrhome_config" ]; then
     # shellcheck disable=SC1090
     . "$usrhome_config"
 else
-    printf "***USRHOME ERROR!!*********************************************\n"
-    printf "Cannot find the user's configuration file!\n"
-    printf " Expected file: %s\n" "$usrhome_config"
-    printf " Please write it, use the template example as basis.\n"
-    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
-    printf "***************************************************************\n"
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+        printf "***USRHOME ERROR!!*********************************************\n"
+        printf "Cannot find the user's configuration file!\n"
+        printf " Expected file: %s\n" "$usrhome_config"
+        printf " Please write it, use the template example as basis.\n"
+        printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
+        printf "***************************************************************\n"
+    fi
+
 fi
 unset usrhome_config
 
@@ -90,3 +105,6 @@ usrhome_trace_in "~/.profile   --> \$USRHOME_DIR/dot/profile.sh"
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: bash
+# End:

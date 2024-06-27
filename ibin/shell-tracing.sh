@@ -3,7 +3,7 @@
 # Purpose   : Define shell tracing functions.
 # Created   : Saturday, April 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:58:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-27 12:12:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,6 +30,17 @@
 #
 # Topic: Shell Tracing Functions
 
+# 0 - Check if shell is interactive
+# ---------------------------------
+case "$-" in
+    *i*)
+        SHELL_IS_INTERACTIVE=true
+        ;;
+    *)
+        SHELL_IS_INTERACTIVE=false
+        ;;
+esac
+
 usrhome_trace_in()
 {
     # Arg 1: string: trace text.  printed after the level.
@@ -37,63 +48,63 @@ usrhome_trace_in()
     #                            or:  \$USRHOME_DIR/ibin/envfor-usrhome
 
     # Check if tracing is allow, return right away if not.
-    if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
-        return
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+        if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
+            return
+        fi
+        if [ "$USRHOME_TRACE_SHELL_CONFIG" = "0" ]; then
+            return
+        fi
+
+        # Tracing is requested
+        title="$1"
+
+        # Set or increment trace level
+        if [ -z "$USRHOME_TRACE_LEVEL" ]; then
+            USRHOME_TRACE_LEVEL=1
+        else
+            USRHOME_TRACE_LEVEL=$(( USRHOME_TRACE_LEVEL + 1 ))
+        fi
+
+        case "$USRHOME_TRACE_SHELL_CONFIG" in
+            1)
+                # Tracing, output to stdout only.
+                printf -- "-%s-: Sourcing %s\n" "$USRHOME_TRACE_LEVEL"  "$title"
+                ;;
+            *)
+                # Tracing, output to stdout and append to file named by $USRHOME_TRACE_SHELL_CONFIG
+                printf -- "-%s-: Sourcing %s\n" "$USRHOME_TRACE_LEVEL"  "$title" | tee -a "$USRHOME_TRACE_SHELL_CONFIG"
+                printf -- "    : PATH= %s\n"  "$PATH"   >> "$USRHOME_TRACE_SHELL_CONFIG"
+                ;;
+        esac
     fi
-    if [ "$USRHOME_TRACE_SHELL_CONFIG" = "0" ]; then
-        return
-    fi
-
-    # Tracing is requested
-    title="$1"
-
-    # Set or increment trace level
-    if [ -z "$USRHOME_TRACE_LEVEL" ]; then
-        USRHOME_TRACE_LEVEL=1
-    else
-        USRHOME_TRACE_LEVEL=$(( USRHOME_TRACE_LEVEL + 1 ))
-    fi
-
-    case "$USRHOME_TRACE_SHELL_CONFIG" in
-        1)
-            # Tracing, output to stdout only.
-            printf -- "-%s-: Sourcing %s\n" "$USRHOME_TRACE_LEVEL"  "$title"
-            ;;
-        *)
-            # Tracing, output to stdout and append to file named by $USRHOME_TRACE_SHELL_CONFIG
-            printf -- "-%s-: Sourcing %s\n" "$USRHOME_TRACE_LEVEL"  "$title" | tee -a "$USRHOME_TRACE_SHELL_CONFIG"
-            printf -- "    : PATH= %s\n "$PATH" >> $USRHOME_TRACE_SHELL_CONFIG"
-            ;;
-    esac
-
 }
 
 usrhome_trace_out()
 {
-    if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
-        return
-    fi
-    if [ "$USRHOME_TRACE_SHELL_CONFIG" = "0" ]; then
-        return
-    fi
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+        if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
+            return
+        fi
+        if [ "$USRHOME_TRACE_SHELL_CONFIG" = "0" ]; then
+            return
+        fi
 
 
-    # Tracing is requested
+        # Tracing is requested
 
-    case "$USRHOME_TRACE_SHELL_CONFIG" in
-        1)
+        case "$USRHOME_TRACE_SHELL_CONFIG" in
+            1)
             # Don't trace exit on stdout. Too many details on the terminal.
             ;;
-        *)
-            # Tracing; output only to file named by $USRHOME_TRACE_SHELL_CONFIG
-            printf -- "-%s-: Exiting\n" "$USRHOME_TRACE_LEVEL" >> "$USRHOME_TRACE_SHELL_CONFIG"
-            ;;
-    esac
-
+            *)
+                # Tracing; output only to file named by $USRHOME_TRACE_SHELL_CONFIG
+                printf -- "-%s-: Exiting\n" "$USRHOME_TRACE_LEVEL" >> "$USRHOME_TRACE_SHELL_CONFIG"
+                ;;
+        esac
     # Decrement trace level
     USRHOME_TRACE_LEVEL=$(( USRHOME_TRACE_LEVEL - 1 ))
-
-
+    fi
 }
 
 # ----------------------------------------------------------------------------

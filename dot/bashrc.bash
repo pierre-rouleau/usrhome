@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-06-02 15:32:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-27 12:21:22 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -30,6 +30,17 @@
 # Code
 # ----
 #
+# 0 - Check if shell is interactive
+# ---------------------------------
+case "$-" in
+    *i*)
+        SHELL_IS_INTERACTIVE=true
+        ;;
+    *)
+        SHELL_IS_INTERACTIVE=false
+        ;;
+esac
+
 # 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
 # ------------------------------------------
 #
@@ -62,12 +73,14 @@ if [ -e "$usrhome_config" ]; then
     # shellcheck disable=SC1090
     . "$usrhome_config"
 else
-    printf "***USRHOME ERROR!!*********************************************\n"
-    printf "Cannot find the user's configuration file!\n"
-    printf " Expected file: %s\n" "$usrhome_config"
-    printf " Please write it, use the template example as basis.\n"
-    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
-    printf "***************************************************************\n"
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+        printf "***USRHOME ERROR!!*********************************************\n"
+        printf "Cannot find the user's configuration file!\n"
+        printf " Expected file: %s\n" "$usrhome_config"
+        printf " Please write it, use the template example as basis.\n"
+        printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
+        printf "***************************************************************\n"
+    fi
 fi
 unset usrhome_config
 
@@ -191,7 +204,7 @@ else
             current_time="$(gdate +%s%3N)"
         elif [ "$timer_fct" = "date" ]; then
             current_time="$(date +%s%3N)"
-        else
+        elif [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
             printf -- "BUG detected in time management in %s\n" "$USRHOME_DIR/dot/bashrc.bash"
             printf -- " Please report it.\n"
         fi
@@ -381,37 +394,39 @@ fi;\
 
 usrhome-select-bash-prompt()
 {
-    if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
-        model="$USRHOME_PROMPT_MODEL_OVERRIDE"
-    else
-        model="$USRHOME_PROMPT_MODEL"
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+        if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
+            model="$USRHOME_PROMPT_MODEL_OVERRIDE"
+        else
+            model="$USRHOME_PROMPT_MODEL"
+        fi
+        case "$model" in
+            0 )
+            # No prompt identified by USRHOME
+            # It can be set by "$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
+            # which could be the original users ~/.bashrc file.
+            # If that is not set, the default bash prompt is used.
+            ;;
+
+            1)
+                PS1=${USRHOME_BASH_PROMPT1}
+                export PS1
+                ;;
+
+            3)
+                PS1=${USRHOME_BASH_PROMPT3}
+                # shellcheck disable=SC2090
+                export PS1
+                ;;
+
+            2 | *)
+                # default (also model 2).  Activates that explicitly.
+                PS1=${USRHOME_BASH_PROMPT2}
+                # shellcheck disable=SC2090
+                export PS1
+                ;;
+        esac
     fi
-    case "$model" in
-        0 )
-        # No prompt identified by USRHOME
-        # It can be set by "$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
-        # which could be the original users ~/.bashrc file.
-        # If that is not set, the default bash prompt is used.
-        ;;
-
-        1)
-            PS1=${USRHOME_BASH_PROMPT1}
-            export PS1
-            ;;
-
-        3)
-            PS1=${USRHOME_BASH_PROMPT3}
-            # shellcheck disable=SC2090
-            export PS1
-            ;;
-
-        2 | *)
-            # default (also model 2).  Activates that explicitly.
-            PS1=${USRHOME_BASH_PROMPT2}
-            # shellcheck disable=SC2090
-            export PS1
-            ;;
-    esac
 }
 
 # Activate selected prompt
@@ -428,29 +443,31 @@ unset ec
 # Set terminal window title using current prompt when outside Emacs.
 set-title()
 {
-    # Arguments: A list of words to use as title.
-    #  - Accepts no argument: clears the title text section..
-    #  - store into title_text as one shell 'word' string.
-    title_text="$*"
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+        # Arguments: A list of words to use as title.
+        #  - Accepts no argument: clears the title text section..
+        #  - store into title_text as one shell 'word' string.
+        title_text="$*"
 
-    # re-build the prompt into PS1
-    usrhome-select-bash-prompt
+        # re-build the prompt into PS1
+        usrhome-select-bash-prompt
 
-    # Build the extra sequence that controls the title.
-    if [ -n "$SSHPASS" ]; then
-        title_shell_depth="L${SHLVL}+"
-    else
-        title_shell_depth="L${SHLVL}"
+        # Build the extra sequence that controls the title.
+        if [ -n "$SSHPASS" ]; then
+            title_shell_depth="L${SHLVL}+"
+        else
+            title_shell_depth="L${SHLVL}"
+        fi
+
+        # Set the title by appending the title setting logic to the PS1.
+        title="\[\e]2;${title_text} (Bash \v: ${title_shell_depth}: \h:\w)\a\]"
+        if [ -z "$INSIDE_EMACS" ]; then
+            PS1=$PS1${title}
+        fi
+
+        # shellcheck disable=SC2090
+        export PS1
     fi
-
-    # Set the title by appending the title setting logic to the PS1.
-    title="\[\e]2;${title_text} (Bash \v: ${title_shell_depth}: \h:\w)\a\]"
-    if [ -z "$INSIDE_EMACS" ]; then
-        PS1=$PS1${title}
-    fi
-
-    # shellcheck disable=SC2090
-    export PS1
 }
 
 # Activate dynamic tracking title as soon as Bash takes over.
@@ -463,8 +480,10 @@ set-title ""
 
 if [ "${INSIDE_EMACS/*,/}" = "eat" ] && [ -n "$EAT_SHELL_INTEGRATION_DIR" ]; then
     if [ -d "$EAT_SHELL_INTEGRATION_DIR" ]; then
-        echo ".  Activating emacs-eat integration."
-        . "$EAT_SHELL_INTEGRATION_DIR/bash"
+        if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+            printf -- ".  Activating emacs-eat integration.\n"
+            . "$EAT_SHELL_INTEGRATION_DIR/bash"
+        fi
     fi
 fi
 
