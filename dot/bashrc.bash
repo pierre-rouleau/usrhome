@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-06-28 15:17:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-28 15:30:42 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -53,7 +53,7 @@ esac
 case "$(uname)" in
     Darwin)
         # shellcheck disable=SC2009
-        if ps aux | grep -v grep | grep ssh-agent  > /dev/null 2>&1; then
+        if ! ps aux | grep -v grep | grep ssh-agent  > /dev/null 2>&1; then
             eval "$(ssh-agent)"
         fi
         ;;
@@ -61,7 +61,7 @@ case "$(uname)" in
     Linux)
         # On Linux
         # shellcheck disable=SC2009
-        if ps -ux | grep -v grep | grep ssh-agent  > /dev/null 2>&1; then
+        if ! ps -ux | grep -v grep | grep ssh-agent  > /dev/null 2>&1; then
             eval "$(ssh-agent)"
         fi
         ;;
