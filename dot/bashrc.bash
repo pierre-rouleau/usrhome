@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-06-27 12:21:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-28 11:04:17 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -30,6 +30,12 @@
 # Code
 # ----
 #
+# 00 - Source Global definitions
+# ------------------------------
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
 # 0 - Check if shell is interactive
 # ---------------------------------
 case "$-" in
