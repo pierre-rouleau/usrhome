@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-06-28 11:04:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-28 15:17:06 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -30,14 +30,14 @@
 # Code
 # ----
 #
-# 00 - Source Global definitions
-# ------------------------------
+# Topic: Startup: 1.0 - Source Global Definitions
+# ---------------------------------------------
 if [ -f /etc/bashrc ]; then
         . /etc/bashrc
 fi
 
-# 0 - Check if shell is interactive
-# ---------------------------------
+# Topic: Startup: 1.1 - Check if shell is interactive
+# -------------------------------------------------
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
@@ -47,8 +47,29 @@ case "$-" in
         ;;
 esac
 
-# 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
-# ------------------------------------------
+# Topic: Startup: 1.2 - Start ssh-agent if it is not already running
+# ------------------------------------------------------------------
+
+case "$(uname)" in
+    Darwin)
+        # shellcheck disable=SC2009
+        if ps aux | grep -v grep | grep ssh-agent  > /dev/null 2>&1; then
+            eval "$(ssh-agent)"
+        fi
+        ;;
+
+    Linux)
+        # On Linux
+        # shellcheck disable=SC2009
+        if ps -ux | grep -v grep | grep ssh-agent  > /dev/null 2>&1; then
+            eval "$(ssh-agent)"
+        fi
+        ;;
+esac
+
+
+# Topic: Startup 2 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
+# ---------------------------------------------------------
 #
 # Identify the path of the usrcfg directory by taking advantage that usrhome
 # and usrcfg are located inside the same parent directory, and that this
@@ -112,6 +133,10 @@ usrhome_trace_in "~/.bashrc    --> \$USRHOME_DIR/dot/bashrc.bash"
 
 # ----------------------------------------------------------------------------
 if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
+    # Update the PATH when:
+    # - NOT in login shell OR
+    # - if explicitly requested by $USRHOME_DIR_USRCFG/setfor-all-config.sh file
+    #   by setting USRHOME_CONFIG_AT_LOGIN to 1.
 
     # ----------------------------------------------------------------------------
     # Update Path in sub-shells if not already done
@@ -488,6 +513,7 @@ if [ "${INSIDE_EMACS/*,/}" = "eat" ] && [ -n "$EAT_SHELL_INTEGRATION_DIR" ]; the
     if [ -d "$EAT_SHELL_INTEGRATION_DIR" ]; then
         if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
             printf -- ".  Activating emacs-eat integration.\n"
+            # shellcheck disable=SC1091
             . "$EAT_SHELL_INTEGRATION_DIR/bash"
         fi
     fi
