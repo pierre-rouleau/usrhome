@@ -1,0 +1,69 @@
+#!/bin/sh
+# SH FILE: ssh-agent-isit-running
+#
+# Purpose   : Check if the ssh-agent is running.
+# Created   : Monday, July  1 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-07-01 13:56:49 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Check if the ssh-agent is currently running.
+# Report problem if more than one is running.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+lines=
+check_ssh()
+{
+    case "$(uname)" in
+        Darwin)
+            # shellcheck disable=SC2009
+            lines="$(ps aux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep -c ssh-agent | xargs)"
+            ;;
+
+        Linux)
+            # On Linux
+            # shellcheck disable=SC2009
+            lines="$(ps -ux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep -c ssh-agent | xargs)"
+            ;;
+    esac
+}
+
+
+check_ssh
+
+case "$lines" in
+    1)
+        printf -- "The ssh-agent appears to be running:\n"
+        # shellcheck disable=SC2009
+        ps aux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep ssh-agent
+        ;;
+
+    0)
+        printf -- "The ssh-agent does not seem to be running!\n"
+        exit 1
+        ;;
+
+    *)
+        printf -- "There seems to be several ssh-agent running!\n"
+        # shellcheck disable=SC2009
+        ps aux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep ssh-agent
+        exit 2
+        ;;
+
+esac
+
+# ----------------------------------------------------------------------------
