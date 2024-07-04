@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-04 11:43:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 11:48:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -168,10 +168,10 @@ if [ "$with_strings" = "true" ]; then
     strings "$objf_new" > "$txtf_new"
 
     if diff "$txtf_old" "$txtf_new" > /dev/null; then
-        printf -- "\ndiffo - NO change in text sections.\n"
+        printf -- "diffo - NO change in text sections.\n"
     else
         text_ec=1
-        printf -- "\ndiffo - Difference in text sections:\n"
+        printf -- "diffo - Difference in text sections:\n"
         if [ "$with_less" = "true" ]; then
             diff "$txtf_old" "$txtf_new" | less
         else
