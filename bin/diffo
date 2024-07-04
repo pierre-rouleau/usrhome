@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-04 10:23:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 11:26:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,20 +30,21 @@ print_usage()
 diffo -- Compare 2 object files by comparing their assembler code.
          Print the diff output on stdout.
 
- Usage: diffo [[-w | --with-source] | [-s | --string]] OBJ-OLD OBJ-NEW
+ Usage: diffo [[-w | --with-source]  [-s | --string] [-l | --less]]  OBJ-OLD OBJ-NEW
         diffo -h | --help
 
    - OBJ-OLD            : path of the old object file.
    - OBJ-NEW            : path of the new object file.
    - -w | --with-source : insert C/C++ source code in the generated assembler.
    - -s | --string      : also compare strings extracted from files.
+   - -l | --less        : pipe differences to less
 
   Note: - diffo requires a version of objdump which supports the
           --no-addresses option, preventing a diff from simply
           detecting different addresses.
           - If the available version of objdump does not support
             the --no-addresses option, set the USRHOME_OBJDUMP_NO_NO_ADDRESS
-            environment variable to 1.
+            environment variable to -- or to another switch that is supported.
         - If the OBJDUMP environment variable is defined, it
           is taken as the name (or path name) of the objdump
           program to use.  Otherwise it uses the objdump
@@ -54,6 +55,8 @@ diffo -- Compare 2 object files by comparing their assembler code.
         - With USRHOME, you can inject command line options into the cc
           command line of the current shell with the 'use-cc-options'.
           Do:  'use-cc-options -g'
+        - Exit code is 0 if there are no detected change.
+          1 if only the assembler or string changes, 2 if both change.
 "
 }
 
@@ -70,6 +73,7 @@ fi
 # check for optional switches.
 with_source=
 with_strings=
+with_less=
 options=2
 while [ "$options" -ge 1 ]; do
     if [ "$1" = "-w" ] || [ "$1" = "--with-source" ]; then
@@ -77,6 +81,9 @@ while [ "$options" -ge 1 ]; do
         shift
     elif [ "$1" = "-s" ] || [ "$1" = "--strings" ]; then
         with_strings="true"
+        shift
+    elif [ "$1" = "-l" ] || [ "$1" = "--less" ]; then
+        with_less="true"
         shift
     fi
     options=$(( options - 1 ))
@@ -131,26 +138,30 @@ else
     objdump_no_address_opt=--no-addresses
 fi
 
-diff_exit_code=0
+diff_ec=0
 if [ "$with_source" = "" ]; then
     printf -- "diffo - Differences in assembler:\n"
-    # use tail +3 to remove the name of the file printed in the second line.
-    if ${objdumper}  --disassemble --demangle ${objdump_no_address_opt}    "$objf_old" | tail +3 > "$asmf_old"; then
-        if ${objdumper} --disassemble --demangle ${objdump_no_address_opt} "$objf_new" | tail +3 > "$asmf_new"; then
-            diff "$asmf_old" "$asmf_new"
-            diff_exit_code=$?
+    # use tail -n +3 to remove the name of the file printed in the second line.
+    if ${objdumper}     --disassemble --demangle "${objdump_no_address_opt}" "$objf_old" | tail -n +3 > "$asmf_old"; then
+        if ${objdumper} --disassemble --demangle "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
+            diff "$asmf_old" "$asmf_new" > /dev/null
+            diff_ec=$?
         fi
     fi
 else
     printf -- "diffo - Differences in assembler intermixed with C/C++ source:\n"
-    if ${objdumper}  --disassemble --demangle --source ${objdump_no_address_opt}   "$objf_old" | tail +3 > "$asmf_old"; then
-        if ${objdumper} --disassemble --demangle --source ${objdump_no_address_opt}"$objf_new" | tail +3 > "$asmf_new"; then
-            diff "$asmf_old" "$asmf_new"
-            diff_exit_code=$?
+    if ${objdumper}     --disassemble --demangle --source "${objdump_no_address_opt}" "$objf_old" | tail -n +3 > "$asmf_old"; then
+        if ${objdumper} --disassemble --demangle --source "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
+            diff "$asmf_old" "$asmf_new" > /dev/null
+            diff_ec=$?
         fi
     fi
 fi
 
+
+# Handle static string allocation first
+
+text_ec=0
 if [ "$with_strings" = "true" ]; then
     txtf_old="${objf_old%.*}".txt
     txtf_new="${objf_new%.*}".txt
@@ -158,16 +169,34 @@ if [ "$with_strings" = "true" ]; then
     strings "$objf_old" > "$txtf_old"
     strings "$objf_new" > "$txtf_new"
 
-    printf -- "\ndiffo - Difference in text sections:\n"
-    diff "$txtf_old" "$txtf_new"
-    ec="$?"
-    if [ "$ec" = "0" ]; then
-        ec=$diff_exit_code
+    if diff "$txtf_old" "$txtf_new" > /dev/null; then
+        printf -- "\ndiffo - NO change in text sections.\n"
+    else
+        text_ec=1
+        printf -- "\ndiffo - Difference in text sections:\n"
+        if [ "$with_less" = "true" ]; then
+            diff "$txtf_old" "$txtf_new" | less
+        else
+            diff "$txtf_old" "$txtf_new"
+        fi
     fi
-    exit $ec
-else
-    exit $diff_exit_code
 fi
+
+# Show assembler difference last
+if [ "$diff_ec" = "0" ]; then
+    printf -- "\ndiffo - NO change in assembler code.\n"
+else
+    printf -- "\ndiffo - Differences in assembler code:\n"
+    if [ "$with_less" = "true" ]; then
+        diff "$asmf_old" "$asmf_new" | less
+    else
+        diff "$asmf_old" "$asmf_new"
+    fi
+fi
+
+# Exit with 0 if there's no change, 1 or 2 otherwise.
+exit_code=$(( text_ec + diff_ec ))
+exit $exit_code
 
 # ----------------------------------------------------------------------------
 # Local Variables:
