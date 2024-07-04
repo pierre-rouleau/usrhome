@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-04 09:37:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 10:11:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -249,6 +249,7 @@ else
 fi
 obj_filename="${USRHOME_DIFFO_OBJ_DIR}/${filename_noext}${obj_ext}"
 obj_basename="$(basename "$obj_filename")"
+printf "obj_filename = %s\n" "$obj_filename"
 printf "filename_noext = %s\n" "$filename_noext"
 printf "obj_filename = %s\n" "$obj_filename"
 

@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-13 17:53:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 10:23:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -41,6 +41,9 @@ diffo -- Compare 2 object files by comparing their assembler code.
   Note: - diffo requires a version of objdump which supports the
           --no-addresses option, preventing a diff from simply
           detecting different addresses.
+          - If the available version of objdump does not support
+            the --no-addresses option, set the USRHOME_OBJDUMP_NO_NO_ADDRESS
+            environment variable to 1.
         - If the OBJDUMP environment variable is defined, it
           is taken as the name (or path name) of the objdump
           program to use.  Otherwise it uses the objdump
@@ -122,21 +125,26 @@ if [ -n "$OBJDUMP" ]; then
     objdumper="$OBJDUMP"
 fi
 
+if [ -n "$USRHOME_OBJDUMP_NO_NO_ADDRESS" ]; then
+    objdump_no_address_opt=${USRHOME_OBJDUMP_NO_NO_ADDRESS}
+else
+    objdump_no_address_opt=--no-addresses
+fi
 
 diff_exit_code=0
 if [ "$with_source" = "" ]; then
     printf -- "diffo - Differences in assembler:\n"
     # use tail +3 to remove the name of the file printed in the second line.
-    if ${objdumper}  --disassemble --demangle --no-addresses     "$objf_old" | tail +3 > "$asmf_old"; then
-        if ${objdumper} --disassemble --demangle --no-addresses  "$objf_new" | tail +3 > "$asmf_new"; then
+    if ${objdumper}  --disassemble --demangle ${objdump_no_address_opt}    "$objf_old" | tail +3 > "$asmf_old"; then
+        if ${objdumper} --disassemble --demangle ${objdump_no_address_opt} "$objf_new" | tail +3 > "$asmf_new"; then
             diff "$asmf_old" "$asmf_new"
             diff_exit_code=$?
         fi
     fi
 else
     printf -- "diffo - Differences in assembler intermixed with C/C++ source:\n"
-    if ${objdumper}  --disassemble --demangle --source --no-addresses    "$objf_old" | tail +3 > "$asmf_old"; then
-        if ${objdumper} --disassemble --demangle --source --no-addresses "$objf_new" | tail +3 > "$asmf_new"; then
+    if ${objdumper}  --disassemble --demangle --source ${objdump_no_address_opt}   "$objf_old" | tail +3 > "$asmf_old"; then
+        if ${objdumper} --disassemble --demangle --source ${objdump_no_address_opt}"$objf_new" | tail +3 > "$asmf_new"; then
             diff "$asmf_old" "$asmf_new"
             diff_exit_code=$?
         fi

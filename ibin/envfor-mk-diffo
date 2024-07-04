@@ -3,7 +3,7 @@
 # Purpose   : Setup the shell to use mk-diffo: compare evolution of object code of a file.
 # Created   : Friday, June 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-04 09:38:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 10:12:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -235,6 +235,7 @@ fi
 export USRHOME_DIFFO_ROOT_DIR
 export USRHOME_DIFFO_PROJECT
 export USRHOME_DIFFO_FNAME
+export USRHOME_DIFFO_OBJ_DIR
 export USRHOME_DIFFO_OBJEXT
 
 printf -- "\
