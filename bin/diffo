@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-04 11:26:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 11:38:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -140,7 +140,6 @@ fi
 
 diff_ec=0
 if [ "$with_source" = "" ]; then
-    printf -- "diffo - Differences in assembler:\n"
     # use tail -n +3 to remove the name of the file printed in the second line.
     if ${objdumper}     --disassemble --demangle "${objdump_no_address_opt}" "$objf_old" | tail -n +3 > "$asmf_old"; then
         if ${objdumper} --disassemble --demangle "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
@@ -149,7 +148,6 @@ if [ "$with_source" = "" ]; then
         fi
     fi
 else
-    printf -- "diffo - Differences in assembler intermixed with C/C++ source:\n"
     if ${objdumper}     --disassemble --demangle --source "${objdump_no_address_opt}" "$objf_old" | tail -n +3 > "$asmf_old"; then
         if ${objdumper} --disassemble --demangle --source "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
             diff "$asmf_old" "$asmf_new" > /dev/null
@@ -186,7 +184,11 @@ fi
 if [ "$diff_ec" = "0" ]; then
     printf -- "\ndiffo - NO change in assembler code.\n"
 else
-    printf -- "\ndiffo - Differences in assembler code:\n"
+    if [ "$with_source" = "" ]; then
+        printf -- "\ndiffo - Differences in assembler code:\n"
+    else
+        printf -- "diffo - Differences in assembler intermixed with C/C++ source:\n"
+    fi
     if [ "$with_less" = "true" ]; then
         diff "$asmf_old" "$asmf_new" | less
     else
