@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-14 11:53:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 09:37:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -26,6 +26,9 @@
 #          - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
 #                                    in the main directory tree.
 #          - USRHOME_DIFFO_FNAME   : The full path to the source code file checked.
+#          - USRHOME_DIFFO_OBJ_DIR : The full path of the directory holding the
+#                                    the object file resulting from the compilation
+#                                    of the source code file.
 #
 #        - When executing mk-diffo, the extra information is passed:
 #
@@ -91,6 +94,9 @@
 #          - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
 #                                    in the main directory tree.
 #          - USRHOME_DIFFO_FNAME   : The source code file name.
+#          - USRHOME_DIFFO_OBJ_DIR : The full path of the directory holding the
+#                                    the object file resulting from the compilation
+#                                    of the source code file.
 #
 # - Uses the following idiom to remove leading zeroes and prevent
 #   interpretation as octal:
@@ -128,6 +134,7 @@ mk-diffo - Store another file set and compare object files.
     - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
                               in the main directory tree.
     - USRHOME_DIFFO_FNAME   : The source code file name.
+    - USRHOME_DIFFO_OBJ_DIR : Directory name of the corresponding object file.
     - USRHOME_DIFFO_OBJEXT  : Object file extension. Include leading period.
                               Defaults to \".o\".
                               Use \" \" for extension-less files
@@ -139,10 +146,12 @@ mk-diffo - Store another file set and compare object files.
     - USRHOME_DIFFO_ROOT_DIR: %s
     - USRHOME_DIFFO_PROJECT : %s
     - USRHOME_DIFFO_FNAME   : %s
+    - USRHOME_DIFFO_OBJ_DIR : %s
     - USRHOME_DIFFO_OBJEXT  : '%s'
 " "$USRHOME_DIFFO_ROOT_DIR" \
            "$USRHOME_DIFFO_PROJECT" \
            "$USRHOME_DIFFO_FNAME" \
+           "$USRHOME_DIFFO_OBJ_DIR" \
            "$USRHOME_DIFFO_OBJEXT"
 }
 
@@ -238,7 +247,7 @@ elif [ "$USRHOME_DIFFO_OBJEXT" = " " ]; then
 else
     obj_ext="${USRHOME_DIFFO_OBJEXT}"
 fi
-obj_filename="${filename_noext}${obj_ext}"
+obj_filename="${USRHOME_DIFFO_OBJ_DIR}/${filename_noext}${obj_ext}"
 obj_basename="$(basename "$obj_filename")"
 printf "filename_noext = %s\n" "$filename_noext"
 printf "obj_filename = %s\n" "$obj_filename"

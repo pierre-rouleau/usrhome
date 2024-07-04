@@ -3,7 +3,7 @@
 # Purpose   : Setup the shell to use mk-diffo: compare evolution of object code of a file.
 # Created   : Friday, June 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-14 11:58:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 09:38:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,6 +24,12 @@
 #          - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
 #                                    in the main directory tree.
 #          - USRHOME_DIFFO_FNAME   : The full path to the source code file checked.
+#          - USRHOME_DIFFO_OBJ_DIR : The full path of the directory holding the
+#                                    the object file resulting from the compilation
+#                                    of the source code file.
+#          - USRHOME_DIFFO_OBJEXT  : Object file extension. Include leading period.
+#                                    Defaults to \".o\".
+#
 #
 #        - When executing mk-diffo, the extra information is passed:
 #
@@ -89,7 +95,7 @@ print_usage()
 use-mk-diffo - Setup the shell to use mk-diffo to track evolution
                of the object code of a source code file.
 
- Usage use-mk-diffo DB-ROOT-DIR PROJECT SRC_FNAME [OBJ-EXT]
+ Usage use-mk-diffo DB-ROOT-DIR PROJECT SRC_FNAME OBJ-DIR [OBJ-EXT]
        use-mk-diffo -h | --help
 
   where:
@@ -97,11 +103,14 @@ use-mk-diffo - Setup the shell to use mk-diffo to track evolution
     - PROJECT    : The name of the project to which SRC_FNAME belongs.
                    That name is used as the name of the sub-directory
                    of the main directory tree, identified by DB-ROOT_DIR
-    - SRC_FNAME  : The source code file name.
+    - SRC_FNAME  : The source code file name (with its extension).
                    Identify the absolute path of the file or
                    the path relative to the directory from where the
                    mk-diffo commands will be issued.
-   - OBJ-EXT     : Object file extension. Include the leading period.
+    - OBJ_DIR    : The full path of the directory holding the
+                   the object file resulting from the compilation
+                   of the source code file.
+    - OBJ-EXT    : Object file extension. Include the leading period.
                    If not specified it defaults to \".o\".
                    To specify empty extension, if you want to track the
                    evolution of single source file program executable,
@@ -121,7 +130,8 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     return 0
 fi
 
-
+# -
+# Process argument 1: DB_ROOT_DIR
 if [ -z "$1" ]; then
     printf -- "\
 *** use-mk-diffo ERROR: Missing arguments.
@@ -139,7 +149,8 @@ else
 fi
 shift
 
-
+# -
+# Process argument 2: PROJECT
 if [ -z "$1" ]; then
     printf -- "\
 *** use-mk-diffo ERROR: Missing arguments.
@@ -162,6 +173,8 @@ fi
 shift
 
 
+# -
+# Process argument 3: SRC_FNAME
 if [ -z "$1" ]; then
     printf -- "\
 *** use-mk-diffo ERROR: Missing argument: no file name specified.
@@ -179,6 +192,27 @@ else
 fi
 shift
 
+# -
+# Process argument 4: OBJ_DIR
+if [ -z "$1" ]; then
+    printf -- "\
+*** use-mk-diffo ERROR: Missing OBJ_DIR argument.
+"
+    print_usage
+    return 1
+elif [ ! -d "$1" ]; then
+    printf -- "\
+*** use-mk-diffo ERROR: Invalid OBJ_DIR directory: %s
+    Print usage with -h
+" "$1"
+    return 1
+else
+    USRHOME_DIFFO_OBJ_DIR=$(realpath "$1")
+fi
+shift
+
+# -
+# Process optional argument 5: OBJ-EXT
 if [ -z "$1" ]; then
     USRHOME_DIFFO_OBJEXT=".o"
 elif [ "$1" = " " ]; then
@@ -188,6 +222,8 @@ else
 fi
 shift
 
+# -
+# Complain if there are any extra argument
 if [ -n "$1" ]; then
     printf -- "\
 *** use-mk-diffo ERROR: Too many arguments.
@@ -195,6 +231,7 @@ if [ -n "$1" ]; then
     return 1
 fi
 
+# - All arguments are fine.
 export USRHOME_DIFFO_ROOT_DIR
 export USRHOME_DIFFO_PROJECT
 export USRHOME_DIFFO_FNAME
@@ -205,11 +242,13 @@ printf -- "\
 - USRHOME_DIFFO_ROOT_DIR : %s
 - USRHOME_DIFFO_PROJECT  : %s
 - USRHOME_DIFFO_FNAME    : %s
+- USRHOME_DIFFO_OBJ_DIR  : '%s'
 - USRHOME_DIFFO_OBJEXT   : '%s'
 -----------------------------------------------------------------------------
 " "$USRHOME_DIFFO_ROOT_DIR" \
   "$USRHOME_DIFFO_PROJECT" \
   "$USRHOME_DIFFO_FNAME" \
+  "$USRHOME_DIFFO_OBJ_DIR" \
   "$USRHOME_DIFFO_OBJEXT" \
 
 # ----------------------------------------------------------------------------
