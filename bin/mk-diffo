@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-04 10:11:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 11:46:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -249,9 +249,9 @@ else
 fi
 obj_filename="${USRHOME_DIFFO_OBJ_DIR}/${filename_noext}${obj_ext}"
 obj_basename="$(basename "$obj_filename")"
-printf "obj_filename = %s\n" "$obj_filename"
-printf "filename_noext = %s\n" "$filename_noext"
-printf "obj_filename = %s\n" "$obj_filename"
+# printf "obj_filename = %s\n" "$obj_filename"
+# printf "filename_noext = %s\n" "$filename_noext"
+# printf "obj_filename = %s\n" "$obj_filename"
 
 # Now check the validity of the result directory tree named by the environment
 if [ -z "$db_root" ]; then
@@ -358,7 +358,7 @@ mk-diffo - New version: %s\n" "${trgt_dir}"
 
     obj1="${orig_dir}/${obj_basename}"
     obj2="${trgt_dir}/${obj_basename}"
-    echo "diffo ${with_source} ${with_strings} ${obj1} ${obj2}"
+    # echo "diffo ${with_source} ${with_strings} ${obj1} ${obj2}"
     diffo ${with_source} ${with_strings} "${obj1}" "${obj2}"
 fi
 

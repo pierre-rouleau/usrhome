@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-04 11:38:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-04 11:43:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -182,10 +182,10 @@ fi
 
 # Show assembler difference last
 if [ "$diff_ec" = "0" ]; then
-    printf -- "\ndiffo - NO change in assembler code.\n"
+    printf -- "diffo - NO change in assembler code.\n"
 else
     if [ "$with_source" = "" ]; then
-        printf -- "\ndiffo - Differences in assembler code:\n"
+        printf -- "diffo - Differences in assembler code:\n"
     else
         printf -- "diffo - Differences in assembler intermixed with C/C++ source:\n"
     fi
