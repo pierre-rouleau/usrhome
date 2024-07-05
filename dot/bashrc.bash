@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-06-28 15:30:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 10:44:49 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -275,9 +275,9 @@ else
             ms="0${ms}"
         fi
 
-        if   ((s < 60)); then et=${s}.${ms}s        # example: 12.345s
-        elif ((m < 60)); then et=${m}m${s}.${ms}s   # example: 1m12.023s
-        else              et=${h}h${m}m${s}s        # example: 1h2m3s
+        if   ((m < 1)); then et=${s}.${ms}s        # example: 12.345s
+        elif ((h < 1)); then et=${m}m${s}.${ms}s   # example: 1m12.023s
+        else                 et=${h}h${m}m${s}s    # example: 1h2m3s
         fi
         # shellcheck disable=SC2034
         elapsed=",et:${et}"
