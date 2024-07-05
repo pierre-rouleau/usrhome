@@ -4,7 +4,7 @@
 # Purpose   : Dump object file into assembler.
 # Created   : Friday, July  5 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 09:06:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 09:12:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,6 +41,14 @@ dumpo -- Print the assembler corresponding to a object file.
    - OBJ                : path of the object file.
    - -w | --with-source : insert C/C++ source code in the generated assembler.
    - -l | --less        : pipe differences to less
+
+"
+}
+
+print_usage_short()
+{
+    printf -- "\
+  Use dumpo -h to print its command line usage.
 "
 }
 
@@ -71,14 +79,13 @@ done
 # Check if remaining argument is 1 file name
 if [ "$#" -ge 2 ]; then
     printf -- "*** dumpo ERROR: too many arguments: %s\n" "$*"
-    print_usage
+    print_usage_short
     exit 1
 fi
 
 if [ -z "$1" ]; then
-
-    printf -- "*** dumpo ERROR: OBJ argument.\n"
-    print_usage
+    printf -- "*** dumpo ERROR: missing OBJ argument.\n"
+    print_usage_short
     exit 1
 fi
 

@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 09:02:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 09:12:08 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -60,6 +60,13 @@ diffo -- Compare 2 object files by comparing their assembler code.
 "
 }
 
+print_usage_short()
+{
+    printf -- "\
+  Use diffo -h to print its command line usage.
+"
+}
+
 # --
 # validate arguments
 
@@ -92,14 +99,13 @@ done
 # Check if remaining arguments are 2 file names
 if [ "$#" -ge 3 ]; then
     printf -- "*** diffo ERROR: too many arguments: %s\n" "$*"
-    print_usage
+    print_usage_short
     exit 1
 fi
 
 if [ -z "$1" ] || [ -z "$2" ]; then
-
     printf -- "*** diffo ERROR: missing arguments.\n"
-    print_usage
+    print_usage_short
     exit 1
 fi
 
