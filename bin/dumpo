@@ -1,0 +1,117 @@
+#!/bin/sh
+# SH FILE: dumpo
+#
+# Purpose   : Dump object file into assembler.
+# Created   : Friday, July  5 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-07-05 09:02:05 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+# Dependencies
+# ------------
+#
+# - objdump, string
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+dumpo -- Print the assembler corresponding to a object file.
+
+
+ Usage: dumpo [[-w | --with-source]  [-l | --less]] OBJ
+        dumpo -h | --help
+
+   - OBJ                : path of the object file.
+   - -w | --with-source : insert C/C++ source code in the generated assembler.
+   - -l | --less        : pipe differences to less
+"
+}
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# check for optional switches.
+with_source=
+with_less=
+options=
+while [ "$options" -ge 1 ]; do
+    if [ "$1" = "-w" ] || [ "$1" = "--with-source" ]; then
+        with_source="true"
+        shift
+    elif [ "$1" = "-l" ] || [ "$1" = "--less" ]; then
+        with_less="true"
+        shift
+    fi
+    options=$(( options - 1 ))
+done
+
+# Check if remaining argument is 1 file name
+if [ "$#" -ge 2 ]; then
+    printf -- "*** dumpo ERROR: too many arguments: %s\n" "$*"
+    print_usage
+    exit 1
+fi
+
+if [ -z "$1" ]; then
+
+    printf -- "*** dumpo ERROR: OBJ argument.\n"
+    print_usage
+    exit 1
+fi
+
+# get file name and check its validity
+objf=
+if  [ -f "$1" ]; then
+    objf="$1"
+else
+    printf -- "*** dumpo ERROR: File does not exist: %s\n" "$1"
+    exit 2
+fi
+shift
+
+# --
+# proceed
+
+objdumper=objdump
+if [ -n "$OBJDUMP" ]; then
+    objdumper="$OBJDUMP"
+fi
+
+if [ "$with_less" = "true" ]; then
+    if [ "$with_source" = "" ]; then
+        ${objdumper} --disassemble --demangle "$objf"  | less
+    else
+        ${objdumper} --disassemble --demangle --source "$objf | less"
+    fi
+else
+    if [ "$with_source" = "" ]; then
+        ${objdumper} --disassemble --demangle "$objf"
+    else
+        ${objdumper} --disassemble --demangle --source "$objf"
+    fi
+fi
+
+# ----------------------------------------------------------------------------
