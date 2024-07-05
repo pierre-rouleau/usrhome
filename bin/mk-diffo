@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 15:07:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 15:12:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -178,7 +178,7 @@ while [ "$options" -ge 1 ]; do
         with_strings="-s"
         shift
     elif [ "$1" = "-l" ] || [ "$1" = "--less" ]; then
-        with_less="true"
+        with_less="-l"
         shift
     fi
     options=$(( options - 1 ))
