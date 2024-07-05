@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-04 11:48:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 09:02:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -16,7 +16,7 @@
 # Dependencies
 # ------------
 #
-# - diff, objdump, strings, heads
+# - diff, objdump, strings, head
 
 # ----------------------------------------------------------------------------
 # Code
@@ -74,7 +74,7 @@ fi
 with_source=
 with_strings=
 with_less=
-options=2
+options=3
 while [ "$options" -ge 1 ]; do
     if [ "$1" = "-w" ] || [ "$1" = "--with-source" ]; then
         with_source="true"
