@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 15:53:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 16:06:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -127,7 +127,7 @@ mk-diffo - Store another file set and compare object files.
 
      Options passed to diffo:
      - -w | --with-source : insert C/C++ source code in the generated assembler.
-     - -s | --string      : also compare strings extracted from files.
+     - -s | --string      : compare strings extracted from files (always generated).
      - -l | --less        : pipe differences to less
 
   ENVIRONMENT:
@@ -368,6 +368,16 @@ mk-diffo - New version: %s\n" "${trgt_dir}"
 
     obj1="${orig_dir}/${obj_basename}"
     obj2="${trgt_dir}/${obj_basename}"
+
+    # Always build the string even if not asked.
+    # This allow comparison in the future.
+    if [ "${with_strings}" = "" ]; then
+        if ! strings "$obj_filename" > "${trgt_dir}/${filename_noext}.txt"; then
+            printf -- "\
+*** mk-diffo ERROR: failed extracting strings from object file.\n"
+            exit 1
+        fi
+    fi
     # echo "diffo ${with_source} ${with_strings} ${obj1} ${obj2}"
     diffo ${with_source} ${with_strings} ${with_less} "${obj1}" "${obj2}"
 fi
