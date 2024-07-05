@@ -4,7 +4,7 @@
 # Purpose   : Dump object file into assembler.
 # Created   : Friday, July  5 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 09:12:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 09:15:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -111,7 +111,7 @@ if [ "$with_less" = "true" ]; then
     if [ "$with_source" = "" ]; then
         ${objdumper} --disassemble --demangle "$objf"  | less
     else
-        ${objdumper} --disassemble --demangle --source "$objf | less"
+        ${objdumper} --disassemble --demangle --source "$objf" | less
     fi
 else
     if [ "$with_source" = "" ]; then
