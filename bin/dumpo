@@ -4,7 +4,7 @@
 # Purpose   : Dump object file into assembler.
 # Created   : Friday, July  5 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 09:02:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 09:06:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -56,7 +56,7 @@ fi
 # check for optional switches.
 with_source=
 with_less=
-options=
+options=2
 while [ "$options" -ge 1 ]; do
     if [ "$1" = "-w" ] || [ "$1" = "--with-source" ]; then
         with_source="true"
