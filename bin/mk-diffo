@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 15:12:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 15:38:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -86,6 +86,7 @@
 # Dependencies
 # ------------
 #
+# - dumpo
 # - The shell environment must have been previously setup by sourcing
 #   $USRHOME_DIR/ibin/envfor-mkdiffo to set up the following environment
 #   variables:
@@ -314,7 +315,8 @@ if [ "$refno" = "0" ]; then
     # ---------
     # This is a new file.  There's no previous recorded files.
     # No comparison is possible yet for this source code file.
-    # Copy the source code and object file here.
+    # Copy the source code and object file here and ump the object file
+    # into the assembler.
     printf -- "\
 mk-diffo - Creating a new entry: %s/%s/%s/000
 " "${db_root}" "${project_name}" "${fbasename}"
@@ -322,6 +324,9 @@ mk-diffo - Creating a new entry: %s/%s/%s/000
     trgt_dir=$(printf -- "%s/%s/%s/000" "${db_root}" "${project_name}" "${fbasename}")
     cp "$fpathname" "$trgt_dir"     || exit 1
     cp "$obj_filename" "$trgt_dir"  || exit 1
+    # use tail -n +3 to remove the name of the file printed on the second line
+    dumpo ${with_source} "$obj_filename" | tail -n +3  > "${trgt_dir}/${obj_basename}.asm" || exit 1
+    strings "$obj_filename" > "${trgt_dir}/${obj_basename}.txt" || exit 1
 
 else
     # EXITING FILE - New VERSION

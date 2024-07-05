@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 09:12:08 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-05 15:39:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -144,34 +144,30 @@ else
     objdump_no_address_opt=--no-addresses
 fi
 
+# Create the assembler for the new version of the file..
+# use tail -n +3 to remove the name of the file printed in the second line.
 diff_ec=0
 if [ "$with_source" = "" ]; then
-    # use tail -n +3 to remove the name of the file printed in the second line.
-    if ${objdumper}     --disassemble --demangle "${objdump_no_address_opt}" "$objf_old" | tail -n +3 > "$asmf_old"; then
-        if ${objdumper} --disassemble --demangle "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
-            diff "$asmf_old" "$asmf_new" > /dev/null
-            diff_ec=$?
-        fi
+    if ${objdumper} --disassemble --demangle "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
+        diff "$asmf_old" "$asmf_new" > /dev/null
+        diff_ec=$?
     fi
 else
-    if ${objdumper}     --disassemble --demangle --source "${objdump_no_address_opt}" "$objf_old" | tail -n +3 > "$asmf_old"; then
-        if ${objdumper} --disassemble --demangle --source "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
-            diff "$asmf_old" "$asmf_new" > /dev/null
-            diff_ec=$?
-        fi
+    if ${objdumper} --disassemble --demangle --source "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
+        diff "$asmf_old" "$asmf_new" > /dev/null
+        diff_ec=$?
     fi
 fi
 
+# Create the string file, even if it is not requested.
+strings "$objf_new" > "$txtf_new"
 
+# Compare it with the old only if it is requested.
 # Handle static string allocation first
-
 text_ec=0
 if [ "$with_strings" = "true" ]; then
     txtf_old="${objf_old%.*}".txt
     txtf_new="${objf_new%.*}".txt
-
-    strings "$objf_old" > "$txtf_old"
-    strings "$objf_new" > "$txtf_new"
 
     if diff "$txtf_old" "$txtf_new" > /dev/null; then
         printf -- "diffo - NO change in text sections.\n"
