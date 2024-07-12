@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-24 11:16:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-12 17:14:13 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -19,9 +19,9 @@
 #   files. If the user accepts open the editor on the found files.
 #
 # EXIT CODE:
-#  - 0: ONE file found
+#  - 0: ONE file found, or selected out of many and cd done.
 #  - 1: NO file found
-#  - n: number of file found, regardless if they were edited or not.
+#  - n: number of file found and edited.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -63,6 +63,66 @@ prompt_yn()
     done
 }
 
+is_integer_return=
+entered_integer=
+is_integer()
+{
+    # Arg 1: entered string.
+    is_integer_return=
+    entered_integer=
+    if [ -n "$1" ]; then
+        case "$1" in
+            -*)
+                # unexpected option?
+                is_integer_return=n
+                ;;
+
+            (*[!0123456789]*)
+                # anything before or after a ASCII digit is not allowed
+                is_integer_return=n
+                ;;
+
+            *)
+                # only numbers are allowed.
+                # shellcheck disable=SC2003 # $(()) consider leading zeroes as octal
+                entered_integer=$( expr "$1" + 0)
+                is_integer_return=y
+                ;;
+        esac
+    fi
+}
+
+
+prompt_number_return=
+prompt_number()
+{
+    # Arg 1: arg_prompt string
+    # Arg 2: maximum allowed integer.
+
+    arg_prompt="$1"
+    arg_max_int="$2"
+    while true; do
+        printf -- "\n%s: " "$arg_prompt"
+        is_integer_return=
+        read -r user_input
+        is_integer "$user_input"
+        if [ "$is_integer_return" = "y" ]; then
+            if [ "$entered_integer" -gt "$arg_max_int" ]; then
+                printf -- "Entered value, %s, is out of range\n" "$user_input"
+            elif [ 0 -ge "$entered_integer" ]; then
+                printf -- "Entered value, %s, is out of range\n" "$user_input"
+            else
+                prompt_number_return="$entered_integer"
+                printf -- "Value selected: %s\n" "$prompt_number_return"
+                break
+            fi
+        else
+            printf -- "Entered value, %s, is not a valid positive integer\n" "$user_input"
+        fi
+    done
+}
+
+
 print_usage()
 {
     printf "\
@@ -86,7 +146,15 @@ cd-to : Search for file in current directory tree.
 
      FILENAME or DIRNAME may use the glob syntax supported by fd.
 
-     Limitation: does not support file or directory name that starts with -
+     EXIT CODE:
+      - 0: ONE file found, or selected out of many and cd done.
+      - 1: NO file found.
+      - n: number of file found and edited.
+
+    File editing is not an option when the script is running inside
+    an Emacs shell.
+
+    Limitation: does not support file or directory name that starts with -
 "
 }
 
@@ -260,7 +328,7 @@ if [ "${file_count}" -gt  1 ]; then
     echo "CAUTION: found ${file_count} ${search_for} in directory tree for: $1"
     echo "The ${search_for} are:"
     printf "%s\n" "$the_filepath" | nl
-    if [[ -n "$EDITOR" ]]; then
+    if [ -n "$EDITOR" ] && [ -z "$INSIDE_EMACS" ]; then
         printf "\n"
         prompt_yn "Edit these ${search_for} with '$EDITOR'"
         if [ "$prompt_yn_return" = "y" ]; then
@@ -274,6 +342,9 @@ if [ "${file_count}" -gt  1 ]; then
                     the_fnames=$(printf "%s" "$the_filepath" | tr '\n' ' ')
                     case $USRHOME_SHELL in
                         "zsh")
+                            # The next line is OK in zsh!  Ignore the shellcheck error.
+                            #  or find a way to tell shellcheck that the next line is used
+                            #  when zsh is running this script.
                             read -A the_fnames_arr <<< "$the_fnames"
                             eval $EDITOR $the_fnames_arr
                             unset the_fnames_arr
@@ -294,7 +365,14 @@ if [ "${file_count}" -gt  1 ]; then
             return 0
         fi
     fi
-    return ${file_count}
+    # User wants or can't use the editor:  cd to one of the files;
+    # prompt user to identify the file.
+    # and update the_filepath with that single file name.
+    prompt_number_return=
+    prompt_number "Select the file cd to" "$file_count"
+    fileno_filename="$(echo "${the_filepath}" | head -${prompt_number_return} | tail -1)"
+    printf -- "You selected #%s: %s\n" "$prompt_number_return" "${fileno_filename}"
+    the_filepath=${fileno_filename}
 fi
 
 # Otherwise extract the directory name.
