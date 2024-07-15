@@ -3,7 +3,7 @@
 # Purpose   : GNU Screen - Configuration File.
 # Created   : Thusrsday, June 7, 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 08:57:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-15 14:47:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # File Description
 # -----------------
@@ -67,8 +67,9 @@ escape ^zz
 #
 # This creates a status line at the bottom of the window that provides screen
 # 'hard' status information.  This is an indication that GNU screen is active,
-# which in itself is quite useful.  It can be dynamically hidden with C-^ f
-# and restored wit h C-^ F
+# which in itself is quite useful.
+# It can be dynamically hidden with C-z f and restored with C-z F
+# Normally that would be            C-^ f and C-^ F
 
 # Allow bold colors - necessary for some reason
 attrcolor b ".I"
@@ -92,9 +93,9 @@ hardstatus alwayslastline
 # Very nice tabbed colored hardstatus line
 hardstatus string '%{= Kd} %{= Kd}%-w%{= Kr}[%{= KW}%n %t%{= Kr}]%{= Kd}%+w %-= %{KG} %H%{KW}|%{KY}%101`%{KW}|%D %M %d %Y%{= Kc} %C%A%{-}'
 
-# Hide hardstatus: ctrl-^ f
+# Hide hardstatus: ctrl-z f
 bind f eval "hardstatus ignore"
-# Show hardstatus: ctrl-^ F
+# Show hardstatus: ctrl-z F
 bind F eval "hardstatus alwayslastline"
 
 
