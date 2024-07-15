@@ -1,0 +1,33 @@
+#!/bin/sh
+# SH FILE: info-screen
+#
+# Purpose   : Print information about GNU screen.
+# Created   : Monday, July 15 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-07-15 14:52:44 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print information about GNU screen use in current session.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+if [ -z "$STY" ]; then
+    printf -- "GNU screen is not used in the current shell.\n"
+else
+    printf -- "GNU screen used on %s\n" "$STY"
+fi
+
+# ----------------------------------------------------------------------------
