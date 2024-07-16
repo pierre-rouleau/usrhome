@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-12 17:14:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-16 15:31:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -323,7 +323,7 @@ fi
 file_count=$(printf "%s" "$the_filepath" | grep -c . )
 
 
-# Report error if more than 1 location found.
+# Handle case of more than 1 location found.
 if [ "${file_count}" -gt  1 ]; then
     echo "CAUTION: found ${file_count} ${search_for} in directory tree for: $1"
     echo "The ${search_for} are:"
@@ -369,7 +369,7 @@ if [ "${file_count}" -gt  1 ]; then
     # prompt user to identify the file.
     # and update the_filepath with that single file name.
     prompt_number_return=
-    prompt_number "Select the file cd to" "$file_count"
+    prompt_number "Select the file # to cd to" "$file_count"
     fileno_filename="$(echo "${the_filepath}" | head -${prompt_number_return} | tail -1)"
     printf -- "You selected #%s: %s\n" "$prompt_number_return" "${fileno_filename}"
     the_filepath=${fileno_filename}
