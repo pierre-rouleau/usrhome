@@ -4,7 +4,7 @@
 # Purpose   : Find directories in current directory tree.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-07 14:41:11 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-17 08:02:29 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -46,7 +46,7 @@ find-dir: Find and print all directories DIR in specified ROOT directory tree.
 "
 }
 
-print_error()
+print_error_and_exit()
 {
     # $0 : error message
     printf -- "
@@ -79,8 +79,8 @@ fi
 
 case "$1" in
     -*)
-       print_error "Invalid argument: $1"
-
+       print_error_and_exit "Invalid argument: $1"
+       ;;
 esac
 dirname="$1"
 shift
@@ -90,11 +90,11 @@ rootname="."
 if [ -n "$1" ]; then
     rootname="$1"
     if [ ! -d "$rootname" ]; then
-        print_error "Specified root does not exists: ${rootname}"
+        print_error_and_exit "Specified ROOT does not exists: ${rootname}"
     fi
 fi
 if [ -n "$2" ]; then
-    print_error "Too many arguments."
+    print_error_and_exit "Too many arguments."
 fi
 
 
