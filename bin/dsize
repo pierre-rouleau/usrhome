@@ -4,7 +4,7 @@
 # Purpose   : Compute and print size of all files in the current directory tree.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-25 22:43:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-19 19:22:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -32,17 +32,31 @@
 print_usage()
 {
     printf "\
-Usage: dsize [DIRPATH]
+dsize -- Print the size of specified directory tree.
+
+ Usage: dsize [DIRPATH]
+        dsize -h|--help
+
   Print the size of the directory tree identified by DIRPATH.
   DIRPATH defaults to the current directory.
 
-  If there are no directories in the specified DIRPATH, a slow,
+  If there are no sub-directories in the specified DIRPATH, a slow,
   but more precise computation is done, printing the exact number
   of bytes.  Otherwise du is used and prints the size in bytes,
   KBytes, MBytes, etc... in multiples of 1024.  The value is less
   precise but the computation faster.
 "
 }
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
 
 dirpath=$1
 if [ -z "$dirpath" ]; then
@@ -58,11 +72,11 @@ dir_count=$(ls -F -1 "$dirpath" | grep -c / )
 
 print_size()
 {
-    printf "%'.0f bytes\n" "$(find "$dirpath" -type f -print0 | xargs -0 -I % ls -l % | awk '{sum+=$5;} END {print sum;}')"
+    printf "%'.0f bytes\n" "$(find "$dirpath" \( -type f -or -type l \)  -print0 | xargs -0 -I % ls -l % | awk '{sum+=$5;} END {print sum;}')"
 }
 
-if (( dir_count < 1 ))
-then
+if [ "1" -gt "$dir_count" ]; then
+    # no sub-directories in DIRPATH, use more precise but longer method.
     print_size
 else
     if ! du -sh "${dirpath}"; then
@@ -72,3 +86,6 @@ else
 fi
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
