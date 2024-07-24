@@ -4,7 +4,7 @@
 # Purpose   : Print information about GCC tooling.
 # Created   : Wednesday, July 24 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-24 15:32:21 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-24 15:41:29 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -35,12 +35,19 @@ printf -- "\
             and convert them to assembly.
 Locations:
 - cc1    : %s
+
 - cc1plus: %s
+
 - cc     : %s
+         : %s
   : %s
+
 - gcc    : %s
+         : %s
   : %s
+
 - g++    : %s
+         : %s
   : %s
 
 You may want to invoke these programs with  the -v switch to see the include
@@ -48,13 +55,16 @@ path used.  You will have to provide an END-OF-FILE signal (Ctrl-D) to stop
 the programs.
 
 " \
-       "$(gcc -print-prog-name=cc1)" \
-       "$(gcc -print-prog-name=cc1plus)" \
-       "$(which cc)" \
-       "$(ls -l "$(which cc)")" \
-       "$(which gcc)" \
-       "$(ls -l "$(which gcc)")" \
-       "$(which g++)" \
+       "$(gcc -print-prog-name=cc1)"            \
+       "$(gcc -print-prog-name=cc1plus)"        \
+       "$(which cc)"                            \
+       "$(cc --version | head -1)"              \
+       "$(ls -l "$(which cc)")"                 \
+       "$(which gcc)"                           \
+       "$(gcc --version | head -1)"             \
+       "$(ls -l "$(which gcc)")"                \
+       "$(which g++)"                           \
+       "$(g++ --version | head -1)"             \
        "$(ls -l "$(which g++)")"
 
 
