@@ -4,7 +4,7 @@
 # Purpose   : Print age of shell.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 15:39:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-24 17:33:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -72,9 +72,9 @@ printf -- "Shell age   : "
 if [ "$days" = "0" ]; then
     printf -- "%s\n" "${duration_formatted}"
 elif [ "$days" = "1" ]; then
-    printf -- "1d,%S\n" "${duration_formatted}"
+    printf -- "1 day, %s\n" "${duration_formatted}"
 else
-    printf -- "%dd,%S\n" "${days}" "${duration_formatted}"
+    printf -- "%d days, %s\n" "${days}" "${duration_formatted}"
 fi
 
 
