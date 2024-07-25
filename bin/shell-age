@@ -4,7 +4,7 @@
 # Purpose   : Print age of shell.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-24 17:33:12 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-25 15:25:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -50,7 +50,9 @@ case "$(uname)" in
         if [ "$USRHOME_USE_HOMEBREW" = "1" ]; then
             if which gdate > /dev/null; then
                 end_time=$(gdate +%s)
-            fi
+                duration=$((end_time - start_time))
+                duration_formatted=$(gdate -d@${duration} -u +%Hh%Mm%Ss)
+           fi
         fi
         if [ -z "$end_time" ]; then
             printf -- "
@@ -62,12 +64,12 @@ case "$(uname)" in
 
     Linux)
         end_time=$(date +%s)
+        duration=$((end_time - start_time))
+        duration_formatted=$(date -d@${duration} -u +%Hh%Mm%Ss)
         ;;
 esac
 
-duration=$((end_time - start_time))
 days=$((duration / 86400))
-duration_formatted=$(gdate -d@${duration} -u +%Hh%Mm%Ss)
 printf -- "Shell age   : "
 if [ "$days" = "0" ]; then
     printf -- "%s\n" "${duration_formatted}"
