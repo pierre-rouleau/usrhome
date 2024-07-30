@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-07-05 10:44:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-30 10:45:59 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -490,8 +490,15 @@ set-title()
             title_shell_depth="L${SHLVL}"
         fi
 
+        # If inside a GNU screen session, include the GNU screen session title if there' one
+        if [ -n "$STY" ]; then
+            screen_title="$(echo "$STY" | sed 's/^\(ttys\)*[0-9]*\.//g')"
+        else
+            screen_title=
+        fi
+
         # Set the title by appending the title setting logic to the PS1.
-        title="\[\e]2;${title_text} (Bash \v: ${title_shell_depth}: \h:\w)\a\]"
+        title="\[\e]2;${screen_title} - ${title_text} (Bash \v: ${title_shell_depth}: \h:\w)\a\]"
         if [ -z "$INSIDE_EMACS" ]; then
             PS1=$PS1${title}
         fi
@@ -502,7 +509,8 @@ set-title()
 }
 
 # Activate dynamic tracking title as soon as Bash takes over.
-# Use a empty default Title Text
+# Use a empty default Title Text.
+# Inside a GNU screen we'll see the GNU screen session title if there's one.
 set-title ""
 
 # ----------------------------------------------------------------------------
