@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-25 13:52:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-02 13:15:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -51,9 +51,21 @@
 # Code
 # ----
 #
+# Topic: Rust
 #
-# Activate Rust programming language support only once.
-if [ -z "$CARGO_HOME" ]; then
+# Install support for Rust, which includes CARGO, the Rust source code and the
+# definition of the manr alias.
+#
+# When creating a sub-shell, the .cargo/env does not need to be run again,
+# because CARGO_HOME, RUST_SRC_PATH and the modified PATH are exported and
+# passed to the child shell.
+#
+# However the alias is NOT passed to the child shell and must be re-defined.
+
+if command -v rustc > /dev/null 2>&1; then
+    printf ".  rustc %s is already found in shell.\n" "$(rustc --version)"
+else
+    # Activate Rust programming language support only once.
     if [[ -a "$HOME/.cargo/env" ]]; then
         . "$HOME/.cargo/env"
         export CARGO_HOME="$HOME/.cargo"
@@ -79,8 +91,18 @@ if [ -z "$CARGO_HOME" ]; then
     else
         printf ". WARNING: Requesting Rust, but it is not installed!\n"
     fi
-else
-    printf ". Rust %s is already installed in shell.\n" "$(rustc --version)"
+fi
+
+# Create the manr alias if rustup is available.
+if command -v rustup > /dev/null 2>&1; then
+    if command -v manr > /dev/null 2>&1; then
+        printf ".  manr is already defined.\n"
+    else
+        #  The Rust man pages are not available when Rust is installed.
+        #  However the man pages are available via the ``rustup man`` command.
+        #  Create a 'manr' command.
+        alias manr='rustup man'
+    fi
 fi
 
 # ----------------------------------------------------------------------------
