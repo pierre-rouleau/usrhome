@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-24 22:11:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-02 12:44:01 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -60,3 +60,6 @@ unset user_zprofile
 unset USRHOME__IN_LOGIN
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: zsh
+# End:

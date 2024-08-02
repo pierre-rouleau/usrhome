@@ -3,7 +3,7 @@
 # Purpose   : GNU Screen - Configuration File.
 # Created   : Thusrsday, June 7, 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-15 14:47:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-02 12:38:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # File Description
 # -----------------
@@ -107,3 +107,6 @@ bind F eval "hardstatus alwayslastline"
 bind ^x
 bind x
 # ----------------------------------------------------------------------------
+# Local Variables:
+# mode: conf
+# End:

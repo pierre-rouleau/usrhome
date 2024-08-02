@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_login Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 12:16:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-02 12:32:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -100,3 +100,6 @@ usrhome_trace_in "~/.bash_login   --> \$USRHOME_DIR/dot/bash_login.bash"
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: bash
+# End:

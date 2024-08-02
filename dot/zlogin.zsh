@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-04-23 15:09:12 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-02 12:43:40 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -29,3 +29,6 @@ usrhome_trace_in "~/.zlogin   --> \$USRHOME_DIR/dot/zlogin.zsh"
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: zsh
+# End:
