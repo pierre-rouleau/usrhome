@@ -3,7 +3,7 @@
 # Purpose   : Set the value of an environment variable.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:52:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-01 22:47:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,7 +41,18 @@ if [ -z "$value" ]; then
     value=1
 fi
 
-export "$1"="$value"
+case "$1" in
+    *=*)
+        printf -- "*** setenv ERROR: do not use = between name and value.\n"
+        return 1
+        ;;
+    *[-/+\\\*]*)
+        printf -- "*** setenv ERROR: invalid variable name.  It has an invalid character.\n"
+        return 1
+        ;;
+esac
+
+export "$1"="$value" || return 1
 echo "$1=$value"
 
 # ----------------------------------------------------------------------------
