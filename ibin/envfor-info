@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-05 15:15:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-05 15:55:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -162,6 +162,7 @@ append_to_infopath()
             r_dname="$(realpath "${dname}")"
             if [ -z "$INFOPATH" ]; then
                 INFOPATH="${r_dname}"
+                echo "${r_dname}" >> "${config_filepath}"
                 new_dir_count=$(( new_dir_count + 1 ))
             else
                 already_in="false"
@@ -195,7 +196,7 @@ if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
     if [ "$1" = "--refresh" ] || [ ! -f "${config_filepath}" ]; then
         # perform a new scan
         if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-            printf -- ". Scanning for info directories..."
+            printf -- ". Scanning for info directories...\n"
         fi
         if [ -f "${config_filepath}" ]; then
             # delete existing config file
