@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-05 16:23:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-05 17:15:00 rouleaup>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -155,7 +155,7 @@ append_to_infopath()
     # One POSIX way is to use printf.  Another is to use an explicit new line.
     IFS="
 "
-    for dname in $(find-dir info "${root_dname}"); do
+    for dname in $(find-dir info "${root_dname}" 2> /dev/null ); do
         # echo "Checking: ${dname}"
         # Extra consistency check
         if [ -d "${dname}" ]; then
@@ -204,18 +204,30 @@ if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
             INFOPATH=
         fi
 
+        # Add info directories from Emacs source code tree
+        # if this is available.
         if [ -n "$USRHOME_DIR_EMACS_SRC" ] &&
                [ -d "$USRHOME_DIR_EMACS_SRC/src" ] &&
                [ -d "$USRHOME_DIR_EMACS_SRC/info" ]; then
             append_to_infopath "${USRHOME_DIR_EMACS_SRC}"
         fi
 
-        # If Homebrew is used, add Homebrew files.
+        # If Homebrew is used, add Homebrew info directories in the Homebrew tree.
         if [ -n "$HOMEBREW_PREFIX" ] &&
                [ -d "$HOMEBREW_PREFIX" ]; then
             append_to_infopath "${HOMEBREW_PREFIX}"
         fi
 
+        # On Linux, add the info directories located inside the
+        # /usr directory tree
+        case "$(uname)" in
+
+            Linux)
+            append_to_infopath "/usr"
+            ;;
+        esac
+
+        # Export the new INFOPATH
         if [ ! "${new_dir_count}" = "0" ]; then
             if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
                 printf -- " added %d directories to INFOPATH.\n" ${new_dir_count}
@@ -233,6 +245,7 @@ if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
                 printf "No info directory found!\n"
             fi
         fi
+
     else
         # set INFOPATH from the paths stored in the ${config_filepath} file.
         dir_count=0
