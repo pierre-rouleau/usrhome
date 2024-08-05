@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-28 17:09:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-05 16:41:13 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -49,13 +49,14 @@ print_usage()
     printf "\
 showpath: show content of PATH-like environment variable.
 
- Usage: showpath [-n]  [[LIB|MAN|envvar]|PATH]
+ Usage: showpath [-n]  [[INFO|LIB|MAN|<envvar>]|PATH]
         showpath [-h|--help]
 
     - '-n' : print a numbered list.
     - The other argument identifies the environment variable.
       With noting specified, use PATH.
-      Otherwise, use LIB or LIBPATH for LIBPATH, or
+      Otherwise, use INFO or INFOPATH for INFOPATH, or
+                 use LIB or LIBPATH for LIBPATH, or
                  use MAN or MANPATH for MANPATH, or
                  use the name of the environment variable
                  specified as argument.
@@ -112,7 +113,7 @@ fi
 
 show_path()
 {
-    # vname: string: name of path envvar: PATH, LIBPATH or MANPATH.
+    # vname: string: name of path envvar: PATH, INFOPATH, LIBPATH or MANPATH.
     #                It also supports: ORIGINAL, ORIGINAL_PATH or USRHOME_ORIGINAL_PATH
     #                to show the value of USRHOME_ORIGINAL_PATH
     # numbered: 'true' or 'false'
@@ -167,6 +168,11 @@ case $vname in
         show_path
         ;;
 
+    'INFO'|'INFOPATH')
+        vname="INFOPATH"
+        show_path
+        ;;
+
     'LIB'|'LIBPATH')
         vname="LIBPATH"
         show_path
@@ -184,12 +190,5 @@ case $vname in
     *)
         show_path
 esac
-
-
-
-
-
-
-
 
 # ----------------------------------------------------------------------------
