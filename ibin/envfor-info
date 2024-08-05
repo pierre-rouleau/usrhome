@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 12:40:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-05 15:15:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,8 +37,92 @@
 # ----
 #
 
-# 0 - Check if shell is interactive
-# ---------------------------------
+print_usage()
+{
+    printf -- "
+use-info -- Add 'info' directories to the INFOPATH environment variable.
+
+ Usage: use-info [--refresh]
+        use-info -h|--help
+
+  OPTION:  --refresh  : Force a new scan for info directories, replacing
+                        the value previously used and updating the cache
+                        file ~/.infopath.txt  (see below).
+                        By default it is only done once.  The script
+                        remembers it has already run by setting the
+                        USRHOME__INFO_IS_SET environment variable to 1
+                        and will not scan again if invoked again, unless
+                        the --refresh option is specified.
+
+  FILES:
+    ~/.infopath.txt   : Stores the list of info directories found by the scan.
+                        This acts as a cache, used by subsequent executions.
+                        This way, when this script is invoked by the shell
+                        configuration, a lengthy file scan is only performed
+                        once until the file is explicitly deleted or the
+                        command is invoked with  the --refresh option.
+
+  ENVARS:
+  - INFOPATH              : A colon-separated list of directories where Emacs
+                            and the info utility look for info files.
+                            The use-info program initializes that environment
+                            variable.
+  - USRHOME_DIR_EMACS_SRC : If this exists, it must identify the root directory
+                            of Emacs source code Git repository.  If you built
+                            Emacs from its source code, that will have a info
+                            directory that use-info will add to the INFOPATH.
+                            To use this, update the
+
+  - HOMEBREW_PREFIX       : On systems using Homebrew, optionally identifies
+                            the directory tree where Homebrew stores the files.
+                            The use-info search for info sub-directories in it
+                            when the environment variable is set and identifies
+                            a existing directory.
+"
+}
+
+print_error()
+{
+    # Arg 1: string: error message
+    # Arg 2: optional - secondary error.
+
+    errmsg="$1"
+    if [ -n "$2" ]; then
+        errarg=": $2"
+    else
+        errarg=""
+    fi
+    printf -- "\
+*** use-info ERROR - %s %s
+     Use use-info -h to print its command line usage.
+" "${errmsg}"  "${errarg}"
+}
+
+
+# ----------------------------------------------------------------------------
+# 1 - Validate command line
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    return 0
+fi
+
+if [ -n "$1" ]; then
+    case "$1" in
+        "--refresh")
+        ;;
+
+        *)
+            print_error "Invalid argument" "$1"
+            return 1
+            ;;
+    esac
+fi
+
+# ----------------------------------------------------------------------------
+# 2 - Determine if shell is interactive
+# -------------------------------------
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
@@ -48,14 +132,14 @@ case "$-" in
         ;;
 esac
 
-# --
-# Initialize
+# ----------------------------------------------------------------------------
+# 3 - Initialize
 
 orig_INFOPATH=${INFOPATH}
 config_filepath="$HOME/.infopath.txt"
 
 # --
-# Define variable and function
+# 4 - Define variable and function
 
 new_dir_count=0
 
@@ -102,11 +186,9 @@ append_to_infopath()
     unset already_in
 }
 
-# --
-#
-# Proceed: do the processing once per shell tree unless a --refresh
-#          is requested. Don't repeat in a sub-shell unless a --refresh is
-#          requested.
+# 5 - Proceed: do the processing once per shell tree unless a --refresh
+#              is requested. Don't repeat in a sub-shell unless a --refresh is
+#              requested.
 #
 
 if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
