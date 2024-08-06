@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-06 09:26:30 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-06 10:07:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -160,7 +160,10 @@ append_to_infopath()
         # add it to INFOPATH
         if [ -d "${dname}" ]; then
             r_dname="$(realpath "${dname}")"
-            if find ${r_dname} \( -type f -type l \) \( -name "*\.info" -or -name "*\.info\.gz" \) ; then
+            # count the relevant files.  Pipe to xargs to remove leading spaces present in macOS
+            file_count="$(find -L "${r_dname}" \( -type f -or -type l \) \( -name "*\.info" -or -name "*\.info\.gz" \) -print | wc -l | xargs)"
+            # echo "In $r_dname: file count = $file_count"
+            if [ "$file_count" -gt 0 ]; then
                 if [ -z "$INFOPATH" ]; then
                     INFOPATH="${r_dname}"
                     echo "${r_dname}" >> "${config_filepath}"
@@ -179,6 +182,7 @@ append_to_infopath()
                     fi
                 fi
             fi
+            unset file_count
         else
             if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
                 printf -- "Skipping invalid dname: %s\n" "${dname}"
