@@ -3,7 +3,7 @@
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 12:34:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-06 19:15:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -50,7 +50,17 @@ if ! echo "$PATH" | grep -q "$USRHOME_DIR"; then
     else
         the_path="$USRHOME_DIR/bin":$PATH
     fi
-    # Add user's ~/bin if it exists
+    # Add users ~/.local/bin if it exists
+    # Several programs put something inside ~/.local/bin and other
+    # ~/.local sub directories.
+    if [ -d "$HOME/.local/bin" ]; then
+        if ! echo "$PATH" | grep "$HOME/.local/bin" > /dev/null; then
+            the_path="$HOME/.local/bin":$the_path
+        fi
+    fi
+
+    # Add user's ~/bin if it exists - put it in from of ~/.local/bin
+    # to all overriding what has been placed into ~/.local/bin
     if [ -d "$HOME/bin" ]; then
         if ! echo "$PATH" | grep "$HOME/bin" > /dev/null; then
             the_path="$HOME/bin":$the_path
