@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-16 15:31:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-05 23:32:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -131,17 +131,17 @@ cd-to : Search for file in current directory tree.
         If more than 1 file found, list them and offer to edit them.
 
    Usage:  cd-to [-h|--help]
-           cd-to    [-H] [-I] [-e] FILENAME
-           cd-to -d [-H] [-I] [-e] DIRNAME
+           cd-to    [-H] [-I] [-L] [-e] FILENAME
+           cd-to -d [-H] [-I] [-L] [-e] DIRNAME
 
-     By default:
-
-     - skips searching hidden directories unless the -H option is
-       specified.
-     - skips searching ignored directories unless the -I option is
-       specified.
-     - -e: edit file(s).  If several file/directories are found
-                          it ignores that option and prompts
+     OPTIONS:
+      -H : Search hidden directories. Not searched by default.
+      -I : no-ignored directories: search ignored directories
+           which are skipped by default. See fd -I option.
+      -L : follow symbolic links.  Not followed by default.
+      -e : edit file(s).  Edit the file if only one is found.
+                          If several file/directories are found
+                          that option is ignored, it prompts
                           for editing the files anyway.
 
      FILENAME or DIRNAME may use the glob syntax supported by fd.
@@ -151,10 +151,10 @@ cd-to : Search for file in current directory tree.
       - 1: NO file found.
       - n: number of file found and edited.
 
-    File editing is not an option when the script is running inside
-    an Emacs shell.
+    File editing is not allowed/proposed when executing inside
+    an Emacs shell as identified by the INSIDE_EMACS environment variable.
 
-    Limitation: does not support file or directory name that starts with -
+    LIMITATION: cannot search for file or directory name that starts with -
 "
 }
 
@@ -173,6 +173,7 @@ search_ignored=false
 search_for=files
 search_for1=file
 edit_files=false
+link_opt=
 unset cd_to__exit_code
 
 check_option()
@@ -190,6 +191,10 @@ check_option()
 
         "-I")
             search_ignored=true
+            ;;
+
+        "-L")
+            link_opt='-L'
             ;;
 
         "-d")
@@ -292,36 +297,35 @@ esac
 if [ "${search_hidden}" = "true" ]; then
     if [ "$search_for" = "directories" ]; then
         if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -H -I --type d -g $the_fname)"
+            the_filepath="$(fd -H -I -L --type d -g $the_fname)"
         else
-            the_filepath="$(fd -H --type d -g $the_fname)"
+            the_filepath="$(fd -H -L --type d -g $the_fname)"
         fi
     else
         if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -H -I --type f -g $the_fname)"
+            the_filepath="$(fd -H -I -L --type f -g $the_fname)"
         else
-            the_filepath="$(fd -H --type f -g $the_fname)"
+            the_filepath="$(fd -H -L --type f -g $the_fname)"
         fi
     fi
 else
     if [ "$search_for" = "directories" ]; then
         if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -I --type=d -g $the_fname)"
+            the_filepath="$(fd -I -L --type=d -g $the_fname)"
         else
-            the_filepath="$(fd --type=d -g $the_fname)"
+            the_filepath="$(fd -L --type=d -g $the_fname)"
         fi
     else
         if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -I --type=f -g $the_fname)"
+            the_filepath="$(fd -I -L --type=f -g $the_fname)"
         else
-            the_filepath="$(fd --type=f -g $the_fname)"
+            the_filepath="$(fd ${link_opt} --type=f -g $the_fname)"
         fi
     fi
 fi
 
 # Use grep -c to count number of lines on stdout.  Accept anything.
 file_count=$(printf "%s" "$the_filepath" | grep -c . )
-
 
 # Handle case of more than 1 location found.
 if [ "${file_count}" -gt  1 ]; then
@@ -378,27 +382,48 @@ fi
 # Otherwise extract the directory name.
 unset file_count
 the_dirpath=$(dirname "${the_filepath}")
-unset the_filepath
+has_error=false
 
+# Jump to the file found if any and ls -l on it
 if [ "$the_dirpath" = "." ]; then
-    echo "Error: No ${search_for1} found inside any sub-directory with the name: $the_fname"
-    unset search_for
-    unset search_for1
-    return 1
+    if [ -f "$the_filepath" ]; then
+        ls -l "$the_filepath"
+        if [ "$edit_files" = "true" ]; then
+            echo "$EDITOR ${the_filepath}"
+            eval $EDITOR "${the_filepath}"
+        fi
+    else
+        echo "Error: No ${search_for1} found inside any sub-directory with the name: $the_fname"
+        has_error=true
+    fi
+else
+    if cd "${the_dirpath}"; then
+        ls -l "${the_fname}"
+        if [ "$edit_files" = "true" ]; then
+            echo "$EDITOR ${the_fname}"
+            eval $EDITOR "${the_fname}"
+        fi
+    else
+        has_error=true
+    fi
 fi
 
+
+# Cleanup and return exit code
+unset the_dirpath
+unset the_filepath
 unset search_for
 unset search_for1
-
-# And jump to it.
-cd "${the_dirpath}" || return 1
-unset the_dirpath
-ls -l "${the_fname}"
-if [ "$edit_files" = "true" ]; then
-    echo "$EDITOR ${the_fname}"
-    eval $EDITOR "${the_fname}"
-fi
 unset the_fname
+unset link_opt
+
+if [ "$has_error" = "true" ]; then
+    unset has_error
+    return 1
+else
+    unset has_error
+    return 0
+fi
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
