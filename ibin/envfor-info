@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-05 17:15:00 rouleaup>
+# Time-stamp: <2024-08-06 09:26:30 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -156,25 +156,27 @@ append_to_infopath()
     IFS="
 "
     for dname in $(find-dir info "${root_dname}" 2> /dev/null ); do
-        # echo "Checking: ${dname}"
-        # Extra consistency check
+        # If the directory exists and contain .info or .info*.gz files,
+        # add it to INFOPATH
         if [ -d "${dname}" ]; then
             r_dname="$(realpath "${dname}")"
-            if [ -z "$INFOPATH" ]; then
-                INFOPATH="${r_dname}"
-                echo "${r_dname}" >> "${config_filepath}"
-                new_dir_count=$(( new_dir_count + 1 ))
-            else
-                already_in="false"
-                case "$INFOPATH" in
-                    *"${r_dname}"*)
-                        already_in="true"
-                        ;;
-                esac
-                if [ "$already_in" = "false" ]; then
-                    INFOPATH="$INFOPATH":"${r_dname}"
+            if find ${r_dname} \( -type f -type l \) \( -name "*\.info" -or -name "*\.info\.gz" \) ; then
+                if [ -z "$INFOPATH" ]; then
+                    INFOPATH="${r_dname}"
                     echo "${r_dname}" >> "${config_filepath}"
                     new_dir_count=$(( new_dir_count + 1 ))
+                else
+                    already_in="false"
+                    case "$INFOPATH" in
+                        *"${r_dname}"*)
+                            already_in="true"
+                            ;;
+                    esac
+                    if [ "$already_in" = "false" ]; then
+                        INFOPATH="$INFOPATH":"${r_dname}"
+                        echo "${r_dname}" >> "${config_filepath}"
+                        new_dir_count=$(( new_dir_count + 1 ))
+                    fi
                 fi
             fi
         else
