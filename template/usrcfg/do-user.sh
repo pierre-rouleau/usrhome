@@ -3,7 +3,7 @@
 # Purpose   : User Configuration Common to all supported shells.
 # Created   : Thursday, May  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 08:21:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-06 18:24:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -46,7 +46,7 @@ alias cdbin='cd ~/my/bin'
 alias cddoc='cd ~/Documents'
 
 # Topic: macOS Number
-if [ "$uname" = "Darwin" ]; then
+if [ "$(uname)" = "Darwin" ]; then
     alias f-numbers='fd ".numbers$"'
 fi
 
