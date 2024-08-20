@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-20 16:21:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-20 16:29:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -355,7 +355,7 @@ if [ "${file_count}" -gt  1 ]; then
                             ;;
                         "bash")
                             IFS=' '  read -a the_fnames_arr <<< "$the_fnames"
-                            eval "$EDITOR} ${the_fnames_arr[@]}"
+                            eval "$EDITOR ${the_fnames_arr[@]}"
                             unset the_fnames_arr
                             ;;
                         *)
