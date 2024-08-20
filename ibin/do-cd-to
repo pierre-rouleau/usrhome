@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-05 23:32:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-20 16:21:24 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -113,7 +113,7 @@ prompt_number()
                 printf -- "Entered value, %s, is out of range\n" "$user_input"
             else
                 prompt_number_return="$entered_integer"
-                printf -- "Value selected: %s\n" "$prompt_number_return"
+                # printf -- "Value selected: %s\n" "$prompt_number_return"
                 break
             fi
         else
@@ -297,29 +297,29 @@ esac
 if [ "${search_hidden}" = "true" ]; then
     if [ "$search_for" = "directories" ]; then
         if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -H -I -L --type d -g $the_fname)"
+            the_filepath="$(fd -H -I -L --type d -g "$the_fname")"
         else
-            the_filepath="$(fd -H -L --type d -g $the_fname)"
+            the_filepath="$(fd -H -L --type d -g "$the_fname")"
         fi
     else
         if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -H -I -L --type f -g $the_fname)"
+            the_filepath="$(fd -H -I -L --type f -g "$the_fname")"
         else
-            the_filepath="$(fd -H -L --type f -g $the_fname)"
+            the_filepath="$(fd -H -L --type f -g "$the_fname")"
         fi
     fi
 else
     if [ "$search_for" = "directories" ]; then
         if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -I -L --type=d -g $the_fname)"
+            the_filepath="$(fd -I -L --type=d -g "$the_fname")"
         else
-            the_filepath="$(fd -L --type=d -g $the_fname)"
+            the_filepath="$(fd -L --type=d -g "$the_fname")"
         fi
     else
         if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -I -L --type=f -g $the_fname)"
+            the_filepath="$(fd -I -L --type=f -g "$the_fname")"
         else
-            the_filepath="$(fd ${link_opt} --type=f -g $the_fname)"
+            the_filepath="$(fd ${link_opt} --type=f -g "$the_fname")"
         fi
     fi
 fi
@@ -350,12 +350,12 @@ if [ "${file_count}" -gt  1 ]; then
                             #  or find a way to tell shellcheck that the next line is used
                             #  when zsh is running this script.
                             read -A the_fnames_arr <<< "$the_fnames"
-                            eval $EDITOR $the_fnames_arr
+                            eval "$EDITOR $the_fnames_arr"
                             unset the_fnames_arr
                             ;;
                         "bash")
                             IFS=' '  read -a the_fnames_arr <<< "$the_fnames"
-                            eval $EDITOR "${the_fnames_arr[@]}"
+                            eval "$EDITOR} ${the_fnames_arr[@]}"
                             unset the_fnames_arr
                             ;;
                         *)
@@ -374,7 +374,7 @@ if [ "${file_count}" -gt  1 ]; then
     # and update the_filepath with that single file name.
     prompt_number_return=
     prompt_number "Select the file # to cd to" "$file_count"
-    fileno_filename="$(echo "${the_filepath}" | head -${prompt_number_return} | tail -1)"
+    fileno_filename="$(echo "${the_filepath}" | head "-${prompt_number_return}" | tail -1)"
     printf -- "You selected #%s: %s\n" "$prompt_number_return" "${fileno_filename}"
     the_filepath=${fileno_filename}
 fi
@@ -383,25 +383,53 @@ fi
 unset file_count
 the_dirpath=$(dirname "${the_filepath}")
 has_error=false
+# echo "Searching $search_for1 : the_dirpath = $the_dirpath, the_filepath= $the_filepath"
 
 # Jump to the file found if any and ls -l on it
 if [ "$the_dirpath" = "." ]; then
-    if [ -f "$the_filepath" ]; then
-        ls -l "$the_filepath"
-        if [ "$edit_files" = "true" ]; then
-            echo "$EDITOR ${the_filepath}"
-            eval $EDITOR "${the_filepath}"
+    if [ "$search_for1" = "file" ]; then
+        if [ -f "$the_filepath" ]; then
+            ls -l "$the_filepath"
+            if [ "$edit_files" = "true" ]; then
+                echo "$EDITOR ${the_filepath}"
+                eval "$EDITOR ${the_filepath}"
+            fi
+        else
+            echo "Error: No ${search_for1} found inside any sub-directory with the name: $the_fname"
+            has_error=true
+        fi
+    elif [ "$search_for1" = "directory" ]; then
+        # echo "--> the_dirpath: $the_dirpath, the_filepath = $the_filepath"
+        if [ -d "$the_filepath" ]; then
+            cd "$the_filepath" || exit 1
+            if [ "$edit_files" = "true" ]; then
+                echo "$EDITOR ."
+                eval "$EDITOR ."
+            fi
         fi
     else
-        echo "Error: No ${search_for1} found inside any sub-directory with the name: $the_fname"
+        echo "Error: No ${search_for1} found inside any sub-directory with the name: $the_dirpath"
         has_error=true
     fi
 else
-    if cd "${the_dirpath}"; then
-        ls -l "${the_fname}"
-        if [ "$edit_files" = "true" ]; then
-            echo "$EDITOR ${the_fname}"
-            eval $EDITOR "${the_fname}"
+    if [ "$search_for1" = "file" ]; then
+        if cd "${the_dirpath}"; then
+            ls -l "${the_fname}"
+            if [ "$edit_files" = "true" ]; then
+                echo "$EDITOR ${the_fname}"
+                eval "$EDITOR ${the_fname}"
+            fi
+        else
+            has_error=true
+        fi
+    elif [ "$search_for1" = "directory" ]; then
+        if cd "${the_filepath}"; then
+            if [ "$edit_files" = "true" ]; then
+                echo "$EDITOR ."
+                eval "$EDITOR ."
+            fi
+        else
+            has_error=true
         fi
     else
         has_error=true
