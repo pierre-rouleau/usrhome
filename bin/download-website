@@ -1,0 +1,74 @@
+#!/bin/sh
+# SH FILE: download-website
+#
+# Purpose   : Download complete web-site.
+# Created   : Tuesday, August 27 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-08-27 11:54:51 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# "Clone" a web site locally.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - printf, wget
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+print_usage()
+{
+    printf -- "\
+download-website: Download all files from a specified URL
+
+ Usage: download-website URL
+        download-website -h|--help
+
+If URL is specified, the script uses wget to download all files
+from the specified URL into the current directory.  It downloads
+everything under the specified URL directory but nothing from its
+parent.  All links in the downloaded files are adjusted for local
+viewing.
+"
+}
+
+# --
+# Check validity of arguments
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+elif [ -n "$2" ]; then
+    print_usage
+    exit 1
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+# --
+
+# -m : --mirror           : Turns on recursion and time-stamping.
+# -p : --page-requisites  : download all files that are necessary
+#                           to display a given HTML page.
+# -np : --no-parent       : Do not ascend into the parent directory when
+#                           retrieving recursively. Guarantees that only files
+#                           below a certain hierarchy will be downloaded.
+# -E : --adjust-extension : Append .html to downloaded file whenever necessary
+# -k : --convert-links    : After download, convert links in the document to
+#                           make them suitable for local viewing.
+
+wget -m -p -np -E -k "$1"
+
+# ----------------------------------------------------------------------------
