@@ -1,0 +1,29 @@
+#!/bin/sh
+# SH FILE: rg-all
+#
+# Purpose   : Ripgrep and follow links.
+# Created   : Monday, August 26 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-08-27 12:04:15 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# A quick script that uses Ripgrep to search adding the -L options to follow
+# the symbolic links.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - rg : ripgrep
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+rg -L "$@"
+
+# ----------------------------------------------------------------------------
