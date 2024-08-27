@@ -1,0 +1,63 @@
+#!/bin/bash
+# SH FILE: show-binutils
+#
+# Purpose   : List path  of all executables thta are part of GNU binutils.
+# Created   : Tuesday, August 27 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-08-27 18:07:38 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# List the presence of all utilities that are part of the GNU binutils
+# As listed in https://www.gnu.org/software/binutils/binutils.html
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# Bash, printf, which, ls
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+commands=( ld
+           as
+           gold
+           addr2line
+           ar
+           c++filt
+           dlltool
+           elfedit
+           gprof
+           pprofng
+           nlmconv
+           nm
+           objcopy
+           objdump
+           ranlib
+           readelf
+           size
+           strings
+           strip
+           windmc
+           windres
+         )
+
+for cmd in "${commands[@]}" ; do
+    if which "${cmd}" > /dev/null ; then
+        printf -- "%-20s   : %s\n" "${cmd}" "$(ls -l "$(which "${cmd}")")"
+    else
+        printf -- "%-20s   : not available\n"  "${cmd}"
+    fi
+done
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: bash
+# End:
