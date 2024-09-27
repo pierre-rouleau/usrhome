@@ -5,7 +5,7 @@ ibin/inc - Common Code For Inclusion
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-09-27 15:18:00, by Pierre Rouleau.
+:Modified: 2024-09-27 17:10:34 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -22,7 +22,9 @@ The following files are available.
 ===================== ======================================================
 File Name             Purpose
 ===================== ======================================================
-fpath.sh              File path processing functions.
+fpath.sh              File path processing functions:
+
+                      - usrhome_relpath(): compute the delta bewteen 2 paths.
 ===================== ======================================================
 
 .. ---------------------------------------------------------------------------
