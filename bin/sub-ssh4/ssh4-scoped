@@ -1,0 +1,79 @@
+#!/bin/sh
+# SH FILE   : $USRHOME_DIR/bin/sub-ssh4/ssh4-scoped
+# Purpose   : Open a SSH session to a specific computer, identifying it in the shell.
+# Created   : Friday, July 26 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-09-27 11:45:43 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# This file implements the logic to establish a SSH connection to a remote computer
+# identified by the following environment variables:
+#
+#   ----------------------- ------------------------------------------------
+#   Variable Name           Purpose
+#   ----------------------- ------------------------------------------------
+#   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
+#   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
+#   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__USERNAME  The user name on that target system
+#   ----------------------- ------------------------------------------------
+#
+# It invokes the envfor-cmds script to read these values and store them inside
+# the following variables used here:
+#
+#   - pgm_name
+#   - ipv4addr
+#   - hostname
+#   - username
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Described environment variables.
+# - The envfor-cmds script in the current directory.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Set environment variables for this command:
+#   - pgm_name
+#   - hostname
+#   - username
+#   - ipv4addr
+
+envfor_cmd_arg1=ssh4-scoped
+. "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
+
+
+# Validate environment
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    printf -- "\
+%s - Open a SSH session with %s remote computer.
+
+ Usage: %s [SSH-OPTIONS]
+
+ - SSH-OPTIONS:  Optional extra options to pass to the ssh command.
+                 These options are placed right after the ssh command
+                 and before the '-l \${username} \${ipv4addr}' arguments.
+
+
+" "${pgm_name}" "${hostname}" "${pgm_name}"
+    exit 0
+fi
+
+
+
+# -- All OK; proceed.
+# Note: Arg 1 is optional .  If used it's the title for the terminal.
+
+echo "ssh $@ -l ${username} ${ipv4addr}"
+ssh "$@" -l "$username" "$ipv4addr"
+
+# ----------------------------------------------------------------------------

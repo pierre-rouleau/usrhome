@@ -1,0 +1,108 @@
+#!/bin/sh
+# SH FILE: to-remote-dir
+#
+# Purpose   : Copy a complete directory to the remote computer.
+# Created   : Thursday, July 25 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-09-27 12:06:57 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+# This file implements the logic of commands that copy a local directory to a
+# remote computer via SSH.  The file is meant to be invoked by the top-level
+# scp4 command script which exports the following environment variables:
+#
+#   ----------------------- ------------------------------------------------
+#   Variable Name           Purpose
+#   ----------------------- ------------------------------------------------
+#   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
+#   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
+#   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__USERNAME  The user name on that target system
+#   ----------------------- ------------------------------------------------
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Described environment variables.
+# - The envfor-cmds script in the current directory.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Validate environment
+envfor_cmd_arg1=to-remote-dir
+. "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
+
+# Set value identified from the environment
+hostname="$USRHOME_SSH4__HOSTNAME"
+ipv4addr="$USRHOME_SSH4__IPV4ADDR"
+username="$USRHOME_SSH4__USERNAME"
+pgm_name="$USRHOME_SSH4__PGM_NAME"
+
+# Validate command line arguments
+if [ -z "$1" ]; then
+    printf -- "*** %s ERROR: missing directory name.\n" "${pgm_name}"
+    printf -- "    Use the -h or --help option to print usage\n"
+    exit 1
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    printf -- "\
+%s - copy directory tree to %s remote computer.
+
+ Usage: %s [-n|--dryrun] LOCALDIR [REMOTEDIR]
+
+  - LOCALDIR : Name of the local directory to copy to remote.
+  - REMOTEDIR: Name of the remote directory where the local directory will
+               be stored. The remote path is relative to the remote home directory.
+               - If it is not specified, it defaults to tmp
+                 so LOCALDIR will be copied in the remote ~/tmp directory.
+
+  OPTIONS:
+
+   -n | --dryrun:  Only show what would be done. No file copied.
+
+
+" "${pgm_name}" "${hostname}" "${pgm_name}"
+    exit 0
+fi
+
+dryrun=false
+if [ "$1" = "-n" ] || [ "$1" = "--dryrun" ]; then
+    dryrun=true
+    shift
+fi
+
+localdir="$1"
+
+# Arguments:
+# - 1: file-path : local file name to send to the remote server
+if [ -z "$1" ]; then
+    printf -- "*** %s ERROR: missing directory name\n" "${pgm_name}"
+    exit 1
+elif [ ! -d "$1" ]; then
+    printf -- "*** %s ERROR: specified directory does not exists: %s\n" "${pgm_name}" "$1"
+    exit 1
+else
+    if [ -z "$2" ]; then
+        remotedir="tmp"
+    else
+        remotedir="$2"
+    fi
+    echo "scp -r ${localdir} scp://${username}@${ipv4addr}/${remotedir}"
+    if [ "$dryrun" = "false" ]; then
+        scp -r "${localdir}" "scp://${username}@${ipv4addr}/${remotedir}"
+    else
+        printf -- "*** %s WARNING: dry run: nothing is copied.\n" "${pgm_name}"
+    fi
+fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

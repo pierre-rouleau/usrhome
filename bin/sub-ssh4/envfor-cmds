@@ -1,0 +1,69 @@
+# Sourced script: envfor-cmds  -*- mode: sh; -*-
+# File      : $USRHOME_DIR/bin/sub-ssh4/envfor-cmds
+# Purpose   : Set the shell variables used by the scripts from the environment variables.
+# Created   : Friday, July 26 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-09-27 11:44:38 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# This file is meant to be "included" (sourced) by other hidden scripts.  It
+# simply holds logic that is common to these scripts, centralizing the logic.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+#   ----------------------- ------------------------------------------------
+#   Variable Name           Purpose
+#   ----------------------- ------------------------------------------------
+#   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
+#   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
+#   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__USERNAME  The user name on that target system
+#   ----------------------- ------------------------------------------------
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Note: even though it is a sourced script, it is "included" (sourced) from
+#       actual command scripts: when an error is detected the action is an
+#       exit, not a return: done because we want to terminate the invoking
+#       script.
+#
+#       Arg 1: the name of the invoking script, passed as variable: envfor_cmd_arg1
+
+
+# Validate environment
+if [ -z "$USRHOME_SSH4__PGM_NAME" ]; then
+    printf -- "*** %s - ERROR: USRHOME_SSH4__PGM_NAME is not defined!\n" "${envfor_cmd_arg1}"
+    exit 1
+fi
+pgm_name="$USRHOME_SSH4__PGM_NAME"
+
+if [ -z "$USRHOME_SSH4__HOSTNAME" ]; then
+    printf -- "*** %s - ERROR: USRHOME_SSH4__HOSTNAME is not defined!\n" "${pgm_name}"
+    exit 1
+fi
+hostname="$USRHOME_SSH4__HOSTNAME"
+
+if [ -z "$USRHOME_SSH4__IPV4ADDR" ]; then
+    printf -- "*** %s - ERROR: USRHOME_SSH4__IPV4ADDR is not defined!\n" "${pgm_name}"
+    exit 1
+fi
+ipv4addr="$USRHOME_SSH4__IPV4ADDR"
+
+if [ -z "$USRHOME_SSH4__USERNAME" ]; then
+    printf -- "*** %s - ERROR: USRHOME_SSH4__USERNAME is not defined!\n" "${pgm_name}"
+    exit 1
+fi
+username="$USRHOME_SSH4__USERNAME"
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:

@@ -1,0 +1,167 @@
+#!/bin/sh
+# SH FILE   : $USRHOME_DIR/bin/sub-ssh4/to-remote
+# Purpose   : Copy file to remote computer selected by environment.
+# Created   : Tuesday, July 16 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-09-27 16:50:58 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+# This file implements the logic of commands that copy a local file to a
+# remote computer via SSH.  The file is meant to be invoked by the top-level
+# scp4 command script which exports the following environment variables:
+#
+#   ----------------------- ------------------------------------------------
+#   Variable Name           Purpose
+#   ----------------------- ------------------------------------------------
+#   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
+#   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
+#   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__USERNAME  The user name on that target system
+#   USRHOME_SSH4__LOC_DIR   Reference directory on local computer. Defaults to '.'
+#   USRHOME_SSH4__REM_DIR   Equivalent directory on remote computer
+#   ----------------------- ------------------------------------------------
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Described environment variables.
+# - The envfor-cmds script in the current directory.
+# - From $USRHOME_DIR/ibin/inc/fpath.sh :  usrhome_relpath()
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Validate environment
+envfor_cmd_arg1=to-remote
+. "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
+
+
+# Validate command line arguments
+if [ -z "$1" ]; then
+    printf -- "*** %s ERROR: missing local file name.\n" "${pgm_name}"
+    printf -- "    Use the -h or --help option to print usage\n"
+    exit 1
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    printf -- "\
+%s - copy file to %s remote computer.
+
+ Usage: %s [-n|--dryrun] FNAME [DNAME]
+
+  - FNAME : Name of local file.
+            - The file may be specified with an absolute path or
+              a path relative to the current directory.
+
+  - DNAME : Optional. Absolute path name of remote computer directory.
+            - If not specified, you must define the USRHOME_SSH4__REM_DIR
+              environment variable which defines the absolute path of a base
+              directory that is the root of the storage.
+              The actual  remote directory is computed in the following way:
+              - A relative path is identified between the value of
+                USRHOME_SSH4__LOC_DIR and the directory of the FNAME.
+                If USRHOME_SSH4__LOC_DIR is not set, use the current working
+                directory as the base.
+              - That relative path is applied against the remote directory
+                path identified by the USRHOME_SSH4__REM_DIR.  That must be
+                an absolute path that does NOT end with /.
+
+              For example, given the following input:
+                 - FNAME                : ~/file.txt
+                 - DNAME                : *not specified*
+                 - USRHOME_SSH4__LOC_DIR: not specified or '.', or '~'
+                 - USRHOME_SSH4__REM_DIR: /home/users/jdoe/extra
+
+               Assuming that you have access to the remote /home/users/jdoe
+               directory, the local     ~/file.txt will be copied
+               to the remote /home/users/jdoe//file.txt
+
+  OPTIONS:
+   -n | --dryrun:  Only show what would be done. No file copied.
+
+" "${pgm_name}" "${hostname}" "${pgm_name}"
+    exit 0
+fi
+
+dryrun=false
+if [ "$1" = "-n" ] || [ "$1" = "--dryrun" ]; then
+    dryrun=true
+    shift
+fi
+
+if [ -z "$1" ]; then
+    printf -- "*** %s ERROR: missing source file name.\n" "${pgm_name}"
+    printf -- "    Use the -h or --help option to print usage\n"
+    exit 1
+elif [ ! -f "$1" ]; then
+    printf -- "*** %s ERROR: specified file does not exists: %s\n" "${pgm_name}" "$1"
+    exit 1
+else
+
+    fname="$1"
+    realpath_fname="$(realpath "$fname" )"
+    realpath_fname_dpath="$(dirname "$realpath_fname")"
+
+    # Compute remote directory path name
+
+    # - Check DNAME and USRHOME_SSH4__REM_DIR
+    if [ -z "$2" ]; then
+        if [ -z "$USRHOME_SSH4__REM_DIR" ]; then
+            printf -- "\
+*** %s ERROR: please identify remote directory in DNAME or USRHOME_SSH4__REM_DIR
+" "${pgm_name}"
+            exit 1
+        fi
+        first_char="$(echo "$USRHOME_SSH4__REM_DIR" | cut -c 1)"
+        if [ "$first_char" != "/" ]; then
+            printf -- "\
+*** %s ERROR: USRHOME_SSH4__REM_DIR must be an absolute path name.
+" "${pgm_name}"
+            exit 1
+        fi
+        last_char="$(printf "%s" "$USRHOME_SSH4__REM_DIR" | tail -c 1)"
+        if [ "$last_char" = "/" ]; then
+            printf -- "\
+*** %s ERROR: USRHOME_SSH4__REM_DIR value must not end with a slash!
+" "${pgm_name}"
+            exit 1
+        fi
+
+        # - Compute path delta from local_base_dpath to FNAME. Store in result
+        #   - Define usrhome_relpath() by sourcing the required file.
+        . "${USRHOME_DIR}/ibin/inc/fpath.sh"
+        #   - get the local directory path reference
+        local_base_dpath="$(realpath "$(pwd)")"
+        if [ -n "$USRHOME_SSH4__LOC_DIR" ]; then
+            local_base_dpath="$(realpath "$USRHOME_SSH4__LOC_DIR")"
+        fi
+        #   - set the path delta
+        result=
+        usrhome_relpath "$local_base_dpath" "$realpath_fname_dpath"
+        path_delta="$result"
+
+        # - Compute remote destination directory
+        dest_dir="${USRHOME_SSH4__REM_DIR}/${path_delta}"
+
+    else
+        # File can be taken from anywhere: the destination directory is identified by argument.
+        dest_dir="$2"
+    fi
+
+    echo "scp ${fname} scp://${username}@${ipv4addr}/${dest_dir}"
+    if [ "$dryrun" = "false" ]; then
+        scp "${fname}" "scp://${username}@${ipv4addr}/${dest_dir}"
+    else
+        printf -- "*** %s WARNING: dry run: nothing is copied.\n" "${pgm_name}"
+    fi
+fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

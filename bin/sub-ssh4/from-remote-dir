@@ -1,0 +1,81 @@
+#!/bin/sh
+# SH FILE   : $USRHOME_DIR/bin/sub-ssh4/from-remote-dir
+# Purpose   : Copy directory from the specified remote computer to the current local directory.
+# Created   : Thursday, July 25 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-09-27 11:44:56 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+# This file implements the logic of commands that copy a directory from the
+# specified remote computer to the current local directory.  It is meant to be
+# invoked by the top-level scp4 command script which exports the following
+# environment variables:
+#
+#   ----------------------- ------------------------------------------------
+#   Variable Name           Purpose
+#   ----------------------- ------------------------------------------------
+#   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
+#   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
+#   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__USERNAME  The user name on that target system
+#   ----------------------- ------------------------------------------------
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Described environment variables.
+# - The envfor-cmds script in the current directory.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Validate environment
+envfor_cmd_arg1=from-remote-dir
+. "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
+
+# Validate command line arguments
+if [ -z "$1" ]; then
+    printf -- "*** %s ERROR: missing remote directory name.\n" "${pgm_name}"
+    printf -- "    Use the -h or --help option to print usage\n"
+    exit 1
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    printf -- "\
+%s - copy directory tree from %s remote computer.
+
+ Usage: %s [-n|--dryrun] DNAME
+
+  - FNAME : Name of the remote directory, with a path
+            relative to the home directory on the remote host.
+
+  OPTIONS:
+   -n | --dryrun:  Only show what would be done. No file copied.
+
+" "${pgm_name}" "${hostname}" "${pgm_name}"
+    exit 0
+fi
+
+dryrun=false
+if [ "$1" = "-n" ] || [ "$1" = "--dryrun" ]; then
+    dryrun=true
+    shift
+fi
+
+dname="$1"
+echo "scp -r scp://${username}@${ipv4addr}/${dname} ."
+if [ "$dryrun" = "false" ]; then
+    scp -r  "scp://${username}@${ipv4addr}/${dname}" .
+else
+    printf -- "*** %s WARNING: dry run: nothing is copied.\n" "${pgm_name}"
+ fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
