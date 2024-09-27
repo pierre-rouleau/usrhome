@@ -5,7 +5,7 @@ Purpose of the USRHOME/bin/sub-ssh4 - Base SSH scripts
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-09-27 17:16:27 EDT, updated by Pierre Rouleau.
+:Modified: 2024-09-27 17:19:43 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -178,9 +178,15 @@ The extra optional environment variables are:
 ======================= ================================================
 Variable Name           Purpose
 ======================= ================================================
-USRHOME_SSH4__LOC_DIR   Reference directory on local computer. Defaults to '.'
-USRHOME_SSH4__REM_DIR   Equivalent directory on remote computer
+USRHOME_SSH4__LOC_DIR   Reference directory tree root on local computer. Defaults to '.'
+USRHOME_SSH4__REM_DIR   Equivalent directory tree root on remote computer.
 ======================= ================================================
+
+These extra environment variable are typically *not* set by the script;
+instead they are set by the user manually or in the shell environment to set
+the relationship between a directory tree in the local computer and the
+corresponding directory tree in the remote computer.
+
 
 
 The top-level script should be something like this:
