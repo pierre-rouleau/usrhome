@@ -5,7 +5,7 @@ Purpose of the USRHOME/bin/sub-ssh4 - Base SSH scripts
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-09-27 10:35:30, by Pierre Rouleau.
+:Modified: 2024-09-27 17:16:27 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -166,6 +166,22 @@ scp4-to-TARGET
 The ``scp4-to-TARGET`` commands copy a local file to the remote
 computer using scp.  The various ``USRHOME_SSH4__`` environment variables (see
 above) identify the remote target.
+
+This script supports the following two optional environment variables which
+might help when a tool like `Dired`_ is used to copy several files in one
+shot.  For example copying the files from a local directory tree to a
+directory tree located on a remote computer in the same relative positions in
+the trees.
+
+The extra optional environment variables are:
+
+======================= ================================================
+Variable Name           Purpose
+======================= ================================================
+USRHOME_SSH4__LOC_DIR   Reference directory on local computer. Defaults to '.'
+USRHOME_SSH4__REM_DIR   Equivalent directory on remote computer
+======================= ================================================
+
 
 The top-level script should be something like this:
 
