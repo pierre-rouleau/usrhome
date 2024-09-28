@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-07-30 10:45:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-28 16:47:45 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -425,38 +425,44 @@ fi;\
 
 usrhome-select-bash-prompt()
 {
-    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-        if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
-            model="$USRHOME_PROMPT_MODEL_OVERRIDE"
-        else
-            model="$USRHOME_PROMPT_MODEL"
+    if [ "$TERM" = "dumb" ]; then
+        # To support Emacs Tramp (which sets TERM to "dumb", use a very simple prompt.
+        PS1='$ '
+        PROMPT='$ '
+    else
+        if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+            if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
+                model="$USRHOME_PROMPT_MODEL_OVERRIDE"
+            else
+                model="$USRHOME_PROMPT_MODEL"
+            fi
+            case "$model" in
+                0 )
+                # No prompt identified by USRHOME
+                # It can be set by "$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
+                # which could be the original users ~/.bashrc file.
+                # If that is not set, the default bash prompt is used.
+                ;;
+
+                1)
+                    PS1=${USRHOME_BASH_PROMPT1}
+                    export PS1
+                    ;;
+
+                3)
+                    PS1=${USRHOME_BASH_PROMPT3}
+                    # shellcheck disable=SC2090
+                    export PS1
+                    ;;
+
+                2 | *)
+                    # default (also model 2).  Activates that explicitly.
+                    PS1=${USRHOME_BASH_PROMPT2}
+                    # shellcheck disable=SC2090
+                    export PS1
+                    ;;
+            esac
         fi
-        case "$model" in
-            0 )
-            # No prompt identified by USRHOME
-            # It can be set by "$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
-            # which could be the original users ~/.bashrc file.
-            # If that is not set, the default bash prompt is used.
-            ;;
-
-            1)
-                PS1=${USRHOME_BASH_PROMPT1}
-                export PS1
-                ;;
-
-            3)
-                PS1=${USRHOME_BASH_PROMPT3}
-                # shellcheck disable=SC2090
-                export PS1
-                ;;
-
-            2 | *)
-                # default (also model 2).  Activates that explicitly.
-                PS1=${USRHOME_BASH_PROMPT2}
-                # shellcheck disable=SC2090
-                export PS1
-                ;;
-        esac
     fi
 }
 
