@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-06 10:07:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-28 18:22:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -264,7 +264,7 @@ if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
             fi
             dir_count=$(( dir_count + 1 ))
         done < "${config_filepath}"
-        if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
+        if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
             printf -- "\
 . Setting INFOPATH from ~/.infopath.txt with %d directories.
 " "${dir_count}"
