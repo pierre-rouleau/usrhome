@@ -3,7 +3,7 @@
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-06 19:15:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-28 18:16:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,7 +41,9 @@ if ! echo "$PATH" | grep -q "$USRHOME_DIR"; then
     # If a ~/bin exists it may override the URSHOME/bin files.
     if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
         if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-            printf -- "- Adding usrhome support.\n"
+            if [ ! "$TERM" = "dumb" ]; then
+                printf -- "- Adding usrhome support.\n"
+            fi
         fi
     fi
 
