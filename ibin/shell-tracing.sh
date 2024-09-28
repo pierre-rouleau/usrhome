@@ -3,7 +3,7 @@
 # Purpose   : Define shell tracing functions.
 # Created   : Saturday, April 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 12:12:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-28 18:03:18 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -47,12 +47,16 @@ usrhome_trace_in()
     #                Something like:  ~/.zshenv   --> \$USRHOME_DIR/dot/zshenv.zsh
     #                            or:  \$USRHOME_DIR/ibin/envfor-usrhome
 
-    # Check if tracing is allow, return right away if not.
+    # Check if tracing is allowed, return right away if not.
     if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
         if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
             return
         fi
         if [ "$USRHOME_TRACE_SHELL_CONFIG" = "0" ]; then
+            return
+        fi
+        # Under Tramp (which sets TERM to 'dumb', prompt must be very simple, don't print anything.
+        if [ "$TERM" = "dumb" ]; then
             return
         fi
 
@@ -87,6 +91,10 @@ usrhome_trace_out()
             return
         fi
         if [ "$USRHOME_TRACE_SHELL_CONFIG" = "0" ]; then
+            return
+        fi
+        # Under Tramp (which sets TERM to 'dumb', prompt must be very simple, don't print anything.
+        if [ "$TERM" = "dumb" ]; then
             return
         fi
 
