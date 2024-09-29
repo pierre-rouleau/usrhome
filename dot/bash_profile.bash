@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 12:16:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 17:23:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -61,6 +61,8 @@
 #
 # 0 - Check if shell is interactive
 # ---------------------------------
+# Note: it is used inside usrhome_printf()
+
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
@@ -103,14 +105,14 @@ if [ -e "$usrhome_config" ]; then
     # shellcheck disable=SC1090
     . "$usrhome_config"
 else
-    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-        printf "***USRHOME ERROR!!*********************************************\n"
-        printf "Cannot find the user's configuration file!\n"
-        printf " Expected file: %s\n" "$usrhome_config"
-        printf " Please write it, use the template example as basis.\n"
-        printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
-        printf "***************************************************************\n"
-    fi
+    usrhome_printf "\
+***USRHOME ERROR!!*********************************************
+Cannot find the user's configuration file!
+ Expected file: %s
+ Please write it, use the template example as basis.
+ The template is: %s
+***************************************************************
+" "$usrhome_config" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
 fi
 unset usrhome_config
 
