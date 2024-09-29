@@ -3,7 +3,7 @@
 # Purpose   : Force use of extra command line options for cc.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 14:47:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 09:12:29 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -43,7 +43,7 @@
 
 print_usage()
 {
-    printf -- "
+    usrhome_printf "
 envfor-cc-options -- Add extra compiler options to cc invocations.
 
  Usage:  use-cc-options OPTION [OPTION...]
@@ -59,7 +59,7 @@ envfor-cc-options -- Add extra compiler options to cc invocations.
 # validate arguments
 
 if [ -z "$1" ]; then
-    printf -- "*** use-cc-options ERROR: missing arguments.\n"
+    usrhome_printf "*** use-cc-options ERROR: missing arguments.\n"
     print_usage
     return 1
 fi
@@ -76,7 +76,7 @@ if [ -z "$USRHOME_CC_OPTIONS" ]; then
     USRHOME_CC_PGM=$(which cc)
     export USRHOME_CC_PGM
     PATH="$USRHOME_DIR/bin/augmented":"$PATH"
-    printf -- ". Activated %s in PATH for this shell!
+    usrhome_printf ". Activated %s in PATH for this shell!
 " "$USRHOME_DIR/bin/augmented"
 fi
 

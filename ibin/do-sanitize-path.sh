@@ -3,7 +3,7 @@
 # Purpose   : Sanitize current shell PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:52:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 08:55:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -46,15 +46,17 @@ fi
 
 sanitized_path_entries="$(printf "%s\n" "$sanitized_path" | tr ':' '\n' | wc -l | xargs)"
 if [ "$path_entries" != "$sanitized_path_entries" ]; then
-    echo "WARNING: USRHOME has sanitized your PATH!"
-    echo "Original PATH: $PATH"
-    if [ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]; then
-        printf "%s\n" "         It had $path_entries directories, it now has $sanitized_path_entries."
-        echo " The original PATH was:"
-        showpath -n
-    else
-        echo "Set USRHOME_TRACE_SHELL_CONFIG to 1 in to see more info."
-        echo "- Edit: \$USRHOME_DIR_USRCFG/setfor-all-config.sh"
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
+        echo "WARNING: USRHOME has sanitized your PATH!"
+        echo "Original PATH: $PATH"
+        if [ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]; then
+            printf "%s\n" "         It had $path_entries directories, it now has $sanitized_path_entries."
+            echo " The original PATH was:"
+            showpath -n
+        else
+            echo "Set USRHOME_TRACE_SHELL_CONFIG to 1 in to see more info."
+            echo "- Edit: \$USRHOME_DIR_USRCFG/setfor-all-config.sh"
+        fi
     fi
 fi
 export PATH="$sanitized_path"

@@ -3,7 +3,7 @@
 # Purpose   : Activate extra Git support.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 15:13:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 08:59:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -33,14 +33,14 @@
 # shellcheck disable=SC3044 # complete is not known in sh or zsh; it's Bash specific
 case "$USRHOME_SHELL" in
     bash)
-        printf -- ".  git extra command completion activated.\n"
+        usrhome_printf ".  git extra command completion activated.\n"
         complete -W "graph tree name stat patch short" git-log
         complete -W "remote local local-tracking local-non-tracking remote-tracking" git-lbr
         complete -W "\`git branch | cut -c 3-\`" git-sw
         ;;
 
     zsh)
-        printf -- "*** envfor-git-extra WARNING: no support for %s shell\n" "$USRHOME_SHELL"
+        usrhome_printf "*** envfor-git-extra WARNING: no support for %s shell\n" "$USRHOME_SHELL"
         case "$(uname)" in
             Darwin)
                 if [ -f "${HOMEBREW_PREFIX}/opt/git-extras/share/git-extras/git-extras-completion.zsh" ]; then
@@ -50,7 +50,7 @@ case "$USRHOME_SHELL" in
         esac
     ;;
     *)
-        printf -- "*** envfor-git-extra WARNING: no support for %s shell\n" "$USRHOME_SHELL"
+        usrhome_printf "*** envfor-git-extra WARNING: no support for %s shell\n" "$USRHOME_SHELL"
         ;;
 esac
 

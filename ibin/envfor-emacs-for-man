@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 13:10:30 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 09:29:54 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -52,7 +52,7 @@ print_man_usage()
 {
     # arg 1: string: "use-emacs-for-man" | "man"
 
-    printf "\
+    usrhome_printf "\
  Usage: %s [-g | -G | -s |-S | -t | -T] TOPIC
   -g : emacs started in graphics mode
   -G : same as -g, but start emacs faster with less initialization (using -Q)
@@ -67,7 +67,7 @@ print_man_usage()
   override the option passed to use-emacs-for-man.\n" "$1"
 
     if [ "$1" = "man" ]; then
-        printf "\
+        usrhome_printf "\
 
   ATTENTION!!
 
@@ -85,12 +85,12 @@ print_man_usage()
      man -man -a -w cc
 "
     fi
-    printf "\n"
+    usrhome_printf "\n"
 }
 
 print_error()
 {
-    >&2 printf "\
+    >&2 usrhome_printf "\
 ***ERROR***
  %s
 ***********
@@ -117,21 +117,19 @@ if [ -n "$1" ]; then
             # modify it to fit the user's needs better.
             # later.  Activate the mode only if the user accepts.
             if ! command -v ge > /dev/null 2>&1; then
-                if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                    printf "ATTENTION! The 'ge' script is not in your PATH!\n"
-                    printf " USRHOME will use %s/template/bin/ge\n" "$USRHOME_DIR"
-                    printf " You may want to copy it in a directory in your PATH\n"
-                    printf " and possibly modify it to better suit you.\n\n"
-                fi
+                usrhome_printf "ATTENTION! The 'ge' script is not in your PATH!\n"
+                usrhome_printf " USRHOME will use %s/template/bin/ge\n" "$USRHOME_DIR"
+                usrhome_printf " You may want to copy it in a directory in your PATH\n"
+                usrhome_printf " and possibly modify it to better suit you.\n\n"
             fi
             USRHOME_MAN_MODE="$1"
             if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
                 case $1 in
                     -g)
-                        printf "%s Emacs in graphics mode as man reader.\n" "$prefix_msg"
+                        usrhome_printf "%s Emacs in graphics mode as man reader.\n" "$prefix_msg"
                         ;;
                     -G)
-                        printf "%s Emacs quickly in graphics mode as man reader.\n" "$prefix_msg"
+                        usrhome_printf "%s Emacs quickly in graphics mode as man reader.\n" "$prefix_msg"
                         ;;
                 esac
             fi
@@ -140,50 +138,36 @@ if [ -n "$1" ]; then
             # Requesting to use Emacs client/server mechanism.
             # Check if the Emacs daemon is running.  If it is not, start it.
             if ! emacsclient -a false -e 't' > /dev/null 2>&1; then
-                if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                    printf -- "ATTENTION: Emacs Daemon was not running, starting it!\n"
-                fi
+                usrhome_printf "ATTENTION: Emacs Daemon was not running, starting it!\n"
                 emacs --daemon
             fi
             USRHOME_MAN_MODE="$1"
-            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                printf "%s Emacs server as man reader.\n" "$prefix_msg"
-            fi
+            usrhome_printf "%s Emacs server as man reader.\n" "$prefix_msg"
             ;;
         -t)
             USRHOME_MAN_MODE='-t'
-            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                printf "%s Emacs in text mode as man reader.\n" "$prefix_msg"
-            fi
+            usrhome_printf "%s Emacs in text mode as man reader.\n" "$prefix_msg"
             ;;
 
         -T)
             USRHOME_MAN_MODE='-T'
-            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                printf "%s Emacs quickly in text mode as man reader.\n" "$prefix_msg"
-            fi
+            usrhome_printf "%s Emacs quickly in text mode as man reader.\n" "$prefix_msg"
             ;;
 
         -h | --help )
             unset prefix_msg
-            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                print_man_usage "use-emacs-for-man"
-            fi
+            print_man_usage "use-emacs-for-man"
             return 0
             ;;
 
         *)
-            if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                print_error "use-emacs-for-man invalid option: $1"
-            fi
+            print_error "use-emacs-for-man invalid option: $1"
             unset prefix_msg
             return 2
     esac
 else
     USRHOME_MAN_MODE='-t'
-    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-        printf -- ". Using Emacs in text mode as man reader.\n"
-    fi
+    usrhome_printf ". Using Emacs in text mode as man reader.\n"
 fi
 unset prefix_msg
 
@@ -235,7 +219,7 @@ man()
             ;;
 
         -man)
-            printf -- "Using man executable\n"
+            usrhome_printf "Using man executable\n"
             ;;
 
         *)
@@ -284,7 +268,7 @@ man()
                         ;;
                 esac
                 if [ "$found" = "nil" ]; then
-                    printf "ERROR: No man page found for %s\n" "$topic" >&2
+                    usrhome_printf "ERROR: No man page found for %s\n" "$topic" >&2
                     return 4
                 fi
             fi

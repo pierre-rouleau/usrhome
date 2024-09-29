@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 13:19:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 09:27:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -74,9 +74,7 @@ if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
 /usr/local/opt/m4/bin
                 PATH=${usrhome_homebrew_path}:$PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
-                    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                        printf -- "- Using Homebrew tools from 'usr/local and /usr/local/Cellar\n"
-                    fi
+                    usrhome_printf "- Using Homebrew tools from 'usr/local and /usr/local/Cellar\n"
                 fi
                 # Extend MANPATH
                 #   with new man directories that may be
@@ -92,9 +90,7 @@ if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
                     export INFOPATH="/usr/local/share/info:$INFOPATH"
                 fi
             else
-                if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                    printf -- "ERROR: Homebrew requested but not found in /usr/local/Cellar\n"
-                fi
+                usrhome_printf "ERROR: Homebrew requested but not found in /usr/local/Cellar\n"
             fi
         ;;
 
@@ -112,9 +108,7 @@ if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
 /opt/homebrew/opt/m4/bin
                 PATH=${usrhome_homebrew_path}:$PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
-                    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                        printf -- "- Using Homebrew tools from /opt/homebrew.\n"
-                    fi
+                    usrhome_printf "- Using Homebrew tools from /opt/homebrew.\n"
                 fi
                 # Extend MANPATH
                 #   with new man directories that may be
@@ -130,9 +124,7 @@ if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
                     export INFOPATH="/opt/homebrew/share/info:$INFOPATH"
                 fi
             else
-                if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-                    printf -- "ERROR: Homebrew requested but not found in /opt/homebrew\n"
-                fi
+                usrhome_printf "ERROR: Homebrew requested but not found in /opt/homebrew\n"
             fi
             ;;
     esac

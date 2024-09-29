@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-27 18:29:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 08:29:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,6 +55,18 @@ alias usrhome-env='$USRHOME_DIR/bin/usrhome-env'
 # ------------------
 
 alias \?='printf "%s\n" $?'
+
+usrhome_printf()
+{
+    # Print text only when allowed.
+    # All argument passed to printf.
+
+    #printf -- "... usrhome_printf:\n"
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
+        printf -- "$@"
+    fi
+}
+
 
 get_shell_path()
 {
