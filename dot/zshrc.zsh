@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-09-28 16:45:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 10:07:36 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -90,7 +90,7 @@ else
             if [[ -d /usr/share/zsh/help ]]; then
                 export HELPDIR=/usr/share/zsh/help
             else
-                printf -- "\
+                usrhome_printf "\
 WARNING! The zsh help files expected in /usr/share/zsh/help
          are not present!
          It might be a problem with the Linux distribution of zsh.
@@ -116,7 +116,7 @@ if [[ -n "$HELPDIR" ]]; then
         # 3 - Set an help alias
         alias help=run-help
     else
-        printf -- "\
+        usrhome_printf "\
 WARNING! The value of HELPDIR variable is invalid!
          It should identify the location of zsh help directory,
          but the directory it identifies does not exist!
@@ -376,12 +376,12 @@ user_zshrc="$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 if [ -e "$user_zshrc" ]; then
     . "$user_zshrc"
 else
-    printf "***USRHOME ERROR!!*********************************************\n"
-    printf "Cannot find the user's Z shell configuration file!\n"
-    printf " Expected file: %s\n" "$user_zshrc"
-    printf " Please write it, use the template example as basis.\n"
-    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/do-user-zshrc.zsh"
-    printf "***************************************************************\n"
+    usrhome_printf "***USRHOME ERROR!!*********************************************\n"
+    usrhome_printf "Cannot find the user's Z shell configuration file!\n"
+    usrhome_printf " Expected file: %s\n" "$user_zshrc"
+    usrhome_printf " Please write it, use the template example as basis.\n"
+    usrhome_printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/do-user-zshrc.zsh"
+    usrhome_printf "***************************************************************\n"
 fi
 unset user_zshrc
 # ----------------------------------------------------------------------------
