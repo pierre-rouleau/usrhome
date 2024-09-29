@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-09-28 16:47:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 17:30:58 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -100,14 +100,14 @@ if [ -e "$usrhome_config" ]; then
     # shellcheck disable=SC1090
     . "$usrhome_config"
 else
-    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-        printf "***USRHOME ERROR!!*********************************************\n"
-        printf "Cannot find the user's configuration file!\n"
-        printf " Expected file: %s\n" "$usrhome_config"
-        printf " Please write it, use the template example as basis.\n"
-        printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
-        printf "***************************************************************\n"
-    fi
+    usrhome_printf "\
+***USRHOME ERROR!!*********************************************
+Cannot find the user's configuration file!
+ Expected file: %s
+ Please write it, use the template example as basis.
+ The template is: %s
+***************************************************************
+" "$usrhome_config" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
 fi
 unset usrhome_config
 
@@ -235,9 +235,9 @@ else
             current_time="$(gdate +%s%3N)"
         elif [ "$timer_fct" = "date" ]; then
             current_time="$(date +%s%3N)"
-        elif [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-            printf -- "BUG detected in time management in %s\n" "$USRHOME_DIR/dot/bashrc.bash"
-            printf -- " Please report it.\n"
+        else
+            usrhome_printf "BUG detected in time management in %s\n" "$USRHOME_DIR/dot/bashrc.bash"
+            usrhome_printf " Please report it in USRHOME Github project.\n"
         fi
     }
 
