@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-02 13:15:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 16:56:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -76,27 +76,29 @@ else
         usrhome_rustv_fpathname="$USRHOME_DIR_PUB/rust/src/version"
         if [[ -f "$usrhome_rustv_fpathname" ]]; then
             export RUST_SRC_PATH="$USRHOME_DIR_PUB/rust/src"
-            printf "   Rust ver. %s source is available.\n" "$(cat "$usrhome_rustv_fpathname")"
+            usrhome_printf "   Rust ver. %s source is available.\n" "$(cat "$usrhome_rustv_fpathname")"
         else
-            echo "**** CAUTION *****"
-            echo "Rust source is NOT installed!"
-            echo " Expecting: $usrhome_rustv_fpathname"
-            echo " See $USRHOME_DIR_USRCFG/ibin/envfor-rust"
-            echo " Get it with: cdpub ; git clone https://github.com/rust-lang/rust.git"
-            echo "******************"
+            usrhome_printf "\
+**** CAUTION *****
+Rust source is NOT installed!
+ Expecting: %s
+ See %s/ibin/envfor-rust
+ Get it with: cdpub ; git clone https://github.com/rust-lang/rust.git
+******************
+" "$usrhome_rustv_fpathname" "$USRHOME_DIR_USRCFG"
         fi
         # cleanup
         unset usrhome_rustv
         unset usrhome_rustv_fpathname
     else
-        printf ". WARNING: Requesting Rust, but it is not installed!\n"
+        usrhome_printf ". WARNING: Requesting Rust, but it is not installed!\n"
     fi
 fi
 
 # Create the manr alias if rustup is available.
 if command -v rustup > /dev/null 2>&1; then
     if command -v manr > /dev/null 2>&1; then
-        printf ".  manr is already defined.\n"
+        usrhome_printf ".  manr is already defined.\n"
     else
         #  The Rust man pages are not available when Rust is installed.
         #  However the man pages are available via the ``rustup man`` command.

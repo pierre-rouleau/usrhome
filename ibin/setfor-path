@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 15:24:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-29 16:59:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,15 +41,13 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             # Arg1: optional: "disputed"
             echo ""
             if [ "$1" = "disputed" ]; then
-                echo "Potential (disputed) security issue detected by usrhome:"
-                echo " - Possibly compromised version ${xz_ver} of xz installed!"
+                usrhome_printf "Potential (disputed) security issue detected by usrhome:\n%s\n" \
+                               " - Possibly compromised version ${xz_ver} of xz installed!"
             else
-                echo "SECURITY ISSUE DETECTED By USRHOME:"
-                echo " - Compromised version ${xz_ver} of xz installed!"
+                usrhome_printf "SECURITY ISSUE DETECTED By USRHOME:\n%s\n" \
+                               " - Compromised version ${xz_ver} of xz installed!"
             fi
-            echo " - in: ${xz_path}"
-            echo "   - See: "
-            echo "     - https://repology.org/project/xz/cves"
+            usrhome_printf " - in: %s\n    See: https://repology.org/project/xz/cves\n" "${xz_path}"
         }
 
         usrhome_security_check()
@@ -61,21 +59,19 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             case $xz_ver in
                 '5.6.0' | '5.6.1' )
                     usrhome_xz_vulnerability
-                    echo "     - https://nvd.nist.gov/vuln/detail/CVE-2024-3094"
-                    echo "     - https://www.wired.com/story/jia-tan-xz-backdoor/"
-                    echo "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor"
-                    echo ""
+                    usrhome_printf "     - https://nvd.nist.gov/vuln/detail/CVE-2024-3094\n"
+                    usrhome_printf "     - https://www.wired.com/story/jia-tan-xz-backdoor/\n"
+                    usrhome_printf "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor\n\n"
                     case "$(uname)" in
                         'Darwin')
-                            echo "Run: 'brew update; brew upgrade' AS SOON AS POSSIBLE to downgrade xz!"
-                            echo ""
+                            usrhome_printf "Run: 'brew update; brew upgrade' AS SOON AS POSSIBLE to downgrade xz!\n\n"
                             ;;
                     esac
                     ;;
 
                 '5.2.5' )
                     usrhome_xz_vulnerability "disputed"
-                    echo "     - https://nvd.nist.gov/vuln/detail/CVE-2020-22916"
+                    usrhome_printf "     - https://nvd.nist.gov/vuln/detail/CVE-2020-22916\n"
                     ;;
 
             esac
