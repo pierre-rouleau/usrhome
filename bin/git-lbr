@@ -4,7 +4,7 @@
 # Purpose   : List Git Branches.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 14:55:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-01 08:28:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,7 +32,7 @@ git-lbr:  List Git branch information.
  Usage:   git-lbr BRANCH-TYPE
           git-lbr --help|-h
 
-   BRANCH-TYPE := remote|local|local-tracking|local-non-tracking||remote-tracking
+   BRANCH-TYPE := remote|local|local-tracking|local-non-tracking|remote-tracking
 
 "
 }
