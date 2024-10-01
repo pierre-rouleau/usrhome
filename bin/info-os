@@ -1,0 +1,52 @@
+#!/bin/sh
+# SH FILE: info-os
+#
+# Purpose   : Print information about current Operating System.
+# Created   : Tuesday, October  1 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-01 09:55:49 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print information about current operating system
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - uname,
+#  For linux it checks availability of  hostnamectl, lsb_release and the
+#  presence of /etc/os-release and use the first found in that order.
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+
+case "$(uname)" in
+    Darwin)
+        uname -a
+        ;;
+
+    Linux)
+        uname -a
+        if which hostnamectl  > /dev/null 2>&1; then
+            hostnamectl
+        elif which lsb_release    > /dev/null 2>&1; then
+            lsb-release -a
+        elif [ -f /etc/os-release ]; then
+            cat /etc/os-release
+        fi
+        ;;
+esac
+
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:

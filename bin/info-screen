@@ -4,7 +4,7 @@
 # Purpose   : Print information about GNU screen.
 # Created   : Monday, July 15 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-15 14:52:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-01 09:44:54 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -31,3 +31,6 @@ else
 fi
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
