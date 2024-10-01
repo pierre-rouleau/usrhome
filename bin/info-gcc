@@ -4,12 +4,12 @@
 # Purpose   : Print information about GCC tooling.
 # Created   : Wednesday, July 24 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-24 15:41:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-09-30 21:20:24 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#  Preliminary version of a tool to help  investigate GCC built systems.
+#  Preliminary version of a tool to help investigate GCC built systems.
 
 
 # ----------------------------------------------------------------------------
@@ -70,3 +70,6 @@ the programs.
 
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
