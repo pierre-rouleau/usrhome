@@ -5,7 +5,7 @@ Purpose of the USRHOME/bin/sub-ssh4 - Base SSH scripts
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-10-04 11:57:13 EDT, updated by Pierre Rouleau.
+:Modified: 2024-10-04 13:51:12 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -237,8 +237,8 @@ The top-level script should be something like this:
 .. _Dired:                                   https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html#Dired
 .. _PEL Dired PDF:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-dired.pdf
 .. _${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped: https://github.com/pierre-rouleau/usrhome/blob/main/bin/sub-ssh4/ssh4-scoped
-.. _${USRHOME_DIR}/dot/bashrc.bash:          https://github.com/pierre-rouleau/usrhome/blob/main/dot/bashrc.bash
-.. _${USRHOME_DIR}/dot/zshrc.zsh:            https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogin.zsh
+.. _${USRHOME_DIR}/dot/bashrc.bash:          https://github.com/pierre-rouleau/usrhome/blob/main/dot/bashrc.bash#L537
+.. _${USRHOME_DIR}/dot/zshrc.zsh:            https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshrc.zsh#L384
 
 
 
