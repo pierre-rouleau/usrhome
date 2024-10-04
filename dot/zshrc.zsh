@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-10-04 11:45:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-04 12:17:00 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -369,7 +369,7 @@ set-title()
 # Topic: SSH
 # ----------
 
-# ssh4-remote performs the ssh connection and deals with the terminal title.
+# ssh4__remote performs the ssh connection and deals with the terminal title.
 #
 # The caller must export the following environment variables:
 #   ----------------------- ------------------------------------------------
@@ -381,7 +381,7 @@ set-title()
 #   USRHOME_SSH4__USERNAME  The user name on that target system
 #   ----------------------- ------------------------------------------------
 #
-ssh4-remote()
+ssh4__remote()
 {
     # Arg1: title
     old_title="$(set | grep title_text | sed 's/title_text=//g')"

@@ -96,13 +96,13 @@ script.  Here's an example of the required function code:
         export USRHOME_SSH4__USERNAME="admin"
         export USRHOME_SSH4__IPV4ADDR="192.168.0.100"
 
-        ssh4-remote "my-server"
+        ssh4__remote "my-server"
     }
 
 The code first exports the required environment variables that will be used
 the `${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped`_ script.
 
-Then it calls the ``ssh4-remote()`` shell function defined by the
+Then it calls the ``ssh4__remote()`` shell function defined by the
 `${USRHOME_DIR}/dot/bashrc.bash`_ or the `${USRHOME_DIR}/dot/zshrc.zsh`_ shell
 configuration files, passing the title for the terminal window.
 Setting the terminal title  is not absolutely necessary but helps
