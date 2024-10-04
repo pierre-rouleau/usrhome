@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-09-29 10:07:36 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-04 11:45:48 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -362,7 +362,35 @@ set-title()
                 echo "       You may also provide a Pull Request."
                 return 1
         esac
-fi}
+    fi
+}
+
+
+# Topic: SSH
+# ----------
+
+# ssh4-remote performs the ssh connection and deals with the terminal title.
+#
+# The caller must export the following environment variables:
+#   ----------------------- ------------------------------------------------
+#   Variable Name           Purpose
+#   ----------------------- ------------------------------------------------
+#   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
+#   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
+#   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__USERNAME  The user name on that target system
+#   ----------------------- ------------------------------------------------
+#
+ssh4-remote()
+{
+    # Arg1: title
+    old_title="$(set | grep title_text | sed 's/title_text=//g')"
+    set-title "$1"
+    shift
+    "${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped" "$@"
+    # re-establish original shell window title.
+    set-title "$old_title"
+}
 
 
 # ----------------------------------------------------------------------------

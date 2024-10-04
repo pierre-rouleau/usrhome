@@ -5,7 +5,7 @@ Purpose of the USRHOME/bin/sub-ssh4 - Base SSH scripts
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-09-27 17:19:43 EDT, updated by Pierre Rouleau.
+:Modified: 2024-10-04 11:57:13 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -81,7 +81,7 @@ ssh4-TARGET commands
 The ``ssh4-`` commands establish a SSH connection to the target specified by
 the various ``USRHOME_SSH4__`` environment variables (see above).
 
-The easiest way to omplement these are shell level functions stored inside a
+The easiest way to implement these are shell level functions stored inside a
 script that is sourced by the system.  A good location for such a script is
 inside the ``$USRCFG/setfor-all-config.sh`` or a project specific sourced
 script.  Here's an example of the required function code:
@@ -96,12 +96,16 @@ script.  Here's an example of the required function code:
         export USRHOME_SSH4__USERNAME="admin"
         export USRHOME_SSH4__IPV4ADDR="192.168.0.100"
 
-        set-title "my-server"
-        "${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped" "$@"
-        set-title "my-server (192.168.0.100) SHELL"
+        ssh4-remote "my-server"
     }
 
-Setting the terminal title is not absolutely necessary but helps
+The code first exports the required environment variables that will be used
+the `${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped`_ script.
+
+Then it calls the ``ssh4-remote()`` shell function defined by the
+`${USRHOME_DIR}/dot/bashrc.bash`_ or the `${USRHOME_DIR}/dot/zshrc.zsh`_ shell
+configuration files, passing the title for the terminal window.
+Setting the terminal title  is not absolutely necessary but helps
 when you use several terminal windows.
 
 
@@ -230,8 +234,11 @@ The top-level script should be something like this:
 
 
 .. _Emacs Dired:
-.. _Dired:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html#Dired
-.. _PEL Dired PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-dired.pdf
+.. _Dired:                                   https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html#Dired
+.. _PEL Dired PDF:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-dired.pdf
+.. _${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped: https://github.com/pierre-rouleau/usrhome/blob/main/bin/sub-ssh4/ssh4-scoped
+.. _${USRHOME_DIR}/dot/bashrc.bash:          https://github.com/pierre-rouleau/usrhome/blob/main/dot/bashrc.bash
+.. _${USRHOME_DIR}/dot/zshrc.zsh:            https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogin.zsh
 
 
 

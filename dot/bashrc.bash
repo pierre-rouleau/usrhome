@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-09-29 17:30:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-04 11:45:46 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -518,6 +518,33 @@ set-title()
 # Use a empty default Title Text.
 # Inside a GNU screen we'll see the GNU screen session title if there's one.
 set-title ""
+
+# Topic: SSH
+# ----------
+
+# ssh4-remote performs the ssh connection and deals with the terminal title
+#
+# The caller must export the following environment variables:
+#   ----------------------- ------------------------------------------------
+#   Variable Name           Purpose
+#   ----------------------- ------------------------------------------------
+#   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
+#   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
+#   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__USERNAME  The user name on that target system
+#   ----------------------- ------------------------------------------------
+#
+ssh4-remote()
+{
+    # Arg1: title
+    old_title="$(set | grep title_text | sed 's/title_text=//g')"
+    set-title "$1"
+    shift
+    "${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped" "$@"
+    # re-establish original shell window title.
+    set-title "$old_title"
+}
+
 
 # ----------------------------------------------------------------------------
 # Topic: emacs-eat integration
