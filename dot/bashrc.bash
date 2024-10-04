@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-10-04 12:16:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-04 14:02:54 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -537,7 +537,7 @@ set-title ""
 ssh4__remote()
 {
     # Arg1: title
-    old_title="$(set | grep title_text | sed 's/title_text=//g')"
+    old_title="$(set | grep "^title_text" | sed 's/title_text=//g')"
     set-title "$1"
     shift
     "${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped" "$@"
