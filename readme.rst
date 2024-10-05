@@ -832,6 +832,7 @@ USRHOME Command Name               Description
                                    The command accepts only 1 parameter, so if you want to set the
                                    title with embedded spaces just quote the entire title.
                                    With no argument: removes the title.
+``restore-title``                  Restore title that might have been affected by error.
 ================================== ================================================================
 
 Directory Navigation
