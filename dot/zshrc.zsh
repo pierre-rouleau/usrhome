@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-10-04 14:04:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-04 21:49:15 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -320,78 +320,8 @@ fi
 
 # Topic: Title
 # ------------
-
-
-set-title()
-{
-    # Arguments: A list of words to use as title.
-    #  - Accepts no argument: clears the title text section..
-    #  - store into title_text as one shell 'word' string.
-    title_text="$*"
-
-    # Credit:
-    # - Alvin Alexander for the macOS echo trick.
-    #   - https://alvinalexander.com/blog/post/mac-os-x/change-title-bar-of-mac-os-x-terminal-window/
-    if [ -z "$INSIDE_EMACS" ]; then
-        os_type=$(uname)
-        case $os_type in
-            'Darwin' )
-                # Supports all shells with a simple echo.
-                # On macOS, the escape sequences are passed properly by echo.
-                # shellcheck disable=SC2028
-                echo "\033]0;${title_text}\007\c"
-                ;;
-
-            'Linux')
-                # [:todo 2024-05-04, by Pierre Rouleau: Complete this. Currently under testing. ]
-
-                DISABLE_AUTO_TITLE="true"
-
-                # Build the extra sequence that controls the title.
-                if [ -n "$SSHPASS" ]; then
-                    title_shell_depth="L${SHLVL}+"
-                else
-                    title_shell_depth="L${SHLVL}"
-                fi
-                echo -n -e "\e]2;${title_text} (${USER}@$(hostname -s), ${title_shell_depth}, $(pwd))\a"
-                ;;
-
-            *)
-                echo "ERROR: The $os_type Operating System is not yet supported!"
-                echo "       Please report the error on GitHub USRHOME website."
-                echo "       You may also provide a Pull Request."
-                return 1
-        esac
-    fi
-}
-
-
-# Topic: SSH
-# ----------
-
-# ssh4__remote performs the ssh connection and deals with the terminal title.
-#
-# The caller must export the following environment variables:
-#   ----------------------- ------------------------------------------------
-#   Variable Name           Purpose
-#   ----------------------- ------------------------------------------------
-#   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
-#   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
-#   USRHOME_SSH4__HOSTNAME  The host name of the target system
-#   USRHOME_SSH4__USERNAME  The user name on that target system
-#   ----------------------- ------------------------------------------------
-#
-ssh4__remote()
-{
-    # Arg1: title
-    old_title="$(set | grep "^title_text" | sed 's/title_text=//g')"
-    set-title "$1"
-    shift
-    "${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped" "$@"
-    # re-establish original shell window title.
-    set-title "$old_title"
-}
-
+# Define set_title() and ssh4__remote()
+. "$USRHOME_DIR/ibin/setfor-zsh-common"
 
 # ----------------------------------------------------------------------------
 # Source User Extra zshrc if it exists

@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_logout Configuration File - Sourced in interactive logout shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 12:29:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-04 21:48:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -88,8 +88,6 @@ usrhome_trace_in "\~/.bash_logout   --> \$USRHOME_DIR/dot/bash_logout.bash"
 
 case $(uname) in
     'Darwin' )
-    # When leaving Bash, clear Bash related icon. Rest title.
-        set-title ""
         ;;
 
     'Linux' )

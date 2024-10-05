@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-10-04 14:02:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-04 21:48:59 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -318,10 +318,10 @@ PROMPT_COMMAND="usrhome_stop_timer"
 #
 # Setting Terminal title to TITLE===>:    "\e]2;TITLE\a"
 # - TITLE can include prompt escape sequences shown above
-# - title_text := text taken from set-title arguments,
+# - title_text := text taken from set_title arguments,
 #                 included inside TITLE within the escape sequence selected for the prompt.
 #
-# - The set-title() function set title_text from its arguments ("$*")
+# - The set_title() function set title_text from its arguments ("$*")
 #   and then update the PS1 prompt variable to create a terminal title
 #   that dynamically updates on each command (via the prompt).
 #
@@ -476,75 +476,13 @@ unset ec
 
 # Topic: Title
 # ------------
-
-# Set terminal window title using current prompt when outside Emacs.
-set-title()
-{
-    if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-        # Arguments: A list of words to use as title.
-        #  - Accepts no argument: clears the title text section..
-        #  - store into title_text as one shell 'word' string.
-        title_text="$*"
-
-        # re-build the prompt into PS1
-        usrhome-select-bash-prompt
-
-        # Build the extra sequence that controls the title.
-        if [ -n "$SSHPASS" ]; then
-            title_shell_depth="L${SHLVL}+"
-        else
-            title_shell_depth="L${SHLVL}"
-        fi
-
-        # If inside a GNU screen session, include the GNU screen session title if there' one
-        if [ -n "$STY" ]; then
-            screen_title="$(echo "$STY" | sed 's/^\(ttys\)*[0-9]*\.//g')"
-        else
-            screen_title=
-        fi
-
-        # Set the title by appending the title setting logic to the PS1.
-        title="\[\e]2;${screen_title} - ${title_text} (Bash \v: ${title_shell_depth}: \h:\w)\a\]"
-        if [ -z "$INSIDE_EMACS" ]; then
-            PS1=$PS1${title}
-        fi
-
-        # shellcheck disable=SC2090
-        export PS1
-    fi
-}
+# Define set_title() and ssh4__remote()
+. "$USRHOME_DIR/ibin/setfor-bash-common"
 
 # Activate dynamic tracking title as soon as Bash takes over.
 # Use a empty default Title Text.
 # Inside a GNU screen we'll see the GNU screen session title if there's one.
-set-title ""
-
-# Topic: SSH
-# ----------
-
-# ssh4__remote performs the ssh connection and deals with the terminal title
-#
-# The caller must export the following environment variables:
-#   ----------------------- ------------------------------------------------
-#   Variable Name           Purpose
-#   ----------------------- ------------------------------------------------
-#   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
-#   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
-#   USRHOME_SSH4__HOSTNAME  The host name of the target system
-#   USRHOME_SSH4__USERNAME  The user name on that target system
-#   ----------------------- ------------------------------------------------
-#
-ssh4__remote()
-{
-    # Arg1: title
-    old_title="$(set | grep "^title_text" | sed 's/title_text=//g')"
-    set-title "$1"
-    shift
-    "${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped" "$@"
-    # re-establish original shell window title.
-    set-title "$old_title"
-}
-
+set_title ""
 
 # ----------------------------------------------------------------------------
 # Topic: emacs-eat integration

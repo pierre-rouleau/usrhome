@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 08:29:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-04 22:57:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -197,6 +197,11 @@ shown within single quotes.
     esac
     echo "-----------------------------------"
 }
+
+# Topic: Title
+# ------------
+alias set-title='set_title'
+alias restore-title='set_title $USRHOME_TITLE'
 
 # Topic: Alias: Clear Screen
 # --------------------------
@@ -432,7 +437,7 @@ alias cd-to='source $USRHOME_DIR/ibin/do-cd-to'
 
 # Programming Environment Setup
 # These commands source scripts that setup the environment.
-# Some of them set the terminal's title (using set-title)
+# Some of them set the terminal's title (using set_title)
 alias pel='source $USRHOME_DIR/ibin/envfor-pel'
 alias usrhome='source $USRHOME_DIR/ibin/do-usrhome'
 alias usrcfg='source $USRHOME_DIR/ibin/do-usrcfg'

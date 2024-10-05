@@ -5,7 +5,7 @@ Purpose of the USRHOME/bin/sub-ssh4 - Base SSH scripts
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-10-04 13:51:12 EDT, updated by Pierre Rouleau.
+:Modified: 2024-10-04 23:43:48 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -96,7 +96,7 @@ script.  Here's an example of the required function code:
         export USRHOME_SSH4__USERNAME="admin"
         export USRHOME_SSH4__IPV4ADDR="192.168.0.100"
 
-        ssh4__remote "my-server"
+        ssh4__remote "my-server" "$@"
     }
 
 The code first exports the required environment variables that will be used
@@ -104,9 +104,8 @@ the `${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped`_ script.
 
 Then it calls the ``ssh4__remote()`` shell function defined by the
 `${USRHOME_DIR}/dot/bashrc.bash`_ or the `${USRHOME_DIR}/dot/zshrc.zsh`_ shell
-configuration files, passing the title for the terminal window.
-Setting the terminal title  is not absolutely necessary but helps
-when you use several terminal windows.
+configuration files, passing the title for the terminal window and then
+the arguments specified by the user.
 
 
 scp Commands
