@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-08 10:08:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-08 10:22:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -44,6 +44,16 @@ find-perl: Find and print the name of every Perl file found in directory tree.
 "
 }
 
+# [:todo 2024-10-08, by Pierre Rouleau: Add ability to pass find options such as -x]
+
+# --
+# Check validity of arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
+
 if [ -z "$1" ]; then
     directories="."
 else
@@ -63,6 +73,12 @@ case $(uname) in
         ;;
 esac
 
+# -----------------------------------------------------------------------------
+# Proceed:
+#
+# -x : do not search into other disks
+# stderr redirected to /dev/null to hide warnings trying to access
+# non-accessible directories.
 
 find -L                                         \
      ${find_path_option} "${directories}"       \
@@ -75,7 +91,7 @@ find -L                                         \
      -or -name "*.cgi"                          \
      -or -name "*.psg"                          \
      -or -name "*.psgi"                         \
-     \) -print
+     \) -print 2> /dev/null
 
 # ----------------------------------------------------------------------------
 # Local Variables:

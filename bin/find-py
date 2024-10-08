@@ -4,7 +4,7 @@
 # Purpose   : Find all Python files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-08 10:08:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-08 10:21:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -36,13 +36,23 @@ find-py: Find and print the name of every Python file found in directory tree.
 
   • Print this help information.
 
- Usage: find-py [DIR, ...]
+ Usage: find-py  [DIR, ...]
 
   • Search and print name of Python files found in specified directories.
     - If DIR is not specified, search in the current working directory.
 
 "
 }
+
+# [:todo 2024-10-08, by Pierre Rouleau: Add ability to pass find options such as -x]
+
+# --
+# Check validity of arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
 
 if [ -z "$1" ]; then
     directories="."
@@ -64,12 +74,19 @@ case $(uname) in
 esac
 
 
+# -----------------------------------------------------------------------------
+# Proceed:
+#
+# -x : do not search into other disks
+# stderr redirected to /dev/null to hide warnings trying to access
+# non-accessible directories.
+
 find -L                                    \
      ${find_path_option} "${directories}"  \
      \( -type f -or -type l \)             \
      \(  -name "*.py"                      \
      -or -name "*.pyw"                     \
-     \) -print
+     \) -print 2> /dev/null
 
 # ----------------------------------------------------------------------------
 # Local Variables:
