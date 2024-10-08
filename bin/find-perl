@@ -1,0 +1,83 @@
+#!/bin/sh
+# SH FILE: find-perl
+#
+# Purpose   : Find all Perl files in specified directory tree.
+# Created   : Tuesday, October  8 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-08 10:08:49 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+find-perl: Find and print the name of every Perl file found in directory tree.
+           Search for files with  the following extensions:
+          - .pl, .pm, .plx, .pls, .xs, .t, .pod, .cgi, .psg, .psgi
+
+ Usage: find-perl -h|--help
+
+  • Print this help information.
+
+ Usage: find-perl [DIR, ...]
+
+  • Search and print name of Perl files found in specified directories.
+    - If DIR is not specified, search in the current working directory.
+
+"
+}
+
+if [ -z "$1" ]; then
+    directories="."
+else
+    directories="$@"
+fi
+
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "find-perl ** Error Operating System, %s, is not supported!\n" "$(uname)"
+        exit 1
+        ;;
+esac
+
+
+find -L                                         \
+     ${find_path_option} "${directories}"       \
+     \( -type f -or -type l \)                  \
+     \(  -name "*.p[lm]"                        \
+     -or -name "*.pl[sx]"                       \
+     -or -name "*.xs"                           \
+     -or -name "*.t"                            \
+     -or -name "*.pod"                          \
+     -or -name "*.cgi"                          \
+     -or -name "*.psg"                          \
+     -or -name "*.psgi"                         \
+     \) -print
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:

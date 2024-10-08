@@ -1,0 +1,77 @@
+#!/bin/sh
+# SH FILE: find-py
+#
+# Purpose   : Find all Python files in specified directory tree.
+# Created   : Tuesday, October  8 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-08 10:08:34 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+find-py: Find and print the name of every Python file found in directory tree.
+           Search for files with  the following extensions:
+          - .py, .pyw
+
+ Usage: find-py -h|--help
+
+  • Print this help information.
+
+ Usage: find-py [DIR, ...]
+
+  • Search and print name of Python files found in specified directories.
+    - If DIR is not specified, search in the current working directory.
+
+"
+}
+
+if [ -z "$1" ]; then
+    directories="."
+else
+    directories="$@"
+fi
+
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "find-py ** Error Operating System, %s, is not supported!\n" "$(uname)"
+        exit 1
+        ;;
+esac
+
+
+find -L                                    \
+     ${find_path_option} "${directories}"  \
+     \( -type f -or -type l \)             \
+     \(  -name "*.py"                      \
+     -or -name "*.pyw"                     \
+     \) -print
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
