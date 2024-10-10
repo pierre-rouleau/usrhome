@@ -1,0 +1,62 @@
+# Sourced script: envfor-perlbrew  -*- mode: sh; -*-
+#
+# Purpose   : Activate the use of perlbrew.
+# Created   : Thursday, October 10 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-10 08:59:29 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# This activates Perlbrew (see https://perlbrew.pl/) in the current shell
+# if it is installed.
+#
+# It is meant to be invoked by a shell alias called use-perlbrew.
+#
+# Add the following code to your $USRHOME_DIR_USRCFG/do-user.sh file:
+#
+#   # Topic: Perl
+#   alias use-perlbrew='source $USRHOME_DIR/ibin/envfor-perlbrew'
+#
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# You must install perlbrew first.
+# See instructions in https://perlbrew.pl/
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+if [ ! -f "$HOME/perl5/perlbrew/etc/bashrc" ]; then
+    printf -- "
+*** use-perlbrew ERROR ***
+ Missing file: ~//perl5/perlbrew/etc/bashrc
+ Did you install perlbrew using the instructions
+ from https://perlbrew.pl/ ?
+**************************
+"
+    return 1
+fi
+
+if [ -n "$PERLBREW_ROOT" ]; then
+    printf -- "
+*** use-perlbrew ERROR ***
+ perlbrew is already installed.
+**************************
+"
+    return 2
+fi
+
+source "${HOME}/perl5/perlbrew/etc/bashrc"
+
+
+printf -- ". Using %s\n" "$(perlbrew version)"
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
