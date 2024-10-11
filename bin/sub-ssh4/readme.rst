@@ -5,7 +5,7 @@ Purpose of the USRHOME/bin/sub-ssh4 - Base SSH scripts
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-10-11 12:20:36 EDT, updated by Pierre Rouleau.
+:Modified: 2024-10-11 12:22:53 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -140,7 +140,8 @@ The top-level script should be something like this:
   #!/bin/sh
 
   export USRHOME_SSH4__HOSTNAME="my-server"
-  export USRHOME_SSH4__USERNAME="admin"
+  export USRHOME_SSH4__HOMEROOT="/home"
+  export USRHOME_SSH4__USERNAME="diana"
   export USRHOME_SSH4__IPV4ADDR="192.168.0.100"
   USRHOME_SSH4__PGM_NAME="$(basename "$0")"
   export USRHOME_SSH4__PGM_NAME
@@ -161,7 +162,8 @@ The top-level script should be something like this:
   #!/bin/sh
 
   export USRHOME_SSH4__HOSTNAME="my-server"
-  export USRHOME_SSH4__USERNAME="admin"
+  export USRHOME_SSH4__HOMEROOT="/home"
+  export USRHOME_SSH4__USERNAME="diana"
   export USRHOME_SSH4__IPV4ADDR="192.168.0.100"
   USRHOME_SSH4__PGM_NAME="$(basename "$0")"
   export USRHOME_SSH4__PGM_NAME
@@ -227,7 +229,8 @@ The top-level script should be something like this:
   #!/bin/sh
 
   export USRHOME_SSH4__HOSTNAME="my-server"
-  export USRHOME_SSH4__USERNAME="admin"
+  export USRHOME_SSH4__HOMEROOT="/home"
+  export USRHOME_SSH4__USERNAME="diana"
   export USRHOME_SSH4__IPV4ADDR="192.168.0.100"
   USRHOME_SSH4__PGM_NAME="$(basename "$0")"
   export USRHOME_SSH4__PGM_NAME
