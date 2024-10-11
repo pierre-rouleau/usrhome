@@ -3,7 +3,7 @@
 # Purpose   : Set the shell variables used by the scripts from the environment variables.
 # Created   : Friday, July 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-27 11:44:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-11 11:27:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,6 +62,12 @@ if [ -z "$USRHOME_SSH4__USERNAME" ]; then
     exit 1
 fi
 username="$USRHOME_SSH4__USERNAME"
+
+if [ -z "$USRHOME_SSH4__HOMEROOT" ]; then
+    printf -- "*** %s - ERROR: USRHOME_SSH4__HOMEROOT is not defined!\n" "${pgm_name}"
+    exit 1
+fi
+homeroot="$USRHOME_SSH4__HOMEROOT"
 
 # ----------------------------------------------------------------------------
 # Local Variables:

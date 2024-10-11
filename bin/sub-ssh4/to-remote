@@ -3,7 +3,7 @@
 # Purpose   : Copy file to remote computer selected by environment.
 # Created   : Tuesday, July 16 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-27 16:50:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-11 11:56:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,6 +40,14 @@
 
 # Validate environment
 envfor_cmd_arg1=to-remote
+
+# Execute $USRHOME_DIR/bin/sub-ssh4/envfor-cmds to set the following environment variables:
+# - pgm_name
+# - hostname
+# - ipv4addr
+# - username
+# - homeroot
+
 . "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
 
 
@@ -59,6 +67,10 @@ elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
               a path relative to the current directory.
 
   - DNAME : Optional. Absolute path name of remote computer directory.
+            - If specified, and DNAME contains an unquoted ~, it is
+              automatically replaced by the value
+              "\$USRHOME_SSH4__ROOTHOME/\$USRHOME_SSH4__USERNAME".
+              A quoted '~' is not replaced.
             - If not specified, you must define the USRHOME_SSH4__REM_DIR
               environment variable which defines the absolute path of a base
               directory that is the root of the storage.
@@ -111,6 +123,7 @@ else
 
     # - Check DNAME and USRHOME_SSH4__REM_DIR
     if [ -z "$2" ]; then
+        # Command line does not specify the destination directory.
         if [ -z "$USRHOME_SSH4__REM_DIR" ]; then
             printf -- "\
 *** %s ERROR: please identify remote directory in DNAME or USRHOME_SSH4__REM_DIR
@@ -150,8 +163,14 @@ else
 
     else
         # File can be taken from anywhere: the destination directory is identified by argument.
-        dest_dir="$2"
+        # If DNAME was relative to ~ on the command line and was not escaped, then it was
+        # translated by the shell to the current user home, not the remote one.
+        # So translate it.
+        dest_dir="$(echo "$2" | sed "s:$HOME:${homeroot}/${username}:")"
+        #
+        # if DNAME had '~' that was quoted, then it's OK to leave it like this.
     fi
+
 
     echo "scp ${fname} scp://${username}@${ipv4addr}/${dest_dir}"
     if [ "$dryrun" = "false" ]; then

@@ -5,7 +5,7 @@ Purpose of the USRHOME/bin/sub-ssh4 - Base SSH scripts
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-10-04 23:43:48 EDT, updated by Pierre Rouleau.
+:Modified: 2024-10-11 12:18:24 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -63,6 +63,10 @@ Variable Name           Purpose
 USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
 USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
 USRHOME_SSH4__HOSTNAME  The host name of the target system
+USRHOME_SSH4__HOMEROOT  The root directory for "~" in the target system.
+                        If the target system user home directory is
+                        something like "/root", then this is an empty
+                        string.
 USRHOME_SSH4__USERNAME  The user name on that target system
 ======================= ================================================
 
@@ -84,7 +88,8 @@ the various ``USRHOME_SSH4__`` environment variables (see above).
 The easiest way to implement these are shell level functions stored inside a
 script that is sourced by the system.  A good location for such a script is
 inside the ``$USRCFG/setfor-all-config.sh`` or a project specific sourced
-script.  Here's an example of the required function code:
+script.  Here's an example of the required function code, where the user's
+home directory in the remote computer is "/home/diana"::
 
 
 .. code:: sh
@@ -93,7 +98,8 @@ script.  Here's an example of the required function code:
     {
         export USRHOME_SSH4__PGM_NAME="ssh4-my-server"
         export USRHOME_SSH4__HOSTNAME="my-server"
-        export USRHOME_SSH4__USERNAME="admin"
+        export USRHOME_SSH4__HOMEROOT="/home"
+        export USRHOME_SSH4__USERNAME="diana"
         export USRHOME_SSH4__IPV4ADDR="192.168.0.100"
 
         ssh4__remote "my-server" "$@"
