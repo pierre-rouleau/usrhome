@@ -5,7 +5,7 @@ Purpose of the USRHOME/bin/sub-ssh4 - Base SSH scripts
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-10-11 12:24:01 EDT, updated by Pierre Rouleau.
+:Modified: 2024-10-11 14:09:09 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -69,6 +69,11 @@ USRHOME_SSH4__HOMEROOT  The root directory for "~" in the target system.
                         string.
 USRHOME_SSH4__USERNAME  The user name on that target system
 ======================= ================================================
+
+From the above environment variables, the only one that can be set to an empty
+string is USRHOME_SSH4__HOSTNAME.  The others ones must all have a non-empty
+value.
+
 
 Top-level Command Templates
 ===========================

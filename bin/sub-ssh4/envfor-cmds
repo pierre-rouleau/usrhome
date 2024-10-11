@@ -3,7 +3,7 @@
 # Purpose   : Set the shell variables used by the scripts from the environment variables.
 # Created   : Friday, July 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-11 11:27:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-11 14:10:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -22,8 +22,16 @@
 #   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
 #   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
 #   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__HOMEROOT  The root directory for "~" in the target system.
+#                           If the target system user home directory is
+#                           something like "/root", then this is an empty
+#                           string.
 #   USRHOME_SSH4__USERNAME  The user name on that target system
 #   ----------------------- ------------------------------------------------
+#
+# From the above environment variables, the only one that can be set to an empty
+# string is USRHOME_SSH4__HOSTNAME.  The others ones must all have a non-empty
+# value.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -40,30 +48,35 @@
 
 # Validate environment
 if [ -z "$USRHOME_SSH4__PGM_NAME" ]; then
+    # Note: do NOT accept an empty string as the value.
     printf -- "*** %s - ERROR: USRHOME_SSH4__PGM_NAME is not defined!\n" "${envfor_cmd_arg1}"
     exit 1
 fi
 pgm_name="$USRHOME_SSH4__PGM_NAME"
 
 if [ -z "$USRHOME_SSH4__HOSTNAME" ]; then
+    # Note: do NOT accept an empty string as the value.
     printf -- "*** %s - ERROR: USRHOME_SSH4__HOSTNAME is not defined!\n" "${pgm_name}"
     exit 1
 fi
 hostname="$USRHOME_SSH4__HOSTNAME"
 
 if [ -z "$USRHOME_SSH4__IPV4ADDR" ]; then
+    # Note: do NOT accept an empty string as the value.
     printf -- "*** %s - ERROR: USRHOME_SSH4__IPV4ADDR is not defined!\n" "${pgm_name}"
     exit 1
 fi
 ipv4addr="$USRHOME_SSH4__IPV4ADDR"
 
 if [ -z "$USRHOME_SSH4__USERNAME" ]; then
+    # Note: do NOT accept an empty string as the value.
     printf -- "*** %s - ERROR: USRHOME_SSH4__USERNAME is not defined!\n" "${pgm_name}"
     exit 1
 fi
 username="$USRHOME_SSH4__USERNAME"
 
-if [ -z "$USRHOME_SSH4__HOMEROOT" ]; then
+if [ -z "${USRHOME_SSH4__HOMEROOT+1}" ]; then
+    # Note: accept an empty string as the value.
     printf -- "*** %s - ERROR: USRHOME_SSH4__HOMEROOT is not defined!\n" "${pgm_name}"
     exit 1
 fi
