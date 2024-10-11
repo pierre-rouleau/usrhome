@@ -5,7 +5,7 @@ Purpose of the USRHOME/bin/sub-ssh4 - Base SSH scripts
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Friday, September 27 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-10-11 12:18:24 EDT, updated by Pierre Rouleau.
+:Modified: 2024-10-11 12:20:36 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -89,7 +89,7 @@ The easiest way to implement these are shell level functions stored inside a
 script that is sourced by the system.  A good location for such a script is
 inside the ``$USRCFG/setfor-all-config.sh`` or a project specific sourced
 script.  Here's an example of the required function code, where the user's
-home directory in the remote computer is "/home/diana"::
+home directory in the remote computer is "/home/diana":
 
 
 .. code:: sh
