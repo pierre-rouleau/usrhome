@@ -3,7 +3,7 @@
 # Purpose   : Copy file to remote computer selected by environment.
 # Created   : Tuesday, July 16 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-16 10:39:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-16 11:27:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -19,6 +19,9 @@
 #   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
 #   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
 #   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__HOMEROOT  The user home root directory on target system.
+#                           The empty string is accepted, meaning that the
+#                           home root is at /.   Do not use "/", use "".
 #   USRHOME_SSH4__USERNAME  The user name on that target system
 #   USRHOME_SSH4__LOC_DIR   Reference directory on local computer. Defaults to '.'
 #   USRHOME_SSH4__REM_DIR   Equivalent directory on remote computer
