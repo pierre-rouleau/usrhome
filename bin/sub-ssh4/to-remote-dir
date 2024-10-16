@@ -4,7 +4,7 @@
 # Purpose   : Copy a complete directory to the remote computer.
 # Created   : Thursday, July 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-27 12:06:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-16 10:41:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -21,6 +21,8 @@
 #   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
 #   USRHOME_SSH4__HOSTNAME  The host name of the target system
 #   USRHOME_SSH4__USERNAME  The user name on that target system
+#   USRHOME_SSH4__LOC_DIR   Reference directory on local computer. Defaults to '.'
+#   USRHOME_SSH4__REM_DIR   Equivalent directory on remote computer
 #   ----------------------- ------------------------------------------------
 
 # ----------------------------------------------------------------------------
@@ -38,13 +40,15 @@
 
 # Validate environment
 envfor_cmd_arg1=to-remote-dir
-. "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
 
-# Set value identified from the environment
-hostname="$USRHOME_SSH4__HOSTNAME"
-ipv4addr="$USRHOME_SSH4__IPV4ADDR"
-username="$USRHOME_SSH4__USERNAME"
-pgm_name="$USRHOME_SSH4__PGM_NAME"
+# Execute $USRHOME_DIR/bin/sub-ssh4/envfor-cmds to set the following environment variables:
+# - pgm_name
+# - hostname
+# - ipv4addr
+# - username
+# - homeroot
+
+. "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
 
 # Validate command line arguments
 if [ -z "$1" ]; then
@@ -57,11 +61,16 @@ elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 
  Usage: %s [-n|--dryrun] LOCALDIR [REMOTEDIR]
 
-  - LOCALDIR : Name of the local directory to copy to remote.
+  - LOCALDIR : Name of the local directory to copy to remote computer.
   - REMOTEDIR: Name of the remote directory where the local directory will
                be stored. The remote path is relative to the remote home directory.
                - If it is not specified, it defaults to tmp
                  so LOCALDIR will be copied in the remote ~/tmp directory.
+               - If specified, and REMOTEDIR contains an unquoted ~, it is
+                 automatically replaced by the value
+                 \"\$USRHOME_SSH4__HOMEROOT/\$USRHOME_SSH4__USERNAME\",
+                 which, for this command is: \"$USRHOME_SSH4__HOMEROOT/$USRHOME_SSH4__USERNAME\".
+                 A quoted '~' is not replaced.
 
   OPTIONS:
 
@@ -92,7 +101,7 @@ else
     if [ -z "$2" ]; then
         remotedir="tmp"
     else
-        remotedir="$2"
+        remotedir="$(echo "$2" | sed "s:$HOME:${homeroot}/${username}:")"
     fi
     echo "scp -r ${localdir} scp://${username}@${ipv4addr}/${remotedir}"
     if [ "$dryrun" = "false" ]; then

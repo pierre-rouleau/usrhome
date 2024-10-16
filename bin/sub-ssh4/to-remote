@@ -3,7 +3,7 @@
 # Purpose   : Copy file to remote computer selected by environment.
 # Created   : Tuesday, July 16 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-11 11:56:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-16 10:39:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -69,7 +69,8 @@ elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   - DNAME : Optional. Absolute path name of remote computer directory.
             - If specified, and DNAME contains an unquoted ~, it is
               automatically replaced by the value
-              "\$USRHOME_SSH4__ROOTHOME/\$USRHOME_SSH4__USERNAME".
+              \"\$USRHOME_SSH4__HOMEROOT/\$USRHOME_SSH4__USERNAME\",
+              which, for this command is: \"$USRHOME_SSH4__HOMEROOT/$USRHOME_SSH4__USERNAME\".
               A quoted '~' is not replaced.
             - If not specified, you must define the USRHOME_SSH4__REM_DIR
               environment variable which defines the absolute path of a base
