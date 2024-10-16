@@ -4,7 +4,7 @@
 # Purpose   : Copy file from the specified remote computer to the current local directory.
 # Created   : Thursday, July 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-27 10:52:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-16 11:25:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -20,7 +20,12 @@
 #   USRHOME_SSH4__PGM_NAME  Name of the executing command (the script name)
 #   USRHOME_SSH4__IPV4ADDR  The IP address (currently only IPv4 is supported)
 #   USRHOME_SSH4__HOSTNAME  The host name of the target system
+#   USRHOME_SSH4__HOMEROOT  The user home root directory on target system.
+#                           The empty string is accepted, meaning that the
+#                           home root is at /.   Do not use "/", use "".
 #   USRHOME_SSH4__USERNAME  The user name on that target system
+#   USRHOME_SSH4__LOC_DIR   Reference directory on local computer. Defaults to '.'
+#   USRHOME_SSH4__REM_DIR   Equivalent directory on remote computer
 #   ----------------------- ------------------------------------------------
 
 # ----------------------------------------------------------------------------
@@ -38,21 +43,35 @@
 
 # Validate environment
 envfor_cmd_arg1=from-remote
+
+# Execute $USRHOME_DIR/bin/sub-ssh4/envfor-cmds to set the following environment variables:
+# - pgm_name
+# - hostname
+# - ipv4addr
+# - username
+# - homeroot
 . "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
 
 # Validate command line arguments
 if [ -z "$1" ]; then
     printf -- "*** %s ERROR: missing remote file name.\n" "${pgm_name}"
-    printf -- "    Use the -h or --help option to print usage\n"
+    printf -- "    Use the -h or --help option to print usage.\n"
     exit 1
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     printf -- "\
 %s - copy file from %s remote computer.
 
- Usage: %s [-n|--dryrun] FNAME
+ Usage: %s [-n|--dryrun] REMOTEFNAME [LOCALFNAME]
 
-  - FNAME : Name of the remote file, with a path
-            relative to the home directory on the remote host.
+  - REMOTEFNAME : Name of the remote file.
+                  If REMOTEFNAME contains an unquoted ~, it is
+                   automatically replaced by the value
+                   \"\$USRHOME_SSH4__HOMEROOT/\$USRHOME_SSH4__USERNAME\",
+                   which, for this command is: \"$USRHOME_SSH4__HOMEROOT/$USRHOME_SSH4__USERNAME\".
+                   A quoted '~' is not replaced.
+  - LOCALFNAME  : Name of the local file.
+                  If not specified, use the same file name as
+                  specified by REMOTEFNAME but stored in the current directory.
 
   OPTIONS:
    -n | --dryrun:  Only show what would be done. No file copied.
@@ -66,12 +85,19 @@ if [ "$1" = "-n" ] || [ "$1" = "--dryrun" ]; then
     dryrun=true
     shift
 fi
+if [ -z "$1" ]; then
+    printf -- "*** %s: ERROR: missing REMOTEFNAME\n" "${pgm_name}"
+    printf -- "    Use the -h or --help option to print usage.\n"
+    exit 1
+fi
 
-destfile="$(basename "$1")"
+remotefname="$(echo "$1" | sed "s:$HOME:${homeroot}/${username}:")"
 
-echo "scp scp://${username}@${ipv4addr}/$1 ${destfile}"
+localfname="$(basename "$1")"
+
+echo "scp scp://${username}@${ipv4addr}/${remotefname} ${localfname}"
 if [ "$dryrun" = "false" ]; then
-    scp  "scp://${username}@${ipv4addr}/$1" "$destfile"
+    scp  "scp://${username}@${ipv4addr}/${remotefname}" "$localfname"
 else
     printf -- "*** %s WARNING: dry run: nothing is copied.\n" "${pgm_name}"
 fi
