@@ -1,0 +1,53 @@
+# Sourced script: do-se-env-check  -*- mode: sh; -*-
+#
+# Purpose   : Validate the SELinux Policy Development Environment.
+# Created   : Monday, October 21 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-21 12:40:31 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Validate Environment
+if [ -z "$USRHOME_SELINUX_POLICY_LOCATION" ]; then
+    printf -- "\
+*** ERROR - SELinux Policy Management Environment is invalid:
+            USRHOME_SELINUX_POLICY_LOCATION is not set.
+"
+    exit 1
+fi
+
+#
+usrhome_selinux_policy_module_dirpath=
+if [ -d "${USRHOME_SELINUX_POLICY_LOCATION}/policy/modules" ]; then
+    usrhome_selinux_policy_module_dirpath="${USRHOME_SELINUX_POLICY_LOCATION}/policy/modules"
+elif [ -d "${USRHOME_SELINUX_POLICY_LOCATION}/include" ]; then
+    ec
+    usrhome_selinux_policy_module_dirpath="${USRHOME_SELINUX_POLICY_LOCATION}/include"
+fi
+if [ "$usrhome_selinux_policy_module_dirpath" = "" ]; then
+    printf -- "\
+*** ERROR - SELinux Policy Management Environment is invalid:
+            USRHOME_SELINUX_POLICY_LOCATION does not identify a
+            valid SELinux Reference Policy directory tree.
+          - USRHOME_SELINUX_POLICY_LOCATION = %s
+" "$USRHOME_SELINUX_POLICY_LOCATION"
+    exit 1
+fi
+
+# ----------------------------------------------------------------------------

@@ -1,0 +1,122 @@
+#!/bin/sh
+# SH FILE: se-find-if
+#
+# Purpose   : Find the specified SELinux Policy interface.
+# Created   : Monday, October 21 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
+# Time-stamp: <2024-10-21 12:42:00 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+# This simple script searches inside the SELinux Policy directory trees
+# for Policy Interface definition.
+#
+# The script expects the SELinux Policy Development environment to be set
+# according to the requirements described in the next section.
+#
+# To support this command, you should write:
+# - An environment setting script for your requirements in a location
+#   like $USRHOME_DIR_USRCFG/ibin/linux/envfor-selinux-dev
+# - Alias command use-selinux-dev similar to
+#     alias use-selinux-dev='source $USRHOME_DIR_USRCFG/ibin/linux/envfor-selinux-dev'
+#   inside your $USRHOME_DIR_USRCFG/do-user.sh
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# The script expects the shell to be extended with the SELinux development.
+#
+# That environment consists of a directory tree with the following layout:
+#
+#  - centralized  : holds the upstream SELinux reference policy directory tree.
+#                   This should be a clone of the upstream SELinux Policy repository.
+#                   It depends on the Linux distribution lineage of the system.
+#
+#                   ================================== ===============================================
+#                   Distribution Lineage               Master Repository
+#                   ================================== ===============================================
+#                   SELinux Reference Policy           https://github.com/SELinuxProject/refpolicy
+#                   Red Hat based                      https://github.com/fedora-selinux/selinux-policy
+#                   ================================== ===============================================
+#
+#  - local        : holds the locally developed SELinux policy files.
+#
+#
+# The following USRHOME environment variables are required, and set by this script:
+#
+#   ================================= ====================================================
+#   Environment Variable              Description
+#   ================================= ====================================================
+#   USRHOME_ENVFOR_SELINUX_DEV        Set when the environment is configured for the shell.
+#   USRHOME_SELINUX_DEVROOT           The root of the directory holding the centralized
+#                                     and local directories.
+#   USRHOME_SELINUX_POLICY_LOCATION   Identify the selinux-policy directory.
+#                                     Normally based on USRHOME_SELINUX_POLICY_LOCATION
+#   ================================= ====================================================
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+se-find-if - Find all SELinux Interfaces matching specified regular expression.
+
+ Usage: se-find-if REGEXP
+
+   REGEXP : Awk-compliant regular expression that describe the required SELinux interface.
+            The expression must be specified inside single quotes.
+
+ Example:
+          se-find-if 'write_files_pattern.*named_conf_t'
+
+"
+}
+
+# --
+# Validate Arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+if [ -z "$1" ]; then
+    printf -- "\
+*** ERROR - Missing REGXP argument.
+            Use --help to print usage.
+"
+    exit 1
+fi
+
+# --
+# Validate SELinux Policy Development Environment: sets usrhome_selinux_policy_module_dirpath
+source "$USRHOME_DIR/bin/linux/selinux/hidden/do-se-env-check"
+cd ${usrhome_selinux_policy_module_dirpath} || exit 1
+
+# --
+# Perform search
+
+regexp="$1"
+printf -- "\n"
+for file in */*.if; do
+    awk "BEGIN { P=1 }\
+ /(interface\(|template\()/\
+ { NAME=\$0; P=0 }; /${regexp}/\
+ { if (P==0) {P=1; print NAME}; if (NAME!=\$0) print };" "${file}" | sed -e "s:^:${file}\: :g";
+done
+printf -- "\n"
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:

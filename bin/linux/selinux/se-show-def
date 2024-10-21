@@ -1,0 +1,103 @@
+#!/bin/sh
+# SH FILE: se-show-def
+#
+# Purpose   : Show SELinux Policy Macro Definition
+# Created   : Monday, October 21 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
+# Time-stamp: <2024-10-21 12:42:37 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# The script expects the shell to be extended with the SELinux development.
+#
+# That environment consists of a directory tree with the following layout:
+#
+#  - centralized  : holds the upstream SELinux reference policy directory tree.
+#                   This should be a clone of the upstream SELinux Policy repository.
+#                   It depends on the Linux distribution lineage of the system.
+#
+#                   ================================== ===============================================
+#                   Distribution Lineage               Master Repository
+#                   ================================== ===============================================
+#                   SELinux Reference Policy           https://github.com/SELinuxProject/refpolicy
+#                   Red Hat based                      https://github.com/fedora-selinux/selinux-policy
+#                   ================================== ===============================================
+#
+#  - local        : holds the locally developed SELinux policy files.
+#
+#
+# The following USRHOME environment variables are required, and set by this script:
+#
+#   ================================= ====================================================
+#   Environment Variable              Description
+#   ================================= ====================================================
+#   USRHOME_ENVFOR_SELINUX_DEV        Set when the environment is configured for the shell.
+#   USRHOME_SELINUX_DEVROOT           The root of the directory holding the centralized
+#                                     and local directories.
+#   USRHOME_SELINUX_POLICY_LOCATION   Identify the selinux-policy directory.
+#                                     Normally based on USRHOME_SELINUX_POLICY_LOCATION
+#   ================================= ====================================================
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+se-show-def - Find and show the SELinux Policy Macro Definition
+
+ Usage: se-show-def MACRO
+
+   MACRO:  The name of the SELinux policy macro
+
+ Example:
+          se-show-def write_files_pattern
+
+"
+}
+
+# --
+# Validate Arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+if [ -z "$1" ]; then
+    printf -- "\
+*** ERROR - Missing REGXP argument.
+            Use --help to print usage.
+"
+    exit 1
+fi
+
+# --
+# Validate SELinux Policy Development Environment: sets usrhome_selinux_policy_module_dirpath
+source "$USRHOME_DIR/bin/linux/selinux/hidden/do-se-env-check"
+cd ${usrhome_selinux_policy_module_dirpath} || exit 1
+
+# --
+# Perform search
+
+macroname="$1"
+printf -- "\n"
+for file in */*.if; do
+    grep -A 9999 "define(\`${macroname}'" ${file} | grep -B 999 -m 1 "')";
+done
+printf -- "\n"
+
+# ----------------------------------------------------------------------------
