@@ -1,0 +1,39 @@
+#!/bin/sh
+# SH FILE: withh-rpm
+#
+# Purpose   : Execute rpm command after printing a separator header line.
+# Created   : Thursday, October 17 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-17 11:15:25 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+#  Print a header and then the output of the rpm command.
+#  The arguments expect only one filename and it has to be the last argument.
+#
+#  This is meant to be used with the ``xargs -I $ withh-rpm -l $`` or
+#  something like this with more options to rpm.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Identify the filename - passed as the last argument.
+unset withh_filename
+if [ $# -gt 0 ]; then
+    eval withh_filename=\${$#}
+    printf -- "\n-----------: %s\n" "$withh_filename"
+    rpm "$@"
+fi
+
+# ----------------------------------------------------------------------------

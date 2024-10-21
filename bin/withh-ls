@@ -1,0 +1,38 @@
+#!/bin/sh
+# SH FILE: withh-ls
+#
+# Purpose   : With  a header showing the file name, execute ls with arguments.
+# Created   : Thursday, October 17 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-17 09:44:06 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#  Print a header and then the output of the ls command.
+#  The arguments expect only one filename and it has to be the last argument.
+#
+#  This is meant to be used with the ``xargs -I $ withh-ls -l $`` or
+#  something like this with more options to ls.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Identify the filename - passed as the last argument.
+unset withh_filename
+if [ $# -gt 0 ]; then
+    eval withh_filename=\${$#}
+    printf -- "\n-----------: %s\n" "$withh_filename"
+    ls "$@"
+fi
+
+# ----------------------------------------------------------------------------
