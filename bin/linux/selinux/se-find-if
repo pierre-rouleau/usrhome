@@ -4,7 +4,7 @@
 # Purpose   : Find the specified SELinux Policy interface.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2024-10-21 12:42:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-26 22:15:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -109,10 +109,11 @@ cd ${usrhome_selinux_policy_module_dirpath} || exit 1
 regexp="$1"
 printf -- "\n"
 for file in */*.if; do
-    awk "BEGIN { P=1 }\
- /(interface\(|template\()/\
- { NAME=\$0; P=0 }; /${regexp}/\
- { if (P==0) {P=1; print NAME}; if (NAME!=\$0) print };" "${file}" | sed -e "s:^:${file}\: :g";
+    awk "\
+BEGIN { P=1 }\
+ /(interface\(|template\()/ { NAME=\$0; P=0 };\
+ /${regexp}/ { if (P==0) {P=1; print NAME}; if (NAME!=\$0) print };\
+" "${file}" | sed -e "s:^:${file}\: :g";
 done
 printf -- "\n"
 
