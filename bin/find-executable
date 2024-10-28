@@ -4,7 +4,7 @@
 # Purpose   : Print all executable files found in the specified directory tree.
 # Created   : Wednesday, July 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-17 09:40:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-28 18:08:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -48,14 +48,13 @@ find-executable: Find and print all executable files in ROOT directory tree.
 
 print_error_and_exit()
 {
-    # $0 : error message
+    # $1 : error message
     printf -- "
 *** find-executable ERROR:
       %s
 ******************
-
-" "$0"
-    print_usage
+    Use -h to print usage.
+" "$1"
     exit 2
 }
 

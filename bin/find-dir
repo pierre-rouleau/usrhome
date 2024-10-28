@@ -4,7 +4,7 @@
 # Purpose   : Find directories in current directory tree.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-17 08:02:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-28 18:07:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -48,13 +48,13 @@ find-dir: Find and print all directories DIR in specified ROOT directory tree.
 
 print_error_and_exit()
 {
-    # $0 : error message
+    # $1 : error message
     printf -- "
 *** find-dir ERROR:
       %s
 ******************
-
-" "$0"
+    Use -h to print usage.
+" "$1"
     print_usage
     exit 2
 }
