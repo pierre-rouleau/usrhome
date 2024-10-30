@@ -1,15 +1,26 @@
 #!/bin/sh
-# SH FILE: se-show-def
+# SH FILE: se-show-interface
 #
-# Purpose   : Show SELinux Policy Macro Definition
+# Purpose   : Show SELinux Interface Definition.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2024-10-21 12:42:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-30 13:48:35 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
+# This simple script searches inside the SELinux Policy directory trees
+# for Policy Interface definition.
 #
+# The script expects the SELinux Policy Development environment to be set
+# according to the requirements described in the next section.
+#
+# To support this command, you should write:
+# - An environment setting script for your requirements in a location
+#   like $USRHOME_DIR_USRCFG/ibin/linux/envfor-selinux-dev
+# - Alias command use-selinux-dev similar to
+#     alias use-selinux-dev='source $USRHOME_DIR_USRCFG/ibin/linux/envfor-selinux-dev'
+#   inside your $USRHOME_DIR_USRCFG/do-user.sh
 
 
 # ----------------------------------------------------------------------------
@@ -57,14 +68,14 @@
 print_usage()
 {
     printf -- "
-se-show-def - Find and show the SELinux Policy Macro Definition
+se-show-interface - Find and show the SELinux Policy Interface definition code.
 
- Usage: se-show-def MACRO
+ Usage: se-show-interface INTERFACE
 
-   MACRO:  The name of the SELinux policy macro
+   INTERFACE:  The name of the SELinux policy interface.
 
  Example:
-          se-show-def write_files_pattern
+          se-show-interface files_read_etc_files
 
 "
 }
@@ -93,10 +104,10 @@ cd ${usrhome_selinux_policy_module_dirpath} || exit 1
 # --
 # Perform search
 
-macroname="$1"
+the_interface="$1"
 printf -- "\n"
 for file in */*.if; do
-    grep -A 9999 "define(\`${macroname}'" ${file} | grep -B 999 -m 1 "')";
+    grep -A 9999 "\(interface(\`${the_interface}'\|template(\`${the_interface}'\)" ${file} | grep -B 9999 -m 1 "^')";
 done
 printf -- "\n"
 

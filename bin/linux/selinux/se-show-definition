@@ -1,10 +1,10 @@
 #!/bin/sh
-# SH FILE: se-find-def
+# SH FILE: se-show-definition
 #
-# Purpose   : Find the specified SELinux Policy macro definition.
+# Purpose   : Show SELinux Policy Macro Definition
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2024-10-26 22:16:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-30 13:48:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -57,15 +57,14 @@
 print_usage()
 {
     printf -- "
-se-find-def - Find specified SELinux Policy macro definition.
+se-show-definition - Find and show the SELinux Policy Macro Definition
 
- Usage: se-find-def REGEXP
+ Usage: se-show-definition MACRO
 
-   REGEXP : Awk-compliant regular expression that describe the required SELinux policy macro.
-            The expression must be specified inside single quotes.
+   MACRO:  The name of the SELinux policy macro
 
  Example:
-          se-find-def 'file.*write'
+          se-show-definition write_files_pattern
 
 "
 }
@@ -94,18 +93,11 @@ cd ${usrhome_selinux_policy_module_dirpath} || exit 1
 # --
 # Perform search
 
-regexp="$1"
+macroname="$1"
 printf -- "\n"
 for file in */*.if; do
-    awk "\
-BEGIN { P=1; }\
- /(define\(\`[^\`]*\`$)/ { NAME=\$0; P=0 };\
- /${regexp}/ { if (P==0) {P=1; print NAME}; if (NAME!=\$0) print };\
-" ${file};
+    grep -A 9999 "define(\`${macroname}'" ${file} | grep -B 999 -m 1 "')";
 done
 printf -- "\n"
 
 # ----------------------------------------------------------------------------
-# Local Variables:
-# sh-shell: /bin/sh
-# End:

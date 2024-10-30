@@ -1,26 +1,15 @@
 #!/bin/sh
-# SH FILE: se-show-if
+# SH FILE: se-find-definition
 #
-# Purpose   : Show SELinux Interface Definition.
+# Purpose   : Find the specified SELinux Policy macro definition.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2024-10-21 12:42:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-30 13:46:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# This simple script searches inside the SELinux Policy directory trees
-# for Policy Interface definition.
 #
-# The script expects the SELinux Policy Development environment to be set
-# according to the requirements described in the next section.
-#
-# To support this command, you should write:
-# - An environment setting script for your requirements in a location
-#   like $USRHOME_DIR_USRCFG/ibin/linux/envfor-selinux-dev
-# - Alias command use-selinux-dev similar to
-#     alias use-selinux-dev='source $USRHOME_DIR_USRCFG/ibin/linux/envfor-selinux-dev'
-#   inside your $USRHOME_DIR_USRCFG/do-user.sh
 
 
 # ----------------------------------------------------------------------------
@@ -68,14 +57,15 @@
 print_usage()
 {
     printf -- "
-se-show-if - Find and show the SELinux Policy Interface definition code.
+se-find-definition - Find specified SELinux Policy macro definition.
 
- Usage: se-show-if INTERFACE
+ Usage: se-find-definition REGEXP
 
-   INTERFACE:  The name of the SELinux policy interface.
+   REGEXP : Awk-compliant regular expression that describe the required SELinux policy macro.
+            The expression must be specified inside single quotes.
 
  Example:
-          se-show-if files_read_etc_files
+          se-find-definition 'file.*write'
 
 "
 }
@@ -104,11 +94,18 @@ cd ${usrhome_selinux_policy_module_dirpath} || exit 1
 # --
 # Perform search
 
-the_interface="$1"
+regexp="$1"
 printf -- "\n"
 for file in */*.if; do
-    grep -A 9999 "\(interface(\`${the_interface}'\|template(\`${the_interface}'\)" ${file} | grep -B 9999 -m 1 "^')";
+    awk "\
+BEGIN { P=1; }\
+ /(define\(\`[^\`]*\`$)/ { NAME=\$0; P=0 };\
+ /${regexp}/ { if (P==0) {P=1; print NAME}; if (NAME!=\$0) print };\
+" ${file};
 done
 printf -- "\n"
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:

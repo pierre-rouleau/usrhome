@@ -1,10 +1,10 @@
 #!/bin/sh
-# SH FILE: se-find-if
+# SH FILE: se-find-interface
 #
 # Purpose   : Find the specified SELinux Policy interface.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2024-10-26 22:15:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-30 13:47:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -69,15 +69,15 @@
 print_usage()
 {
     printf -- "
-se-find-if - Find all SELinux Interfaces matching specified regular expression.
+se-find-interface - Find all SELinux Interfaces matching specified regular expression.
 
- Usage: se-find-if REGEXP
+ Usage: se-find-interface REGEXP
 
    REGEXP : Awk-compliant regular expression that describe the required SELinux interface.
             The expression must be specified inside single quotes.
 
  Example:
-          se-find-if 'write_files_pattern.*named_conf_t'
+          se-find-interface 'write_files_pattern.*named_conf_t'
 
 "
 }
