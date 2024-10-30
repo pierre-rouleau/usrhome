@@ -4,7 +4,7 @@
 # Purpose   : List present and missing SELinux RPM installed in system.
 # Created   : Wednesday, October 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-30 13:50:26 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-30 14:15:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,21 +28,58 @@
 #
 
 se_rpm_names='
+bitcoin-core-selinux
+cepces-selinux
 checkpolicy
+cjdns-selinux
 container-selinux
+copr-selinux
+dist-git-selinux
+drbd-selinux
+duo_unix-selinux
+ec2-instance-connect-selinux
+fail2ban-selinux
+fapolicyd-selinux
 flatpak-selinux
+frr-selinux
 grafana-selinux
+ipa-hcc-selinux
+ipa-selinux
+lemonldap-ng-selinux
 libselinux
 libselinux-devel
+libselinux-ruby
+libselinux-static
 libselinux-utils
+libsemanage
+libsepol
+mcstrans
+mysql-selinux
+nagios-selinux
+nrpe-selinux
+openssh-ldap-authkeys-selinux
+osbuild-selinux
 pcp-selinux
 policycoreutils
+policycoreutils-dbus
 policycoreutils-devel
+policycoreutils-gui
 policycoreutils-newrole
 policycoreutils-python-utils
+policycoreutils-restorecond
+policycoreutils-sandbox
+pure-ftpd-selinux
+python-collectd_systemd-selinux
+python-pymilter-selinux
 python3-libselinux
 python3-policycoreutils
+python3-setools
+radicale3-selinux
+rd-agent-selinux
+resalloc-selinux
 rpm-plugin-selinux
+secilc
+secilc-doc
 selinux-policy
 selinux-policy-devel
 selinux-policy-doc
@@ -50,11 +87,24 @@ selinux-policy-minimum
 selinux-policy-mls
 selinux-policy-sandbox
 selinux-policy-targeted
+setools
 setools-console
 setools-console-analyses
 setools-gui
+setroubleshoot
 setroubleshoot-plugins
-setroubleshoot-server'
+setroubleshoot-server
+snapd-selinux
+tigervnc-selinux
+tpm2-abrmd-selinux
+trafficserver-selinux
+udica
+usbguard-selinux
+websvn-selinux
+xrdp-selinux
+xrootd-selinux
+zabbix6.0-selinux
+zabbix7.0-selinux'
 
 print_present=1
 print_absent=1
