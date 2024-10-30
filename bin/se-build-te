@@ -1,0 +1,113 @@
+#!/usr/bin/bash
+# SH FILE: se-build-te
+#
+# Purpose   : Check a SELinux Type Enforcement file, generate a .mod and .pp file.
+# Created   : Monday, October 28 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-30 11:05:34 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Check and compile SELinux Type Enforcement file (a .te file) into a binary
+# policy file (a .pp file) that can be loaded into a policy store that holds
+# a base policy.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - SELinux commands:
+#   - checkmodule       : from checkpolicy RPM
+#   - semodule_package  : from policycoreutils RPM
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "\
+se-build-te: Build a SELinux policy .mod and .pp files from the .te file.
+
+ Usage: se-build-te [OPTIONS] TYPE-ENFORCEMENT-FILE
+        se-build-te -h|--help
+
+  TYPE-ENFORCEMENT-FILE: The name of the SELinux .te file.
+  OPTIONS:
+   -v | --verbose      : Print internal commands.
+   -k | --keep         : Keep the .mod file first created.
+                          By default this file is deleted
+                          after a successful execution of
+                          the semodule_package command.
+"
+}
+
+print_error_and_exit()
+{
+    # $1 : error message
+    printf -- "
+*** se-build-te ERROR:
+      %s
+******************
+
+" "$1"
+    exit 2
+}
+
+
+# --
+# Validate command line.
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+fi
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+verbose=
+keep="false"
+for arg in "$@"; do
+    if [ "$arg" = "-v" ] || [ "$arg" = "--verbose" ]; then
+        verbose="true"
+        shift
+    elif [ "$arg" = "-k" ] || [ "$arg" = "--keep" ]; then
+        keep="true"
+        shift
+    fi
+done
+
+
+if [ ! -f "$1" ]; then
+    print_error_and_exit "File does not exist: $1"
+fi
+
+
+# --
+# Proceed.
+
+fname="$1"
+fbase="${fname%%.*}"
+
+if [ "$verbose" = "true" ]; then
+    echo "checkmodule -M -m -o "${fbase}.mod" "${fname}""
+fi
+if checkmodule -M -m -o "${fbase}.mod" "${fname}"; then
+    if [ "$verbose" = "true" ]; then
+        echo "semodule_package -o "${fbase}.pp" -m "${fbase}.mod""
+    fi
+    semodule_package -o "${fbase}.pp" -m "${fbase}.mod"
+    if [ "$keep" = "false" ]; then
+        rm "${fbase}.mod"
+    fi
+else
+    exit 1
+fi
+
+# ----------------------------------------------------------------------------
