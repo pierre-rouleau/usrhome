@@ -1,0 +1,90 @@
+#!/bin/sh
+# SH FILE: se-show-rpms
+#
+# Purpose   : List present and missing SELinux RPM installed in system.
+# Created   : Wednesday, October 30 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-30 11:23:38 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# A quick script that lists the presence and absence of RPMs providing
+# SELinux related commands and files.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+# - rpm
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+se_rpm_names='
+checkpolicy
+container-selinux
+flatpak-selinux
+grafana-selinux
+libselinux
+libselinux-devel
+libselinux-utils
+pcp-selinux
+policycoreutils
+policycoreutils-devel
+policycoreutils-newrole
+policycoreutils-python-utils
+python3-libselinux
+python3-policycoreutils
+rpm-plugin-selinux
+selinux-policy
+selinux-policy-devel
+selinux-policy-doc
+selinux-policy-targeted
+setools-console
+setools-console-analyses
+setools-gui
+setroubleshoot-plugins
+setroubleshoot-server'
+
+print_present=1
+print_absent=1
+present_count=0
+absent_count=0
+for rpm_name in $se_rpm_names
+do
+    # Use rpm_name --queryformat to isolate the name portion of the RPM.
+    # Then search for the exact match (in case a short name is a subset of another)
+    if rpm --queryformat "%{NAME}\n" -qa | grep "^${rpm_name}$" > /dev/null; then
+        present_count=$((present_count + 1))
+        if [ "$print_present" = "1" ]; then
+            printf -- "- present: %s\n" "$rpm_name"
+        fi
+    else
+        absent_count=$((absent_count + 1))
+        if [ "$print_absent" = "1" ]; then
+            printf -- "- absent : %s\n" "$rpm_name"
+        fi
+    fi
+done
+
+total=$((present_count + absent_count))
+if [ "$absent_count" = "0" ]; then
+    printf -- "All %d RPMs are installed.\n" "$total"
+elif [ "$present_count" = "0" ]; then
+    printf -- "No MSL RPM detected!\n"
+    exit 1
+else
+    printf -- "\nFrom a total of %d MSL RPMs:\n- %d RPM present,\n- %d RPM absent.\n\n" "$total" "$present_count" "$absent_count"
+fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
