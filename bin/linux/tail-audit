@@ -1,0 +1,43 @@
+#!/bin/sh
+# SH FILE: tail-audit
+#
+# Purpose   : Tail the /var/audit/log with some reformatting.
+# Created   : Wednesday, October 30 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-30 19:40:48 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print logged SELinux AVC and SYSCALL events as they occur.
+# Each line show a count, the current date and time and the full logged line.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# tail, read, grep, awk, sed, cut, rev, date, printf
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+# Early version.  Later might provide more reformatting.
+#
+# Filter the log, looking for AVC and SYSCALL events.
+# Print the item number, date, time and entire entry.
+#
+
+count=0
+tail -f /var/log/audit/audit.log | grep 'type=\(AVC\|SYSCALL\)' | \
+    while read -r LINE; do \
+        count=$(( count + 1 ))
+        d="$(echo $LINE | awk '{print $2}' | sed 's:msg=audit(::g' | rev | cut -c12- | rev )"; \
+        d="$(date --date=@$d +'%Y-%m-%d %H:%M:%S')"; \
+        printf -- "#%4d %s: %s\n" "$count" "$d" "$LINE"; \
+    done
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
