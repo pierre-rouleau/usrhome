@@ -1,10 +1,10 @@
 #!/bin/sh
-# SH FILE: tail-audit-4avc
+# SH FILE: tail-audit4avc
 #
 # Purpose   : Tail the /var/audit/log with some reformatting.
 # Created   : Wednesday, October 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-30 19:43:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-31 07:56:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
