@@ -4,13 +4,19 @@
 # Purpose   : Tail the /var/audit/log with some reformatting.
 # Created   : Wednesday, October 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-31 07:56:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-01 08:03:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Print logged SELinux AVC and SYSCALL events as they occur.
-# Each line show a count, the current date and time and the full logged line.
+# Each line show a count, the current date and time in readable format,
+# the syscall name (instead of number) and the full logged line.
+#
+# The beginning of each line looks like the following (including the # character):
+#
+#   1 type=AVC     msg=audit(2024-11-01 07:55:02.285:3021)): avc:  denied  { read } for
+#   2 type=SYSCALL msg=audit(2024-11-01 07:55:02.285:3021)): arch=c000003e syscall=stat success=yes exit=0
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -25,16 +31,19 @@
 # Early version.  Later might provide more reformatting.
 #
 # Filter the log, looking for AVC and SYSCALL events.
-# Print the item number, date, time and entire entry.
+# Print the item number, line up mag=audit, reformat date, replace syscall number by name.
+# This code would be better written in some other language, Perl perhaps.
 #
-
+# The long line fails if split.  The alternative is to use variables, but pipes are more efficient.
+#
 count=0
 tail -f /var/log/audit/audit.log | grep 'type=\(AVC\|SYSCALL\)' | \
     while read -r LINE; do \
-        count=$(( count + 1 ))
-        d="$(echo $LINE | awk '{print $2}' | sed 's:msg=audit(::g' | rev | cut -c12- | rev )"; \
-        d="$(date --date=@$d +'%Y-%m-%d %H:%M:%S')"; \
-        printf -- "#%4d %s: %s\n" "$count" "$d" "$LINE"; \
+        count=$(( count + 1 )); \
+        d="$(echo "$LINE" | awk '{print $2}' | sed 's:msg=audit(::g' | rev | cut -c12- | rev )"; \
+        d="$(date --date=@"$d" +'%Y-%m-%d %H:%M:%S')"; \
+        LINE="$(echo "$LINE" | sed -E "s/^(.+ syscall=)([0-9]+) (.*)$/printf -- '\1%s \3' \$(ausyscall \2)/e" | sed 's:type=AVC:type=AVC    :g' | sed -E "s/msg=audit\([0-9]+\.([0-9:]*)/msg=audit($d.\1)/g" )"; \
+        printf -- "#%4d %s\n" "$count" "$LINE"; \
     done
 
 # ----------------------------------------------------------------------------
