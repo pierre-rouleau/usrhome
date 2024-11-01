@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-10-04 21:49:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-01 08:30:15 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -203,10 +203,15 @@ precmd()
 
 usrhome-select-zsh-prompt()
 {
-    if [ "$TERM" = "dumb" ]; then
-        # To support Emacs Tramp (which sets TERM to "dumb", use a very simple prompt.
+    # To support Emacs Tramp (which sets TERM to "dumb", use a very simple prompt
+    # to avoid confusing Tramp's prompt parsing.
+    # However, when the shell is running inside Emacs don't do it as it may be
+    # the shell-mode buffer.
+    if [ "$TERM" = "dumb" ] && [ -z "$INSIDE_EMACS" ] ; then
         PS1='$ '
+        export PS1
         PROMPT='$ '
+        export PROMPT
     else
 
         p1=$'>%?@%B%D{%H:%M:%S} L%L'

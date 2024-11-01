@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-10-04 21:48:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-01 08:30:51 EDT, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -425,10 +425,15 @@ fi;\
 
 usrhome-select-bash-prompt()
 {
-    if [ "$TERM" = "dumb" ]; then
-        # To support Emacs Tramp (which sets TERM to "dumb", use a very simple prompt.
+    # To support Emacs Tramp (which sets TERM to "dumb"), use a very simple prompt
+    # to avoid confusing Tramp's prompt parsing.
+    # However, when the shell is running inside Emacs don't do it as it may be
+    # the shell-mode buffer.
+    if [ "$TERM" = "dumb" ] && [ -z "$INSIDE_EMACS" ] ; then
         PS1='$ '
+        export PS1
         PROMPT='$ '
+        export PROMPT
     else
         if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
             if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
