@@ -1,0 +1,41 @@
+#!/bin/sh
+# SH FILE: au-convert-date
+#
+# Purpose   : Convert the date of a Linux audit log line to human readable format.
+# Created   : Saturday, November  2 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-11-02 17:11:42 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Filter that coverts the time of audit log record.
+#
+# Converts:
+#   type=CONFIG_CHANGE msg=audit(1728599330.966:280): op=set audit_backlog_limit=8192 old=64 auid=4294967295 ses=4294967295 subj=system_u:system_r:unconfined_service_t:s0 res=1AUID="unset"
+#
+# Into:
+#   type=CONFIG_CHANGE msg=audit(2024-10-10@18:28:50.966 ID=280): op=set audit_backlog_limit=8192 old=64 auid=4294967295 ses=4294967295 subj=system_u:system_r:unconfined_service_t:s0 res=1AUID="unset"
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - gsed : GNU sed
+# - gdate: GNU date
+# - printf
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+gsed -E "s/^(.+ msg=audit\()([0-9]+)\.([0-9][0-9][0-9]):(.*)$/printf -- '%s%s.%s ID=%s' '\1' \$( gdate --date=@'\2' +'%Y-%m-%d@%H:%M:%S' ) '\3' '\4' /e "
+#          {--------------}{------}  {----------------}{--}
+# Group:    1               2         3                 4
+#           line prefix     date     milliseconds       remaining of line
+#                           time
+#                                                                                                         date format has NO embedded space!
+# ----------------------------------------------------------------------------
