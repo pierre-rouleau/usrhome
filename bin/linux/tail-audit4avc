@@ -4,7 +4,7 @@
 # Purpose   : Tail the /var/audit/log with some reformatting.
 # Created   : Wednesday, October 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-01 08:03:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-03 18:09:12 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -22,7 +22,7 @@
 # Dependencies
 # ------------
 #
-# tail, read, grep, awk, sed, cut, rev, date, printf
+# tail, read, grep, GNU awk, GNU sed, cut, rev, date, printf
 
 # ----------------------------------------------------------------------------
 # Code
@@ -34,15 +34,13 @@
 # Print the item number, line up mag=audit, reformat date, replace syscall number by name.
 # This code would be better written in some other language, Perl perhaps.
 #
-# The long line fails if split.  The alternative is to use variables, but pipes are more efficient.
+# The reformatting is done by au-format.
 #
 count=0
 tail -f /var/log/audit/audit.log | grep 'type=\(AVC\|SYSCALL\)' | \
     while read -r LINE; do \
         count=$(( count + 1 )); \
-        d="$(echo "$LINE" | awk '{print $2}' | sed 's:msg=audit(::g' | rev | cut -c12- | rev )"; \
-        d="$(date --date=@"$d" +'%Y-%m-%d %H:%M:%S')"; \
-        LINE="$(echo "$LINE" | sed -E "s/^(.+ syscall=)([0-9]+) (.*)$/printf -- '\1%s \3' \$(ausyscall \2)/e" | sed 's:type=AVC:type=AVC    :g' | sed -E "s/msg=audit\([0-9]+\.([0-9:]*)/msg=audit($d.\1)/g" )"; \
+        LINE="$(echo "$LINE" | "$USRHOME_DIR/bin/linux/au-format" )"; \
         printf -- "#%4d %s\n" "$count" "$LINE"; \
     done
 
