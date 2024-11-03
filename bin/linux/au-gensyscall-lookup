@@ -4,14 +4,14 @@
 # Purpose   : Generate syscall look-up table shell code.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-03 09:29:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-03 17:14:55 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # This utility generates shell script code that declares a lookup table
 # that maps a system call number to its function name.  The generated code
-# is meant to be sourced from other scripts that need to transform the syscall
+# is meant to be included inside a awk script  to transform the syscall
 # number by the corresponding function name.
 
 # ----------------------------------------------------------------------------
@@ -33,16 +33,19 @@ if which ausyscall > /dev/null; then
 #
 # Lookup-table of system call numbers to names.
 # Created with 'ausyscall --dump'.
-# This generated file is meant to be sourced by Bash scripts.
+# This generated file is meant to be included inside a awk script.
 #
 "
     ausyscall --dump | while read -r line; do
         awk '\
  BEGIN { \
-    print "declare -a syscall" \
+    print "BEGIN {" \
  } \
  /^[0-9]/ { \
     print "syscall[" $1 "]=\"" $2 "\"" \
+ }
+ END { \
+   print "}"
  }' ; done
 else
     printf -- "\
