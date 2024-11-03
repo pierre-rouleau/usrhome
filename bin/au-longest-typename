@@ -1,0 +1,40 @@
+#! /usr/bin/awk -f
+# AWK FILE: au-longest-typename
+#
+# Purpose   : Parse audit log file and measure the lenght of the longuest record type name.
+# Created   : Saturday, November  2 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-11-02 21:51:57 EDT, updated by Pierre Rouleau>
+# ------------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Parse a audit log file, compute the largest record type name and print it.
+
+# ------------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - awk
+
+# ------------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+BEGIN {
+    max_name_size = 0;
+}
+
+/^type=[A-Z_]+/ {
+    if (length($1) > max_name_size) {
+        max_name_size = length($1);
+    }
+}
+
+END {
+    max_name_size -= 5;  # 'type=' is not part of the name
+    print "The size of the largest type name is: " max_name_size ;
+}
+
+# ------------------------------------------------------------------------------
