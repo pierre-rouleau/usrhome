@@ -3,7 +3,7 @@
 # Purpose   : File filter: line up the audit log and prefix it with a record count.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 17:28:41 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 17:31:27 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -98,7 +98,7 @@ BEGIN {
     }
 
     # print the first file, padded.
-    printf "#%3d %-*s", line_number, my_type_width, $1;
+    printf "#%3d %-*s ", line_number, my_type_width, $1;
     line_number += 1;
 
     # Remember to print all fields after the first.
