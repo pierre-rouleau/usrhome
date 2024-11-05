@@ -4,7 +4,7 @@
 # Purpose   : Tail the /var/audit/log with some reformatting.
 # Created   : Wednesday, October 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-03 18:09:12 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 14:26:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,19 +28,53 @@
 # Code
 # ----
 #
-# Early version.  Later might provide more reformatting.
-#
 # Filter the log, looking for AVC and SYSCALL events.
 # Print the item number, line up mag=audit, reformat date, replace syscall number by name.
 # This code would be better written in some other language, Perl perhaps.
 #
-# The reformatting is done by au-format.
+# The reformatting is done by au-format, used in line-oriented way.
 #
+
+
+print_usage()
+{
+    printf -- "\
+tail-audit4avc: Print formatted running tail of /var/log/audit/audit.log
+                Only print AVC and SYSCALL records.
+
+  Usage:  tail-audit4avc
+          tail-audit4avc -h|--help
+"
+}
+
+# --
+# Validate arguments
+
+if [ -n "$1" ]; then
+    case "$1" in
+        -h|--help )
+            print_usage
+            # help requested explicitly: no error.
+            exit 0
+            ;;
+
+        *)
+            printf -- "\
+*** ERROR: tail-audit4avc: invalid option: %s
+           Use: 'tail-audit4avc -h' to print usage.\n" "$1"
+            exit 1
+            ;;
+    esac
+fi
+
+# --
+# Proceed
+
 count=0
 tail -f /var/log/audit/audit.log | grep 'type=\(AVC\|SYSCALL\)' | \
     while read -r LINE; do \
         count=$(( count + 1 )); \
-        LINE="$(echo "$LINE" | "$USRHOME_DIR/bin/linux/au-format" )"; \
+        LINE="$(echo "$LINE" | "$USRHOME_DIR/bin/linux/au-format"  --line-oriented )"; \
         printf -- "#%4d %s\n" "$count" "$LINE"; \
     done
 
