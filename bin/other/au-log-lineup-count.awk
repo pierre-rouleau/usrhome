@@ -1,9 +1,9 @@
-# AWK FILE: au-log-lineup.awk
+# AWK FILE: au-log-lineup-count.awk
 #
-# Purpose   : Line up the Audit log: make first field always same size.
+# Purpose   : File filter: line up the audit log and prefix it with a record count.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 12:15:09 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 12:12:31 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -22,12 +22,14 @@
 #   type=CONFIG_CHANGE    msg=audit(1728599330.966:280): op=set audit_backlog ...
 #   type=SYSCALL          msg=audit(1728599330.966:280): arch=c000003e syscall=44 ...
 #
+# CAUTION: Use this script as a FILE filter.
+#          It MUST process ALL lines of the file (or standard input)
+#          because it maintains a state over the lines.
+#          It will work to process single lines but won't be able to maintain
+#          the state over the lines and will always print line number as 1.
 #
-#  CAUTION: Use this script as a LINE filter.
-#           This script does not attempt to carry information across the lines
-#           of the processed file. If you want a script that cout the lines of
-#           the processed file and prints a line number use the
-#           au-log-lineup-count.awk instead.
+#          If you want to use a line-oriented filter, use the au-log-lineup.awk
+#          instead.
 
 # ------------------------------------------------------------------------------
 # Dependencies
@@ -47,12 +49,26 @@
 
 BEGIN {
     line_is_processed=0
+
+    # By default use a width that is enough for type=SYSCALL
+    # Later, keep track of that width and increase it if necessary.
+    my_type_width=12
+
+    # Count lines
+    line_number=1
 }
 
 /^type=[A-Z_]+/ {
 
+    # Update width based on filed type dencountered
+    current_type_width=length($1)
+    if ( current_type_width > my_type_width) {
+        my_type_width = current_type_width
+    }
+
     # print the first file, padded.
-    printf "%-21s", $1;
+    printf "#%3d %-*s", line_number, my_type_width, $1;
+    line_number += 1;
 
     # Then print all other fields.
     # Instead of trying to loop through all remaining fields and printing them
