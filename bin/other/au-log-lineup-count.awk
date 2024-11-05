@@ -3,7 +3,7 @@
 # Purpose   : File filter: line up the audit log and prefix it with a record count.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 17:31:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 17:34:09 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -114,7 +114,7 @@ $2 ~ /msg=audit\([0-9.:]+\)/ {
     sub( /\)/, "", time_text)
     split(time_text, time_elem, "[.:]")
 
-    printf "msg=audit(%s.%s ID:%-4s)", strftime("%Y-%m-%d@%H:%M:%S", time_elem[1]), time_elem[2], time_elem[3]
+    printf "msg=audit(%s.%s ID:%-4s):", strftime("%Y-%m-%d@%H:%M:%S", time_elem[1]), time_elem[2], time_elem[3]
 
     # Remember to print all fields after the second.
     field_processed=2
@@ -153,7 +153,7 @@ field_processed == 2  {
     # Instead of trying to loop through all remaining fields and printing them
     # with spaces in between, just compute the remainder and print that. This
     # way we won't inject extra spaces in various locations.
-    restofline=gensub("^type=[A-Z_]+ msg=audit\\([0-9.:]+\\)", "", 1, $0 );
+    restofline=gensub("^type=[A-Z_]+ msg=audit\\([0-9.:]+\\):", "", 1, $0 );
     print restofline
 }
 
