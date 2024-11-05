@@ -3,7 +3,7 @@
 # Purpose   : File filter: line up the audit log and prefix it with a record count.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 17:34:09 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 18:06:40 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -84,6 +84,7 @@ BEGIN {
     my_type_width=12
     my_syscall_width=5
     found_architecture=""
+    selinux_avc_count=0
 
     # Count lines
     line_number=1
@@ -95,6 +96,13 @@ BEGIN {
     current_type_width=length($1)
     if ( current_type_width > my_type_width) {
         my_type_width = current_type_width
+    }
+
+    # Count AVC records
+    type_name = gensub("type=", "", 1, $1)
+    sub(/ /, "", type_name)
+    if ( type_name == "AVC" ) {
+        selinux_avc_count += 1
     }
 
     # print the first file, padded.
@@ -161,7 +169,14 @@ field_processed == 0   { print }
 
 END {
     print "---- TRAILING INFORMATION ----"
-    print "CPU Architecture:" found_architecture
+    print "- CPU Architecture: " found_architecture
+    if ( selinux_avc_count != 0 ) {
+        print "- The above log has " selinux_avc_count " SELinux AVC records."
+        print "  SELinux notes:"
+        print "   - S-context := security context of process."
+        print "   - T-context := security context of file."
+    }
+    print "------------------------- ----"
 }
 
 # ------------------------------------------------------------------------------
