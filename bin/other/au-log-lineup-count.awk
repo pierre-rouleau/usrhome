@@ -3,7 +3,7 @@
 # Purpose   : File filter: line up the audit log and prefix it with a record count.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 12:12:31 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 14:11:07 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -60,7 +60,7 @@ BEGIN {
 
 /^type=[A-Z_]+/ {
 
-    # Update width based on filed type dencountered
+    # Update width according to what's found on the field type.
     current_type_width=length($1)
     if ( current_type_width > my_type_width) {
         my_type_width = current_type_width
