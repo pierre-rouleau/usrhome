@@ -3,7 +3,7 @@
 # Purpose   : File filter: line up the audit log and prefix it with a record count.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 17:07:01 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 17:28:41 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -83,6 +83,7 @@ BEGIN {
     # Later, keep track of that width and increase it if necessary.
     my_type_width=12
     my_syscall_width=5
+    found_architecture=""
 
     # Count lines
     line_number=1
@@ -113,7 +114,7 @@ $2 ~ /msg=audit\([0-9.:]+\)/ {
     sub( /\)/, "", time_text)
     split(time_text, time_elem, "[.:]")
 
-    printf "msg=audit(%s.%s ID:%s)", strftime("%Y-%m-%d@%H:%M:%S", time_elem[1]), time_elem[2], time_elem[3]
+    printf "msg=audit(%s.%s ID:%-4s)", strftime("%Y-%m-%d@%H:%M:%S", time_elem[1]), time_elem[2], time_elem[3]
 
     # Remember to print all fields after the second.
     field_processed=2
@@ -123,20 +124,26 @@ $2 ~ /msg=audit\([0-9.:]+\)/ {
 $4 ~ /syscall=[0-9]+/ {
 
     # Assuming the first 2 fields were processed and printed,
-    # print field 3 (the arch field) followed by modified field 4
+    # Skip printing field 3 (the arch field): it's always the same.
+    # - However remember it inside a variable; print it's value at the end.
+    # Print modified field 4
     syscall_name = syscall[gensub("^syscall=", "", 1, $4)]
     syscall_width=length(syscall_name)
     if (syscall_width > my_syscall_width) {
         my_syscall_width = syscall_width
     }
-    printf " %s syscall=%-*s", $3, my_syscall_width, syscall_name
+    printf " syscall=%-*s", my_syscall_width, syscall_name
 
     # Print the remainder of the line.
     restofline=gensub("^type=[A-Z_]+ msg=audit\\([0-9]+.[0-9]+:[0-9]+\\): arch=[a-z0-9]+ syscall=[0-9]+", "", 1, $0 );
     print restofline
 
+    # SYSCALL record identify the CPU architecture.
+    # It's not printed in the record, but printed at the end (once).
+    found_architecture = $3
+
     # All has been printed.
-   field_processed=4
+    field_processed=4
 }
 
 # Print rest of line if that has not already been done.
@@ -151,5 +158,10 @@ field_processed == 2  {
 }
 
 field_processed == 0   { print }
+
+END {
+    print "---- TRAILING INFORMATION ----"
+    print "CPU Architecture:" found_architecture
+}
 
 # ------------------------------------------------------------------------------
