@@ -4,7 +4,7 @@
 # Purpose   : Show SELinux Interface Definition.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2024-10-30 13:48:35 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-04 10:10:59 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -98,8 +98,8 @@ fi
 
 # --
 # Validate SELinux Policy Development Environment: sets usrhome_selinux_policy_module_dirpath
-source "$USRHOME_DIR/bin/linux/selinux/hidden/do-se-env-check"
-cd ${usrhome_selinux_policy_module_dirpath} || exit 1
+. "$USRHOME_DIR/bin/linux/selinux/hidden/do-se-env-check"
+cd "${usrhome_selinux_policy_module_dirpath}" || exit 1
 
 # --
 # Perform search
@@ -107,7 +107,7 @@ cd ${usrhome_selinux_policy_module_dirpath} || exit 1
 the_interface="$1"
 printf -- "\n"
 for file in */*.if; do
-    grep -A 9999 "\(interface(\`${the_interface}'\|template(\`${the_interface}'\)" ${file} | grep -B 9999 -m 1 "^')";
+    grep -A 9999 "\(interface(\`${the_interface}'\|template(\`${the_interface}'\)" "${file}" | grep -B 9999 -m 1 "^')";
 done
 printf -- "\n"
 

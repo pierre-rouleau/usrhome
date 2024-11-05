@@ -4,7 +4,7 @@
 # Purpose   : Find the specified SELinux Policy macro definition.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2024-10-30 13:46:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-04 10:08:13 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -88,8 +88,8 @@ fi
 
 # --
 # Validate SELinux Policy Development Environment: sets usrhome_selinux_policy_module_dirpath
-source "$USRHOME_DIR/bin/linux/selinux/hidden/do-se-env-check"
-cd ${usrhome_selinux_policy_module_dirpath} || exit 1
+. "$USRHOME_DIR/bin/linux/selinux/hidden/do-se-env-check"
+cd "${usrhome_selinux_policy_module_dirpath}" || exit 1
 
 # --
 # Perform search
@@ -101,7 +101,7 @@ for file in */*.if; do
 BEGIN { P=1; }\
  /(define\(\`[^\`]*\`$)/ { NAME=\$0; P=0 };\
  /${regexp}/ { if (P==0) {P=1; print NAME}; if (NAME!=\$0) print };\
-" ${file};
+" "${file}";
 done
 printf -- "\n"
 

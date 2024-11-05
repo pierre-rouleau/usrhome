@@ -4,7 +4,7 @@
 # Purpose   : Show SELinux Policy Macro Definition
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2024-10-30 13:48:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-04 10:09:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -87,8 +87,8 @@ fi
 
 # --
 # Validate SELinux Policy Development Environment: sets usrhome_selinux_policy_module_dirpath
-source "$USRHOME_DIR/bin/linux/selinux/hidden/do-se-env-check"
-cd ${usrhome_selinux_policy_module_dirpath} || exit 1
+. "$USRHOME_DIR/bin/linux/selinux/hidden/do-se-env-check"
+cd "${usrhome_selinux_policy_module_dirpath}" || exit 1
 
 # --
 # Perform search
@@ -96,7 +96,7 @@ cd ${usrhome_selinux_policy_module_dirpath} || exit 1
 macroname="$1"
 printf -- "\n"
 for file in */*.if; do
-    grep -A 9999 "define(\`${macroname}'" ${file} | grep -B 999 -m 1 "')";
+    grep -A 9999 "define(\`${macroname}'" "${file}" | grep -B 999 -m 1 "')";
 done
 printf -- "\n"
 

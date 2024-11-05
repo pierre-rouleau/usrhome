@@ -4,7 +4,7 @@
 # Purpose   : Check a SELinux Type Enforcement file, generate a .mod and .pp file.
 # Created   : Monday, October 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-30 11:05:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 08:47:50 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -92,15 +92,16 @@ fi
 # --
 # Proceed.
 
+# Compute the fbase using Bash feature
 fname="$1"
 fbase="${fname%%.*}"
 
 if [ "$verbose" = "true" ]; then
-    echo "checkmodule -M -m -o "${fbase}.mod" "${fname}""
+   printf -- "checkmodule -M -m -o %s.mod %s\n" "${fbase}" "${fname}"
 fi
 if checkmodule -M -m -o "${fbase}.mod" "${fname}"; then
     if [ "$verbose" = "true" ]; then
-        echo "semodule_package -o "${fbase}.pp" -m "${fbase}.mod""
+        printf -- "semodule_package -o %s.pp -m %s.mod\n" "${fbase}" "${fbase}"
     fi
     semodule_package -o "${fbase}.pp" -m "${fbase}.mod"
     if [ "$keep" = "false" ]; then
@@ -111,3 +112,6 @@ else
 fi
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /usr/bin/bash
+# End:
