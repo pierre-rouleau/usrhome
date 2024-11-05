@@ -3,7 +3,7 @@
 # Purpose   : Line up the Audit log: make first field always same size.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 16:41:46 rouleaup>
+# Time-stamp: <2024-11-05 17:10:36 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -104,7 +104,7 @@ $4 ~ /syscall=[0-9]+/ {
 
     # Assuming the first 2 fields were processed and printed,
     # print field 3 (the arch field) followed by modified field 4
-    printf " %s syscall=%-15s", $3, syscall[gensub("^syscall=", "", 1, $4)];
+    printf " %s syscall=%-6s", $3, syscall[gensub("^syscall=", "", 1, $4)];
 
     # Print the remainder of the line.
     restofline=gensub("^type=[A-Z_]+ msg=audit\\([0-9]+.[0-9]+:[0-9]+\\): arch=[a-z0-9]+ syscall=[0-9]+", "", 1, $0 );

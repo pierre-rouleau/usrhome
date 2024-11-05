@@ -3,7 +3,7 @@
 # Purpose   : File filter: line up the audit log and prefix it with a record count.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 16:41:44 rouleaup>
+# Time-stamp: <2024-11-05 17:07:01 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -82,6 +82,7 @@ BEGIN {
     # By default use a width that is enough for type=SYSCALL
     # Later, keep track of that width and increase it if necessary.
     my_type_width=12
+    my_syscall_width=5
 
     # Count lines
     line_number=1
@@ -123,7 +124,12 @@ $4 ~ /syscall=[0-9]+/ {
 
     # Assuming the first 2 fields were processed and printed,
     # print field 3 (the arch field) followed by modified field 4
-    printf " %s syscall=%-15s", $3, syscall[gensub("^syscall=", "", 1, $4)];
+    syscall_name = syscall[gensub("^syscall=", "", 1, $4)]
+    syscall_width=length(syscall_name)
+    if (syscall_width > my_syscall_width) {
+        my_syscall_width = syscall_width
+    }
+    printf " %s syscall=%-*s", $3, my_syscall_width, syscall_name
 
     # Print the remainder of the line.
     restofline=gensub("^type=[A-Z_]+ msg=audit\\([0-9]+.[0-9]+:[0-9]+\\): arch=[a-z0-9]+ syscall=[0-9]+", "", 1, $0 );
