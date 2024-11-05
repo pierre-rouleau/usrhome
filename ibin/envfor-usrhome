@@ -3,7 +3,7 @@
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-28 18:55:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 14:43:22 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -43,11 +43,17 @@ if ! echo "$PATH" | grep -q "$USRHOME_DIR"; then
         usrhome_printf "- Adding usrhome support.\n"
     fi
 
-    if [ "$(uname)" = "Darwin" ]; then
-        the_path="$USRHOME_DIR/bin:$USRHOME_DIR/bin/macOS":$PATH
-    else
-        the_path="$USRHOME_DIR/bin":$PATH
-    fi
+    case "$(uname)" in
+        Darwin)
+            the_path="$USRHOME_DIR/bin:$USRHOME_DIR/bin/macOS":$PATH
+            ;;
+
+        Linux)
+            the_path="$USRHOME_DIR/bin":$USRHOME_DIR/bin/linux:$PATH
+            ;;
+        *)
+            ;;
+    esac
     # Add users ~/.local/bin if it exists
     # Several programs put something inside ~/.local/bin and other
     # ~/.local sub directories.
