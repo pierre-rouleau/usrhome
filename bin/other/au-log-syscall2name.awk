@@ -3,14 +3,16 @@
 # Purpose   : Replace syscall function numbers by names in the audit log SYSCALL records.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-03 17:08:45 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-05 17:16:47 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Filter AWK script that replaces the syscall numbers by the corresponding
 # function name.
-
+#
+# NOTE:  Use the better au-log-lineup-count.awk: that provides more functionality
+#        and is able to format more fields.
 
 # ------------------------------------------------------------------------------
 # Dependencies
@@ -25,7 +27,7 @@
 #
 # Include the following file that defines the syscall array in a BEGIN clause.
 # This file must have been setup prior to invocation of this awk script.
-@include "/tmp/ausyscall-lookup.awk"
+@include "./ausyscall-lookup.awk"
 
 # Process clauses: 1 clause for the SYSCALL lines, one for the OTHERS
 
