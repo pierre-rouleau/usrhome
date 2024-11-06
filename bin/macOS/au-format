@@ -1,0 +1,108 @@
+#!/bin/sh
+# SH FILE: au-format
+#
+# Purpose   : Import format audit log records.
+# Created   : Sunday, November  3 2024.
+# Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
+# Time-stamp: <2024-11-06 07:19:36 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Filter script: formats each line from stdin.
+# The lines are expected to be audit log lines.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - GNU awk
+# - The file $USRHOME_DIR/bin/other/ausyscall-lookup.awk must have been
+#   created on a Linux system and copied manually into place.  That file
+#   is created by running the ausyscall utility that is only available on Linux.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+print_usage()
+{
+    printf -- "\
+au-format: Reformat audit lines (similar to var/log/audit/audit.log):
+           - Change time to human readable format.
+           - Replace syscall numbers by their function name.
+           - Improve line up my using fixed size for record type name.
+           - Unless --line-oriented is specified:
+             - Prefix each line with a record number
+
+ Usage:  au-format [--line-oriented]
+         au-format -h|--help
+
+This is a file-oriented filter by default.
+
+To process each line separately, as required for a filter
+used with 'tail -f' you must specify the --line-oriented option.
+"
+}
+
+
+# --
+# Validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# --
+# Is command for line oriented or file oriented filtering?
+
+line_oriented=0
+if [ -n "$1" ]; then
+    case "$1" in
+        --line-oriented )
+            line_oriented=1
+            ;;
+
+        *)
+            printf -- "\
+*** ERROR: au-format: invalid option: %s
+           Use: 'au-format -h' to print usage.\n" "$1"
+            exit 1
+            ;;
+    esac
+fi
+
+# --
+# Generate the syscall look-up table as an included AWK file
+# Store it inside the user's tmp directory.
+
+if [ ! -f "$USRHOME_DIR/bin/other/ausyscall-lookup.awk" ]; then
+    printf -- "\
+*** ERROR: au-format: Missing file: %s
+           Please first create this file by running au-format
+           inside a Linux system of the appropriate architecture
+           and copy the resulting file in its place.
+" "$USRHOME_DIR/bin/other/ausyscall-lookup.awk"  1>&2
+    exit 1
+fi
+
+# --
+# Proceed
+# Execute the linup filter at the end: the other filters expect
+# a log line format that has only 1 space separating first fields.
+
+if [ "${line_oriented}" = "1" ]; then
+     gawk -f "$USRHOME_DIR/bin/other/au-log-lineup.awk" -
+else
+    # Filter as a file, generating a line count.
+     gawk -f "$USRHOME_DIR/bin/other/au-log-lineup-count.awk" -
+fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
