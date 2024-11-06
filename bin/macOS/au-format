@@ -4,7 +4,7 @@
 # Purpose   : Import format audit log records.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2024-11-06 07:19:36 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-06 16:37:05 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -80,13 +80,16 @@ fi
 # Generate the syscall look-up table as an included AWK file
 # Store it inside the user's tmp directory.
 
-if [ ! -f "$USRHOME_DIR/bin/other/ausyscall-lookup.awk" ]; then
+lookup_fname="$USRHOME_DIR/bin/other/ausyscall-lookup.awk"
+lookup_dname="$USRHOME_DIR/bin/other"
+
+if [ ! -f "${lookup_fname}" ]; then
     printf -- "\
 *** ERROR: au-format: Missing file: %s
            Please first create this file by running au-format
            inside a Linux system of the appropriate architecture
            and copy the resulting file in its place.
-" "$USRHOME_DIR/bin/other/ausyscall-lookup.awk"  1>&2
+" "${lookup_fname}"  1>&2
     exit 1
 fi
 
@@ -94,6 +97,14 @@ fi
 # Proceed
 # Execute the linup filter at the end: the other filters expect
 # a log line format that has only 1 space separating first fields.
+
+AWKPATH=".:${lookup_dname}"
+export AWKPATH
+
+# Note: setting AWKPATH does not seem to work for all systems,
+#       as a work-around change current directory to the location
+#       of the lookup file, the file that the awk script includes.
+cd "${lookup_dname}" || exit 1
 
 if [ "${line_oriented}" = "1" ]; then
      gawk -f "$USRHOME_DIR/bin/other/au-log-lineup.awk" -

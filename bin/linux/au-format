@@ -4,7 +4,7 @@
 # Purpose   : Import format audit log records.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2024-11-06 15:28:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-06 16:32:41 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -98,6 +98,9 @@ fi
 # Proceed
 # Execute the linup filter at the end: the other filters expect
 # a log line format that has only 1 space separating first fields.
+
+AWKPATH=".:${lookup_dname}"
+export AWKPATH
 
 # Note: setting AWKPATH does not seem to work for all systems,
 #       as a work-around change current directory to the location
