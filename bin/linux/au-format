@@ -4,7 +4,7 @@
 # Purpose   : Import format audit log records.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2024-11-05 16:32:05 rouleaup>
+# Time-stamp: <2024-11-06 07:42:46 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,7 +18,6 @@
 # ------------
 #
 # - GNU awk
-# - GNU sed
 
 # ----------------------------------------------------------------------------
 # Code
