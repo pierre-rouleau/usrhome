@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-11-01 08:30:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-13 10:19:31 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -21,6 +21,23 @@
 # ----------------------------------------------------------------------------
 # USRHOME-specific code
 # ---------------------
+
+# Topic: Emacs Tramp support
+# --------------------------
+#
+# To allow Emacs to access this host remotely, simplify the shell startup
+# to the extreme.  Tramp sets TERM to dumb (but Emacs shell also).
+# - When TERM is dumb and the process is not already running under Emacs
+#   set the prompt to a short string and skip all shell configuration.
+#
+if [ "$TERM" = "dumb" ] && [ -z "$INSIDE_EMACS" ] ; then
+    PS1='$ '
+    export PS1
+    PROMPT='$ '
+    export PROMPT
+    return
+fi
+
 
 # Check Environment Consistency and Support Tracing
 # -------------------------------------------------
