@@ -4,7 +4,7 @@
 # Purpose   : Import format audit log records.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-22 17:47:59 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-26 16:43:11 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,6 +18,7 @@
 # ------------
 #
 # - GNU awk
+# - stdbuf (from coreutils) should be used on the command line.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -55,7 +56,21 @@ au-format: Filter program. Reformat stdin audit lines.
 
  Examples:
   sudo cat /var/log/audit/audit.log | au-format
-  sudo tail -f | au-format --line-oriented
+  sudo tail -f /var/log/audit/audit.log | stdbuf -oL au-format --line-oriented
+
+ Notes:
+
+ - Unless you are su, you would normally have to issue the command
+   under sudo to get permission to access the audit logs.
+ - When monitoring the audit log in 'real-time' with 'tail -f'
+   it is best to pipe it into 'stdbuf -oL' to force the pipes to
+   flush on each line, instead of the default used by the various
+   programs in the pipe.  This way the lines will be processed as
+   they are reported by tail and the output will be printed as soon
+   as possible.  If you do not use 'stdbuf -oL', any of the programs
+   in the pipe may retain information due to their buffering and that
+   will prevent you from seeing the events as they occur because their
+   printing will be delayed by the internal buffering of the programs.
 
 "
 }
