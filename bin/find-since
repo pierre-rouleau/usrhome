@@ -4,7 +4,7 @@
 # Purpose   : Find all files in directory tree created or modified after a specific file.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2024-11-29 15:46:28 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-29 16:17:16 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -93,15 +93,23 @@ print_error()
 
 
 # --
-# Check validity of arguments, extract options.
+# Check for help and print it.  Don't error if requested explicitly.
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     exit 0
 fi
 
+arg_count=$#
+if [ "$arg_count" -eq 0 ]; then
+    print_usage
+    exit 1
+fi
 
 # --
+# Further validate arguments, extract options.
+
+
 # Accumulate excluded_dir_roots directories in the excluded_dir_roots array.
 declare -a excluded_dir_roots
 declare -a excluded_dir_names
@@ -114,7 +122,6 @@ marker_file=
 rootdir=.
 
 
-arg_count=$#
 # process all arguments except the last one (it should hold the MARKER_FILE)
 while [ "$arg_count" -ge 1 ]; do
     case "$1" in
