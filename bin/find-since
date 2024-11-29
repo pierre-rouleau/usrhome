@@ -4,7 +4,7 @@
 # Purpose   : Find all files in directory tree created or modified after a specific file.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2024-11-29 17:52:57 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-29 18:24:58 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -289,8 +289,10 @@ if [ "$execute_find" = "true" ]; then
             # Output looks line:
             # 2024-11-29 19:42:26.741260800 -0300 -rw-r--r-- 1 root root 403 /tmp/abc
             # 1          2                  3     4          5 6    7    8   9
+            # Note: GNU xargs executes the command at least once even if stdin is empty
+            #       unless the -r  (--no-run-if-empty) is specified.
             find "${find_args[@]}" \
-                | xargs -0 stat --format '%Y :%y %A %h %U %G %s %n' \
+                | xargs -r -0 stat --format '%Y :%y %A %h %U %G %s %n' \
                 | sort -nr | cut -d: -f2- \
                 | awk '{ printf "%s %s %s %s %s %-8s %-8s %8s %s\n",  $1, $2, $3, $4, $5, $6, $7, $8, $9 }'
             ;;
