@@ -4,7 +4,7 @@
 # Purpose   : Find all files in directory tree created or modified after a specific file.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2024-11-29 16:31:53 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-29 16:34:59 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -53,12 +53,12 @@ find-since: Find and print the name of files created and modified after
     - ROOTDIR      : Directory tree to search.  Defaults to current working directory.
 
    OPTIONS:
-    - v              : verbose: print find command line.
-    - n              : Dry run: print find command line but does not execute it.
-    - X EXCLUDE-ROOT : Directory tree to exclude from the list.
+    - v              : Verbose: print find command line.
+    - n              : Dry run: print find command line but don't execute it.
+    - X EXCLUDE-ROOT : Directory tree to exclude from the search.
                        This option can be repeated.
     - x EXCLUDE-DIR  : Name of directory to exclude from the search.
-                       This can be any-sub-directory that has that name.
+                       Excludes any-sub-directory with that name.
                        This option can be repeated.
  Note:
     MARKER-FILE and ROOTDIR may be placed anywhere in the list of arguments.
@@ -78,6 +78,7 @@ find-since: Find and print the name of files created and modified after
 
  To specify a moment in the past, use touch to create a MARKER-FILE
  with the wanted date and time stamp.
+
 "
 }
 
