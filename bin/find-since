@@ -1,0 +1,287 @@
+#!/usr/bin/env bash
+# SH FILE: find-since
+#
+# Purpose   : Find all files in directory tree created or modified after a specific file.
+# Created   : Wednesday, November 27 2024.
+# Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
+# Time-stamp: <2024-11-29 15:46:28 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# To find a list of newly created or modified file, this script uses the find
+# utility and uses a file to indicate the starting point.
+#
+# To use it, identify, create or modify/touch a file that will be used as the
+# time 'marker', then use that file name as the argument.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Bash (used for its arrays).  This is NOT POSIX compliant!
+#                                It should be but that will be done later: TODO!
+#
+# - printf, find, xargs, stat, awk, sort, cut (cut only used in Linux)
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+find-since: Find and print the name of files created and modified after
+            a specified marker file in the specified directory tree.
+            Each line shows the file data, time and path name.
+            Lines are ordered with newest file first.
+
+ Usage: find-since  -h|--help
+
+  • Print this help information.
+
+ Usage: find-since [-v] [-X EXCLUDE-ROOT] [-x EXCLUDE-DIR] MARKER-FILE [ROOTDIR]
+
+  • Search and print path-name of all files created or modified
+    after the specified MARKER-FILE in the directory tree specified by DIR.
+
+    - MARKER_FILE  : Path-name of the file used as the starting point.
+                     This must be the last argument.
+    - ROOTDIR      : Directory tree to search.  Defaults to current working directory.
+
+   OPTIONS:
+    - v              : verbose: print find command line.
+    - n              : Dry run: print find command line but does not execute it.
+    - X EXCLUDE-ROOT : Directory tree to exclude from the list.
+                       This option can be repeated.
+    - x EXCLUDE-DIR  : Name of directory to exclude from the search.
+                       This can be any-sub-directory that has that name.
+                       This option can be repeated.
+ Note:
+    MARKER-FILE and ROOTDIR may be placed anywhere in the list of arguments.
+    The only constraint is that MARKER-FILE *must* appear *first*.
+
+ Example:
+          # To find all files in home directory tree newer than the moment
+          # when the file 'start' has just been created:
+
+          touch start
+          find-since start ~
+
+          # or:
+          cd
+          touch start
+          find-since start
+
+ To specify a moment in the past, use touch to create a MARKER-FILE
+ with the wanted date and time stamp.
+"
+}
+
+print_error()
+{
+    >&2 printf -- "\
+***ERROR*** find-since:
+ %s
+ Use find-since -h to show usage.
+***********
+" "$1"
+}
+
+
+# --
+# Check validity of arguments, extract options.
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
+
+
+# --
+# Accumulate excluded_dir_roots directories in the excluded_dir_roots array.
+declare -a excluded_dir_roots
+declare -a excluded_dir_names
+
+verbose=false
+execute_find=true
+marker_file_found=false
+rootdir_found=false
+marker_file=
+rootdir=.
+
+
+arg_count=$#
+# process all arguments except the last one (it should hold the MARKER_FILE)
+while [ "$arg_count" -ge 1 ]; do
+    case "$1" in
+        -v )
+            verbose=true
+            ;;
+
+        -n )
+            verbose=true
+            execute_find="false"
+            ;;
+
+        -d )
+            rootdir="$2"
+            shift
+            arg_count=$(( arg_count - 1 ))
+            ;;
+
+        -X )
+            excluded_dir_roots+=( "$2" )
+            shift
+            arg_count=$(( arg_count - 1 ))
+            ;;
+
+        -x )
+            excluded_dir_names+=( "$2" )
+            shift
+            arg_count=$(( arg_count - 1 ))
+            ;;
+
+        -* ) print_error "Invalid argument $1"
+            exit 1
+            ;;
+
+        *)
+            if [ "$marker_file" = "" ] && [ "$marker_file_found" = "false" ] ; then
+                marker_file="$1"
+                marker_file_found=true
+            elif [ "$rootdir_found" = "false" ]; then
+                rootdir="$1"
+                rootdir_found=true
+            else
+                print_error "Non non-option argument in excess: $1"
+                exit 1
+            fi
+            ;;
+    esac
+    shift
+    arg_count=$(( arg_count - 1 ))
+done
+
+# -- Add excluded directories based on OS
+# On macOS, Apple prevents access of several directories.
+# Append these directory trees from the excluded list
+if [ "$(uname)" = "Darwin" ]; then
+    excluded_dir_roots+=( ~/Applications ~/Downloads ~/Library ~/Pictures ~/.Trash )
+fi
+
+# --
+# Check validity of marker_file and rootdir
+
+# echo "rootdir            : ${rootdir}"
+# echo "marker-file        : ${marker_file}"
+
+if [ ! -e "${marker_file}" ]; then
+   print_error "Specified MARKER-FILE does not exists: ${marker_file}"
+   exit 1
+fi
+if [ ! -d "${rootdir}" ]; then
+   print_error "Specified ROOTDIR does not exists: ${rootdir}"
+   exit 1
+fi
+
+# --
+# Build find command arguments to exclude specific directory roots into find_excluded_dir_roots_args
+# Ref: https://stackoverflow.com/a/63523300/12178680  : great explanation of find arguments
+# Ref: https://stackoverflow.com/a/4210072/12178680   : some more info
+
+declare -a find_excluded_dir_roots_args
+
+excluded_dir_root_count=0
+for dname in "${excluded_dir_roots[@]}"; do
+    if [ "${excluded_dir_root_count}" = "0" ]; then
+        find_excluded_dir_roots_args+=( -path "${dname}" )
+    else
+        find_excluded_dir_roots_args+=( -o -path "${dname}" )
+    fi
+    excluded_dir_root_count=$(( excluded_dir_root_count + 1 ))
+done
+
+# --
+# Build find command arguments to exclude specific directory names into find_excluded_dir_names_args
+declare -a find_excluded_dir_names_args
+
+excluded_dir_name_count=0
+for dname in "${excluded_dir_names[@]}"; do
+    if [ "${excluded_dir_name_count}" = "0" ]; then
+        find_excluded_dir_names_args+=( -name "${dname}" )
+    else
+        find_excluded_dir_names_args+=( -o -name "${dname}" )
+    fi
+    excluded_dir_name_count=$(( excluded_dir_name_count + 1 ))
+done
+
+# --
+# Build find command line arguments (into an array)
+declare -a find_args
+find_args+=( "${rootdir}" )
+
+if [ ${excluded_dir_root_count} -gt 0 ]; then
+ if [ ${excluded_dir_root_count} -gt 1 ]; then
+     find_args+=( '(' )
+ fi
+ find_args+=( "${find_excluded_dir_roots_args[@]}" )
+ if [ ${excluded_dir_root_count} -gt 1  ]; then
+     find_args+=( ")" )
+ fi
+ find_args+=( -prune -o )
+fi
+
+if [ ${excluded_dir_name_count} -gt 0 ]; then
+ if [ ${excluded_dir_name_count} -gt 1 ]; then
+     find_args+=( '(' )
+ fi
+ find_args+=( "${find_excluded_dir_names_args[@]}" )
+ if [ ${excluded_dir_name_count} -gt 1  ]; then
+     find_args+=( ")" )
+ fi
+ find_args+=( -prune -o )
+fi
+
+find_args+=( -type f -newer "${marker_file}" -print0 )
+
+
+
+# --
+# Proceed
+
+if [ "$verbose" = "true" ]; then
+    # echo "rootdir            : ${rootdir}"
+    # echo "marker-file        : ${marker_file}"
+    # echo "find_excluded_dir_roots_args : ${find_excluded_dir_roots_args}"
+    # echo "excluded_dir_roots           : ${excluded_dir_roots[*]}"
+    # echo "excluded_dir_root_count     : ${excluded_dir_root_count}"
+    echo "find ${find_args[*]}"
+fi
+
+
+if [ "$execute_find" = "true" ]; then
+    case "$(uname)" in
+        Darwin)
+            find "${find_args[@]}" \
+                | xargs -0 -I $ stat -lt '%Y-%m-%d %X' $ \
+                | awk '{ print $6  " " $7 " " $8  }' | sort -r
+            ;;
+
+        Linux)
+            find "${find_args[@]}" \
+                | xargs -0 stat --format '%Y :%y %n' \
+                | sort -nr | cut -d: -f2-
+            ;;
+
+        *)
+            print_error "The $(uname) OS is currently not supported."
+            exit 1
+            ;;
+    esac
+fi
+
+# ----------------------------------------------------------------------------
