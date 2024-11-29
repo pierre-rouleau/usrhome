@@ -4,7 +4,7 @@
 # Purpose   : Import format audit log records.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-14 16:51:35 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-26 16:43:11 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,6 +18,7 @@
 # ------------
 #
 # - GNU awk
+# - stdbuf (from coreutils) should be used on the command line.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -28,20 +29,49 @@
 print_usage()
 {
     printf -- "\
-au-format: Reformat audit lines (similar to var/log/audit/audit.log):
-           - Change time to human readable format.
-           - Replace syscall numbers by their function name.
-           - Improve line up my using fixed size for record type name.
-           - Unless --line-oriented is specified:
-             - Prefix each line with a record number
+au-format: Filter program. Reformat stdin audit lines.
+          Expects lines with format similar to var/log/audit/audit.log.
+          - If used on Linux, uses 'ausearch -i' to interpret every field,
+            then proceed with extra formatting:
+            - line up the first field (record type name)
+            - remove ID sequence separator lines
+            - add a line counter when used in file oriented.
+          - If used on a system where ausearch is not available, performs
+            as much formatting as possible.
+            - Change time to human readable format.
+            - Replace syscall numbers by their function name.
+            - Improve line up my using fixed size for record type name.
+            - Unless --line-oriented is specified:
+              - Prefix each line with a record number
+
+          In file oriented, print a report at the end counting AVC records.
 
  Usage:  au-format [--line-oriented]
          au-format -h|--help
 
-This is a file-oriented filter by default.
+    This is a file-oriented filter by default.
 
-To process each line separately, as required for a filter
-used with 'tail -f' you must specify the --line-oriented option.
+    To process each line separately, as required for a filter
+    used with 'tail -f' you must specify the --line-oriented option.
+
+ Examples:
+  sudo cat /var/log/audit/audit.log | au-format
+  sudo tail -f /var/log/audit/audit.log | stdbuf -oL au-format --line-oriented
+
+ Notes:
+
+ - Unless you are su, you would normally have to issue the command
+   under sudo to get permission to access the audit logs.
+ - When monitoring the audit log in 'real-time' with 'tail -f'
+   it is best to pipe it into 'stdbuf -oL' to force the pipes to
+   flush on each line, instead of the default used by the various
+   programs in the pipe.  This way the lines will be processed as
+   they are reported by tail and the output will be printed as soon
+   as possible.  If you do not use 'stdbuf -oL', any of the programs
+   in the pipe may retain information due to their buffering and that
+   will prevent you from seeing the events as they occur because their
+   printing will be delayed by the internal buffering of the programs.
+
 "
 }
 
@@ -73,6 +103,19 @@ if [ -n "$1" ]; then
             ;;
     esac
 fi
+
+# --
+# If running on Linux and ausearch is available, use ausearch -i
+# to provide the bulk of log interpretation and complete the format
+# with awk.
+
+use_ausearch="no"
+if [ "$(uname)" = "Linux" ]; then
+    if which ausearch > /dev/null 2>&1; then
+        use_ausearch="yes"
+    fi
+fi
+
 
 # --
 # Generate the syscall look-up table as an included AWK file
@@ -107,11 +150,21 @@ export AWKPATH
 #       of the lookup file, the file that the awk script includes.
 cd "${lookup_dname}" || exit 1
 
-if [ "${line_oriented}" = "1" ]; then
-     awk -f "$USRHOME_DIR/bin/other/au-log-lineup.awk" -
+if [ "$use_ausearch" = "yes" ]; then
+    # use grep to remove the separator line; easier than with awk.
+    # Also use sed to get rid of " : " after the time stamp; also easier than with awk.
+    if [ "${line_oriented}" = "1" ]; then
+        ausearch -i | grep -v '^----$' | awk -f "$USRHOME_DIR/bin/other/au-extra-format.awk" - | sed 's/) : /): /g'
+    else
+        ausearch -i | grep -v '^----$' | awk -f "$USRHOME_DIR/bin/other/au-extra-format-count.awk" - | sed 's/) : /): /g'
+    fi
 else
-    # Filter as a file, generating a line count.
-     awk -f "$USRHOME_DIR/bin/other/au-log-lineup-count.awk" -
+    if [ "${line_oriented}" = "1" ]; then
+        awk -f "$USRHOME_DIR/bin/other/au-log-lineup.awk" -
+    else
+        # Filter as a file, generating a line count.
+        awk -f "$USRHOME_DIR/bin/other/au-log-lineup-count.awk" -
+    fi
 fi
 
 # ----------------------------------------------------------------------------
