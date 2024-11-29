@@ -4,7 +4,7 @@
 # Purpose   : Find all files in directory tree created or modified after a specific file.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2024-11-29 16:17:16 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-29 16:31:53 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -43,7 +43,7 @@ find-since: Find and print the name of files created and modified after
 
   • Print this help information.
 
- Usage: find-since [-v] [-X EXCLUDE-ROOT] [-x EXCLUDE-DIR] MARKER-FILE [ROOTDIR]
+ Usage: find-since [-v] [-n] [-X EXCLUDE-ROOT] [-x EXCLUDE-DIR] MARKER-FILE [ROOTDIR]
 
   • Search and print path-name of all files created or modified
     after the specified MARKER-FILE in the directory tree specified by DIR.
