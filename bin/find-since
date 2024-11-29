@@ -4,7 +4,7 @@
 # Purpose   : Find all files in directory tree created or modified after a specific file.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2024-11-29 17:47:07 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-29 17:52:57 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -282,7 +282,7 @@ if [ "$execute_find" = "true" ]; then
             # Awk fields are space separated: 1         2 3    4     5   6          7        8
             find "${find_args[@]}" \
                 | xargs -0 -I $ stat -lt '%Y-%m-%d %X' $ \
-                | awk '{ printf "%s %s %s %s %-8s %-8s %6s %s\n",  $6, $7, $1, $2, $3, $4, $5, $8 }' | sort -r
+                | awk '{ printf "%s %s %s %s %-8s %-8s %8s %s\n",  $6, $7, $1, $2, $3, $4, $5, $8 }' | sort -r
             ;;
 
         Linux)
@@ -292,7 +292,7 @@ if [ "$execute_find" = "true" ]; then
             find "${find_args[@]}" \
                 | xargs -0 stat --format '%Y :%y %A %h %U %G %s %n' \
                 | sort -nr | cut -d: -f2- \
-                | awk '{ printf "%s %s %s %s %s %-8s %-8s %6s %s\n",  $1, $2, $3, $4, $5, $6, $7, $8, $9 }'
+                | awk '{ printf "%s %s %s %s %s %-8s %-8s %8s %s\n",  $1, $2, $3, $4, $5, $6, $7, $8, $9 }'
             ;;
 
         *)
