@@ -4,7 +4,7 @@
 # Purpose   : Find all files in directory tree created or modified after a specific file.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2024-11-29 16:34:59 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-29 17:12:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -36,8 +36,8 @@ print_usage()
     printf -- "
 find-since: Find and print the name of files created and modified after
             a specified marker file in the specified directory tree.
-            Each line shows the file data, time and path name.
-            Lines are ordered with newest file first.
+            Print files found in order of time (newest first).
+            List all information provided by ls -l but with time stamp printed first.
 
  Usage: find-since  -h|--help
 
@@ -272,16 +272,20 @@ fi
 
 
 if [ "$execute_find" = "true" ]; then
+    # Find all files.  Print them in order of time (newest first).
+    # List all information provided by ls -l but with time stamp printed first.
     case "$(uname)" in
         Darwin)
+            # stat output looks like this:  '-rw-r--r-- 1 roup staff 320 2024-11-27 15:06:09 allola'
+            # Awk fields are space separated: 1         2 3    4     5   6          7        8
             find "${find_args[@]}" \
                 | xargs -0 -I $ stat -lt '%Y-%m-%d %X' $ \
-                | awk '{ print $6  " " $7 " " $8  }' | sort -r
+                | awk '{ print $6  " " $7 " " $1 " " $2 " " $3 " " $4 " " $5 " "$8  }' | sort -r
             ;;
 
         Linux)
             find "${find_args[@]}" \
-                | xargs -0 stat --format '%Y :%y %n' \
+                | xargs -0 stat --format '%Y :%y %A %h %U %G %s %n' \
                 | sort -nr | cut -d: -f2-
             ;;
 
