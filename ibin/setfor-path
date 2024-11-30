@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 16:59:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-30 18:18:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -59,9 +59,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             case $xz_ver in
                 '5.6.0' | '5.6.1' )
                     usrhome_xz_vulnerability
-                    usrhome_printf "     - https://nvd.nist.gov/vuln/detail/CVE-2024-3094\n"
-                    usrhome_printf "     - https://www.wired.com/story/jia-tan-xz-backdoor/\n"
-                    usrhome_printf "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor\n\n"
+                    usrhome_printf "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor_incident\n\n"
                     case "$(uname)" in
                         'Darwin')
                             usrhome_printf "Run: 'brew update; brew upgrade' AS SOON AS POSSIBLE to downgrade xz!\n\n"
