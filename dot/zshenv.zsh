@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-08-02 12:44:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-12-02 15:58:41 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -68,12 +68,34 @@ usrhome_config="$USRHOME_DIR_USRCFG/setfor-all-config.sh"
 if [ -e $usrhome_config ]; then
     . "$usrhome_config"
 else
-    printf "***USRHOME ERROR!!*********************************************\n"
-    printf "Cannot find the user's configuration file!\n"
-    printf " Expected file: %s\n" "$usrhome_config"
-    printf " Please write it, use the template example as basis.\n"
-    printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
-    printf "***************************************************************\n"
+    printf -- "\
+***USRHOME WARNING!!*********************************************
+Cannot find the user's configuration file!
+ Expected file: %s
+ Please write it, use the template example as basis.
+ The template is: %s
+
+ Proceeding without user-specific configuration.
+  USRHOME specific commands and prompts are available
+  with default settings.
+
+ For more information, see
+ https://github.com/pierre-rouleau/usrhome/blob/main/readme.rst#the-z-and-bash-shell-startup-dot-files-and-user-configuration
+
+***************************************************************
+" "$usrhome_config" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
+
+    # When usrcfg is not defined, disable any tracing by defining dummy functions.
+    usrhome_trace_in()
+    {
+        printf -- ""
+    }
+
+    usrhome_trace_out()
+    {
+        printf -- ""
+    }
+
 fi
 unset usrhome_config
 

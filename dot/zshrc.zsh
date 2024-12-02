@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-11-13 10:19:31 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-12-02 16:04:19 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -356,12 +356,18 @@ user_zshrc="$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 if [ -e "$user_zshrc" ]; then
     . "$user_zshrc"
 else
-    usrhome_printf "***USRHOME ERROR!!*********************************************\n"
-    usrhome_printf "Cannot find the user's Z shell configuration file!\n"
-    usrhome_printf " Expected file: %s\n" "$user_zshrc"
-    usrhome_printf " Please write it, use the template example as basis.\n"
-    usrhome_printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/do-user-zshrc.zsh"
-    usrhome_printf "***************************************************************\n"
+    printf -- "\
+***USRHOME WARNING!!*********************************************
+Cannot find the user's Z shell configuration file!
+ Expected file: %s
+ Please write it, use the template example as basis.
+ The template is: %s
+
+ Proceeding without user-specific configuration.
+  USRHOME specific commands and prompts are available
+  with default settings.
+***************************************************************
+"  "$user_zshrc" "$USRHOME_DIR/template/usrcfg/do-user-zshrc.zsh"
 fi
 unset user_zshrc
 # ----------------------------------------------------------------------------
