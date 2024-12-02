@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-12-02 12:07:56 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-12-02 16:17:51 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -128,6 +128,10 @@ Cannot find the user's configuration file!
  Proceeding without user-specific configuration.
   USRHOME specific commands and prompts are available
   with default settings.
+
+ For more information, see
+ https://github.com/pierre-rouleau/usrhome/blob/main/readme.rst#the-z-and-bash-shell-startup-dot-files-and-user-configuration
+
 ***************************************************************
 " "$usrhome_config" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
 
