@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-11-13 10:17:41 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-12-02 12:07:56 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -118,14 +118,29 @@ if [ -e "$usrhome_config" ]; then
     # shellcheck disable=SC1090
     . "$usrhome_config"
 else
-    usrhome_printf "\
-***USRHOME ERROR!!*********************************************
+    printf -- "\
+***USRHOME WARNING!!*********************************************
 Cannot find the user's configuration file!
  Expected file: %s
  Please write it, use the template example as basis.
  The template is: %s
+
+ Proceeding without user-specific configuration.
+  USRHOME specific commands and prompts are available
+  with default settings.
 ***************************************************************
 " "$usrhome_config" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
+
+    # When usrcfg is not defined, disable any tracing by defining dummy functions.
+    usrhome_trace_in()
+    {
+        printf -- ""
+    }
+
+    usrhome_trace_out()
+    {
+        printf -- ""
+    }
 fi
 unset usrhome_config
 
