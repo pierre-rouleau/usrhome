@@ -1,0 +1,158 @@
+#!/bin/sh
+# SH FILE: find-latest-in
+#
+# Purpose   : Find and list all new and recently modified files.
+# Created   : Wednesday, November 27 2024.
+# Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
+# Time-stamp: <2025-01-08 11:03:44 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Search and list recently created or modified files
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - fd fast searcher:  https://github.com/sharkdp/fd
+# - xargs, stat, sort, cut.
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+find-latest-in: Find and print the name of the recently created and modified files
+                in the specified directory tree DIR.
+
+ Usage: find-latest-in  -h|--help
+
+  • Print this help information.
+
+ Usage: find-latest-in [-H|--hidden] [-I|--no-ignore] [-d DIR] [-t TIME] [-f FILEPATTERN]
+
+  • Search and print path-name of all recently created or modified
+    files found in the directory tree specified by DIR.
+    It searches for all files unless a --file=PATTERN is specified.
+
+    - DIR: Directory tree.  Defaults to current working directory
+    - TIME Time within which the files are reported.
+      Identify cktime as an integer followed by s, m or h,
+      which represent seconds, minutes, hour respectively.
+      Defaults to 10m.
+    - FILEPATTERN.  Specify a file pattern to search, ignore others.
+      By default no pattern is specified and all files are searched.
+    - -H | -- hidden: Search hidden files and directories.
+      By default they are not searched.
+    - -I | --no-ignore: Do not respect the .(git|fd)ignore files.
+      By default all ignored files identified by .gitignore or .fdignore
+      are ignored.
+
+"
+}
+
+print_error()
+{
+    >&2 printf -- "\
+***ERROR*** find-latest-in:
+ %s
+ Use find-latest-in -h to show usage.
+***********
+" "$1"
+}
+
+
+# --
+# Check validity of arguments, extract options.
+
+opt_hidden=
+opt_ignore=
+dirname=.
+cktime=10m
+filepattern=
+
+args=$#
+while [ "$args" -ge 1 ]; do
+    echo "Arg1: $1"
+    echo "Arg2: $2"
+    case "$1" in
+        -h | --help )
+            print_usage
+            exit 0
+            ;;
+
+        -H | --hidden )
+            opt_hidden=--hidden
+            shift
+            ;;
+
+        -I | --no-ignore )
+            opt_ignore=--no-ignore
+            shift
+            ;;
+
+        -d ) dirname="$2"
+             shift
+             shift
+             args=$(( args - 1 ))
+             ;;
+
+        -t ) cktime="$2"
+             shift
+             shift
+             args=$(( args - 1 ))
+             ;;
+
+        -f ) filepattern="$2"
+             shift
+             shift
+             args=$(( args - 1 ))
+             ;;
+
+        *) print_error "Invalid argument $1"
+           exit 1
+    esac
+    args=$(( args - 1 ))
+done
+
+# --
+# Build options and execute search.
+
+# TODO: fix following for sh script.
+
+options='--changed-within '
+options+=${cktime}
+options+=" "
+options+=${opt_hidden}
+options+=" "
+options+=${opt_ignore}
+
+# TODO: cleanup output: allow printing only the file
+#echo "OPTIONS: [${options}]  FILEPATTERN: [${filepattern}]   DIR: [${dirname}]"
+case "$(uname)" in
+    Darwin)
+        fd -t f ${options} ${filepattern} "${dirname}"  | xargs -I $ ls -l $
+        # fd -t f ${options} ${filepattern} "${dirname}"  | xargs -I $ stat -f '%N %Sm' -t '%Y:%m:%d @  %H:%M:%S' $
+        ;;
+
+    Linux)
+        fd ${options} ${filepattern} "${dirname}" | xargs -I $ stat --format '%Y :%y %n' $ | sort -nr | cut -d: -f2-
+        ;;
+esac
+
+
+
+# TODO: support systems where fd is not installed.
+# A method to use find might be needed for system where fd is not installed.
+# It will be slower, but at least something would be available.
+#
+# find $1 -type f -print0 | xargs -0 stat --format '%Y :%y %n' | sort -nr | cut -d: -f2-
+#
+# ----------------------------------------------------------------------------
