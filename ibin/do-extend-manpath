@@ -3,7 +3,7 @@
 # Purpose   : Set MANPATH to the value of manpath if not already set.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:52:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-13 10:39:17 rouleaup>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -11,20 +11,39 @@
 # Prepare extending the list of directories searched by the man utility.
 # Source (include) this file inside other sourced files before adding to the
 # MANPATH value.
+#
+# On some system MANPATH is set to an invalid value of ":".  If this is
+# detected, the script considers it invalid and resets it to what manpath
+# identifies.
+#
+# If your system has an extra set of man directories somewhere outside of the
+# standard places, identify them inside the MANPATH_XTRA_BEFORE or
+# MANPATH_XTRA_AFTER variables.  The value of MANPATH_XTRA_BEFORE is
+# pre-pended to the list and the value of MANPATH_XTRA_AFTER is appended to
+# the list.
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
 #
-if [ -z "$MANPATH" ]; then
+if [ -z "$MANPATH" ] || [ "$MANPATH" = ":" ]; then
     # Some Linux systems support the manpath -g option, which provides more
     # entries. Try it.  If that fails use manpath without it.
-    if manpath -g 2> /dev/null; then
+    if manpath -g > /dev/null 2>&1; then
         MANPATH="$(manpath -g)"
     else
         MANPATH="$(manpath)"
     fi
+    export MANPATH
+fi
+
+if [ -n "$MANPATH_EXTRA_BEFORE" ]; then
+    MANPATH="$MANPATH_EXTRA_BEFORE:$MANPATH"
+    export MANPATH
+fi
+if [ -n "$MANPATH_EXTRA_AFTER" ]; then
+    MANPATH="$MANPATH:$MANPATH_EXTRA_AFTER"
     export MANPATH
 fi
 
