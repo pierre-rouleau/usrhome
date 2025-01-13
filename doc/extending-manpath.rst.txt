@@ -1,0 +1,106 @@
+=====================================
+Extending man path on various systems
+=====================================
+
+:Home URL: https://github.com/pierre-rouleau/usrhome
+:Created:  Sunday, May 26 2024.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-01-13 11:13:28 EST, updated by Pierre Rouleau.
+:Copyright: © 2024, 2025, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Introduction - Problem, Challenge and Solution
+==============================================
+
+
+**The Problem**:
+
+Having installed a new software package you notice that the ``man`` command
+does not find information for the commands in this package.  You know where
+the man files are stored and you want them used by ``man``.
+
+**The Challenge**:
+
+As this is USRHOME, I'd like the solution to work in all operating systems
+supported by USRHOME, which is macOS and all distributions of Linux.
+
+Looking at the man pages of ``man`` and ``manpath`` from several system we
+can see that under Linux the file ``~/.manpath`` can be used to set the
+configuration for ``man``.  This file is not supported on macOS.
+
+**The Solution**
+
+As always in USRHOME, the solution is to use the environment variables, along
+with setup source scripts.   The various shell specializing scripts can extend
+the value of MANPATH if it is already set.  If it is not set then it must be
+set to the value returned by the ``manpath`` command.    On some system, like
+Linux, the ``manpath`` command supports the ``-g`` option which provides a
+longer list of directories.
+
+Therefore the sh-specific logic that must be used in various shell
+specialization sourced script that must support all the target environments
+must be the following, included inside the usrhome/ibin/extend-manpath:
+
+.. code:: sh
+
+          if [ -z "$MANPATH" ]; then
+              if manpath -g > /dev/null 2>&1; then
+                  MANPATH="$(manpath -g)"
+              else
+                  MANPATH="$(manpath)"
+              fi
+              export MANPATH
+          fi
+
+The `USRHOME_DIR/ibin/do-extend-manpath`_ script also provides the ability to
+extend the MANPATH by adding directories before and/or after the list of
+directories in MANPATH.  To do that set the ':' separated directory paths into
+the following variables:
+
+======================= ===================================================
+Variable Name           PURPOSE
+======================= ===================================================
+MANPATH_EXTRA_BEFORE    List of ':' separated directories that are placed
+                        **before** the directories of MANPATH.
+
+MANPATH_EXTRA_AFTER     List of ':' separated directories that are placed
+                        **after** the directories of MANPATH.
+======================= ===================================================
+
+Therefore, to add extra directories to MANPATH inside a Bash shell of one of
+your systems, you could write the following code inside your local
+configuration file for Bash``$USRHOME_DIR_USRCFG/do-user-bashrc.bash``:
+
+The shell extending source script can then do the following:
+
+.. code:: sh
+
+          MANPATH_EXTRA_BEFORE="$HOME/my-prioritized-pages/share/man"
+          MANPATH_EXTRA_AFTER="$HOME/tool-a/share/man:$HOME/tool-b/share/man"
+          MANPATH_SHOW_IF_MODIFIED=true
+          . "$USRHOME_DIR/ibin/do-extend-manpath"
+
+The script exports the new value of MANPATH and prints the modified path if
+the MANPATH_SHOW_IF_MODIFIED variable is set to "true" as shown above..
+
+.. ---------------------------------------------------------------------------
+.. links
+.. /Users/roup/my/shell/usrhome/doc/extending-manpath.rst.txt
+
+.. _USRHOME_DIR/ibin/do-extend-manpath: ../ibin/do-extend-manpath
+
+
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:

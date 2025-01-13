@@ -3,7 +3,7 @@
 # Purpose   : Set MANPATH to the value of manpath if not already set.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-13 10:39:17 rouleaup>
+# Time-stamp: <2025-01-13 11:12:04 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,6 +27,7 @@
 # ----
 #
 #
+manpath_modified=false
 if [ -z "$MANPATH" ] || [ "$MANPATH" = ":" ]; then
     # Some Linux systems support the manpath -g option, which provides more
     # entries. Try it.  If that fails use manpath without it.
@@ -35,15 +36,22 @@ if [ -z "$MANPATH" ] || [ "$MANPATH" = ":" ]; then
     else
         MANPATH="$(manpath)"
     fi
-    export MANPATH
+    manpath_modified=true
 fi
 
 if [ -n "$MANPATH_EXTRA_BEFORE" ]; then
     MANPATH="$MANPATH_EXTRA_BEFORE:$MANPATH"
-    export MANPATH
+    manpath_modified=true
 fi
 if [ -n "$MANPATH_EXTRA_AFTER" ]; then
     MANPATH="$MANPATH:$MANPATH_EXTRA_AFTER"
+    manpath_modified=true
+fi
+
+if [ "$manpath_modified" = "true" ]; then
+    if [ "$MANPATH_SHOW_IF_MODIFIED" = "true" ]; then
+        printf ". MANPATH is now: %s\n" "$MANPATH"
+    fi
     export MANPATH
 fi
 
