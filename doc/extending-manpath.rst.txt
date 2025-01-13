@@ -5,7 +5,7 @@ Extending man path on various systems
 :Home URL: https://github.com/pierre-rouleau/usrhome
 :Created:  Sunday, May 26 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-01-13 11:13:28 EST, updated by Pierre Rouleau.
+:Modified: 2025-01-13 11:19:07 EST, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -85,8 +85,9 @@ The shell extending source script can then do the following:
           MANPATH_SHOW_IF_MODIFIED=true
           . "$USRHOME_DIR/ibin/do-extend-manpath"
 
-The script exports the new value of MANPATH and prints the modified path if
-the MANPATH_SHOW_IF_MODIFIED variable is set to "true" as shown above..
+The script exports the new value of MANPATH and prints a line showing that
+MANPATH was modified (with instructions to use ``showpath MAN`` to display it)
+if the MANPATH_SHOW_IF_MODIFIED variable is set to "true" as shown above.
 
 .. ---------------------------------------------------------------------------
 .. links
