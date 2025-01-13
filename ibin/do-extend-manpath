@@ -3,7 +3,7 @@
 # Purpose   : Set MANPATH to the value of manpath if not already set.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-13 11:17:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-13 11:20:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -50,7 +50,7 @@ fi
 
 if [ "$manpath_modified" = "true" ]; then
     if [ "$MANPATH_SHOW_IF_MODIFIED" = "true" ]; then
-        printf ". MANPATH was modified: use showpath MAN to display its value.\n"
+        printf ". MANPATH was modified: use 'showpath MAN' to display its value.\n"
     fi
     export MANPATH
 fi
