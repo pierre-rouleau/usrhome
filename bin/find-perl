@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-08 10:22:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-16 15:18:05 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,6 +40,8 @@ find-perl: Find and print the name of every Perl file found in directory tree.
 
   • Search and print name of Perl files found in specified directories.
     - If DIR is not specified, search in the current working directory.
+  • This also finds script files that uses the /usr/bin/perl shebang line.
+  • The first list is for scripts, then the pure Perl files.
 
 "
 }
@@ -54,24 +56,29 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     exit 0
 fi
 
-if [ -z "$1" ]; then
-    directories="."
-else
-    directories="$@"
-fi
 
-case $(uname) in
-    Darwin)
-        find_path_option='-f'
-        ;;
-    Linux)
-        find_path_option=
-        ;;
-    *)
-        printf -- "find-perl ** Error Operating System, %s, is not supported!\n" "$(uname)"
-        exit 1
-        ;;
-esac
+
+if [ -x "$(command -v fdfind)" ]; then
+    search_with='fd'
+    fd_pgm=fdfind
+elif [ -x "$(command -v fd)" ]; then
+    search_with='fd'
+    fd_pgm=fd
+else
+    search_with='find'
+    case $(uname) in
+        Darwin)
+            find_path_option='-f'
+            ;;
+        Linux)
+            find_path_option=
+            ;;
+        *)
+            printf -- "find-perl ** Error Operating System, %s, is not supported!\n" "$(uname)"
+            exit 1
+            ;;
+    esac
+fi
 
 # -----------------------------------------------------------------------------
 # Proceed:
@@ -80,18 +87,64 @@ esac
 # stderr redirected to /dev/null to hide warnings trying to access
 # non-accessible directories.
 
-find -L                                         \
-     ${find_path_option} "${directories}"       \
-     \( -type f -or -type l \)                  \
-     \(  -name "*.p[lm]"                        \
-     -or -name "*.pl[sx]"                       \
-     -or -name "*.xs"                           \
-     -or -name "*.t"                            \
-     -or -name "*.pod"                          \
-     -or -name "*.cgi"                          \
-     -or -name "*.psg"                          \
-     -or -name "*.psgi"                         \
-     \) -print 2> /dev/null
+# First search for shell scripts that use Perl.
+# - Exclude perltidy files, Emacs backup and buffers files.
+if [ -x "$(command -v rg)" ]; then
+    if [ -z "$1" ]; then
+        rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! .+/perl" "$(realpath .)"
+    else
+        for dname in "$@"; do
+            rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! .+/perl" "$(realpath "$dname")"
+        done
+    fi
+else
+    if [ -z "$1" ]; then
+        grep --exclude '*.tdy' --exclude '*~' --exclude '*#'  -r -E "^#! .+/perl" "$(realpath .)"
+    else
+        for dname in "$@"; do
+            grep --exclude '*.tdy' --exclude '*~' --exclude '*#' -E -r "^#! .+/perl" "$(realpath "$dname")"
+        done
+    fi
+fi
+
+case "$search_with" in
+    find)
+        find -L                        \
+             ${find_path_option} "$@"  \
+             \(  -name "*.p[lm]"       \
+             -or -name "*.pl[sx]"      \
+             -or -name "*.xs"          \
+             -or -name "*.t"           \
+             -or -name "*.pod"         \
+             -or -name "*.cgi"         \
+             -or -name "*.psg"         \
+             -or -name "*.psgi"        \
+             \)  -print 2> /dev/null
+        ;;
+
+    fd)
+        ${fd_pgm} --absolute-path \
+                  --follow           \
+                  --type f           \
+                  --type l           \
+                  -e .pl             \
+                  -e .pm             \
+                  -e .pls            \
+                  -e .plx            \
+                  -e .xs             \
+                  -e .t              \
+                  -e .pod            \
+                  -e .cgi            \
+                  -e .psg            \
+                  -e .psgi           \
+                  . "$@" 2> /dev/null
+        ;;
+
+    *)
+        printf -- "etags-perl ** Error: cannot identify find program!\n"
+        exit 1
+        ;;
+esac
 
 # ----------------------------------------------------------------------------
 # Local Variables:
