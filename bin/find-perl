@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-17 19:00:53 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-17 23:54:16 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,6 +24,8 @@
 # ----
 #
 #
+
+error_log="find-perl.log.txt"
 
 print_usage()
 {
@@ -46,12 +48,13 @@ find-perl: Find and print the name of every Perl file found in directory tree.
     search the the directories that Perl identifies in its @INC variable.
     When that option is included the DIR arguments are not allowed.
   • This also finds script files that uses a Perl shebang line.
-  • The first list is for scripts, then the pure Perl files.
+  • The set of files are the scripts, then the pure Perl files are listed..
 
-"
+ ERRORS: All detected errors are appended to the file %s
+         stored locally. The file is never deleted.  You must delete it
+         manually first if you want to detect new errors.
+" "${error_log}"
 }
-
-# [:todo 2024-10-08, by Pierre Rouleau: Add ability to pass find options such as -x]
 
 # --
 # Check validity of arguments
@@ -155,9 +158,10 @@ fi
 # Search for shell scripts that use Perl: use rg if available, otherwise use grep.
 #
 # - Exclude perltidy files, Emacs backup and buffers files.
+
 if [ -x "$(command -v rg)" ]; then
     for dname in "${searched_directories[@]}"; do
-        rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! .+/perl" "$(realpath "$dname")" 2> /dev/null
+        rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! ?.+/perl" "$(realpath "$dname")" 2>> "${error_log}"
     done
 else
     # rg is not available; use recursive grep:
@@ -166,7 +170,7 @@ else
     # -E: extended regular expressions
     # As it might iterate over files that have restricted access: wipe error messages
     for dname in "${searched_directories[@]}"; do
-        grep -l --exclude '*.tdy' --exclude '*~' --exclude '*#' -E -r "^#! .+/perl" "$(realpath "$dname")" 2> /dev/null
+        grep -l --exclude '*.tdy' --exclude '*~' --exclude '*#' -r -E "^#! ?.+/perl" "$(realpath "$dname")" 2>> "${error_log}"
     done
 fi
 
@@ -185,7 +189,7 @@ case "$search_with" in
              -or -name "*.cgi"         \
              -or -name "*.psg"         \
              -or -name "*.psgi"        \
-             \)  -print 2> /dev/null
+             \)  -print 2>> "${error_log}"
         ;;
 
     fd)
@@ -203,7 +207,7 @@ case "$search_with" in
                   -e .cgi            \
                   -e .psg            \
                   -e .psgi           \
-                  . "${searched_directories[@]}" 2> /dev/null
+                  . "${searched_directories[@]}" 2>> "${error_log}"
         ;;
 
     *)
