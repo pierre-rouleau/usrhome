@@ -713,7 +713,7 @@ USRHOME Command Name               Description
                                    file.
 
                                    - The original value of this environment variable is set inside
-                                     your ``usrcfg/setfor-all-config.sh file.
+                                     your `usrcfg/setfor-all-config.sh`_ file.
                                      The default value is 0 as
                                      identified by `usrhome/template/setfor-all-config.sh`_
                                      used to initialize the usrcfg file.
