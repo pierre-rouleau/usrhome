@@ -3,13 +3,21 @@
 # Purpose   : Change zsh prompt model in current shell.
 # Created   : Wednesday, April  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:57:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-20 12:29:06 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Set the prompt model to the number specified by the argument.
-
+#
+# This source script is meant to be executed as the command named:
+# 'usrhome-prompt-model-to'
+#
+# The script $USRHOME_DIR/ibin/setfor-alias sets up the following alias:
+#
+# alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
+#
+#
 
 # ----------------------------------------------------------------------------
 # Dependencies
