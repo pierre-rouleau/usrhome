@@ -23,7 +23,7 @@ USRHOME -- Easily Clonable Unix Shell Configuration & Tools
    :target: #how-to-set-it-up
 
 :Author:  Pierre Rouleau
-:Copyright: © 2024, Pierre Rouleau
+:Copyright: © 2024, 2025, Pierre Rouleau
 
 .. ---------------------------------------------------------------------------
 
@@ -2324,9 +2324,9 @@ Thanks!
 .. _usrcfg/do-user-zshrc.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh
 .. _usrcfg/do-user-bash_profile.bash:                  https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bash_profile.bash
 .. _usrcfg/do-user-bashrc.bash:                        https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bashrc.bash
-.. _usrhome-shell-toggle-tracing:                      https://github.com/pierre-rouleau/usrhome/blob/main/bin/usrhome-shell-toggle-tracing
-.. _usrhome-prompt-toggle-usr-host:                    https://github.com/pierre-rouleau/usrhome/blob/main/bin/usrhome-prompt-toggle-usr-host
-.. _usrhome-prompt-model-to:                           https://github.com/pierre-rouleau/usrhome/blob/main/bin/usrhome-prompt-model-to
+.. _usrhome-shell-toggle-tracing:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-shell-toggle-tracing
+.. _usrhome-prompt-toggle-usr-host:                    https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-prompt-toggle-usr-host
+.. _usrhome-prompt-model-to:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-prompt-model-to
 .. _usrhome/ibin/setfor-alias:                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
 .. _usrhome/ibin/envfor-cbr:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
 .. _usrhome/ibin/do-cbr:                               https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
