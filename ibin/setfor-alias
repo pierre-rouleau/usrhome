@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-04 22:57:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-22 10:40:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,6 +55,20 @@ alias usrhome-env='$USRHOME_DIR/bin/usrhome-env'
 # ------------------
 
 alias \?='printf "%s\n" $?'
+
+# CD to Shell's User Home (if set in USRHOME_SHELL_HOME)
+# You may want to set USRHOME_SHELL_HOME in tools such as macOS Terminal
+# Settings Commands to identify the 'main'/'workspace' directory for that
+# shell, separate from your home.
+cduh()
+{
+    # Optional argument: sub-directory
+    if [ -n "$USRHOME_SHELL_HOME" ]; then
+        cd "$USRHOME_SHELL_HOME"/"$1"
+    else
+        cd "$1"
+    fi
+}
 
 usrhome_printf()
 {
