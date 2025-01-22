@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-22 10:40:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-22 14:02:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -66,7 +66,7 @@ cduh()
     if [ -n "$USRHOME_SHELL_HOME" ]; then
         cd "$USRHOME_SHELL_HOME"/"$1"
     else
-        cd "$1"
+        cd "$HOME/$1"
     fi
 }
 
