@@ -4,14 +4,28 @@
 # Purpose   : Import format audit log records.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-26 16:43:11 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-02-24 09:41:16 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Filter script: formats each line from stdin.
-# The lines are expected to be audit log lines.
-
+# Filter Script.
+#  Reformat the audit log lines: expand time and several other fields into
+#  human-readable format.
+#
+# This script filters lines provided to stdin.
+# You can use it in one of the 2 following ways:
+#
+# - In file mode, where a complete log file is piped into au-format
+#   which prints the formatted output to its stdout.
+# - In line-oriented mode, with the help of stdbuf -oL to
+#   process one line at a time when tailing the log file, allowing
+#   you to see in real-time the reformatted lines as events occur.
+#
+#
+# Note:  inside Emacs you can reformat a portion of a log file inside an Emacs
+#        buffer by using the shell-command-on-region command (bound to 'M-|')
+#        and passing it to au-format
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -46,7 +60,7 @@ au-format: Filter program. Reformat stdin audit lines.
 
           In file oriented, print a report at the end counting AVC records.
 
- Usage:  au-format [--line-oriented]
+ Usage:  au-format [--line-oriented] [--no-ausearch]
          au-format -h|--help
 
     This is a file-oriented filter by default.
@@ -58,10 +72,21 @@ au-format: Filter program. Reformat stdin audit lines.
   sudo cat /var/log/audit/audit.log | au-format
   sudo tail -f /var/log/audit/audit.log | stdbuf -oL au-format --line-oriented
 
+  or: under su or with sudo copy the audit log files somewhere else,
+      update their access and then use the following command:
+
+      cat path/to/the/audit.lg | au-format --no-ausearch
+
  Notes:
 
  - Unless you are su, you would normally have to issue the command
    under sudo to get permission to access the audit logs.
+
+   If you have a copy of the audit log files with appropriate rights
+   you can run the au-format with the '--no-ausearch' option: it will
+   allow processing of the content without trying to access the /var/log/audit
+   files allowing you tom run the command without being su or under sudo.
+
  - When monitoring the audit log in 'real-time' with 'tail -f'
    it is best to pipe it into 'stdbuf -oL' to force the pipes to
    flush on each line, instead of the default used by the various
@@ -88,31 +113,45 @@ fi
 # --
 # Is command for line oriented or file oriented filtering?
 
+allow_ausearch="yes"
 line_oriented=0
-if [ -n "$1" ]; then
-    case "$1" in
-        --line-oriented )
-            line_oriented=1
-            ;;
+arg_count=$#
+while [ "$arg_count" -ge 1 ]; do
+    if [ -n "$1" ]; then
+        case "$1" in
+            --line-oriented )
+                line_oriented=1
+                ;;
 
-        *)
-            printf -- "\
+            --no-ausearch )
+                allow_ausearch="no"
+                ;;
+
+            *)
+                printf -- "\
 *** ERROR: au-format: invalid option: %s
            Use: 'au-format -h' to print usage.\n" "$1"
-            exit 1
-            ;;
-    esac
-fi
+                exit 1
+                ;;
+        esac
+    fi
+    arg_count=$(( arg_count - 1 ))
+    shift
+done
 
 # --
-# If running on Linux and ausearch is available, use ausearch -i
-# to provide the bulk of log interpretation and complete the format
-# with awk.
+# If running on Linux and ausearch is available and allowed, then
+# use ausearch -i to provide the bulk of log interpretation.
+#  Since this is not doing the exact formatting required,
+#  complete the reformatting with an awk script.
+# When not using ausearch -i, do the complete translation using awk.
 
 use_ausearch="no"
 if [ "$(uname)" = "Linux" ]; then
-    if which ausearch > /dev/null 2>&1; then
-        use_ausearch="yes"
+    if [ "$allow_ausearch" = "yes" ]; then
+        if which ausearch > /dev/null 2>&1; then
+            use_ausearch="yes"
+        fi
     fi
 fi
 
