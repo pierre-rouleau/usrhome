@@ -4,12 +4,12 @@
 # Purpose   : Convert the date of an audit log line to human readable format.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 16:55:14 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-02-24 08:19:04 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Filter that coverts the time of audit log record.
+# Filter that converts the time of audit log record.   OBSOLETE. Use au-format instead!
 #
 # Converts:
 #   type=CONFIG_CHANGE msg=audit(1728599330.966:280): op=set audit_backlog_limit=8192 old=64 auid=4294967295 ses=4294967295 subj=system_u:system_r:unconfined_service_t:s0 res=1AUID="unset"
