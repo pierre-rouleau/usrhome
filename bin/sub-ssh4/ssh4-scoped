@@ -3,7 +3,7 @@
 # Purpose   : Open a SSH session to a specific computer, identifying it in the shell.
 # Created   : Friday, July 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-27 11:45:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-03-21 11:08:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,6 +62,7 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
  - SSH-OPTIONS:  Optional extra options to pass to the ssh command.
                  These options are placed right after the ssh command
                  and before the '-l \${username} \${ipv4addr}' arguments.
+                 - To debug the link use the following option: -vvv
 
 
 " "${pgm_name}" "${hostname}" "${pgm_name}"
