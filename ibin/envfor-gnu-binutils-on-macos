@@ -3,12 +3,15 @@
 # Purpose   : Activate the GNU Binutils Utilities in the current macOS shell.
 # Created   : Tuesday, August 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-27 18:32:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-03-24 08:26:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
+# Install Homebrew Gnu Binutils in path such that these GNU utilities are
+# used instead of the native macOS ones.
 #
+# Note that this also adds some utilities.
 
 
 # ----------------------------------------------------------------------------
@@ -16,14 +19,33 @@
 # ------------
 #
 # This assumes that the GNU Binutils were installed on macOS system via
-# Homebrew with 'homebrew install binutils'
+# Homebrew with 'brew install binutils'
 #
 #
 # NOTE: you may want to add a couple of symlinks to some of the GNU binutils
 #       that are never available on macOS, like readelf, in a directory, like
 #       ~/bin, that is in your path, allowing its use without having to run
 #       this script.
-
+#
+#
+# GNU tools that replace macOS native tools:
+#
+# -------------------------- ------------------------- ----------------------
+# macOS native               Gnu equivalent            brew install command
+# -------------------------- ------------------------- ----------------------
+# /usr/bin/nm               /opt/homebrew/bin/nm       brew install binutils
+#                           /opt/homebrew/bin/objcopy  brew install binutils
+# /usr/bin/objdump          /opt/homebrew/bin/objdump  brew install binutils
+# /usr/bin/ranlib           /opt/homebrew/bin/ranlib   brew install binutils
+#                           /opt/homebrew/bin/readelf  brew install binutils
+# /usr/bin/size             /opt/homebrew/bin/size     brew install binutils
+#                           /opt/homebrew/bin/srconv   brew install binutils
+# /usr/bin/strings          /opt/homebrew/bin/strings  brew install binutils
+# /usr/bin/strip            /opt/homebrew/bin/strip    brew install binutils
+#                           /opt/homebrew/bin/sysdump  brew install binutils
+#                           /opt/homebrew/bin/windmc   brew install binutils
+#                           /opt/homebrew/bin/windres  brew install binutils
+# -------------------------- ------------------------- ----------------------
 
 # ----------------------------------------------------------------------------
 # Code
