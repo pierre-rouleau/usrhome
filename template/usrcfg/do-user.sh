@@ -3,7 +3,7 @@
 # Purpose   : User Configuration Common to all supported shells.
 # Created   : Thursday, May  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-06 18:24:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-03-24 07:52:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -42,8 +42,18 @@ alias use-rust='source $USRHOME_DIR_USRCFG/ibin/envfor-rust'
 # with some limited to specific OS.
 
 alias cdlog-installs='cd ~/my/logs/install-logs'
-alias cdbin='cd ~/my/bin'
-alias cddoc='cd ~/Documents'
+
+cdbin()
+{
+    # - Arg 1: optional sub-directory name
+    cd "$HOME/my/bin/$1"
+}
+
+cddoc()
+{
+    # - Arg 1: optional sub-directory name
+    cd "$HOME/Documents/$1"
+}
 
 # Topic: macOS Number
 if [ "$(uname)" = "Darwin" ]; then
