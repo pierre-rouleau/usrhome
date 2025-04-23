@@ -1,0 +1,135 @@
+#!/bin/sh
+# SH FILE: isvalid-python3
+#
+# Purpose   : Check if file is Python 3 compliant.
+# Created   : Tuesday, April 22 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-04-23 11:37:31 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Check if File is Python 3 compliant.
+# Exit code is 0 if it is, 1 if not.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Python 3: python3
+# - Python 3 compileall module.
+# - printf, pushd, popod, mkdir -p
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+pgm_name="$(basename "$0")"
+
+print_usage()
+{
+    printf -- "\
+%s: Check if specified file is Python 3 compatible.
+           Exit with 0 if it is, 1 if it is not compatible.
+
+ Usage: %s -h|--help
+
+  • Print this help information.
+
+ Usage: %s [-v|--verbose] FNAME
+
+  • Check if specified file is compatible with Python 3
+
+    - -v|-verbose:  Print reasons of incompatibility.
+                    By default it only prints the name of the file
+                    if it is not compatible with Python 3 and does not print
+                    why it is incompatible.
+
+    - FNAME: The file to check. Any file with any file extension
+             is supported.  That file is assumed to be a text file
+             containing Python source code.
+
+" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# Check validity of arguments
+
+verbose="false"
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
+
+if [ "$1" = "-v" ] || [ "$1" = "--verbose" ]; then
+    verbose="true"
+    shift
+fi
+
+
+if [ -n "$1" ]; then
+    if [ -e "$1" ]; then
+        fname="$1"
+    else
+        printf -- "\
+** ERROR: %s -- Specified file does not exists: %s
+" "$pgm_name" "$1"
+        exit 2
+    fi
+else
+    printf -- "\
+** ERROR: %s -- No file specified.
+      For more information, type: %s --help
+" "$pgm_name" "$pgm_name"
+    exit 2
+fi
+
+
+
+# -- proceed
+
+# -- Use ~/tmp/valid-python3 or create it is missing
+if [ ! -d "$HOME/tmp/valid-python3" ]; then
+    mkdir -p "$HOME/tmp/valid-python3"
+    echo "Created $HOME/tmp/valid-python3"
+fi
+
+
+is_compatible="false"
+
+# - Check AST compatibility
+if cp "$fname" "${HOME}/tmp/valid-python3/tested.py"; then
+    pushd "${HOME}/tmp/valid-python3" > /dev/null || exit 3
+    if python3 -m compileall -q tested.py > /dev/null; then
+       is_compatible="true"
+    else
+        if [ "$verbose" = "true" ]; then
+            printf -- "%s : AST incompatible with Python 3\n" "$fname"
+        fi
+    fi
+    rm "${HOME}/tmp/valid-python3/tested.py"
+    if [ -d "${HOME}/tmp/valid-python3/__pycache__" ]; then
+        rm -rf "${HOME}/tmp/valid-python3/__pycache__"
+    fi
+    popd > /dev/null || exit 3
+fi
+
+# - Check if deprecated popen2 is used.
+if grep popen2 "$fname" > /dev/null; then
+    if [ "$verbose" = "true" ]; then
+        printf -- "%s : uses deprecated popen2\n" "$fname"
+    fi
+   is_compatible="false"
+fi
+
+# - Wrap up
+if [ "$is_compatible" = "true" ]; then
+    exit 0
+else
+    printf -- "%s : not compatible with Python 3\n" "$fname"
+    exit 1
+fi
+
+# ----------------------------------------------------------------------------
