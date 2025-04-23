@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-22 14:02:54 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-03-27 09:07:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -54,7 +54,7 @@ alias usrhome-env='$USRHOME_DIR/bin/usrhome-env'
 # Topic: Info: Shell
 # ------------------
 
-alias \?='printf "%s\n" $?'
+#alias \?='printf "%s\n" $?'
 
 # CD to Shell's User Home (if set in USRHOME_SHELL_HOME)
 # You may want to set USRHOME_SHELL_HOME in tools such as macOS Terminal
