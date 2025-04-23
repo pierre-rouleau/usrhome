@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-17 23:54:16 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-04-23 08:04:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -31,7 +31,7 @@ print_usage()
 {
     printf -- "
 find-perl: Find and print the name of every Perl file found in directory tree.
-           Search for files with  the following extensions:
+           Search for files with the following extensions:
           - .pl, .pm, .plx, .pls, .xs, .t, .pod, .cgi, .psg, .psgi
 
  Usage: find-perl -h|--help
@@ -177,44 +177,60 @@ fi
 # --
 # Search the Perl code files. Use fd if available, otherwise use find.
 #
-case "$search_with" in
-    find)
-        find -L                        \
-             "${find_path_option}" "${searched_directories[@]}"  \
-             \(  -name "*.p[lm]"       \
-             -or -name "*.pl[sx]"      \
-             -or -name "*.xs"          \
-             -or -name "*.t"           \
-             -or -name "*.pod"         \
-             -or -name "*.cgi"         \
-             -or -name "*.psg"         \
-             -or -name "*.psgi"        \
-             \)  -print 2>> "${error_log}"
-        ;;
 
-    fd)
-        ${fd_pgm} --absolute-path \
-                  --follow           \
-                  --type f           \
-                  --type l           \
-                  -e .pl             \
-                  -e .pm             \
-                  -e .pls            \
-                  -e .plx            \
-                  -e .xs             \
-                  -e .t              \
-                  -e .pod            \
-                  -e .cgi            \
-                  -e .psg            \
-                  -e .psgi           \
-                  . "${searched_directories[@]}" 2>> "${error_log}"
-        ;;
+search()
+{
+    # Arg1: dirname : name of directory to search
 
-    *)
-        printf -- "etags-perl ** Error: cannot identify find program!\n"
-        exit 1
-        ;;
-esac
+    case "$search_with" in
+        find)
+            find -L                        \
+                 "${find_path_option}" "$dirname"  \
+                 \(  -name "*.p[lm]"       \
+                 -or -name "*.pl[sx]"      \
+                 -or -name "*.xs"          \
+                 -or -name "*.t"           \
+                 -or -name "*.pod"         \
+                 -or -name "*.cgi"         \
+                 -or -name "*.psg"         \
+                 -or -name "*.psgi"        \
+                 \)  -print 2>> "${error_log}"
+            ;;
+
+        fd)
+            ${fd_pgm} --absolute-path \
+                      --follow           \
+                      --type f           \
+                      --type l           \
+                      -e .pl             \
+                      -e .pm             \
+                      -e .pls            \
+                      -e .plx            \
+                      -e .xs             \
+                      -e .t              \
+                      -e .pod            \
+                      -e .cgi            \
+                      -e .psg            \
+                      -e .psgi           \
+                      . "$dirname" 2>> "${error_log}"
+            ;;
+
+        *)
+            printf -- "etags-perl ** Error: cannot identify find program!\n"
+            exit 1
+            ;;
+    esac
+}
+
+if [ -z "$1" ]; then
+    dirname="."
+    search
+else
+    for dirname in "$@"; do
+        search
+    done
+fi
+
 
 # ----------------------------------------------------------------------------
 # Local Variables:
