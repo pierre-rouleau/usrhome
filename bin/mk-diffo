@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 16:06:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-04-29 10:54:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -113,13 +113,46 @@ print_usage()
     printf -- "\
 mk-diffo - Store another file set and compare object files.
 
-  Usage mk-diffo [[-w | --with-source] [-s | --string] [-l | --less]] [REFNO]
-        mk-diffo -h | --help
+  The mk-diffo utility is used to track the evolution of a source code file
+  over its modifications by comparing the assembler code generated from the
+  compiler for it as it evolves.
 
-     Store the source and object file inside the mk-diffo directory tree
-     for the current file and reference number, then compare the object file
-     with the object file for the previous version or the version specified by
-     REFNO.
+  It does not compile that file; it generates the assembler code from the
+  existing object file and keeps a copy of the source file, the object file
+  and the assembler file for each time you use mk-diffo inside a directory
+  tree.  The root of the directory tree is named after a project and under it
+  the source file name.  mk-diffo uses the diffo utility to generate the
+  assembler from the object file.
+
+  After using it once, mk-diffo compares the generate assembler file of the
+  very first generated copy (by default) with the latest one it just
+  created. It then prints the difference if there are any.  If they are the
+  same, it prints a message stating that.
+
+  Before using mk-diffo, execute use-mk-diffo to set up the environment
+  variables used to identify the location of the directory tree, the project
+  name, the name of the source code file, the directory where the object file
+  is stored and it's extension.
+
+  You'd typically execute mk-diffo after each compilation of the source code
+  file after it's modification to check if the generated code has changed.
+  This can be quite comforting to know that the generated assembler code has
+  not changed after making style-only code changes. Use it to reduce tension
+  among the development team when changing code to make it more readable, fix
+  warnings and any change you deem important but want to ensure no problem is
+  caused by those changes.
+
+
+ Usage: mk-diffo -h | --help
+
+  • Print this help information.
+
+  Usage: mk-diffo [[-w | --with-source] [-s | --string] [-l | --less]] [REFNO]
+
+  • Store the source and object file inside the mk-diffo directory tree
+    for the current file and reference number, then compare the object file
+    with the object file for the previous version or the version specified by
+    REFNO.
 
      REFNO : optional reference number.  Default is last one created.
              It must be a valid integer.
@@ -131,7 +164,6 @@ mk-diffo - Store another file set and compare object files.
      - -l | --less        : pipe differences to less
 
   ENVIRONMENT:
-
     - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
     - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
                               in the main directory tree.
@@ -144,7 +176,6 @@ mk-diffo - Store another file set and compare object files.
                               executable files.
 
     The current setup is:
-
     - USRHOME_DIFFO_ROOT_DIR: %s
     - USRHOME_DIFFO_PROJECT : %s
     - USRHOME_DIFFO_FNAME   : %s
@@ -165,6 +196,22 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     # help requested explicitly: no error.
     exit 0
 fi
+
+# Check for the presence of the USRHOME_DIFFO environment variables.
+# If they are not set tell the user to execute `use-mkdiffo', as the
+# user may not be aware of all the requirements.
+if [ -z "$USRHOME_DIFFO_ROOT_DIR" ] ||    \
+       [ -z "$USRHOME_DIFFO_PROJECT" ] || \
+       [ -z "$USRHOME_DIFFO_FNAME" ] ||   \
+       [ -z "$USRHOME_DIFFO_OBJ_DIR" ] || \
+       [ -z "$USRHOME_DIFFO_OBJEXT" ]; then
+    printf -- "*** ERROR: mk-diffo: The USRHOME_DIFFO environment variables
+                    required for using mk-diffo are not set!
+                    Please first execute use-mk-info to set them up.
+                    Use mk-diffo -h for more information.
+"
+    exit 2
+    fi
 
 # check for optional switches.
 with_source=
