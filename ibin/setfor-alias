@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-03-27 09:07:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-05-05 12:02:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -157,10 +157,18 @@ info-shell-special-var()
     sep=""
     pos=1
     all_words=""
+    last_arg_numb="$#"
+    last_arg_val_extracted=
+    last_arg_by_pos=
     for word in "$@"; do
+        echo "--- At position ${pos}, arg is: $word"
         all_words="${all_words}${sep}\"${word}\""
         positionals="${positionals}${sep}\$${pos}='${word}'"
         sep=", "
+        last_arg_val_extracted="${word}"
+       if [ "$#" -eq "$pos" ]; then
+           last_arg_by_pos="$word"
+        fi
         pos=$(( pos + 1))
     done
     #all_words="$(echo "$all_words" | sed -e 's/[[:space:]]*$//')"
@@ -192,7 +200,7 @@ shown within single quotes.
  - \$?: Exit status of last executed command
  ----> '$?'
 
- - \$_: Last argument of previous command
+ - \$_: Last argument of previous command (does not work!)
  ----> '$_'
 
  - \$-: The current set of options
@@ -209,6 +217,8 @@ shown within single quotes.
             printf "The %s shell is not supported yet.\n" "$USRHOME_SHELL"
             ;;
     esac
+    echo "Last argument extracted by loop    : $last_arg_val_extracted"
+    echo "Last argument extracted by position: $last_arg_by_pos"
     echo "-----------------------------------"
 }
 
