@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-04-29 11:02:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-05-05 17:58:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -130,6 +130,7 @@ shift
 # --
 # proceed
 
+# [:todo 2025-05-05, by Pierre Rouleau: The following depends on Bash.  Fix to support POSIX.]
 asmf_old="${objf_old%.*}".asm
 asmf_new="${objf_new%.*}".asm
 
