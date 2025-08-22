@@ -572,9 +572,9 @@ USRHOME_DIR                     Path to the usrhome directory.
                                 Therefore, you do not need to write code to
                                 initialize the value of USRHOME_DIR, the Bash
                                 an Zsh startup logic provided by USRHOME
-                                handle that.  You will, however to initialize
-                                the value of several other environment
-                                variables in your usrcfg scripts.
+                                handle that.  You will, however, have to
+                                initialize the value of several other
+                                environment variables in your usrcfg scripts.
 
 
 
