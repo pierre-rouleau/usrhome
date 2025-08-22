@@ -557,6 +557,27 @@ The USRHOME Configuration Environment Variables
 =============================== =================================================
 Environment Variable Name       Purpose
 =============================== =================================================
+USRHOME_DIR                     Path to the usrhome directory.
+
+                                - This is the most important environment
+                                  variable.
+                                - When installing USRHOME, the
+                                  `setup/setup-usrhome`_ installation script
+                                  creates symbolic links in the home directory
+                                  to the Bash and Zsh startup scripts stored in
+                                  the usrhome directory tree.  These scripts
+                                  identify the usrhome directory by inferring
+                                  it from the location of the scripts.
+
+                                Therefore, you do not need to write code to
+                                initialize the value of USRHOME_DIR, the Bash
+                                an Zsh startup logic provided by USRHOME
+                                handle that.  You will, however to initialize
+                                the value of several other environment
+                                variables in your usrcfg scripts.
+
+
+
 USRHOME_TRACE_SHELL_CONFIG      Set to 1 to activate tracing of the configuration
                                 file sourcing.
                                 Use the ``usrhome-shell-toggle-tracing``
@@ -579,10 +600,7 @@ USRHOME_CONFIG_AT_LOGIN         Set to 1 to inform USRHOME files to perform
 USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
                                 directories to the PATH.
 
-USRHOME_DIR                     Path to the usrhome directory.
-                                The setup/setup-usrhome installation script
-                                appends code to set the value of that
-                                environment variable.
+
 
 USRHOME_DIR_HELPDIR             Optional environment variable.  If defined it
                                 identifies the directory where Zsh Builtin
