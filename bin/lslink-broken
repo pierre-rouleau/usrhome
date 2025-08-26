@@ -1,0 +1,30 @@
+#!/bin/sh
+# SH FILE: lslink-broken
+#
+# Purpose   : List all broken symlinks present in the current directory tree.
+# Created   : Tuesday, August 26 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-08-26 12:25:39 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Search for all broken symlink in the directory tree and display the full path
+# of the link and the file/directory it links to.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# find, ls
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+# Ref: https://stackoverflow.com/a/21438684
+#
+find -L . -type l -ls
+
+# ----------------------------------------------------------------------------
