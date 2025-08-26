@@ -1,0 +1,46 @@
+#!/bin/sh
+# SH FILE: lslink
+#
+# Purpose   : List all symlinks in current directory tree.
+# Created   : Tuesday, August 26 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-08-26 12:20:24 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# ------------
+#
+#  Search for all symlink in the directory tree and display the full path
+#  of the link and the file/directory it links to.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# find, stat, ls, uname
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Ref: https://stackoverflow.com/a/21438684
+
+case "$(uname)" in
+    Darwin)
+        # on macOS use a simpler output format (for the moment)
+        find . -type l  -exec stat -F  '{}'  +
+        # find . -type l  -exec readlink '{}'  +
+        ;;
+
+    Linux)
+        find . -type l -ls
+        ;;
+
+    *)
+        printf -- "lslink ** Error: Sorry, the %s Operating System is not supported!\n" "$(uname)"
+        exit 1
+        ;;
+esac
+
+# ----------------------------------------------------------------------------
