@@ -4,7 +4,7 @@
 # Purpose   : Build the ~/bin/gcc-14 directory with symlinks to homebrew gcc.
 # Created   : Saturday, May 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-26 09:17:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-08-27 11:30:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -39,16 +39,6 @@ case "$(uname)" in
                 echo "Checking macOS arm64 Homebrew requirements..."
                 if [ ! -d /opt/homebrew/Cellar/gcc/14.1.0/bin ]; then
                     printf -- "*** ERROR : Homebrew gcc 14 is not installed.\n"
-                    printf -- "    Please first install it with: brew install gcc@14\n"
-                    printf -- "*******************************************\n"
-                    exit 1
-                fi
-                ;;
-
-            i386)
-                echo "Checking macOS i386 Homebrew requirements..."
-                if [ ! -h /usr/local/bin/gcc-11 ]; then
-                    printf -- "*** ERROR : Homebrew gcc 11 is not installed.\n"
                     printf -- "    Please first install it with: brew install gcc@14\n"
                     printf -- "*******************************************\n"
                     exit 1
@@ -185,3 +175,6 @@ fi
 echo "Installation complete.  You can now issue the use-gcc14 command."
 
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
