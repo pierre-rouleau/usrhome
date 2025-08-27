@@ -1,14 +1,14 @@
 # Sourced script: envfor-gcc14-on-macos  -*- mode: sh; -*-
 #
-# Purpose   : Install GCC executable files in the current macOS shell.
+# Purpose   : Activate GCC 14 tool-chain in the current macOS shell.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-26 09:15:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-08-27 11:22:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# The default C/C++ compilaer chain available on macOS is the Apple-modified
+# The default C/C++ compiler chain available on macOS is the Apple-modified
 # Clang. This version of Clang is specifc to Apple and it is a little
 # difficult to know exactly wat version of Clang is being used; Apple includes
 # features and excliudes others and it is difficult to find information about
@@ -17,14 +17,14 @@
 # This script installs support for GCC.  The standard GCC provided by Hombre,
 # that must be installed using the `brew install gcc' command, separately.
 #
-# The script does not impose the version of GCC, it depends on the presence of
-# a directory that holds a set of symlinks to the GCC toolchain binaries.
-# That directory is $HOME/bin/gcc
+# The script does not impose the exact version of GCC 14, it depends on the
+# presence of a directory that holds a set of symlinks to the GCC 14 toolchain
+# binaries.  That directory is $HOME/bin/gcc-14
 #
 # To help you setup your macOS system for GCC, see the example setup script
-# usrhome/setup/macos/create-gcc-as-gcc14.sh
+# $USRHOME/setup/macos/create-gcc-as-gcc14.sh
 #
-# This file is meant to be invoked via the use-gcc14 alias.
+# This sourced script file is meant to be invoked via the use-gcc14 alias.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -68,6 +68,12 @@ if [ -z "$USRHOME_USING_GCC14_ON_MACOS" ]; then
     export USRHOME_USING_GCC14_ON_MACOS
     PATH="$HOME/bin/gcc-14:$PATH"
     export PATH
+    if [ -z "$LIB" ]; then
+        LIB="/opt/homebrew/lib/gcc/current"
+    else
+        LIB="$LIB:/opt/homebrew/lib/gcc/current"
+    fi
+    export LIB
 
     # Add man directories to MANPATH for this shell
     # The $HOME/bin/gcc/man contains the directories with symlinks to
