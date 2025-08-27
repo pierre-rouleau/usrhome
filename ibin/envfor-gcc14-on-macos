@@ -3,7 +3,7 @@
 # Purpose   : Activate GCC 14 tool-chain in the current macOS shell.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-27 11:22:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-08-27 15:24:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -66,7 +66,12 @@ if [ -z "$USRHOME_USING_GCC14_ON_MACOS" ]; then
 
     USRHOME_USING_GCC14_ON_MACOS="$PATH"
     export USRHOME_USING_GCC14_ON_MACOS
-    PATH="$HOME/bin/gcc-14:$PATH"
+    # Add GCC 14 directories to the PATH:
+    # - place the standard and the architecture specific
+    #   at the beginning, before /usr/bin where the macOS
+    #   installed gcc is located.
+    #   in case some tools need those.
+    PATH="$HOME/bin/gcc-14:$HOME/bin/aarch64-gcc-14:$PATH"
     export PATH
     if [ -z "$LIB" ]; then
         LIB="/opt/homebrew/lib/gcc/current"
@@ -75,12 +80,30 @@ if [ -z "$USRHOME_USING_GCC14_ON_MACOS" ]; then
     fi
     export LIB
 
-    # Add man directories to MANPATH for this shell
-    # The $HOME/bin/gcc/man contains the directories with symlinks to
-    # appropriate man files.
-    # Note that manpath will detect the man sub-directory of ~/bin/gcc-14
-    # and fill add it to MANPATH.
+    # Add GCC 14 man directories to MANPATH for this shell
+    # ----------------------------------------------------
+    # - First ensure that the MANPATH environment variable is set.
+    #
+    #   - The $HOME/bin/gcc-14/man contains the directories with symlinks to
+    #     appropriate man files.
+    #   - Note that manpath may detect the man sub-directory of ~/bin/gcc-14
+    #     and add it to MANPATH, but it does not always do that
+    #     (for reason I do not yet understand).
+
     . "$USRHOME_DIR/ibin/do-extend-manpath"
+
+    # - Check if "$HOME/bin/gcc-14/man" is part of MANPATH.
+    #   If it is not present, then prepend it.
+    case ":$MANPATH:" in
+        *:$HOME/bin/gcc-14/man:*)
+                            echo "GCC 14 is already in the MANPATH!"
+                            ;;
+        *)
+            MANPATH="$HOME/bin/gcc-14/man:$MANPATH"
+            export MANPATH
+        ;;
+    esac
+
 
     if [ "${verbose}" = "true" ]; then
         echo "-------------------------------------------------------------------"
@@ -98,7 +121,7 @@ if [ -z "$USRHOME_USING_GCC14_ON_MACOS" ]; then
     fi
 else
     echo "*** Warning!! ***"
-    echo "GCC-14 is already set up for this shell"
+    echo "GCC-14 is already set up for this shell!"
     echo "The original PATH is in: USRHOME_USING_GCC14_ON_MACOS"
     echo "*****************"
     return 1
