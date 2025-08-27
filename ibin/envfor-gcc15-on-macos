@@ -1,0 +1,135 @@
+# Sourced script: envfor-gcc15-on-macos  -*- mode: sh; -*-
+#
+# Purpose   : Activate GCC 15 tool-chain in the current macOS shell.
+# Created   : Wednesday, August 27 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-08-27 15:24:02 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+# This script activates GCC 15 in the current shell: it allows the
+# version-less command names to be used instead of the one with embedded
+# version number.  Once the script is executed, you can use the `gcc' command
+# to invoke the gcc-15 command.
+#
+# Note that the script only supports Apple Silicon macOS system where Homebrew
+# installs the files inside the /opt/homebrew directory tree, it does not
+# support the older macOS Intel architecture.
+#
+# The script does not impose the exact version of GCC 15, it depends on the
+# presence of a directory that holds a set of symlinks to the GCC 15 toolchain
+# binaries.  That directory is $HOME/bin/gcc-15
+#
+# To help you setup your macOS system for GCC, see the example setup script
+# $USRHOME/setup/macos/create-gcc-as-gcc15.sh
+#
+# This sourced script file is meant to be invoked via the use-gcc14 alias.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# Expects that GCC has previously been installed by Homebrew and this is a
+# macOS Apple Silicon based system.  The script currently does not support the
+# older Homebrew file system organization that is used in Intel Apple macOS
+# systems.
+#
+# See $USRHOME_DIR/setup/macos/create-gcc-as-gcc15.sh : it does what's required
+# once you have executed 'brew install gcc' for GCC-15 (which is the current
+# GCC version at the time this was written).
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+#
+verbose="true"
+if [ "$1" = "--quiet" ]; then
+    verbose="false"
+fi
+
+if [ -z "$USRHOME_USING_GCC15_ON_MACOS" ]; then
+    if [ ! -d "$HOME/bin/gcc-15" ]; then
+        echo "*** use-gcc15 ERROR***"
+        echo " Missing directory: $HOME/bin/gcc-15"
+        echo " Please execute:"
+        echo "   $USRHOME_DIR/setup/macOS/create-gcc-as-gcc15.sh"
+        return 1
+    fi
+    if [ ! -d "$HOME/bin/gcc-15/man/man1" ]; then
+        echo "*** use-gcc15 ERROR***"
+        echo " Missing directory: $HOME/bin/gcc-15/man/man1"
+        echo " Please execute:"
+        echo "   $USRHOME_DIR/setup/macOS/create-gcc-as-gcc15.sh"
+        return 1
+    fi
+
+    USRHOME_USING_GCC15_ON_MACOS="$PATH"
+    export USRHOME_USING_GCC15_ON_MACOS
+    # Add GCC 15 directories to the PATH:
+    # - place the standard and the architecture specific
+    #   at the beginning, before /usr/bin where the macOS
+    #   installed gcc is located.
+    #   in case some tools need those.
+    PATH="$HOME/bin/gcc-15:$HOME/bin/aarch64-gcc-15:$PATH"
+    export PATH
+    if [ -z "$LIB" ]; then
+        LIB="/opt/homebrew/lib/gcc/current"
+    else
+        LIB="$LIB:/opt/homebrew/lib/gcc/current"
+    fi
+    export LIB
+
+    # Add GCC 15 man directories to MANPATH for this shell
+    # ----------------------------------------------------
+    # - First ensure that the MANPATH environment variable is set.
+    #
+    #   - The $HOME/bin/gcc-15/man contains the directories with symlinks to
+    #     appropriate man files.
+    #   - Note that manpath may detect the man sub-directory of ~/bin/gcc-15
+    #     and add it to MANPATH, but it does not always do that
+    #     (for reason I do not yet understand).
+
+    . "$USRHOME_DIR/ibin/do-extend-manpath"
+
+    # - Check if "$HOME/bin/gcc-15/man" is part of MANPATH.
+    #   If it is not present, then prepend it.
+    case ":$MANPATH:" in
+        *:$HOME/bin/gcc-15/man:*)
+                            echo "GCC 15 is already in the MANPATH!"
+                            ;;
+        *)
+            MANPATH="$HOME/bin/gcc-15/man:$MANPATH"
+            export MANPATH
+        ;;
+    esac
+
+    if [ "${verbose}" = "true" ]; then
+        echo "-------------------------------------------------------------------"
+        echo "Using GNU GCC-15 as the compiler chain in this shell."
+        gcc --version
+        gcc -dumpmachine
+        echo ""
+        echo "- PATH is now:"
+        showpath -n
+        echo "- And MANPATH is:"
+        showpath -n MAN
+        echo "-------------------------------------------------------------------"
+    else
+        echo "- Using GNU GCC-15 as the compiler chain in this shell."
+    fi
+else
+    echo "*** Warning!! ***"
+    echo "GCC-15 is already set up for this shell!"
+    echo "The original PATH is in:    USRHOME_USING_GCC15_ON_MACOS"
+    echo "*****************"
+    return 1
+fi
+
+# ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
