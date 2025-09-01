@@ -4,19 +4,32 @@
 # Purpose   : Convert a ISO-8859 encoded file to UTF-8.
 # Created   : Monday, September  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-01 15:08:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-01 15:33:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
-# Module Description
-# ------------------
-#
+# Description
+# -----------
 #
 
+# A simple utility that converts the encoding of a text file from ISO-8859-1
+# to UTF-8.
+#
+# This is something often needed for old text files written in the
+# western world where the latin ISO-8859 was previously used to encode files
+# with accentuated letters or other non ASCII characters.
+#
+# The iconv support a large set of encoding.  This command only supports one
+# set. Being able to use the command without any argument can be very useful
+# under several cases, including using it under Emacs Dired.
+#
+# If you need other conversions look into iconv supported encodings and create
+# your own conversion or add the ability to specify environment that provides
+# the input and output encoding.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-#
+# iconv, printf, cp
 
 
 # ----------------------------------------------------------------------------
