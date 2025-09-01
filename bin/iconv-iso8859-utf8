@@ -1,0 +1,82 @@
+#!/bin/sh
+# SH FILE: iconv-iso8859-utf8
+#
+# Purpose   : Convert a ISO-8859 encoded file to UTF-8.
+# Created   : Monday, September  1 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-09-01 15:08:50 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+os_name="$(uname)"
+print_usage()
+{
+    printf -- "\
+iconv-iso8859-utf8 : Convert encoding of file from ISO-8859 to UTF-8.
+
+  USAGES:
+  ➨ iconv-iso8859-utf8 [-h|--help]
+        -h, --help: print this help.
+
+  ➨ iconv-iso8859-utf8 FILE
+        Convert the encoding of FILE from ISO-8859-1 to UTF-8.
+
+  ENVIRONMENT:
+    - USRHOME_DIR_TMP  Required environment variable that must identify the
+                       absolute path of a directory where temporary files are
+                       stored.
+  NOTE:  Use file FILE to print FILE's encoding.
+"
+}
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+if [ -z "$1" ] ; then
+    print_usage
+    exit 1
+elif [ -n "$2" ]; then
+    echo "ERROR: too many arguments."
+    print_usage
+    exit 1
+fi
+
+if [ -z "$USRHOME_DIR_TMP" ]; then
+    printf -- "*** iconv-iso8859-utf8 ERROR: USRHOME_DIR_TMP envvar missing.\n"
+    printf -- "        Use --help for more info.\n"
+fi
+if [ ! -d "$USRHOME_DIR_TMP" ];  then
+    printf -- "*** iconv-iso8859-utf8 ERROR: USRHOME_DIR_TMP: not a directory.\n"
+    printf -- "        It's value is: %s\n" "$USRHOME_DIR_TMP"
+    printf -- "        Use --help for more info.\n"
+fi
+
+# --
+# proceed
+target_file="$(basename "$1")"
+cp "$1" "$USRHOME_DIR_TMP/${target_file}" || exit 1
+iconv -f iso-8859-1 -t utf-8 "$USRHOME_DIR_TMP/${target_file}" > "$1"
+
+# ----------------------------------------------------------------------------
