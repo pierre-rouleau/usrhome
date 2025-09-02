@@ -4,7 +4,7 @@
 # Purpose   : Convert a ISO-8859 encoded file to UTF-8.
 # Created   : Monday, September  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-01 15:33:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-01 20:52:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,7 +30,6 @@
 # ------------
 #
 # iconv, printf, cp
-
 
 # ----------------------------------------------------------------------------
 # Code
@@ -79,11 +78,19 @@ fi
 if [ -z "$USRHOME_DIR_TMP" ]; then
     printf -- "*** iconv-iso8859-utf8 ERROR: USRHOME_DIR_TMP envvar missing.\n"
     printf -- "        Use --help for more info.\n"
+    exit 1
 fi
 if [ ! -d "$USRHOME_DIR_TMP" ];  then
     printf -- "*** iconv-iso8859-utf8 ERROR: USRHOME_DIR_TMP: not a directory.\n"
     printf -- "        It's value is: %s\n" "$USRHOME_DIR_TMP"
     printf -- "        Use --help for more info.\n"
+    exit 1
+fi
+if [ ! -e "$1" ]; then
+    printf -- "*** iconv-iso8859-utf8 ERROR: USRHOME_DIR_TMP: invalid file name.\n"
+    printf -- "      You specified: %s\n" "$1"
+    printf -- "      This file does not exist.  Use --help for more info.\n"
+    exit 1
 fi
 
 # --
