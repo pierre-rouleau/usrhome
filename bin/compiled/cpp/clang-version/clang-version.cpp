@@ -3,7 +3,7 @@
 // Purpose   : Print version of Clang compiler on stdout.
 // Created   : Tuesday, September  2 2025.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2025-09-02 11:17:57 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2025-09-02 11:33:08 EDT, updated by Pierre Rouleau>
 // Copyright © 2025, Pierre Rouleau
 // License   : GPL-3.0
 //
@@ -28,7 +28,7 @@
 #include <iostream>
 #include <string>
 #include <cstdio>      // use: popen, pclose
-
+#include <cstring>     // use strcmp
 // -----------------------------------------------------------------------------
 // Local Variables
 // ---------------
