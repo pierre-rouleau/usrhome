@@ -4,14 +4,13 @@
 # Purpose   : Print the list of directories holding header files used by the gcc C compiler.
 # Created   : Tuesday, September  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-02 16:35:08 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-02 16:38:11 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 
-#
-# Print the names of directories holding gcc system headers,
-# one directory per line.
+# Print the names of directories holding the headers files used by the gcc C
+# compiler, one directory per line.
 
 # ----------------------------------------------------------------------------
 # Dependencies
