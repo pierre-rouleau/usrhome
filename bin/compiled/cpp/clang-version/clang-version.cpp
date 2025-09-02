@@ -3,7 +3,7 @@
 // Purpose   : Print version of Clang compiler on stdout.
 // Created   : Tuesday, September  2 2025.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2025-09-02 11:33:08 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2025-09-02 11:37:12 EDT, updated by Pierre Rouleau>
 // Copyright © 2025, Pierre Rouleau
 // License   : GPL-3.0
 //
@@ -93,7 +93,8 @@ int main(int argc, const char** argv)
     {
        std::cerr << "*** ERROR: "
                  << argv[0]
-                 << " could not find Clang version in 'clang --version' output."
+                 << " could not find Clang version in 'clang --version' output.\n"
+                 << "Is clang installed in your system?"
                  << std::endl;
        return 1;
     }
