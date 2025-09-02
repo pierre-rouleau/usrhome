@@ -1,0 +1,44 @@
+#!/bin/sh
+# SH FILE: info-gcc-c++-include
+#
+# Purpose   : Print the list of directories holding header files used by the gcc C++ compiler.
+# Created   : Tuesday, September  2 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-09-02 16:39:13 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+
+# Print the names of directories holding the headers files used by the gcc C++
+# compiler, one directory per line.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# gcc, sed, grep
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Use gcc C++ proprocessor program verbosely.
+# - That prints information in stdout and stderr which includes
+#   text that starts with '#include "..." search starts here:'
+#   and 'End of search list.'
+#   - Grab that text in between.
+#   - The directory paths start with a space: isolate those lines
+#   - Remove the leading spaces from the directory names.
+#   - On some output (macOS) it also prints a line that describe extra framework
+#     but the line is not a real path: it has '(framework directory)' inside it:
+#     exclude that.
+
+"$(gcc -print-prog-name=cc1plus)" -v  < /dev/null 2>&1 \
+    | sed -ne '/starts here/,/End of/p' \
+    | grep "^ " \
+    | sed 's/^[[:space:]]*//' \
+    | grep -v "(framework directory)"
+
+
+# ----------------------------------------------------------------------------
