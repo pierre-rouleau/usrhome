@@ -1,0 +1,59 @@
+#!/bin/sh
+# SH FILE: clang-version
+#
+# Purpose   : Print version of Clang compiler on stdout.
+# Created   : Tuesday, September  2 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-09-02 11:16:30 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+
+# A small utility that prints the version of the Clang compiler on stdout.
+# This shell script uses a C++ program named clang-version located inside
+# the file "$USRHOME_DIR/bin/compiled/cpp/clang-version/clang-version.cpp".
+#
+# That C++ program is a single file C++ program that must first be built into
+# an executable to allow its execution by this script. That's what the script
+# does: it checks for the presence of the executable and if present uses it,
+# otherwise it first compiles and links it with make and then executes it
+# passing all command line arguments to the program.
+
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#  - GNU make must be present to built the C++ program.
+#  - clang
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+program="$USRHOME_DIR/bin/compiled/cpp/clang-version/clang-version"
+
+# --
+# check for presence of executable. If missing, build it.
+
+if [ ! -x "${program}" ]; then
+    cd "$(dirname "${program}")" || exit 1
+    make clang-version || exit 1
+fi
+if [ ! -x "${program}" ]; then
+    printf -- "\
+*** ERROR: clang-version script failed to compile the C++ program
+    located at: %s.cpp
+
+    Check if you have GNU make installed in your system."  "${program}"
+    exit 1
+fi
+
+# --
+# proceed
+"${program}" $@
+# ----------------------------------------------------------------------------
