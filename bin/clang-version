@@ -4,7 +4,7 @@
 # Purpose   : Print version of Clang compiler on stdout.
 # Created   : Tuesday, September  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-02 11:16:30 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-02 11:43:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -20,15 +20,12 @@
 # otherwise it first compiles and links it with make and then executes it
 # passing all command line arguments to the program.
 
-
-
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
 #  - GNU make must be present to built the C++ program.
 #  - clang
-
 
 # ----------------------------------------------------------------------------
 # Code
