@@ -15,4 +15,8 @@ bin/other/ausyscall-lookup.awk
 # macOS files
 .DS_Store
 
+
+# executable files compiled locally
+bin/compiled/cpp/clang-version/clang-version
+
 # ----------------------------------------------------------------------------
