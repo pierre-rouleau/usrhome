@@ -4,20 +4,21 @@
 # Purpose   : Print information about GCC tooling.
 # Created   : Wednesday, July 24 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-02 15:43:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-02 16:23:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#  Preliminary version of a tool to help investigate GCC built systems.
 
+# Preliminary version of a tool to help investigate GCC built systems.  It
+# currently prints information about the tools on stdout which in itself is
+# already useful.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-#
-
+# gcc, printf
 
 # ----------------------------------------------------------------------------
 # Code
@@ -76,8 +77,6 @@ directories.
        "$(which g++)"                           \
        "$(g++ --version | head -1)"             \
        "$(ls -l "$(which g++)")"
-
-
 
 # ----------------------------------------------------------------------------
 # Local Variables:
