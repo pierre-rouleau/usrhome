@@ -577,7 +577,8 @@ USRHOME_DIR                     Path to the usrhome directory.
                                 environment variables in your usrcfg scripts.
 
                                 There are more environment variables that
-                                identify `conceptual directories`_. They are:
+                                identify `conceptual directories`_. They are
+                                all based on ``USRHOME_DIR`` value and are::
 
                                 - ``USRHOME_DIR_PUBLIC``
                                 - ``USRHOME_DIR_OTHER``
