@@ -576,6 +576,14 @@ USRHOME_DIR                     Path to the usrhome directory.
                                 initialize the value of several other
                                 environment variables in your usrcfg scripts.
 
+                                There are more environment variables that
+                                identify `conceptual directories`_. They are:
+
+                                - ``USRHOME_DIR_PUBLIC``
+                                - ``USRHOME_DIR_OTHER``
+                                - ``USRHOME_DIR_LOCAL``
+                                - ``USRHOME_DIR_CONTRACT``
+
 
 
 USRHOME_TRACE_SHELL_CONFIG      Set to 1 to activate tracing of the configuration
@@ -2425,6 +2433,7 @@ Thanks!
 .. _usrhome/ibin/do-setenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
 .. _usrhome/ibin/envfor-usrhome:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-usrhome
 .. _usrhome/ibin/envfor-homebrew:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-homebrew
+.. _conceptual directories:                            `Cd to Conceptual Directories`_
 
 
 .. ---------------------------------------------------------------------------
