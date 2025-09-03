@@ -984,7 +984,7 @@ USRHOME Command Name               Description
                                    that you keep on your system and do not
                                    publish anywhere.
 
-``cdcontract [SUBDIR]``           cd to *local, private, contract projects*; the directory identified by
+``cdcontract [SUBDIR]``            cd to *local, private, contract projects*; the directory identified by
                                    ``USRHOME_DIR_CONTRACT``, or its identified
                                    ``SUBDIR``.
                                    This directory tree is meant to hold
