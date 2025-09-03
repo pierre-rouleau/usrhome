@@ -1,0 +1,41 @@
+#!/bin/sh
+# SH FILE: print-if-exists
+#
+# Purpose   : Read paths from stdin lines and print on stdout only if the path exist.
+# Created   : Wednesday, September  3 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-09-03 09:10:24 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+
+# This file pathnames that do not exist.
+# The script reads one line at a time from stdin, assume it represents the
+# path of a file or directory and prints it normalized to stdout if it exists.
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# printf, realpath
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Set IFS to null, to read a complete line at a time, even if it has embedded
+# white-space characters.
+while IFS= read -r pathname; do
+    if [ -e "$pathname" ]; then
+        printf '%s\n' "$(realpath "$pathname")"
+    fi
+done
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

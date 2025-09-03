@@ -4,7 +4,7 @@
 # Purpose   : Print the list of directories holding header files used by the gcc C++ compiler.
 # Created   : Tuesday, September  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-02 16:39:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-03 09:11:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -38,7 +38,8 @@
     | sed -ne '/starts here/,/End of/p' \
     | grep "^ " \
     | sed 's/^[[:space:]]*//' \
-    | grep -v "(framework directory)"
+    | grep -v "(framework directory)" \
+    | print-if-exists
 
 
 # ----------------------------------------------------------------------------
