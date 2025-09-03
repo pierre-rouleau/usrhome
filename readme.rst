@@ -668,19 +668,46 @@ USRHOME_DIR_LOG                    Directory where your own log files and notes 
                                    Change current directory to this directory with the ``cdlog``
                                    command.
 
-USRHOME_DIR_DV                     Development directory, used by USRHOME `Directory Navigation`_.
-                                   Change current directory to this directory with the ``cddv``
-                                   command.
+.. ---------------------------------------------------------------------------
+USRHOME_DIR_PUBLIC                 The root directory where your public
+                                   development repositories are stored.
 
-USRHOME_DIR_PRIV                   Private development directory,
-                                   used by USRHOME `Directory Navigation`_.
-                                   Change current directory to this directory with the ``cdpriv``
-                                   command.
+                                   - Used by used by USRHOME `Directory Navigation`_.
+                                   - Change current directory to this directory with the ``cd-public``
+                                     command.
 
-USRHOME_DIR_PUB                    Public development directory,
-                                   used by USRHOME `Directory Navigation`_.
-                                   Change current directory to this directory with the ``cdpub``
-                                   command.
+                                   - Previous implementation used ``USRHOME_DIR_DV`` environment variable
+                                     and the ``cddv`` command, which are both deprecated now.
+
+USRHOME_DIR_OTHER                  The root directory where clones of other public repositories
+                                   are stored.  These repositories are developed by other people
+                                   but you have a clone to use them as developed or just for
+                                   looking into them.
+
+                                   - Used by used by USRHOME `Directory Navigation`_.
+                                   - Change current directory to this directory with the ``cd-other``
+                                     command.
+                                   - Previously identified by the now deprecated ``USRHOME_DIR_PUB``
+                                     environment variable and the deprecated ``cdpub`` command.
+
+
+USRHOME_DIR_LOCAL                  The root directory that holds code repositories that are your
+                                   private code, not distributed anywhere but used locally in the
+                                   system.
+
+                                   - Used by used by USRHOME `Directory Navigation`_.
+                                   - Change current directory to this directory with the ``cd-local``
+                                     command.
+                                   - Previously identified by the now deprecated ``USRHOME_DIR_PRIV``
+                                     environment variable and the deprecated ``cdpriv`` command.
+
+USRHOME_DIR_CONTRACT               The root directory that holds proprietary contract code.
+
+                                   - Used by used by USRHOME `Directory Navigation`_.
+                                   - Change current directory to this directory with the ``cd-contract``
+                                     command.
+
+.. ---------------------------------------------------------------------------
 
 USRHOME_DIR_TMP                    User local temporary directory.
                                    Change current directory to this directory with the ``cdtmp``
@@ -934,17 +961,37 @@ USRHOME Command Name               Description
 ``cdv [SUBDIR]``                   **On macOS only**, cd to the ``/Volume`` directory
                                    or its identified ``SUBDIR``.
 
-``cddv [SUBDIR]``                  cd to *main development*; the directory identified by
-                                   ``USRHOME_DIR_DV`` or its identified ``SUBDIR``.
-
-``cdpriv [SUBDIR]``                cd to *private projects*; the directory identified by
-                                   ``USRHOME_DIR_PRIV`` or its identified ``SUBDIR``.
-
-``cdpub [SUBDIR]``                 cd to *public projects*; the directory identified by
-                                   ``USRHOME_DIR_PUB`` or its identified ``SUBDIR``.
-
 ``cdtmp [SUBDIR]``                 cd to user-specific temporary directory, identified by
                                    ``USRHOME_DIR_TMP`` or its identified ``SUBDIR``.
+
+``cdpub [SUBDIR]``                 cd to *public projects*; the directory identified by
+                                   ``USRHOME_DIR_PUBLIC``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold the
+                                   repositories of your public projects.
+
+``cdother [SUBDIR]``               cd to *other public projects*; the directory identified by
+                                   ``USRHOME_DIR_OTHER``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold clones
+                                   of public projects repositories where you
+                                   do not submit anything.
+
+``cdlocal [SUBDIR]``               cd to *local, private, projects*; the directory identified by
+                                   ``USRHOME_DIR_LOCAL``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold files
+                                   that you keep on your system and do not
+                                   publish anywhere.
+
+``cdcontract [SUBDIR]``           cd to *local, private, contract projects*; the directory identified by
+                                   ``USRHOME_DIR_CONTRACT``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold
+                                   contract related files
+                                   that you keep on your system and only share
+                                   with your customer or employer.
+
 ================================== ================================================================
 
 The commands described above change the current directory to several conceptually important
@@ -972,30 +1019,13 @@ USRHOME_DIR_LIC:
 USRHOME_DIR_LOG :
   The directory where you could store activity log files and notes.
 
-USRHOME_DIR_DV:
-  The directory where you store your main, or most-active, development sub-directories.
-  For example on my systems I often have a ``~/code`` or ``~/my/code`` or ``~/my/dv``
-  directory where I place my most active projects (or symlinks to these directories).
-  This can be located anywhere.
-
-USRHOME_DIR_PRIV:
-  The directory where you store your *private* development sub-directories.
-  That could be something you do not want to publish because it's not ready, or
-  it could be the directories for your various contract work.
-  This can be located anywhere.
-
-USRHOME_DIR_PUB:
-  The directory where you store your secondary, *public*, sub-directories.
-  That could hold a set of repositories that are forks of other projects
-  to which you contribute, or libraries and tools you want to build yourself,
-  anything you do not consider your main or most-active development.
-  This can be located anywhere.
-
 USRHOME_DIR_TMP:
   The name of a directory where your user's temporary files may be stored,
   in a separate directory than the standard ``/tmp`` directory.
   That can be used for testing code and checking if your tested code suffers from
   *temporary file leakage*.
+
+
 
 **Where to Define these Environment Variables**
 
@@ -1009,6 +1039,44 @@ You can change them or add logic in your file to control their values any way yo
 The following commands are shortcuts to change the current directory to one of these
 directories.
 
+**Obsolete environment variables**
+
+The following environment variables were previously used and have now been
+replaced.  If you code uses them you will have to update that code to take the
+new names into account.
+
+
+USRHOME_DIR_DV:
+  This used to identify the main development directory tree.
+  This concept is no longer supported; the new directory names
+  are tied to their privacy context.
+
+USRHOME_DIR_PRIV:
+  This has been replaced by either USRHOME_DIR_CONTRACT or USRHOME_DIR_LOCAL,
+  where the first one is private because it's for files developed for
+  contractual purposes.  The second is for you local files that you do not
+  intend to publish anywhere (yet or always).
+
+USRHOME_DIR_PUB:
+  This was replaced by USRHOME_DIR_PUBLIC or USRHOME_DIR_OTHER.
+  Both are for public files; the first one is for your own projects that you
+  publish while the second is for other public projects without any of your
+  participation.
+
+The following old commands have been removed.
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+``cddv [SUBDIR]``                  cd to *main development*; the directory identified by
+                                   ``USRHOME_DIR_DV`` or its identified ``SUBDIR``.
+
+``cdpriv [SUBDIR]``                cd to *private projects*; the directory identified by
+                                   ``USRHOME_DIR_PRIV`` or its identified ``SUBDIR``.
+
+``cdpub [SUBDIR]``                 It still exists **but** instead of using
+                                   ``USRHOME_DIR_PUB`` it used ``USRHOME_DIR_PUBLIC``.
+================================== ================================================================
 
 
 Listing Files/Directories/Links

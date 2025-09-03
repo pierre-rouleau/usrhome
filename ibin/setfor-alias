@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-05-05 12:02:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-03 15:38:54 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -511,20 +511,34 @@ cdlog()
 }
 
 
-cddv()
-{
-    usrhome_cd "USRHOME_DIR_DV" "$USRHOME_DIR_DV" "$1"
-}
+# ----------------------------------------------------------------------------
+# Development repository holder directories
 
-cdpriv()
+cd-contract()
 {
-    usrhome_cd "USRHOME_DIR_PRIV" "$USRHOME_DIR_PRIV" "$1"
+    usrhome_cd "USRHOME_DIR_CONTRACT" "$USRHOME_DIR_CONTRACT" "$1"
 }
+alias cdcontract=cd-contract
 
-cdpub()
+cd-public()
 {
-    usrhome_cd "USRHOME_DIR_PUB" "$USRHOME_DIR_PUB" "$1"
+    usrhome_cd "USRHOME_DIR_PUBLIC" "$USRHOME_DIR_PUBLIC" "$1"
 }
+alias cdpub=cd-public
+
+cd-local()
+{
+    usrhome_cd "USRHOME_DIR_LOCAL" "$USRHOME_DIR_LOCAL" "$1"
+}
+alias cdlocal=cd-local
+
+cd-other()
+{
+    usrhome_cd "USRHOME_DIR_OTHER" "$USRHOME_DIR_OTHER" "$1"
+}
+alias cdother=cd-other
+
+# ----------------------------------------------------------------------------
 
 cdtmp()
 {
@@ -715,6 +729,7 @@ alias use-diff='source $USRHOME_DIR/ibin/envfor-diff'
 
 if [ "${os_name}" = "Darwin" ]; then
     alias use-gcc14='source $USRHOME_DIR/ibin/envfor-gcc14-on-macos'
+    alias use-gcc15='source $USRHOME_DIR/ibin/envfor-gcc15-on-macos'
     alias use-gnu-binutils='source $USRHOME_DIR/ibin/envfor-gnu-binutils-on-macos'
 fi
 alias use-cc-options='source $USRHOME_DIR/ibin/envfor-cc-options'

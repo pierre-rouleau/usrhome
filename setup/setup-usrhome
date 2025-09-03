@@ -4,12 +4,12 @@
 # Purpose   : Setup usrhome personnal/private persistent files.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-25 19:13:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-08-22 14:05:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# USRHOME Initial configuration: creates the initial personnal/private
+# USRHOME initial configuration: creates the initial personnal/private
 # persistent configuration script file inside the usrcfg directory placed in
 # the same directory already holding usrhome.  Then create the user's Z Shell
 # configuration file symlinks pointing to the ones provided by USRHOME.  If

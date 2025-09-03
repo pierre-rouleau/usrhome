@@ -3,7 +3,7 @@
 # Purpose   : USRHOME template for user's startup configuration of Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-05 10:51:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-03 16:33:13 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -101,9 +101,10 @@ unset os_type
 # - the values according to what system runs this code.
 
 export USRHOME_DIR_MY="$HOME/my"
-export USRHOME_DIR_DV="$HOME/my/dv"
-export USRHOME_DIR_PUB="$HOME/my/dvpub"
-export USRHOME_DIR_PRIV="$HOME/my/dvpriv"
+export USRHOME_DIR_CONTRACT="$HOME/my/dvc"
+export USRHOME_DIR_LOCAL="$HOME/my/dvl"
+export USRHOME_DIR_PUBLIC="$HOME/my/dvp"
+export USRHOME_DIR_OTHER="$HOME/my/dvo"
 export USRHOME_DIR_LIC="$HOME/my/licences"
 export USRHOME_DIR_LOG="$HOME/my/logs"
 export USRHOME_DIR_TMP="$HOME/tmp"

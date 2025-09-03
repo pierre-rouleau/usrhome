@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 16:56:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-03 16:38:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -73,9 +73,9 @@ else
         printf ". Using Rust %s.\n" "$usrhome_rustv"
         # Check for presence of the Rust source files in
         # the public rust repo expected by USRHOME
-        usrhome_rustv_fpathname="$USRHOME_DIR_PUB/rust/src/version"
+        usrhome_rustv_fpathname="$USRHOME_DIR_OTHER/rust/src/version"
         if [[ -f "$usrhome_rustv_fpathname" ]]; then
-            export RUST_SRC_PATH="$USRHOME_DIR_PUB/rust/src"
+            export RUST_SRC_PATH="$USRHOME_DIR_OTHER/rust/src"
             usrhome_printf "   Rust ver. %s source is available.\n" "$(cat "$usrhome_rustv_fpathname")"
         else
             usrhome_printf "\

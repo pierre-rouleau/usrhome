@@ -3,7 +3,7 @@
 # Purpose   : Set shell for programming PEL.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-04 21:50:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-08-25 18:05:40 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -22,7 +22,7 @@
 # ----
 #
 #
-cd $USRHOME_DIR_DV/elisp/pel/$1
+cd "$USRHOME_DIR_PUBLIC/elisp/pel/$1" || exit 1
 set_title PEL
 
 # ----------------------------------------------------------------------------
