@@ -4,7 +4,7 @@
 # Purpose   : Convert a ISO-8859 encoded file to UTF-8.
 # Created   : Monday, September  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-01 20:55:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-03 15:11:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -36,7 +36,6 @@
 # ----
 #
 #
-os_name="$(uname)"
 print_usage()
 {
     printf -- "\
