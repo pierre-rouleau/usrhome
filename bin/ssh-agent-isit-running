@@ -4,20 +4,20 @@
 # Purpose   : Check if the ssh-agent is running.
 # Created   : Monday, July  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-01 13:56:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-18 16:28:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Check if the ssh-agent is currently running.
-# Report problem if more than one is running.
+# Checks if the ssh-agent is currently running.
+# Reports problem if more than one is running.
+# Supports Linux and macOS.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-#
-
+# ps, grep
 
 # ----------------------------------------------------------------------------
 # Code
@@ -39,31 +39,35 @@ check_ssh()
             # shellcheck disable=SC2009
             lines="$(ps -ux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep -c ssh-agent | xargs)"
             ;;
+        *)
+            printf -- "*** ERROR: ssh-agent-isit-running does not support %s\n" "$(uname)"
+            printf -- "           Please report a bug in the project\n"
+            exit 3
+            ;;
     esac
 }
 
 
 check_ssh
-
 case "$lines" in
-    1)
-        printf -- "The ssh-agent appears to be running:\n"
-        # shellcheck disable=SC2009
-        ps aux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep ssh-agent
-        ;;
-
     0)
         printf -- "The ssh-agent does not seem to be running!\n"
         exit 1
         ;;
 
+    1)
+        printf -- "One ssh-agent appears to be running:\n"
+        # shellcheck disable=SC2009
+        ps aux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep ssh-agent
+        ;;
+
     *)
         printf -- "There seems to be several ssh-agent running!\n"
+        printf -- "You may want to stop all but one of them.\n"
         # shellcheck disable=SC2009
         ps aux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep ssh-agent
         exit 2
         ;;
-
 esac
 
 # ----------------------------------------------------------------------------
