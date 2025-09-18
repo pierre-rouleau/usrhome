@@ -4,7 +4,7 @@
 # Purpose   : Check if the ssh-agent is running.
 # Created   : Monday, July  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-18 16:28:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-18 16:31:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -12,6 +12,9 @@
 # Checks if the ssh-agent is currently running.
 # Reports problem if more than one is running.
 # Supports Linux and macOS.
+
+#  For an example on how to use this see:
+#   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cmd/ssh.pdf
 
 # ----------------------------------------------------------------------------
 # Dependencies
