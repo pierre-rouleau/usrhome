@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-27 10:08:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-17 21:28:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,10 +27,10 @@
 # Dependencies
 # ------------
 #
+# - It should be invoked via an alias named cd-to
 # - fd : see https://github.com/sharkdp/fd "
 #   - To install fd:
 #      - On macOS:  brew install fd
-#
 
 # ----------------------------------------------------------------------------
 # Code
@@ -401,7 +401,7 @@ if [ "$the_dirpath" = "." ]; then
     elif [ "$search_for1" = "directory" ]; then
         # echo "--> the_dirpath: $the_dirpath, the_filepath = $the_filepath"
         if [ -d "$the_filepath" ]; then
-            cd "$the_filepath" || exit 1
+            cd "$the_filepath" || return 1
             if [ "$edit_files" = "true" ]; then
                 echo "$EDITOR ."
                 eval "$EDITOR ."
@@ -437,7 +437,7 @@ else
 fi
 
 
-# Cleanup and return exit code
+# Cleanup and return the exit code
 unset the_dirpath
 unset the_filepath
 unset search_for
