@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-03 15:38:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-21 11:18:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -450,6 +450,7 @@ fi
 # Manual environment variable manipulation
 alias setenv='source $USRHOME_DIR/ibin/do-setenv'
 alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
+alias add-to-path='source $USRHOME_DIR/ibin/do-add-to-path'
 alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.zsh'
 
 # ----------------------------------------------------------------------------

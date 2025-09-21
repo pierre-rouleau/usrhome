@@ -414,6 +414,7 @@ The user would probably want to create some extra ones;  the
 ========================================== ========================================================
 ``$USRHOME/ibin`` File                     Purpose
 ========================================== ========================================================
+`do-add-to-path`_                          Implements the `add-to-path command`_.
 `do-cbr`_                                  Implements the `cbr command`_.
 `do-cd-to`_                                Implements the `cd-to command`_.
 `do-clrenv`_                               Implements the `clrenv command`_.
@@ -1141,11 +1142,18 @@ USRHOME Command Name               Description
 Command to Display and Manipulate Environment Variables
 -------------------------------------------------------
 
-The following commands help manage and read the content of environment variables.
+The following commands help manage and read the content of environment
+variables used int he current shell.  Any modification to an environment
+variable become available to the current shell and any sub-shells.  It does
+not persists once the shell exits.
 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
+``add-to-path DIRPATH``            Add DIRPATH to the front of the current shell PATH.
+
+``add-to-path --end DIRPATH``      Add DIRPATH to the end of the current shell PATH.
+
 ``clrenv VARNAME``                 Clear (remove) the environment variable specified by name from
                                    the environment of the *current* shell.
 
@@ -2356,6 +2364,7 @@ Thanks!
 .. _use-cbr command:                                   `CBR -- Single commands to Check, Build or Run`_
 .. _use-emacs-for-man command:                         `Using Emacs as a man reader`_
 .. _USRHOME dot files:                                 https://github.com/pierre-rouleau/usrhome/tree/main/dot
+.. _do-add-to-path:                                    https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-add-to-path
 .. _do-cbr:                                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
 .. _do-cd-to:                                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cd-to
 .. _do-clrenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
@@ -2394,6 +2403,7 @@ Thanks!
 .. _usrcfg command:                                    `Directory Navigation`_
 .. _usrhome command:                                   `Directory Navigation`_
 .. _pel command:                                       `Directory Navigation`_
+.. _add-to-path command:
 .. _clrenv command:                                    `Command to Display and Manipulate Environment Variables`_
 .. _sanitize-path command:                             `Command to Display and Manipulate Environment Variables`_
 .. _setenv command:                                    `Command to Display and Manipulate Environment Variables`_

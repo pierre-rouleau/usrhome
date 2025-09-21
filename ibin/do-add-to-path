@@ -1,0 +1,86 @@
+# Sourced script: do-add-to-path  -*- mode: sh; -*-
+#
+# Purpose   : Add directory to PATH in the current shell
+# Created   : Sunday, September 21 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-09-21 11:17:05 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Update the value of PATH in the current shell by adding a directory to the
+# beginning of the PATH.  If the --end option is provided, ad the directory to
+# the end of the current PATH instead.#
+#
+#  Usage: source do-add-to-path DIRPATH
+#  Usage: .      do-add-to-path --end DIRPATH
+#
+#
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# This script is meant to be sourced, and it should be assigned an alias named
+# setenv such that it can be invoked directly by the setenv command.
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+add-to-path -- Add a directory to the beginning or the end of PATH.
+               Modifies the PATH used in the current shell only.
+
+ Usage: add-to-path -h | --help
+
+        add-to-path DIRPATH
+        add-to-path --end DIRPATH
+
+      --end: add DIRPATH to the end of PATH.
+             If not specified DIRPATH is placed at the beginning of PATH.
+"
+}
+
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    return 0
+fi
+
+if [ -z "$1" ]; then
+    print_usage
+    return 1
+fi
+
+at_end=false
+if [ "$1" = "--end" ]; then
+    at_end=true
+    shift
+fi
+
+if [ ! -d "$1" ]; then
+    printf -- "*** ERROR: Directory does not exists: %s\n" "$1"
+    return 2
+fi
+
+
+if [ "$at_end" = "true" ]; then
+   export PATH="$PATH:$1" || return 1
+else
+    export PATH="$1:$PATH" || return 1
+fi
+
+
+# ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
