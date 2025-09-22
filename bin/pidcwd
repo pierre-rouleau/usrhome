@@ -4,7 +4,7 @@
 # Purpose   : Print the current working directory of specified process ID.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-21 16:05:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-22 10:31:40 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -50,12 +50,12 @@ pidcwd -- Print current working directory of specified process ID.
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     # help requested explicitly: no error.
-    return 0
+    exit 0
 fi
 
 if [ -z "$1" ]; then
     print_usage
-    return 1
+    exit  1
 fi
 
 # --
