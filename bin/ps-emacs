@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes running inside a Terminal.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-22 12:20:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-22 13:50:35 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -107,10 +107,18 @@ print_emacs_processes()
 # --
 # proceed
 
-if [ -z "$1" ]; then
-    print_emacs_processes
+# ensure there is an Emacs process running
+if ps-list emacs > /dev/null 2>&1; then
+    if [ -z "$1" ]; then
+        print_emacs_processes
+    else
+        print_emacs_processes | grep "$1"
+    fi
 else
-    print_emacs_processes | grep "$1"
+    # There are no Emacs process running.
+    # ensure that the exit code is 1, because
+    # it's not guaranteed with the above.
+    exit 1
 fi
 
 # ----------------------------------------------------------------------------
