@@ -4,7 +4,7 @@
 # Purpose   : List running Processes.
 # Created   : Saturday, March  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-03-03 16:45:24 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-22 11:47:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,9 +49,25 @@ print_usage()
              Only available on Linux where SELinux is available.
              On this system, SELinux is %savailable.
 
- BUGS: This uses a simple grep searching.
-       A better implementation would extra the process name
-       and grep on that only.
+
+ OUTPUT FORMAT:
+
+      Each line contains the following columns.
+      All columns are lined up.
+
+        UID  : user ID
+        PID  : process ID
+        PPID : Parent process ID
+        C    : CPU utilization of process or thread
+        STIME: system CPU time
+        TTY  : controlling terminal
+        TIME : total CPU time (user + system) since it started
+        CMD  : command
+
+ BUGS: This uses a simple grep extraction.
+       A better implementation would extract necessary information
+       and format it in better ways.
+
 " "$pgm_name" "$pgm_name" "$pgm_name" "$selinux_msg"
 }
 
@@ -82,6 +98,8 @@ if [ "$1" = "-Z" ]; then
     fi
 fi
 
+# -f Print command arguments
+# shellcheck disable=SC2009
 ps -ef $ps_options | grep "$1" | grep -v "$pgm_name" | grep -v grep
 
 # ----------------------------------------------------------------------------
