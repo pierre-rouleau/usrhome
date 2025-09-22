@@ -1,0 +1,115 @@
+#!/bin/sh
+# SH FILE: ps-emacs
+#
+# Purpose   : List all running Emacs processes running inside a Terminal.
+# Created   : Sunday, September 21 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-09-22 11:34:47 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print information about all Emacs processes running inside a terminal window.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - $USRHOME_DIR/bin/ps-list
+# - grep
+# - gawk (GNU AWK)
+#   - $USRHOME_DIR/bin/pidcwd
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+print_usage()
+{
+    printf -- "
+ps-emacs -- Print information about all Emacs process running in a terminal.
+
+ Usage: ps-emacs -h | --help
+
+  • Print this help information.
+
+ Usage: ps-emacs [PATTERN]
+
+  • Print information about all Emacs processes running in a terminal.
+
+      Print a line for each Emacs process.
+      Each line contains the following columns.
+      All columns are lined up except the last one since
+      the command may be short or long.
+
+         UID  : user ID
+         PID  : process ID
+         PPID : Parent process ID
+         C    : CPU utilization of process or thread
+         STIME: system CPU time
+         TTY  : controlling terminal
+         TIME : total CPU time (user + system) since it started
+         CMD  : emacs command
+         Separator: ▶︎▶︎▶︎ CWD:
+         CWD:  Current working directory of the Emacs process
+
+      The CWD information is only printed when the GNU AWK is available.
+
+    - If PATTERN is specified, filter the result with an extra grep filter
+      using that pattern.  That can be used to search for an Emacs process
+      launched under a specific command, or using a specific working directory.
+
+    The exit code is 0 if at least one Emacs process was found, 1 otherwise.
+"
+}
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# --
+# define utility
+
+use_gawk=false
+if which gawk > /dev/null 2>&1; then
+    use_gawk=true
+fi
+
+print_emacs_processes()
+{
+    # List all Emacs processes
+    #  - filter out itself (ps-emacs)
+    #  - filter on tty to only list processes attached to a TTY
+    #  - filter out processes that use the hexl sub-process
+    #  - Use GNU AWK to extract the current working directory of each process and append it to the output.
+    if [ "$use_gawk" = "true" ]; then
+        ps-list emacs \
+            | grep -v ps-emacs \
+            | grep " tty" \
+            | grep -v emacs-repos/emacs/lib-src/hexl \
+            | gawk -f "$USRHOME_DIR/bin/other/ps-emacs-format.awk"
+    else
+        ps-list emacs \
+            | grep -v ps-emacs \
+            | grep " tty" \
+            | grep -v emacs-repos/emacs/lib-src/hexl
+    fi
+}
+
+# --
+# proceed
+
+if [ -z "$1" ]; then
+    print_emacs_processes
+else
+    print_emacs_processes | grep "$1"
+fi
+
+# ----------------------------------------------------------------------------
