@@ -4,7 +4,7 @@
 # Purpose   : Print the current working directory of specified process ID.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-22 10:31:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-22 11:43:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,15 +32,18 @@ print_usage()
     printf -- "
 pidcwd -- Print current working directory of specified process ID.
 
- Usage:
+ Usage: pidcwd -h | --help
 
-   - pidcwd -h | --help
+  • Print this help information.
 
-     Print this help.
+ Usage:  pidcwd PID
 
-   - pidcwd PID
-
-      Print the current working directory of PID.
+  • Print the current working directory of specified process ID.
+    - If the specified PID does not exists, it prints an error
+      and terminates with an exit code of 1.
+    - If the PID exists, it prints the current working directory
+      of the corresponding process and terminates with an exit
+      code of 0.
 "
 }
 
