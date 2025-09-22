@@ -1,0 +1,102 @@
+==================
+The whatis utility
+==================
+
+:Home URL: https://github.com/pierre-rouleau/usrhome
+:Created:  Sunday, May 26 2024.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2024-05-26 11:26:33, by Pierre Rouleau.
+:Copyright: © 2024, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Support for whatis utility
+--------------------------
+
+The whatis utility
+~~~~~~~~~~~~~~~~~~
+
+Several tools, including Emacs, take advantage of the Unix `whatis utility`_.
+With ``whatis`` you can query the list of topics available in the various ``man``
+pages installed in your system.  Here's a session using ``whatis`` to get man
+topics about ``man`` and ``whatis``:
+
+.. code:: sh
+
+    zsh% whatis emacs
+    emacs(1)                 - GNU project Emacs editor
+    emacsclient(1)           - tells a running Emacs to visit a file
+    etags(1), ctags(1)       - generate tag file for Emacs, vi
+    changelog(n), doctools::changelog(n) - Processing text in Emacs ChangeLog format
+    mg(1)                    - emacs-like text editor
+    changelog(n), doctools::changelog(n) - Processing text in Emacs ChangeLog format
+    mg(1)                    - emacs-like text editor
+
+
+    >0@11:05:26 L1 roup@macStudio1:~
+    zsh% whatis diff
+    dbilogstrip(1)           - filter to normalize DBI trace logs for diff'ing
+    diff(1)                  - differential file and directory comparator
+    diffstat(1)              - make histogram from diff-output
+    patch(1)                 - apply a diff file to an original
+    sdiff(1)                 - side-by-side diff
+    Algorithm::Diff(3pm)     - Compute `intelligent' differences between two files / lists
+    Text::Diff(3pm)          - Perform diffs on files and record sets
+    Text::Diff::Config(3pm)  - global configuration for Text::Diff (as a separate module)
+    Text::Diff::Table(3pm),   Text::Diff::Table(3pm) - Text::Diff plugin to generate "table" format output
+    Text::Diff::Table5.30(3pm),   Text::Diff::Table(3pm) - Text::Diff plugin to generate "table" format output
+    dbilogstrip(1)           - filter to normalize DBI trace logs for diff'ing
+    diff(1)                  - differential file and directory comparator
+    diffstat(1)              - make histogram from diff-output
+    patch(1)                 - apply a diff file to an original
+    sdiff(1)                 - side-by-side diff
+    git-diff(1)              - Show changes between commits, commit and working tree, etc
+    git-diff-files(1)        - Compares files in the working tree and the index
+    git-diff-index(1)        - Compare a tree to the working tree or index
+    git-diff-tree(1)         - Compares the content and mode of blobs found via two tree objects
+    git-difftool(1)          - Show changes using common diff tools
+    git-range-diff(1)        - Compare two commit ranges (e.g. two versions of a branch)
+    gitdiffcore(7)           - Tweaking diff output
+
+
+    >0@11:05:35 L1 roup@macStudio1:~
+    zsh% whatis man
+    Accelerate(7)            - This man page introduces the Accelerate umbrella framework, its constituent libraries and programming support in Mac OS X
+    man(1), apropos(1), whatis(1) - display online manual documentation pages
+    man(7)                   - legacy formatting language for manual pages
+    man.conf(5)              - man(1) and manpath(1) configuration files
+    zshall(1)                - the Z shell meta-man page
+    Accelerate(7)            - This man page introduces the Accelerate umbrella framework, its constituent libraries and programming support in Mac OS X
+    DateTime::Locale::en_IM(3pm) - Locale data examples for the English Isle of Man (en-IM) locale
+    DateTime::Locale::gv_IM(3pm) - Locale data examples for the Manx Isle of Man (gv-IM) locale
+    IO::Socket::SSL::Intercept(3pm) - -- SSL interception (man in the middle)
+    Pod::Man(3pm)            - Convert POD data to formatted *roff input
+    Pod::Perldoc::ToMan(3pm) - let Perldoc render Pod as man pages
+    man(1), apropos(1), whatis(1) - display online manual documentation pages
+    man(7)                   - legacy formatting language for manual pages
+    man.conf(5)              - man(1) and manpath(1) configuration files
+    zshall(1)                - the Z shell meta-man page
+    xml2man(1)               - MPGL to mdoc (man page) translator
+    >0@11:06:11 L1 roup@macStudio1:~
+    zsh%
+
+
+The ``whatis`` utility uses a whatis file.  On most Unix-like systems, the man
+page directory contains the whatis file.
+
+Some packages do not have the appropriate whatis file.  That file must be
+built independently.
+
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
