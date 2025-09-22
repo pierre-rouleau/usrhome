@@ -4,7 +4,7 @@
 # Purpose   : Print the current working directory of specified process ID.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-22 11:43:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-22 17:22:26 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -20,7 +20,6 @@
 # ------------
 #
 # - printf, lsof, awk
-# - On Linux, it may use: pwdx
 
 # ----------------------------------------------------------------------------
 # Code
@@ -65,11 +64,7 @@ fi
 # proceed
 
 if lsof -p "$1" > /dev/null 2>&1; then
-  if which pwdx > /dev/null 2>&1; then
-      pwdx "$1"
-  else
-      lsof -a -d cwd -p "$1" -n -Fn | awk '/^n/ {print substr($0,2)}'
-  fi
+    lsof -a -d cwd -p "$1" -n -Fn | awk '/^n/ {print substr($0,2)}'
 else
     printf -- "*** Error pidcwd: PID %s does not exists\n" "$1"
     exit 1
