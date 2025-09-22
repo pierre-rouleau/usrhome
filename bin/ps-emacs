@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes running inside a Terminal.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-22 14:13:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-22 17:23:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -19,7 +19,7 @@
 # - grep
 # - gawk (GNU AWK)
 #   - $USRHOME_DIR/bin/pidcwd
-
+#     - lsof
 
 # ----------------------------------------------------------------------------
 # Code
