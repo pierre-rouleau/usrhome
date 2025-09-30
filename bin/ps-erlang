@@ -4,7 +4,7 @@
 # Purpose   :
 # Created   : Tuesday, September 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-30 08:07:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-30 08:53:08 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -65,6 +65,8 @@ ps-erlang -- Print information about all Erlang process running in a terminal.
     - If PATTERN is specified, filter the result with an extra grep filter
       using that pattern.  That can be used to search for an Erlang process
       launched under a specific command, or using a specific working directory.
+      It can also be used to specify another Erlang-based language like elixir
+      or lfe.
 
     The exit code is 0 if at least one Erlang process was found, 1 otherwise.
 "
