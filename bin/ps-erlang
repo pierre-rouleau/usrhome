@@ -1,0 +1,133 @@
+#!/bin/sh
+# SH FILE: ps-erlang
+#
+# Purpose   :
+# Created   : Tuesday, September 30 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-09-30 08:07:13 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+# Print information about all Erlang processes running inside a terminal window.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+# - $USRHOME_DIR/bin/ps-list
+# - grep
+# - awk
+# - gawk (GNU AWK)
+#   - $USRHOME_DIR/bin/pidcwd
+#     - lsof
+# wc
+# xargs
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+print_usage()
+{
+    printf -- "
+ps-erlang -- Print information about all Erlang process running in a terminal.
+
+ Usage: ps-erlang -h | --help
+
+  • Print this help information.
+
+ Usage: ps-erlang [PATTERN]
+
+  • Print information about all Erlang processes running in a terminal.
+
+      Print a line for each Erlang process.
+      Each line contains the following columns.
+      All columns are lined up except the last one since
+      the command may be short or long.
+
+         UID  : user ID
+         PID  : process ID
+         PPID : Parent process ID
+         C    : CPU utilization of process or thread
+         STIME: system CPU time
+         TTY  : controlling terminal
+         TIME : total CPU time (user + system) since it started
+         CMD  : erlang command
+         Separator: ▶︎▶︎▶︎ CWD:
+         CWD:  Current working directory of the Erlang process
+
+      The CWD information is only printed when the GNU AWK is available.
+
+    - If PATTERN is specified, filter the result with an extra grep filter
+      using that pattern.  That can be used to search for an Erlang process
+      launched under a specific command, or using a specific working directory.
+
+    The exit code is 0 if at least one Erlang process was found, 1 otherwise.
+"
+}
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# --
+# define utility
+
+use_gawk=false
+if which gawk > /dev/null 2>&1; then
+    use_gawk=true
+fi
+
+print_erlang_processes()
+{
+    # List all Erlang processes
+    #  - filter out itself (ps-emacs)
+    #  - filter on tty to only list processes attached to a TTY
+    #    - under macOS it's tty, under linux it's pts/
+    #  - filter out processes that use the hexl sub-process
+    #  - Use GNU AWK to extract the current working directory of each process
+    #    and append it to the output.
+    #    The AWK script also prints "  ▶︎▶︎▶︎ CWD: " before the current directory
+    #    and filters on the process being Emacs.
+    if [ "$use_gawk" = "true" ]; then
+        ps-list \
+            | grep " tty\|pts/"  \
+            | gawk -f "$USRHOME_DIR/bin/other/ps-erlang-format.awk"
+    else
+        ps-list emacs \
+            | grep " tty\|pts/" \
+            | awk '$8~/erlang/{print $0}'
+    fi
+}
+
+# --
+# proceed
+
+#shellcheck disable=SC2126 # the grepping is done inside ps-list.
+# use xargs to strip spaces from the wc -l output.
+erlang_running_process_count=$(print_erlang_processes | wc -l | xargs)
+
+# Ensure there is an Erlang process running
+if [ "$erlang_running_process_count" = "0" ]; then
+    # There are no Erlang process running.
+    # ensure that the exit code is 1, because
+    # it's not guaranteed with the code below.
+    exit 1
+else
+    if [ -z "$1" ]; then
+        print_erlang_processes
+    else
+        print_erlang_processes | grep "$1"
+    fi
+fi
+
+# ----------------------------------------------------------------------------
