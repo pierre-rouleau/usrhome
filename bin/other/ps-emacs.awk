@@ -1,12 +1,13 @@
-# GAWK FILE: ps-emacs-format.awk
+# AWK FILE: ps-emacs.awk
 #
-# Purpose   : Format Emacs process list to add the CWD to the line.
-# Created   : Sunday, September 21 2025.
+# Purpose   : List Emacs processes.
+# Created   : Monday, September 29 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-29 23:08:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-29 23:13:56 EDT, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
+#
 #
 # The purpose of this script is to take the output of the command
 #
@@ -27,28 +28,25 @@
 # 7   TIME : total CPU time (user + system) since it started
 # 8   CMD  : command
 #
-# The script extract the PPID of the Emacs process, finds the
-# current working directory of the process and appends it to the line.
+# The script identify emacs processes from the 8th column and print these lines.
 #
 # To extract the current working directory of a process ID, we use
 # lsof and AWK again:
 #
 #   lsof -a -d cwd -p $PPID -n -Fn | awk '/^n/ {print substr($0,2)}'
 #
-# ----------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-# This is a GNU AWK script.  It does not work on regular AWK.
-#
+# Regular AWK.
+
 # ------------------------------------------------------------------------------
-# On all lines, extract the process id (from column 2) and use the pidcwd
-# program to extract the current working directory of that process.
-# print the line and then the current working directory.
-$8 == "emacs"  {
-      command = "pidcwd " $2
-      command |& getline path_result
-      close(command)
-      print $0, "  ▶︎▶︎▶︎ CWD: ", path_result
-}
+# Code
+# ----
+#
+#
+$8 == "emacs"  { print $0 }
+
 # ------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes running inside a Terminal.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-22 17:23:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-29 23:10:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -89,18 +89,21 @@ print_emacs_processes()
     #  - filter on tty to only list processes attached to a TTY
     #    - under macOS it's tty, under linux it's pts/
     #  - filter out processes that use the hexl sub-process
-    #  - Use GNU AWK to extract the current working directory of each process and append it to the output.
+    #  - Use GNU AWK to extract the current working directory of each process
+    #    and append it to the output.
+    #    The AWK script also prints "  ▶︎▶︎▶︎ CWD: " before the current directory
+    #    and filters on the process being Emacs, so grep further on the
+    #    special "  ▶︎▶︎▶︎ CWD: " to exclude other ps -ef output that contains
+    #    the word emacs to only list real Emacs processes.
     if [ "$use_gawk" = "true" ]; then
         ps-list emacs \
-            | grep -v ps-emacs \
             | grep " tty\|pts/" \
-            | grep -v emacs-repos/emacs/lib-src/hexl \
-            | gawk -f "$USRHOME_DIR/bin/other/ps-emacs-format.awk"
+            | gawk -f "$USRHOME_DIR/bin/other/ps-emacs-format.awk" \
+            | grep "  ▶︎▶︎▶︎ CWD: "
     else
         ps-list emacs \
-            | grep -v ps-emacs \
             | grep " tty\|pts/" \
-            | grep -v emacs-repos/emacs/lib-src/hexl
+            | awk -f "$USRHOME_DIR/bin/other/ps-emacs.awk"
     fi
 }
 
