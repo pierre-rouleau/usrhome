@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes running inside a Terminal.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-29 23:10:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-29 23:23:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -92,14 +92,11 @@ print_emacs_processes()
     #  - Use GNU AWK to extract the current working directory of each process
     #    and append it to the output.
     #    The AWK script also prints "  ▶︎▶︎▶︎ CWD: " before the current directory
-    #    and filters on the process being Emacs, so grep further on the
-    #    special "  ▶︎▶︎▶︎ CWD: " to exclude other ps -ef output that contains
-    #    the word emacs to only list real Emacs processes.
+    #    and filters on the process being Emacs.
     if [ "$use_gawk" = "true" ]; then
         ps-list emacs \
             | grep " tty\|pts/" \
-            | gawk -f "$USRHOME_DIR/bin/other/ps-emacs-format.awk" \
-            | grep "  ▶︎▶︎▶︎ CWD: "
+            | gawk -f "$USRHOME_DIR/bin/other/ps-emacs-format.awk"
     else
         ps-list emacs \
             | grep " tty\|pts/" \
