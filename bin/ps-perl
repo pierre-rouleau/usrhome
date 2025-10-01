@@ -4,7 +4,7 @@
 # Purpose   :
 # Created   : Tuesday, September 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-30 08:16:21 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-01 08:56:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -101,7 +101,8 @@ print_perl_processes()
     if [ "$use_gawk" = "true" ]; then
         ps-list \
             | grep " tty\|pts/"  \
-            | gawk -f "$USRHOME_DIR/bin/other/ps-perl-format.awk"
+            | gawk -f "$USRHOME_DIR/bin/other/ps-perl-format.awk" \
+            | column -s "▶︎▶︎▶︎" -t
     else
         ps-list emacs \
             | grep " tty\|pts/" \
