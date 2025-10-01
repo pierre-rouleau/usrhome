@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-21 11:18:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-01 17:16:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -466,6 +466,7 @@ alias cd-to='source $USRHOME_DIR/ibin/do-cd-to'
 alias pel='source $USRHOME_DIR/ibin/envfor-pel'
 alias usrhome='source $USRHOME_DIR/ibin/do-usrhome'
 alias usrcfg='source $USRHOME_DIR/ibin/do-usrcfg'
+alias use-sdkman='source $USRHOME_DIR/ibin/envfor-sdkman'
 
 # Set shortcut functions for Bash and the Z shell
 # -----------------------------------------------

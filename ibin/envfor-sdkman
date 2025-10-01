@@ -1,0 +1,40 @@
+# Sourced script: envfor-sdkman  -*- mode: sh; -*-
+#
+# Purpose   : Set shell to use sdkman.
+# Created   : Wednesday, October  1 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-10-01 17:14:47 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Install support for sdkman command, sdk, the Software Development Kit
+# Manager for Java, Scala, and some other JVM languages.
+#
+# For more information, see: https://sdkman.io/
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - First install sdkman using the command shown in https://sdkman.io/
+# - Then remove the 3 lines that script added to the end of your ~/bash_profile
+#   and/or your ~/.zshrc files.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+export SDKMAN_DIR="$HOME/.sdkman"
+if [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+    . "$HOME/.sdkman/bin/sdkman-init.sh"
+else
+    printf -- "\
+*** ERROR: Missing startup file: %s\n" "$HOME/.sdkman/bin/sdkman-init.sh"
+    return 1
+fi
+
+# ----------------------------------------------------------------------------
