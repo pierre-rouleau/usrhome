@@ -3,7 +3,7 @@
 # Purpose   : Set shell to use sdkman.
 # Created   : Wednesday, October  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-02 12:11:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-02 15:17:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -12,7 +12,9 @@
 # Manager for Java, Scala, and some other JVM languages.
 #
 # For more information, see: https://sdkman.io/
-
+#
+#
+#  This source script is meant to be invoked via the use-sdkman alias.
 
 # ----------------------------------------------------------------------------
 # Dependencies
