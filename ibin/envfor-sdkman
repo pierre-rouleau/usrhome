@@ -3,7 +3,7 @@
 # Purpose   : Set shell to use sdkman.
 # Created   : Wednesday, October  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-01 17:14:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-02 10:37:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,9 +18,13 @@
 # Dependencies
 # ------------
 #
+# To setup:
 # - First install sdkman using the command shown in https://sdkman.io/
 # - Then remove the 3 lines that script added to the end of your ~/bash_profile
 #   and/or your ~/.zshrc files.
+#
+# This script uses:
+# - printf, xargs : xargs is used to strip leading whitespaces.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -31,6 +35,9 @@
 export SDKMAN_DIR="$HOME/.sdkman"
 if [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
     . "$HOME/.sdkman/bin/sdkman-init.sh"
+    # Use xargs to print all 3 lines of sdk version in 1 line, removing leading whitespaces.
+    printf -- "\
+Using Java: %s\nWith: %s\n" "$(java --version)" "$(sdk version | xargs -I % printf ' %')"
 else
     printf -- "\
 *** ERROR: Missing startup file: %s\n" "$HOME/.sdkman/bin/sdkman-init.sh"
