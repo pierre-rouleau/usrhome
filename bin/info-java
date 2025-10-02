@@ -4,7 +4,7 @@
 # Purpose   : Print information about Java support available for this shell.
 # Created   : Thursday, October  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-02 15:05:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-02 15:06:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -81,7 +81,7 @@ To install a JDK or JRE:
 
 - Recommended: Eclipse Temurin: https://adoptium.net/
 - or the commercial @ Oracle  : https://www.oracle.com/java/technologies/downloads/
-- or the default proposed     , http://www.java.com
+- or the default proposed v8  : http://www.java.com
 "
     exit 1
 fi
