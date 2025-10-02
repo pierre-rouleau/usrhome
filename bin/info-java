@@ -4,7 +4,7 @@
 # Purpose   : Print information about Java support available for this shell.
 # Created   : Thursday, October  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-02 12:32:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-02 14:33:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,7 +27,9 @@
 # Use xargs to print all 3 lines of sdk version in 1 line, removing leading whitespaces.
 
 printf -- "\
-Using: %s\n" "$(java --version | xargs -I % echo '   %')"
+Using:
+%s
+%s\n" "$(javac --version | xargs -I % echo '   %')" "$(java --version | xargs -I % echo '   %')"
 
 if [ -n "$JAVA_HOME" ]; then
     printf -- "\
