@@ -4,7 +4,7 @@
 # Purpose   : Print information about Java support available for this shell.
 # Created   : Thursday, October  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-02 14:42:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-02 14:55:06 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,7 +26,13 @@
 #
 # Use xargs to print all 3 lines of sdk version in 1 line, removing leading whitespaces.
 
-printf -- "\
+java_is_installed="false"
+if java --version > /dev/null 2>&1; then
+    java_is_installed="true"
+fi
+
+if [ "$java_is_installed" = "true" ]; then
+    printf -- "\
 Using:
 %s
 %s
@@ -34,33 +40,49 @@ Located at:
    %s
    %s
 Environment Variables:\n" "$(javac --version | xargs -I % echo '   %')" \
-       "$(java --version | xargs -I % echo '   %')" \
-       "$(ls -l "$(which java )")" \
-       "$(ls -l "$(which javac)")"
+           "$(java --version | xargs -I % echo '   %')" \
+           "$(ls -l "$(which java )")" \
+           "$(ls -l "$(which javac)")"
 
-if [ -n "$JAVA_HOME" ]; then
-    printf -- "\
+    if [ -n "$JAVA_HOME" ]; then
+        printf -- "\
 . JAVA_HOME: %s\n" "$JAVA_HOME"
-fi
-if [ -n "$JAVA_OPT" ]; then
-    printf -- "\
+    fi
+    if [ -n "$JAVA_OPT" ]; then
+        printf -- "\
 . JAVA_OPT: %s\n" "$JAVA_OPT"
-fi
-printf -- "\
+    fi
+    printf -- "\
 Tools:
 "
-if [ -n "$SDKMAN_DIR" ]; then
-    printf -- "\
+    if [ -n "$SDKMAN_DIR" ]; then
+        printf -- "\
 . The sdkman system is available: use 'sdk help' for more info.\n"
-else
-    printf -- "\
+    else
+        printf -- "\
 . The sdkman system is not available:
   -  use 'use-sdkman' if sdkman is installed.\n"
-fi
-if which sbt > /dev/null 2>&1; then
-    printf "\
+    fi
+    if which sbt > /dev/null 2>&1; then
+        printf "\
 . sbt (Java/Scala/Kotlin build system tool) is available:
    %s\n" "$(sbt --version 2> /dev/null)"
+    fi
+else
+    printf "\
+There is no Java Development Kit or Runtime Environment installed.
+Visit one of the following sites to install either a JDK or a JRE.
+You will need a JDK if you intend to develop Java code.
+
+For more info see:
+- Reference:   https://en.wikipedia.org/wiki/OpenJDK#OpenJDK_builds
+
+To install a JDK or JRE:
+
+- Recommended: Eclipse Temurin: https://adoptium.net/
+- or           http://www.java.com
+"
+    exit 1
 fi
 
 # ----------------------------------------------------------------------------
