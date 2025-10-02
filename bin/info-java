@@ -1,0 +1,57 @@
+#!/bin/sh
+# SH FILE: info-java
+#
+# Purpose   : Print information about Java support available for this shell.
+# Created   : Thursday, October  2 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-10-02 12:32:40 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#  Print information about the Java environment.
+#  It is currently aware of: JDK, sdkman, sbt
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Use xargs to print all 3 lines of sdk version in 1 line, removing leading whitespaces.
+
+printf -- "\
+Using: %s\n" "$(java --version | xargs -I % echo '   %')"
+
+if [ -n "$JAVA_HOME" ]; then
+    printf -- "\
+. JAVA_HOME: %s\n" "$JAVA_HOME"
+fi
+if [ -n "$JAVA_OPT" ]; then
+    printf -- "\
+. JAVA_OPT: %s\n" "$JAVA_OPT"
+fi
+if [ -n "$SDKMAN_DIR" ]; then
+    printf -- "\
+. The sdkman system is available: use 'sdk help' for more info.\n"
+else
+    printf -- "\
+. The sdkman system is not available:
+  -  use 'use-sdkman' if sdkman is installed.\n"
+fi
+if which sbt > /dev/null 2>&1; then
+    printf "\
+. sbt (Java/Scala/Kotlin build system tool) is available:
+   %s\n" "$(sbt --version 2> /dev/null)"
+fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
