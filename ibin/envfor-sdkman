@@ -3,7 +3,7 @@
 # Purpose   : Set shell to use sdkman.
 # Created   : Wednesday, October  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-02 11:55:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-02 12:11:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -38,7 +38,7 @@ if [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
     # Use xargs to print all 3 lines of sdk version in 1 line, removing leading whitespaces.
     # the xargs use either echo (to print each line separately) or printf (to print on the same line)
     printf -- "\
-  > Using Java:%s
+  > Using:%s
   > With%s\n" "$(java --version | xargs -I % echo '   %')" "$(sdk version | xargs -I % printf ' %')"
 else
     printf -- "\
