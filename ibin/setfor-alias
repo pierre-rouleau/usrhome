@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-01 17:16:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-22 15:10:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -80,76 +80,6 @@ usrhome_printf()
         printf -- "$@"
     fi
 }
-
-
-get_shell_path()
-{
-    # - $PPID is the process ID of the parent process (the process that started the shell)
-    # - ps -p $SPPID  prints a title line and information about the current process.
-    #                 Something like this:
-    #                     PID TTY           TIME CMD
-    #                   42142 ttys023    0:00.01 login -pfq roup /opt/homebrew/bin/bash
-    #
-    # Use the ps -fn to get the process ID of the grand parent process.
-    # The format looks like this:
-    #                     UID   PID  PPID   C STIME   TTY           TIME CMD
-    #                     501 47941 47224   0 11:22am ttys050    0:00.03 bash
-
-    cmd="$(ps -p "$$" | grep "$$" | awk '{print $4}')"
-    parent_cmd="$(ps -p "$PPID" | grep "$PPID" | awk '{print $4}')"
-    shell_path=""
-    case "$cmd" in
-        -bash)
-            # A top level shell. On macOS it might identify a login shell
-            # that is not really a login shell.
-            shell_path="$(ps -p "$PPID" | grep "$PPID" | awk '{print $7}')"
-            ;;
-        bash)
-            # A sub shell.
-            shell_path="$(which "${cmd}")"
-            ;;
-
-        -zsh)
-            # A top level shell.
-            shell_path="$(ps -p "$PPID" | grep "$PPID" | awk '{print $7}')"
-            if [ "$shell_path" = "" ]; then
-                gp_pid="$(ps -fp "$PPID" | grep "$PPID" | awk '{print $3}')"
-                #echo "gp_pid: ${gp_pid}"
-                shell_path="$(ps -p "${gp_pid}" | grep "${gp_pid}" | awk '{print $7}')"
-                if [ "$shell_path" = "" ]; then
-                    shell_path="$(which zsh)"
-                fi
-            fi
-            ;;
-        zsh)
-            # A sub shell.
-            shell_path="$(which "${cmd}")"
-            ;;
-
-        *)
-            # In case a symlink or an indirect path is used to launch the shell
-            # extract the command absolute path and compare with the ones
-            # that are available on the PATH.
-            realcmd="$(realpath $cmd)"
-            for candidate in $(which -a bash); do
-                if [ "$realcmd" = "$candidate" ]; then
-                    shell_path="$candidate"
-                fi
-            done
-            if [ "$shell_path" = "" ]; then
-                for candidate in $(which -a zsh); do
-                    if [ "$realcmd" = "$candidate" ]; then
-                        shell_path="$candidate"
-                    fi
-                done
-            fi
-    esac
-    echo "${shell_path}"
-}
-
-# shellcheck disable=SC2142 # inside a function $0 refers to the function name; can't use that.
-alias info-shell='printf "\$0: %s, \$SHELL: %s, shell-PID: \$\$: %s, path: %s\n" "$0" "$SHELL" "$$" "$(get_shell_path)"'
-
 
 info-shell-special-var()
 {

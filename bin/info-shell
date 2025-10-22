@@ -1,0 +1,61 @@
+#!/bin/sh
+# SH FILE: info-shell
+#
+# Purpose   : Print information about current shell.
+# Created   : Wednesday, October 22 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-10-22 15:54:36 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print information about the shell from which this command is executed.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# printf, which
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Note: Since this is a script, it runs inside a sub-shell.
+#       The user wants to get information about the shell where
+#       the command is invoked, which is the parent of this shell.
+#
+shell_type=
+shell_path=
+parent_cmd="$(ps -p "$PPID" | grep "$PPID" | awk '{print $4}')"
+case "$parent_cmd" in
+    -bash )
+        shell_type="top-level shell"
+        shell_path="$(which bash)"
+        ;;
+    bash | /bin/bash )
+        shell_type="sub-shell"
+        shell_path="$(which bash)"
+        ;;
+    -zsh )
+        shell_type="top level shell"
+        shell_path="$(which zsh)"
+        ;;
+    zsh | /bin/zsh )
+        shell_type="sub-shell"
+        shell_path="$(which zsh)"
+        ;;
+    * )
+        shell_type="?Unknown?"
+        shell_path="?Unknown?"
+        ;;
+esac
+printf -- "\$USRHOME_SHELL: %s, \$0: %s (%s), Shell PID; \$\$: %s, Shell cmd path: %s\n\$SHELL: %s\n" \
+       "$USRHOME_SHELL" "${parent_cmd}" "${shell_type}" "$PPID" "${shell_path}" "${SHELL}"
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
