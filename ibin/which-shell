@@ -3,7 +3,7 @@
 # Purpose   : Identify active shell sourcing this file.  Store result in usrhome__running_shell
 # Created   : Thursday, April 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 11:41:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-22 11:10:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -11,6 +11,10 @@
 # This simple script is meant to be sourced inside another sourced script.
 # It identifies the running shell (zsh or Bash only) by writing the shell
 # name into the usrhome__running_shell environment variable.
+
+# It must be sourced when the shell starts or is restarted, and sets the
+# USRHOME_SHELL variable to the name of the shell for the shells that are
+# supported, which is, for the moment, Bash and Zsh.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -46,6 +50,7 @@ else
   USRHOME_SHELL="sh"
   usrhome__running_shell="unsupported"
 fi
+export USRHOME_SHELL
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
