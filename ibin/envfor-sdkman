@@ -3,7 +3,7 @@
 # Purpose   : Set shell to use sdkman.
 # Created   : Wednesday, October  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-29 07:59:35 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-30 08:04:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,27 +32,21 @@
 # Code
 # ----
 #
-#
+# Note: the $HOME/.sdkman/bin/sdkman-init.sh must be executed inside sub-shells
+#       otherwise the sdk command is no longer available inside them.
 
-if [ -z "$SDKMAN_DIR" ]; then
-    export SDKMAN_DIR="$HOME/.sdkman"
-    if [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
-        . "$HOME/.sdkman/bin/sdkman-init.sh"
-        # Use xargs to print all 3 lines of sdk version in 1 line, removing leading whitespaces.
-        # the xargs use either echo (to print each line separately) or printf (to print on the same line)
-        printf -- "\
-  > Using:%s
-  > With%s (sdkman:= the sdk command)\n" "$(java --version | xargs -I % echo '   %')" "$(sdk version | xargs -I % printf ' %')"
-    else
-        printf -- "\
-*** ERROR: Missing startup file: %s\n" "$HOME/.sdkman/bin/sdkman-init.sh"
-        return 1
-    fi
+export SDKMAN_DIR="$HOME/.sdkman"
+if [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+    . "$HOME/.sdkman/bin/sdkman-init.sh"
+    # Use xargs to print all 3 lines of sdk version in 1 line, removing leading whitespaces.
+    # the xargs use either echo (to print each line separately) or printf (to print on the same line)
+    printf -- "\
+> Using:%s
+> With%s (sdkman:= the sdk command)\n" "$(java --version | xargs -I % echo '   %')" "$(sdk version | xargs -I % printf ' %')"
 else
     printf -- "\
-  SDKMAN (the sdk command) is already available & setup in this shell!
-  > Using:%s
-  > With%s\n" "$(java --version | xargs -I % echo '   %')" "$(sdk version | xargs -I % printf ' %')"
+*** ERROR: Missing startup file: %s\n" "$HOME/.sdkman/bin/sdkman-init.sh"
+    return 1
 fi
 
 # ----------------------------------------------------------------------------
