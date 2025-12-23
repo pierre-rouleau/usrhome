@@ -1,0 +1,128 @@
+# Sourced script: envfor-llvm  -*- mode: sh; -*-
+#
+# Purpose   : Activate LLVM tools in the current shell.
+# Created   : Tuesday, December 23 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-12-23 12:07:24 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# A source script that injects LLVM tool chain into the environment.
+# This is meant to be invoked from the command line via the ``use-llvm`` alias.
+# It can also be invoked directly from a shell setup script.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+# - Support for macOS via Homebrew.
+# - printf
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+verbose="false"
+if [ "$1" = "--verbose" ]; then
+    verbose="true"
+fi
+
+
+if [ -z "$USRHOME_USING_LLVM" ]; then
+    # Not yet installed: install it if possible.
+    # First check pre-conditions, report and stop on error.
+
+    case "$(uname)" in
+        Darwin)
+            if which brew > /dev/null 2>&1; then
+                if [ ! -d "$(brew --prefix llvm)/bin" ]; then
+                    printf -- "\
+*** ERROR: Homebrew's llvm/bin directory now found: %s\n" "$(brew --prefix llvm)/bin"
+                    return 1
+                fi
+                #
+                if [ ! -d "$(brew --prefix llvm)/lib" ]; then
+                    printf -- "\
+*** ERROR: Homebrew's llvm/lib directory now found: %s\n" "$(brew --prefix llvm)/lib"
+                    return 1
+                fi
+                #
+                if [ ! -d "$(brew --prefix llvm)/include" ]; then
+                    printf -- "\
+*** ERROR: Homebrew's llvm/include directory now found: %s\n" "$(brew --prefix llvm)/include"
+                    return 1
+                fi
+                #
+                if [ ! -d "$(brew --prefix llvm)/share/man" ]; then
+                    printf -- "\
+*** ERROR: Homebrew's llvm/share/man directory now found: %s\n" "$(brew --prefix llvm)/share/man"
+                    return 1
+                fi
+            else
+                printf -- "\
+*** ERROR: on macOS, LLVM is currently only supported via Homebrew installation.
+           If you want to support it in other ways please report a bug and
+           describe how you installed LLVM in the bug description.
+           I will then add support for that method.  Thanks"
+                return 1
+            fi
+            ;;
+
+        * )
+            printf -- "\
+*** ERROR: %s is not yet supported.\n" "$(uname)"
+            return 1
+            ;;
+    esac
+
+    # Add llvm/bin to PATH
+    PATH="$(brew --prefix llvm)/bin:$PATH"
+    export PATH
+
+    # Add llvm/lib to LIB
+    LLVM_LIB_SEARCH_PATH="$(brew --prefix llvm)/lib"
+    export LLVM_LIB_SEARCH_PATH
+    #
+    if [ -z "$LIB" ]; then
+        LIB="$(brew --prefix llvm)/lib"
+    else
+        LIB="$(brew --prefix llvm)/lib:$LIB"
+    fi
+    export LIB
+    #
+    LDFLAGS="-L$(brew --prefix llvm)/lib -Wl,-rpath,$(brew --prefix llvm)/lib"
+    export LDFLAGS
+    CPPFLAGS="-I$(brew --prefix llvm)/include"
+    export CPPFLAGS
+    #
+    MANPATH="$(brew --prefix llvm)/share/man:$MANPATH"
+    export MANPATH
+
+    # Remember that environment is set.
+    USRHOME_USING_LLVM="$PATH"
+    export USRHOME_USING_LLVM
+
+    printf -- "- Using LLVM %s tool chain in this shell.\n" "$($(brew --prefix llvm)/bin/clang-tidy --version | head -1)"
+    printf -- "  Updated: PATH, CPPFLAGS, LDFLAGS, LIB, MANPATH.\n"
+    if [ "${verbose}" = "true" ]; then
+        echo ""
+        echo "- PATH is now:"
+        showpath -n
+        echo "- And MANPATH is:"
+        showpath -n MAN
+    fi
+else
+    echo "*** Warning!! ***"
+    echo "LLVM is already set up for this shell!"
+    echo "The original PATH is in:    USRHOME_USING_LLVM"
+    echo "*****************"
+    return 1
+fi
+
+# ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

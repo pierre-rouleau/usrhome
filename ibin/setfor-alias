@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-22 15:10:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-12-23 11:47:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -663,6 +663,7 @@ if [ "${os_name}" = "Darwin" ]; then
     alias use-gcc14='source $USRHOME_DIR/ibin/envfor-gcc14-on-macos'
     alias use-gcc15='source $USRHOME_DIR/ibin/envfor-gcc15-on-macos'
     alias use-gnu-binutils='source $USRHOME_DIR/ibin/envfor-gnu-binutils-on-macos'
+    alias use-llvm='source $USRHOME_DIR/ibin/envfor-llvm'
 fi
 alias use-cc-options='source $USRHOME_DIR/ibin/envfor-cc-options'
 alias use-mk-diffo='source $USRHOME_DIR/ibin/envfor-mk-diffo'
