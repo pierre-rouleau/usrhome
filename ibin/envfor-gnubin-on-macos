@@ -1,0 +1,39 @@
+# Sourced script: envfor-gnubin-on-macos  -*- mode: sh; -*-
+#
+# Purpose   : Activate GNU grep/egrep/fgrep in current shell.
+# Created   : Thursday, January  8 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-01-08 16:45:28 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+
+# Module Description
+# ------------------
+#
+# Activate the GNU grep/egrep/fgrep and man commands in the current macOS
+# shell, to replace the macOS native BSD equivalent commands.
+#
+# This has an impact on the behaviour of git grep.  The git grep assumes that
+# the grep is a GNU grep not a BSD grep;  without the gnu grep the git grep -E
+# regular expressions may not work as expected.
+#
+
+# To use this from the shell you must source it.
+# You can use the `use-gnu-grep` alias command from the shell.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# For macOS using Homebrew.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
+export PATH
+
+echo ". Using GNU grep/egrep/fgrep."
+
+# ----------------------------------------------------------------------------
