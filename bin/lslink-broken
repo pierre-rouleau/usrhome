@@ -4,7 +4,7 @@
 # Purpose   : List all broken symlinks present in the current directory tree.
 # Created   : Tuesday, August 26 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-26 12:25:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-01-21 11:30:42 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,4 +27,6 @@
 #
 find -L . -type l -ls
 
+# Another way, which only prints the pathname of the broken symlink
+# find . -type l ! -exec [ -e {} ] \; -print
 # ----------------------------------------------------------------------------
