@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes running inside a Terminal.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-01 08:55:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-01-25 11:04:21 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,7 +55,6 @@ ps-emacs -- Print information about all Emacs process running in a terminal.
          TTY  : controlling terminal
          TIME : total CPU time (user + system) since it started
          CMD  : emacs command
-         Separator: ▶︎▶︎▶︎ CWD:
          CWD:  Current working directory of the Emacs process
 
       The CWD information is only printed when the GNU AWK is available.
