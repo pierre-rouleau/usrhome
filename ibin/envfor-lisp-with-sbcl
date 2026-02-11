@@ -1,0 +1,49 @@
+# Sourced script:  envfor-lisp-with-sbcl  -*- mode: sh; -*-
+#
+# Purpose   : Set SBCL for the Common Lisp command: 'lisp'.
+# Created   : Friday, April 16 2021.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-02-10 23:25:00 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+#  Usage:   use-lisp-with-sbcl
+#
+#    The command 'use-lisp-with-sbcl' is an alias for this file.
+#    You could also type: 'source envfor-lisp-with-sbcl'
+#
+#  Impact:  Checks for presence of SBCL and sets the USRHOME_PGMFOR_LISP environment
+#           variable used by the $USRHOME_DIR/bin/lisp script, which starts the selected
+#           Common Lisp REPL properly.  The you can start sbcl by typing: lisp
+#  Note:
+#      SBCL stand for: Steel Bank Common Lisp
+#
+
+# ----------------------------------------------------------------------------
+#  Dependencies
+#  ------------
+#
+# - sbcl, rlwrap
+#
+#  On macOS:
+#   Install SBCL with:   brew install sbcl
+#   Install rlwrap with: brew install rlwrap
+#
+
+# ----------------------------------------------------------------------------
+#  Code
+#  ----
+if which sbcl >/dev/null; then
+    export USRHOME_PGMFOR_LISP=`which sbcl`
+    printf -- "Using Common Lisp - %s - from %s\n" "$(sbcl --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
+    if which rlwrap > /dev/null; then
+        printf -- " Using %s to enhance REPL line editing and history.\n" "$(rlwrap -v)"
+    else
+        printf -- " WARNING: rlwrap is not available.  Install it to enhance SBCL REPL.\n"
+    fi
+else
+    printf -- "***ERROR*** SBCL is not in PATH!\n"
+fi
+
+# ----------------------------------------------------------------------------

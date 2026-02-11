@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-01-08 16:42:01 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-10 22:38:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -668,6 +668,11 @@ if [ "${os_name}" = "Darwin" ]; then
 fi
 alias use-cc-options='source $USRHOME_DIR/ibin/envfor-cc-options'
 alias use-mk-diffo='source $USRHOME_DIR/ibin/envfor-mk-diffo'
+
+# Topic: Alias: Common Lisp
+# -------------------------
+alias use-lisp-with-sbcl='source $USRHOME_DIR/ibin/envfor-lisp-with-sbcl'
+alias use-lisp-with-clisp='source $USRHOME_DIR/ibin/envfor-lisp-with-clisp'
 
 # ----------------------------------------------------------------------------
 # Cleanup
