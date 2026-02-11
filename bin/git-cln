@@ -4,7 +4,7 @@
 # Purpose   : Git clone a specific branch.
 # Created   : Thursday, January 29 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-01-29 10:28:24 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-10 23:02:24 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -52,7 +52,7 @@ if [ -z "$1" ]; then
     print_usage
     exit 1
 fi
-if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     print_usage
     exit 0
 fi
@@ -65,7 +65,7 @@ fi
 if git ls-remote --heads "$1" 2> /dev/null | grep -E -e "/heads/$2\$"; then
     # -- Proceed
     if git clone "$1" "$2"; then
-        cd "$2"
+        cd "$2" || exit 1
         git co "$2"
         printf -- "*** Success!  Execute 'cd %s' to use the new repo.\n" "$2"
     else
