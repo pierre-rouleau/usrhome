@@ -3,7 +3,7 @@
 # Purpose   : Set SBCL for the Common Lisp command: 'lisp'.
 # Created   : Friday, April 16 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-10 23:25:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-11 09:01:52 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -36,11 +36,11 @@
 #  ----
 if which sbcl >/dev/null; then
     export USRHOME_PGMFOR_LISP=`which sbcl`
-    printf -- "Using Common Lisp - %s - from %s\n" "$(sbcl --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
+    printf -- ". Using Common Lisp - %s - from %s\n" "$(sbcl --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
     if which rlwrap > /dev/null; then
-        printf -- " Using %s to enhance REPL line editing and history.\n" "$(rlwrap -v)"
+        printf -- "   With %s to enhance REPL line editing and history.\n" "$(rlwrap -v)"
     else
-        printf -- " WARNING: rlwrap is not available.  Install it to enhance SBCL REPL.\n"
+        printf -- "   WARNING: rlwrap is not available.  Install it to enhance SBCL REPL.\n"
     fi
 else
     printf -- "***ERROR*** SBCL is not in PATH!\n"
