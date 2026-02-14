@@ -4,7 +4,7 @@
 # Purpose   : Run the Common Lisp REPL selected for this shell.
 # Created   : Tuesday, February 10 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-11 08:09:26 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-14 18:45:35 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -20,12 +20,20 @@
 # shell but also when it is running inside Emacs.
 #
 
+# [:todo 2026-02-14, by Pierre Rouleau: Add support for Common Lisp linedit library
+#   with the proper Common Lisp environment support.
+#   See end of https://gist.github.com/vindarel/2309154f4e751be389fa99239764c363
+#   Will need to do that once support for several Common Lisp environments have been
+#   implemented and better grasp of the features of Roswell and several others...]
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
 # See dependencies of:
+# - $USRHOME_DIR/ibin/envfor-lisp-with-clasp
 # - $USRHOME_DIR/ibin/envfor-lisp-with-clisp
+# - $USRHOME_DIR/ibin/envfor-lisp-with-roswell
 # - $USRHOME_DIR/ibin/envfor-lisp-with-sbcl
 
 
@@ -42,9 +50,10 @@ print_usage()
 %s:  Run Common Lisp REPL that has been previously selected by one of
        the use-lisp-with-xyz command (where xyz is the REPL program name).
        The following setup commands are supported:
-       - use-lisp-with-clasp : to use Clasp
-       - use-lisp-with-clisp : to use GNU CLisp
-       - use-lisp-with-sbcl  : to use SBCL
+       - use-lisp-with-clasp   : to use Clasp
+       - use-lisp-with-clisp   : to use GNU CLisp
+       - use-lisp-with-sbcl    : to use SBCL
+       - use-lisp-with-roswell : to use Roswell selected Common Lisp
 
  Usage:   %s [OPTIONS]
 
@@ -58,9 +67,10 @@ print_usage()
 if [ -z "$USRHOME_PGMFOR_LISP" ]; then
     printf -- "\
 Please first select a Lisp implementation by using one the following commands:
-  - use-lisp-with-clasp : to use Clasp
-  - use-lisp-with-clisp : to use GNU CLisp
-  - use-lisp-with-sbcl  : to use SBCL
+  - use-lisp-with-clasp   : to use Clasp
+  - use-lisp-with-clisp   : to use GNU CLisp
+  - use-lisp-with-sbcl    : to use SBCL
+  - use-lisp-with-roswell : to use Roswell selected Common Lisp
 Then try again!\n"
     exit  1
 else
@@ -76,18 +86,55 @@ else
             exit 0
         fi
     fi
+    # Some REPL are best used under rlwrap to enhance navigation and completion.
+    # Use rlwrap only if when running outside Emacs and have found it.
+    use_rlwrap=no
+    if [ -z "$INSIDE_EMACS" ]; then
+        if which rlwrap > /dev/null; then
+            use_rlwrap=yes
+        fi
+        # Multi-line input is tedious to write in readline.
+        # Define an editor to use if not already defined.
+        # Use e, the Emacs launcher.
+        if [ -z "$RLWRAP_EDITOR" ]; then
+            if [ ! -f "$HOME/.inputrc" ]; then
+                printf -- "\
+*** WARNING: You do not have a ~/.inputrc file!
+             It's best to use one that holds the following lines
+             to allow invoking an editor to edit multi-line entries:
+set editing-mode emacs
+\"\\C-xe\": rlwrap-call-editor
+***\n\n"
+            fi
+            RLWRAP_EDITOR="emacs +%L:%C %F"
+            export RLWRAP_EDITOR
+        fi
+    fi
+
     case "$USRHOME_PGMFOR_LISP" in
+        # SBCL or Clasp
         */sbcl | */clasp)
-            if which rlwrap > /dev/null; then
-                rlwrap "$USRHOME_PGMFOR_LISP" "$@"
+            if [ "$use_rlwrap" = "yes" ]; then
+                rlwrap -i -b '()' --remember --file "$USRHOME_DIR/etc/lisp-completions.txt" "$USRHOME_PGMFOR_LISP" "$@"
             else
                 "$USRHOME_PGMFOR_LISP" "$@"
             fi
             ;;
 
+        # GNU CLisp
         */clisp)
             "$USRHOME_PGMFOR_LISP" "$@"
             ;;
+
+        roswell)
+            if [ "$use_rlwrap" = "yes" ]; then
+                rlwrap -i -b '()' --remember --file "$USRHOME_DIR/etc/lisp-completions.txt" ros run "$@"
+            else
+                ros run "$@"
+            fi
+            ;;
+
+
         *)
             printf -- "*** ERROR: unsupported value of USRHOME_PGMFOR_LISP: %s\n" "$USRHOME_PGMFOR_LISP"
             exit 1

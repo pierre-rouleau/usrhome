@@ -1,0 +1,45 @@
+# Sourced script: envfor-lisp-with-roswell  -*- mode: sh; -*-
+#
+# Purpose   : Set environment to be able to run Roswell-luanched Lisp REPL via the 'lisp' command.
+# Created   : Saturday, February 14 2026
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-02-14 18:38:56 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+#  Usage:   use-lisp-with-roswell
+#
+#    The command 'use-lisp-with-roswell' is an alias for this file.
+#    You could also type: 'source envfor-lisp-with-roswell'
+#
+#  Impact:  Checks for presence of GNU roswell and sets the USRHOME_PGMFOR_LISP environment
+#           variable used by the $USRHOME_DIR/bin/lisp script, which starts the selected
+#           Common Lisp REPL properly.  The you can start GNU roswell by typing: lisp
+
+# ----------------------------------------------------------------------------
+#  Dependencies
+#  ------------
+#
+# - roswell     see: https://roswell-developers.github.io/index.html
+#
+#  To install see: https://roswell-developers.github.io/download.html
+
+# ----------------------------------------------------------------------------
+# Script
+# ------
+#
+#
+if which ros >/dev/null; then
+    export USRHOME_PGMFOR_LISP="roswell"
+    printf -- ". Using Common Lisp - %s - from %s\n" "$(ros run -- --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
+    if which rlwrap > /dev/null; then
+        printf -- "   With %s to enhance REPL line editing and history.\n" "$(rlwrap -v)"
+    else
+        printf -- "   WARNING: rlwrap is not available.  Install it to enhance Roswell REPL.\n"
+    fi
+else
+    printf -- "***ERROR*** Roswell ros is not in PATH!\n"
+fi
+
+# -----------------------------------------------------------------------------

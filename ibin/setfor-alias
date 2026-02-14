@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-11 08:13:08 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-14 18:37:16 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -674,6 +674,7 @@ alias use-mk-diffo='source $USRHOME_DIR/ibin/envfor-mk-diffo'
 alias use-lisp-with-clasp='source $USRHOME_DIR/ibin/envfor-lisp-with-clasp'
 alias use-lisp-with-clisp='source $USRHOME_DIR/ibin/envfor-lisp-with-clisp'
 alias use-lisp-with-sbcl='source $USRHOME_DIR/ibin/envfor-lisp-with-sbcl'
+alias use-lisp-with-roswell='source $USRHOME_DIR/ibin/envfor-lisp-with-roswell'
 
 # ----------------------------------------------------------------------------
 # Cleanup
