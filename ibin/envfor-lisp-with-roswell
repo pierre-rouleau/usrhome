@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run Roswell-luanched Lisp REPL via the 'lisp' command.
 # Created   : Saturday, February 14 2026
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-14 18:38:56 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-15 15:27:49 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -29,6 +29,51 @@
 # Script
 # ------
 #
+#
+pgm_name="$(basename "$0")"
+
+print_usage()
+{
+    printf -- "
+%s:  Select Roswell 'ros run' as command executed by 'lisp'.
+
+       Allows further selection of the Common Lisp
+       environment by Roswell 'ros use' command.
+
+       - All configuration information is taken from ~/.roswell
+       - Cache is in ~/.cache/common-lisp/SYSTEM-X.Y.Z.roswell-OS-ARCH
+         where SYSTEM-X.Y.Z is the Common Lisp used by Roswell.
+
+       Get more information about Roswell via 'ros help use'.
+       - Ref: https://github.com/roswell/roswell
+
+ Usage:   %s [ROS-USE-ARGS]
+
+  • ROS_USE-ARGS:   Optional arguments passed to 'ros use' if specified.
+                    If none are specified 'ros use' is not issued.
+
+" "$pgm_name" "$pgm_name"
+}
+
+# Check validity of arguments.
+#
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    print_usage
+    return 0
+fi
+if [ -z "$2" ]; then
+    print_usage
+    return 1
+fi
+
+# If arguments are specified pass them to 'ros run':
+#
+if [ -n "$1" ]; then
+    ros use "$@"
+fi
+
+
+# Proceed in setting it up 'lisp' to use Roswell.
 #
 if which ros >/dev/null; then
     export USRHOME_PGMFOR_LISP="roswell"

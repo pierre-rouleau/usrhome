@@ -3,7 +3,7 @@
 # Purpose   : Set SBCL for the Common Lisp command: 'lisp'.
 # Created   : Friday, April 16 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-11 09:01:52 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-15 15:26:19 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -34,6 +34,32 @@
 # ----------------------------------------------------------------------------
 #  Code
 #  ----
+pgm_name="$(basename "$0")"
+
+print_usage()
+{
+    printf -- "
+%s:  Select SBCL for as Common Lisp executed by 'lisp'.
+     - SBCL setup is taken from ~/.sbclrc
+     - Cache is in ~/.cache/common-lisp/sbcl-X.Y.Z-OS-ARCH
+
+     - Ref: https://www.sbcl.org/
+
+" "$pgm_name"
+}
+
+# Check validity of arguments
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    print_usage
+    return 0
+fi
+if [ -z "$2" ]; then
+    print_usage
+    return 1
+fi
+
+# Proceed in setting it up.
+#
 if which sbcl >/dev/null; then
     export USRHOME_PGMFOR_LISP=`which sbcl`
     printf -- ". Using Common Lisp - %s - from %s\n" "$(sbcl --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
