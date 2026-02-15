@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run Roswell-luanched Lisp REPL via the 'lisp' command.
 # Created   : Saturday, February 14 2026
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-15 15:27:49 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-15 15:55:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -60,10 +60,6 @@ print_usage()
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     print_usage
     return 0
-fi
-if [ -z "$2" ]; then
-    print_usage
-    return 1
 fi
 
 # If arguments are specified pass them to 'ros run':
