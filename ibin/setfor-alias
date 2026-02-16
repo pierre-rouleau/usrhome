@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-14 18:37:16 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-16 09:42:52 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -650,6 +650,66 @@ if [ "${INSIDE_EMACS/*,/}" = "eat" ]; then
 fi
 
 # ----------------------------------------------------------------------------
+# Topic git-cln
+# -------------
+
+git_cln_print_usage()
+{
+    printf -- "
+git-cln:  Clone a Git repo and check out a specific branch.
+
+ Usage:   git-cln REPO BRANCH
+
+  • REPO:   the Git repository url.
+  • BRANCH: the Git branch name.  One that is shown by 'git branch'.
+
+The git clone is only done if the specified BRANCH exists in the
+specified REPO.  The local directory created for the REPO is named
+after the BRANCH.
+
+"
+}
+
+
+
+git-cln()
+{
+    # Arguments:
+    # 1 : Git repo URL
+    # 2 : Git repo branch
+
+    # Check validity of arguments
+    if [ -z "$1" ]; then
+        git_cln_print_usage
+        return 1
+    fi
+    if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+        git_cln_print_usage
+        return  0
+    fi
+    if [ -z "$2" ]; then
+        git_cln_print_usage
+        return  1
+    fi
+
+    # Check validity of branch in specified Git repo
+    if git ls-remote --heads "$1" 2> /dev/null | grep -E -e "/heads/$2\$"; then
+        # -- Proceed
+        if git clone "$1" "$2"; then
+            cd "$2" || return 1
+            git co "$2"
+            printf -- "*** Success!\n"
+        else
+            printf -- "*** ERROR: git clone failed!\n"
+            return 1
+        fi
+    else
+        printf -- "*** ERROR: branch '%s' does not exist in Git repo '%s'\n" "$2" "$1"
+        return 2
+    fi
+}
+
+# ----------------------------------------------------------------------------
 # Topic: Alias: Environment Setup Control
 # ---------------------------------------
 alias use-usrhome='source $USRHOME_DIR/ibin/envfor-usrhome'
@@ -669,6 +729,7 @@ fi
 alias use-cc-options='source $USRHOME_DIR/ibin/envfor-cc-options'
 alias use-mk-diffo='source $USRHOME_DIR/ibin/envfor-mk-diffo'
 
+# ----------------------------------------------------------------------------
 # Topic: Alias: Common Lisp
 # -------------------------
 alias use-lisp-with-clasp='source $USRHOME_DIR/ibin/envfor-lisp-with-clasp'
