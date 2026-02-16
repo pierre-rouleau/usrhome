@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run Roswell-luanched Lisp REPL via the 'lisp' command.
 # Created   : Saturday, February 14 2026
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-15 15:55:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-15 20:04:52 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -49,8 +49,10 @@ print_usage()
 
  Usage:   %s [ROS-USE-ARGS]
 
-  • ROS_USE-ARGS:   Optional arguments passed to 'ros use' if specified.
+  • ROS-USE-ARGS:   Optional arguments passed to 'ros use' if specified.
                     If none are specified 'ros use' is not issued.
+                    ROS-USE-ARGS is stored inside USRHOME_PGMFOR_LISP_ROSWELL
+                    for later reference.
 
 " "$pgm_name" "$pgm_name"
 }
@@ -65,6 +67,8 @@ fi
 # If arguments are specified pass them to 'ros run':
 #
 if [ -n "$1" ]; then
+    USRHOME_PGMFOR_LISP_ROSWELL="$@"
+    export USRHOME_PGMFOR_LISP_ROSWELL
     ros use "$@"
 fi
 
@@ -72,7 +76,8 @@ fi
 # Proceed in setting it up 'lisp' to use Roswell.
 #
 if which ros >/dev/null; then
-    export USRHOME_PGMFOR_LISP="roswell"
+    USRHOME_PGMFOR_LISP="roswell"
+    export USRHOME_PGMFOR_LISP
     printf -- ". Using Common Lisp - %s - from %s\n" "$(ros run -- --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
     if which rlwrap > /dev/null; then
         printf -- "   With %s to enhance REPL line editing and history.\n" "$(rlwrap -v)"
