@@ -1,0 +1,63 @@
+#!/bin/sh
+# SH FILE: info-lisp
+#
+# Purpose   : Print information about Common Lisp support available for this shell.
+# Created   : Monday, February 16 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-02-16 10:39:52 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+if [ -z "$USRHOME_PGMFOR_LISP" ]; then
+    printf -- "Common Lisp is not setup by USRHOME in this shell.\n"
+else
+    case "$USRHOME_PGMFOR_LISP" in
+        # Clasp
+        */clasp)
+            printf -- ". 'lisp' uses Common Lisp - %s - from %s\n" "$(clasp --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
+            ;;
+
+        # GNU CLisp
+        */clisp)
+            printf -- ". 'lisp' uses Common Lisp - %s - from %s\n" "$(clisp --version | head -1 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
+            ;;
+
+        # SBCL
+        */sbcl)
+            printf -- ". 'lisp' uses Common Lisp - %s - from %s\n" "$(sbcl --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
+            ;;
+
+        # Roswell driven selection
+        roswell)
+            printf -- " . 'lisp' uses Common Lisp - %s via %s - from %s\n" \
+                   "$(ros run -- --version)" \
+                   "$(ros version 2>&1 | head -n 1)" \
+                   "$(which ros)"
+
+            ;;
+
+        *)
+            printf -- "*** ERROR: unsupported value of USRHOME_PGMFOR_LISP: %s\n" "$USRHOME_PGMFOR_LISP"
+            exit 1
+            ;;
+    esac
+fi
+
+
+# ----------------------------------------------------------------------------
