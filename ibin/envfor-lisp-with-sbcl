@@ -3,7 +3,7 @@
 # Purpose   : Set SBCL for the Common Lisp command: 'lisp'.
 # Created   : Friday, April 16 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-15 15:26:19 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-15 20:14:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -52,10 +52,6 @@ print_usage()
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     print_usage
     return 0
-fi
-if [ -z "$2" ]; then
-    print_usage
-    return 1
 fi
 
 # Proceed in setting it up.
