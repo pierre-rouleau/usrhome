@@ -4,7 +4,7 @@
 # Purpose   : Run the Common Lisp REPL selected for this shell.
 # Created   : Tuesday, February 10 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-14 18:45:35 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:50:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -90,7 +90,7 @@ else
     # Use rlwrap only if when running outside Emacs and have found it.
     use_rlwrap=no
     if [ -z "$INSIDE_EMACS" ]; then
-        if which rlwrap > /dev/null; then
+        if command -v rlwrap > /dev/null; then
             use_rlwrap=yes
         fi
         # Multi-line input is tedious to write in readline.

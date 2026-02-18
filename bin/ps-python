@@ -4,7 +4,7 @@
 # Purpose   :
 # Created   : Tuesday, September 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-01 08:56:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:40:45 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -83,14 +83,14 @@ fi
 # define utility
 
 use_gawk=false
-if which gawk > /dev/null 2>&1; then
+if command -v gawk > /dev/null; then
     use_gawk=true
 fi
 
 print_python_processes()
 {
     # List all Python processes
-    #  - filter out itself (ps-emacs)
+    #  - filter out itsel
     #  - filter on tty to only list processes attached to a TTY
     #    - under macOS it's tty, under linux it's pts/
     #  - filter out processes that use the hexl sub-process
@@ -104,7 +104,7 @@ print_python_processes()
             | gawk -f "$USRHOME_DIR/bin/other/ps-python-format.awk" \
             | column -s "▶︎▶︎▶︎" -t
     else
-        ps-list emacs \
+        ps-list \
             | grep " tty\|pts/" \
             | awk '$8~/[Pp]ython/{print $0}'
     fi

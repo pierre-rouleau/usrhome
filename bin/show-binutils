@@ -4,7 +4,7 @@
 # Purpose   : List path  of all executables thta are part of GNU binutils.
 # Created   : Tuesday, August 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-23 10:42:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:04:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -12,13 +12,11 @@
 # List the presence of all utilities that are part of the GNU binutils
 # As listed in https://www.gnu.org/software/binutils/binutils.html
 
-
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-# Bash, printf, which, ls
-
+# Bash, printf, command, ls
 
 # ----------------------------------------------------------------------------
 # Code
@@ -50,8 +48,8 @@ commands=( addr2line
          )
 
 for cmd in "${commands[@]}" ; do
-    if which "${cmd}" > /dev/null 2>&1 ; then
-        printf -- "%-10s   : %s\n" "${cmd}" "$(ls -l "$(which "${cmd}")")"
+    if command -v "${cmd}" > /dev/null; then
+        printf -- "%-10s   : %s\n" "${cmd}" "$(ls -l "$(command -v "${cmd}")")"
     else
         printf -- "%-10s   : not available\n"  "${cmd}"
     fi

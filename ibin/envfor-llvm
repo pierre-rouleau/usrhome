@@ -3,7 +3,7 @@
 # Purpose   : Activate LLVM tools in the current shell.
 # Created   : Tuesday, December 23 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-12-23 12:07:24 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:57:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,7 +37,7 @@ if [ -z "$USRHOME_USING_LLVM" ]; then
 
     case "$(uname)" in
         Darwin)
-            if which brew > /dev/null 2>&1; then
+            if command -v brew > /dev/null 2>&1; then
                 if [ ! -d "$(brew --prefix llvm)/bin" ]; then
                     printf -- "\
 *** ERROR: Homebrew's llvm/bin directory now found: %s\n" "$(brew --prefix llvm)/bin"

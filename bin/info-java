@@ -4,7 +4,7 @@
 # Purpose   : Print information about Java support available for this shell.
 # Created   : Thursday, October  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-02 15:30:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:01:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,8 +42,8 @@ Located at:
    %s
 Environment Variables:\n" "$(javac --version | xargs -I % echo '   %')" \
            "$(java --version | xargs -I % echo '   %')" \
-           "$(ls -l "$(which java )")" \
-           "$(ls -l "$(which javac)")"
+           "$(ls -l "$(command -v java )")" \
+           "$(ls -l "$(command -v javac)")"
 
     if [ -n "$JAVA_HOME" ]; then
         printf -- "\
@@ -64,7 +64,7 @@ Tools:
 . The sdkman system is not available:
   -  use 'use-sdkman' if sdkman is installed.\n"
     fi
-    if which sbt > /dev/null 2>&1; then
+    if command -v sbt > /dev/null; then
         printf "\
 . sbt (Java/Scala/Kotlin build system tool) is available:
    %s\n" "$(sbt --version 2> /dev/null)"

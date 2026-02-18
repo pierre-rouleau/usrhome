@@ -4,7 +4,7 @@
 # Purpose   : Print information about GCC tooling.
 # Created   : Wednesday, July 24 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-02 16:23:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:36:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -68,15 +68,15 @@ directories.
 " \
        "$(gcc -print-prog-name=cc1)"            \
        "$(gcc -print-prog-name=cc1plus)"        \
-       "$(which cc)"                            \
+       "$(command -v cc)"                       \
        "$(cc --version | head -1)"              \
-       "$(ls -l "$(which cc)")"                 \
-       "$(which gcc)"                           \
+       "$(ls -l "$(command -v cc)")"            \
+       "$(command -v gcc)"                      \
        "$(gcc --version | head -1)"             \
-       "$(ls -l "$(which gcc)")"                \
-       "$(which g++)"                           \
+       "$(ls -l "$(command -v gcc)")"           \
+       "$(command -v g++)"                      \
        "$(g++ --version | head -1)"             \
-       "$(ls -l "$(which g++)")"
+       "$(ls -l "$(command -v g++)")"
 
 # ----------------------------------------------------------------------------
 # Local Variables:

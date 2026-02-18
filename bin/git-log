@@ -4,7 +4,7 @@
 # Purpose   : Show pretty print log with branch info.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 14:26:08 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:19:42 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -125,7 +125,7 @@ case "${command}" in
         ;;
 
     tree)
-        if ! which git-show-tree > /dev/null; then
+        if ! command -v git-show-tree > /dev/null; then
             echo "***ERROR: This requires git-extras which is not available."
             case "$(uname)" in
                 Darwin)

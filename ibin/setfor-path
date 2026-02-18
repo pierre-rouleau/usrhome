@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-30 18:18:47 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:58:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,7 +55,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             # check and warn if known problematic versions are installed
             # xz version 5.6,0, 5.6.1 have backdoors
             xz_ver=$(xz --version | grep liblzma | awk '{print $2 }')
-            xz_path=$(which xz)
+            xz_path=$(command -v xz)
             case $xz_ver in
                 '5.6.0' | '5.6.1' )
                     usrhome_xz_vulnerability
@@ -137,7 +137,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
     case "$(uname)" in
         Darwin)
             if [ "$USRHOME_USE_HOMEBREW" = "1" ]; then
-                if which gdate > /dev/null; then
+                if command -v gdate > /dev/null; then
                     USRHOME_SHELL_OPEN_TIME=$(gdate +%s)
                 fi
             fi

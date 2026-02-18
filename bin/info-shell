@@ -4,7 +4,7 @@
 # Purpose   : Print information about current shell.
 # Created   : Wednesday, October 22 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-22 15:54:36 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:03:33 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -16,7 +16,7 @@
 # Dependencies
 # ------------
 #
-# printf, which
+# printf, command
 
 # ----------------------------------------------------------------------------
 # Code
@@ -33,19 +33,19 @@ parent_cmd="$(ps -p "$PPID" | grep "$PPID" | awk '{print $4}')"
 case "$parent_cmd" in
     -bash )
         shell_type="top-level shell"
-        shell_path="$(which bash)"
+        shell_path="$(command -v bash)"
         ;;
     bash | /bin/bash )
         shell_type="sub-shell"
-        shell_path="$(which bash)"
+        shell_path="$(command -v bash)"
         ;;
     -zsh )
         shell_type="top level shell"
-        shell_path="$(which zsh)"
+        shell_path="$(command -v zsh)"
         ;;
     zsh | /bin/zsh )
         shell_type="sub-shell"
-        shell_path="$(which zsh)"
+        shell_path="$(command -v zsh)"
         ;;
     * )
         shell_type="?Unknown?"

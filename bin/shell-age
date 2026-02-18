@@ -4,7 +4,7 @@
 # Purpose   : Print age of shell.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-25 15:25:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:53:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -48,7 +48,7 @@ start_time=${USRHOME_SHELL_OPEN_TIME}
 case "$(uname)" in
     Darwin)
         if [ "$USRHOME_USE_HOMEBREW" = "1" ]; then
-            if which gdate > /dev/null; then
+            if command -v gdate > /dev/null; then
                 end_time=$(gdate +%s)
                 duration=$((end_time - start_time))
                 duration_formatted=$(gdate -d@${duration} -u +%Hh%Mm%Ss)
