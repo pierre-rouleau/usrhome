@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run Clasp via the 'lisp' command.
 # Created   : Wednesday, February 11 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 16:59:25 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:27:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -51,7 +51,7 @@ fi
 # Proceed in setting it up.
 #
 if command -v clasp >/dev/null; then
-    export USRHOME_PGMFOR_LISP=`which clasp`
+    export USRHOME_PGMFOR_LISP=`command -v clasp`
     printf -- ". Using Common Lisp - %s - from %s\n" "$(clasp --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
     if command -v rlwrap > /dev/null; then
         printf -- "   With %s to enhance REPL line editing and history.\n" "$(rlwrap -v)"
