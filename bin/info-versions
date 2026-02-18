@@ -4,7 +4,7 @@
 # Purpose   : Print version information about available tools.
 # Created   : Monday, September 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-30 21:15:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:48:59 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,25 +24,25 @@
 # ----
 #
 #
-if which erl > /dev/null 2>&1; then
+if command -v erl > /dev/null; then
     printf -- ". With Erlang %s\n" "$(erl -sasl errlog_type error  -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell)"
 fi
-if which gcc > /dev/null 2>&1; then
+if command -v gcc > /dev/null; then
     printf -- ". With gcc: %s\n" "$(gcc --version 2> /dev/null | head -1)"
 fi
-if which perl > /dev/null 2>&1; then
+info-lisp
+if command -v perl > /dev/null; then
     printf -- ". With %s\n" "$(perl --version | grep "This is perl" | sed 's/This is perl/Perl/g')"
 fi
-if which ruby > /dev/null 2>&1; then
+if command -v ruby > /dev/null; then
     printf -- ". With %s\n" "$(ruby --version | head -1)"
 fi
-if which tclsh > /dev/null 2>&1; then
+if command -v tclsh > /dev/null; then
     printf -- ". With tcl %s\n" "$(printf "%s"  'puts [info patchlevel];exit 0' | tclsh)"
 fi
-if which zig > /dev/null 2>&1; then
+if command -v zig > /dev/null; then
     printf -- ". With Zig %s.\n" "$(zig version)"
 fi
-
 
 # ----------------------------------------------------------------------------
 # Local Variables:

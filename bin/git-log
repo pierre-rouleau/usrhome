@@ -4,7 +4,7 @@
 # Purpose   : Show pretty print log with branch info.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 14:26:08 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:43:16 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,9 +27,9 @@
 #
 #  --until, --before   Limit the commits to those made before the specified date.
 #
-#  --author            Only show commits in which the author entry matches the specified string.
+#  --author            Only show commits in command -v  the author entry matches the specified string.
 #
-#  --committer         Only show commits in which the committer entry matches the specified string.
+#  --committer         Only show commits in command -v  the committer entry matches the specified string.
 #
 #  --grep              Only show commits with a commit message containing the string
 #
@@ -125,7 +125,7 @@ case "${command}" in
         ;;
 
     tree)
-        if ! which git-show-tree > /dev/null; then
+        if ! command -v git-show-tree > /dev/null; then
             echo "***ERROR: This requires git-extras which is not available."
             case "$(uname)" in
                 Darwin)

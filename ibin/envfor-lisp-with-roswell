@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run Roswell-luanched Lisp REPL via the 'lisp' command.
 # Created   : Saturday, February 14 2026
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-15 20:04:52 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:55:33 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -75,11 +75,11 @@ fi
 
 # Proceed in setting it up 'lisp' to use Roswell.
 #
-if which ros >/dev/null; then
+if command -v ros >/dev/null; then
     USRHOME_PGMFOR_LISP="roswell"
     export USRHOME_PGMFOR_LISP
     printf -- ". Using Common Lisp - %s - from %s\n" "$(ros run -- --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
-    if which rlwrap > /dev/null; then
+    if command -v rlwrap > /dev/null; then
         printf -- "   With %s to enhance REPL line editing and history.\n" "$(rlwrap -v)"
     else
         printf -- "   WARNING: rlwrap is not available.  Install it to enhance Roswell REPL.\n"

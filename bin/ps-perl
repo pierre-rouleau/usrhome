@@ -4,7 +4,7 @@
 # Purpose   :
 # Created   : Tuesday, September 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-01 08:56:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:52:59 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -83,7 +83,7 @@ fi
 # define utility
 
 use_gawk=false
-if which gawk > /dev/null 2>&1; then
+if command -v gawk > /dev/null; then
     use_gawk=true
 fi
 

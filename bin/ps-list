@@ -4,7 +4,7 @@
 # Purpose   : List running Processes.
 # Created   : Saturday, March  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-22 11:47:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:52:39 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,7 +28,7 @@ pgm_name="$(basename "$0")"
 
 selinux_is_available=false
 selinux_msg="NOT "
-if which getenforce > /dev/null 2>&1; then
+if command -v getenforce > /dev/null; then
     selinux_is_available=true
     selinux_msg=""
 fi

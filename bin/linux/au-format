@@ -4,7 +4,7 @@
 # Purpose   : Import format audit log records.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-02-24 09:41:16 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 16:49:53 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -149,7 +149,7 @@ done
 use_ausearch="no"
 if [ "$(uname)" = "Linux" ]; then
     if [ "$allow_ausearch" = "yes" ]; then
-        if which ausearch > /dev/null 2>&1; then
+        if command -v ausearch > /dev/null; then
             use_ausearch="yes"
         fi
     fi
