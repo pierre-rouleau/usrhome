@@ -4,7 +4,7 @@
 # Purpose   : Print version information about available tools.
 # Created   : Monday, September 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 16:48:59 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:24:49 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,7 +30,9 @@ fi
 if command -v gcc > /dev/null; then
     printf -- ". With gcc: %s\n" "$(gcc --version 2> /dev/null | head -1)"
 fi
-info-lisp
+if command -v info-lisp > /dev/null; then
+    info-lisp
+fi
 if command -v perl > /dev/null; then
     printf -- ". With %s\n" "$(perl --version | grep "This is perl" | sed 's/This is perl/Perl/g')"
 fi
