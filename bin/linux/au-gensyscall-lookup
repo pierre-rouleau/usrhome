@@ -4,7 +4,7 @@
 # Purpose   : Generate syscall look-up table shell code.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 16:50:13 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:42:59 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,7 +18,7 @@
 # Dependencies
 # ------------
 #
-# - which, awk, printf
+# - awk, printf
 
 # ----------------------------------------------------------------------------
 # Code
