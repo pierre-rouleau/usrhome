@@ -4,14 +4,14 @@
 # Purpose   : Print information about GCC tooling.
 # Created   : Wednesday, July 24 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 17:00:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:36:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 
 # Preliminary version of a tool to help investigate GCC built systems.  It
-# currently prints information about the tools on stdout command -v in itself is
+# currently prints information about the tools on stdout which in itself is
 # already useful.
 
 # ----------------------------------------------------------------------------
