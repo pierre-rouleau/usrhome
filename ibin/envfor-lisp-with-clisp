@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run GNU clisp via the 'lisp' command.
 # Created   : Tuesday, May 18 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 17:27:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 17:34:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -51,7 +51,8 @@ fi
 # Proceed in setting it up.
 #
 if command -v clisp >/dev/null; then
-    export USRHOME_PGMFOR_LISP=`command -v clisp`
+    USRHOME_PGMFOR_LISP="$(command -v clisp)"
+    export USRHOME_PGMFOR_LISP
     printf -- ". Using Common Lisp - %s - from %s\n" "$(clisp --version | head -1 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
 else
     printf -- "***ERROR*** GNU CLisp is not in PATH!\n"
