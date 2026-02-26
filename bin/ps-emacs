@@ -1,15 +1,21 @@
 #!/bin/sh
 # SH FILE: ps-emacs
 #
-# Purpose   : List all running Emacs processes running inside a Terminal.
+# Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 16:51:03 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-26 11:15:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
+
 # Module Description
 # ------------------
 #
-# Print information about all Emacs processes running inside a terminal window.
+# Print information about all Emacs processes running.
+# For those inside a terminal window, identify the terminal as nicely as
+# possible.  List the Emacs processes not running inside a terminal window
+# after the list of Emacs running inside a terminal window.
+
+
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -32,7 +38,10 @@
 print_usage()
 {
     printf -- "
-ps-emacs -- Print information about all Emacs process running in a terminal.
+ps-emacs -- Print information about all Emacs processes.
+            List Emacs processes running in terminal windows first, identify
+            the terminal as nicely as possible for those.
+            List other Emacs processes after.
 
  Usage: ps-emacs -h | --help
 
@@ -86,7 +95,7 @@ fi
 
 print_emacs_processes()
 {
-    # List all Emacs processes
+    # List all Emacs processes running inside terminal windows first.
     #  - filter out itself (ps-emacs)
     #  - filter on tty to only list processes attached to a TTY
     #    - under macOS it's tty, under linux it's pts/
@@ -95,6 +104,7 @@ print_emacs_processes()
     #    and append it to the output.
     #    The AWK script also prints "  ▶︎▶︎▶︎ CWD: " before the current directory
     #    and filters on the process being Emacs.
+    # Note this also lists emacsclient processes.
     if [ "$use_gawk" = "true" ]; then
         ps-list emacs \
             | grep " tty\|pts/" \
@@ -105,6 +115,9 @@ print_emacs_processes()
             | grep " tty\|pts/" \
             | awk -f "$USRHOME_DIR/bin/other/ps-emacs.awk"
     fi
+    # List all other Emacs processes not running in terminal windows (if any).
+    # Exclude Emacs child processes (by grepping on " emacs ")
+    ps-list emacs | grep " emacs " | grep -v " tty\|pts/"
 }
 
 # --
