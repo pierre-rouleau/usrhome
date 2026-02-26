@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-26 11:15:47 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-26 11:31:58 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -49,7 +49,7 @@ ps-emacs -- Print information about all Emacs processes.
 
  Usage: ps-emacs [PATTERN]
 
-  • Print information about all Emacs processes running in a terminal.
+  • Print information about all running Emacs processes.
 
       Print a line for each Emacs process.
       Each line contains the following columns.
@@ -116,8 +116,7 @@ print_emacs_processes()
             | awk -f "$USRHOME_DIR/bin/other/ps-emacs.awk"
     fi
     # List all other Emacs processes not running in terminal windows (if any).
-    # Exclude Emacs child processes (by grepping on " emacs ")
-    ps-list emacs | grep " emacs " | grep -v " tty\|pts/"
+    ps-list emacs | awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)emacs(client)?$/'
 }
 
 # --
