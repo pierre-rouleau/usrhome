@@ -3,7 +3,7 @@
 # Purpose   : Format Emacs process list to add the CWD to the line.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-29 23:08:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-26 11:11:14 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -45,10 +45,12 @@
 # On all lines, extract the process id (from column 2) and use the pidcwd
 # program to extract the current working directory of that process.
 # print the line and then the current working directory.
-$8 == "emacs"  {
+$8 ~ "emacs"  {
       command = "pidcwd " $2
       command |& getline path_result
       close(command)
       print $0, "  ▶︎▶︎▶︎ CWD: ", path_result
 }
+
+#
 # ------------------------------------------------------------------------------
