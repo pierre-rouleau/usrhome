@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-03-03 14:46:24 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-03 14:51:57 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -151,7 +151,7 @@ print_emacs_processes()
             | awk '$8 ~ /(^|\/)[eE]macs(client)?$/' \
             | awk -f "$USRHOME_DIR/bin/other/ps-emacs.awk"
         # List all other Emacs processes not running in terminal windows (if any).
-        ps_list_emacs | awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs((\.app)|(client)?)/'
+        ps_list_emacs | awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'
     fi
 
 }
