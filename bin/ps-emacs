@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-03-03 12:05:31 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-03 14:51:57 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -39,9 +39,9 @@ print_usage()
 {
     printf -- "
 ps-emacs -- Print information about all Emacs processes.
-            List Emacs processes running in terminal windows first, identify
-            the terminal as nicely as possible for those.
-            List other Emacs processes after.
+            List Emacs processes running in terminal windows first,
+            identify the terminal as nicely as possible for those.
+            Then list other Emacs processes (such as GUI Emacs).
 
  Usage: ps-emacs -h | --help
 
@@ -71,6 +71,9 @@ ps-emacs -- Print information about all Emacs processes.
     - If PATTERN is specified, filter the result with an extra grep filter
       using that pattern.  That can be used to search for an Emacs process
       launched under a specific command, or using a specific working directory.
+    - Under macOS it is best to use gawk (GNU awk) which supports a script that
+      deals with terminal number reformatting and allows printing the terminal
+      (TTY) numbers nicely on the output.
 
     The exit code is 0 if at least one Emacs process was found, 1 otherwise.
 "
@@ -88,10 +91,39 @@ fi
 # --
 # define utility
 
-use_gawk=false
-if command -v gawk > /dev/null; then
-    use_gawk=true
-fi
+case_sensitive=yes
+use_gawk=no
+
+case "$(uname)" in
+    Darwin)
+        if command -v gawk > /dev/null; then
+            use_gawk=yes
+        fi
+        case_sensitive=no
+        ;;
+
+    CYGWIN*|MSYS*|MINGW*|WindowsNT*)
+        # attempt to support this environment, but no guarantee...
+        case_sensitive=no
+        ;;
+
+    Linux)
+        if command -v gawk > /dev/null; then
+            use_gawk=yes
+        fi
+        case_sensitive=yes
+        ;;
+esac
+
+ps_list_emacs()
+{
+    if [ "${case_sensitive}" = "yes" ]; then
+        ps-list emacs
+    else
+        ps-list -i emacs
+    fi
+}
+
 
 print_emacs_processes()
 {
@@ -105,18 +137,23 @@ print_emacs_processes()
     #    The AWK script also prints "  ▶︎▶︎▶︎ CWD: " before the current directory
     #    and filters on the process being Emacs.
     # Note this also lists emacsclient processes.
-    if [ "$use_gawk" = "true" ]; then
-        ps-list "emacs " \
+    if [ "$use_gawk" = "yes" ]; then
+        ps_list_emacs \
             | grep " tty\|pts/" \
+            | gawk '$8 ~ /(^|\/)[eE]macs(client)?$/' \
             | gawk -f "$USRHOME_DIR/bin/other/ps-emacs-format.awk" \
             | column -s "▶︎▶︎▶︎" -t
+        # List all other Emacs processes not running in terminal windows (if any).
+        ps_list_emacs | gawk '$6 !~ /(tty|pts\/)/' | gawk '$8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'
     else
-        ps-list "emacs " \
+        ps_list_emacs \
             | grep " tty\|pts/" \
+            | awk '$8 ~ /(^|\/)[eE]macs(client)?$/' \
             | awk -f "$USRHOME_DIR/bin/other/ps-emacs.awk"
+        # List all other Emacs processes not running in terminal windows (if any).
+        ps_list_emacs | awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'
     fi
-    # List all other Emacs processes not running in terminal windows (if any).
-    ps-list "emacs " | awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)emacs(client)?$/'
+
 }
 
 # --
