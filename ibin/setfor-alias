@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-16 09:42:52 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 12:32:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -718,6 +718,7 @@ alias use-info='source $USRHOME_DIR/ibin/envfor-info'
 alias use-cbr='source $USRHOME_DIR/ibin/envfor-cbr'
 alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
 alias use-diff='source $USRHOME_DIR/ibin/envfor-diff'
+alias manpath-extend='source $USRHOME_DIR/ibin/do-extend-manpath verbose'
 
 if [ "${os_name}" = "Darwin" ]; then
     alias use-gcc14='source $USRHOME_DIR/ibin/envfor-gcc14-on-macos'

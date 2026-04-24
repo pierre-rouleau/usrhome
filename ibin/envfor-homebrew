@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 11:19:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 12:55:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -51,6 +51,9 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-homebrew"
 
 # 0 - Check if shell is interactive
 # ---------------------------------
+# Check if shell is interactive and export a SHELL_IS_INTERACTIVE variable
+# set to true or false.  Other scripts can use this to determine how they must operate.
+#
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
@@ -112,13 +115,13 @@ if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar)" > /dev/null; then
             # Apple Silicon architecture
             if [ -d /opt/homebrew ]; then
                 # Activate Homebrew path and environment variables
-                HOMEBREW_PREFIX="/opt/homebrew";
+                HOMEBREW_PREFIX="/opt/homebrew"
                 export HOMEBREW_PREFIX
-                HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+                HOMEBREW_CELLAR="/opt/homebrew/Cellar"
                 export HOMEBREW_CELLAR
-                HOMEBREW_REPOSITORY="/opt/homebrew";
+                HOMEBREW_REPOSITORY="/opt/homebrew"
                 export HOMEBREW_REPOSITORY
-                HOMEBREW_SHELLENV_PREFIX="/opt/homebrew";
+                HOMEBREW_SHELLENV_PREFIX="/opt/homebrew"
                 export HOMEBREW_SHELLENV_PREFIX
                 usrhome_homebrew_path=\
 /opt/homebrew/opt/make/libexec/gnubin:\
@@ -126,6 +129,7 @@ if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar)" > /dev/null; then
 /opt/homebrew/sbin:\
 /opt/homebrew/opt/m4/bin
                 PATH=${usrhome_homebrew_path}:$PATH
+                export PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
                     usrhome_printf "- Using Homebrew tools from /opt/homebrew.\n"
                 fi
@@ -153,7 +157,7 @@ if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar)" > /dev/null; then
             ;;
     esac
 
-    unset usrhome_homebrew_path
+    unset arch usrhome_homebrew_path
 fi
 
 usrhome_trace_out

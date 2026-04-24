@@ -1,9 +1,9 @@
 # Sourced script: do-extend-manpath  -*- mode: sh; -*-
 #
-# Purpose   : Set MANPATH to the value of manpath if not already set.
+# Purpose   : Set/extend MANPATH from manpath output; safe to re-source.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 12:24:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 12:49:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -26,9 +26,9 @@
 #
 #
 # If your system has an extra set of man directories somewhere outside of the
-# standard places, identify them inside the MANPATH_XTRA_BEFORE or
-# MANPATH_XTRA_AFTER variables.  The value of MANPATH_XTRA_BEFORE is
-# pre-pended to the list and the value of MANPATH_XTRA_AFTER is appended to
+# standard places, identify them inside the MANPATH_EXTRA_BEFORE or
+# MANPATH_EXTRA_AFTER variables.  The value of MANPATH_EXTRA_BEFORE is
+# pre-pended to the list and the value of MANPATH_EXTRA_AFTER is appended to
 # the list.
 #
 # Usage:
@@ -63,8 +63,6 @@
 #                    the string.
 # -  ${VAR%pattern}: Removes the shortest match from the end.
 
-_dxm_manpath_modified=false
-
 # --- 1. Obtain the freshest possible manpath list from the system.
 #        manpath(1) scans PATH, so this may grow as PATH is extended.
 #        - Ensure that manpath extracts the system list by temporary
@@ -73,32 +71,33 @@ _dxm_manpath_modified=false
 
 _dxm_manpath="$MANPATH"
 MANPATH=":"
-if manpath -g > /dev/null 2>&1; then
-    _dxm_fresh_manpath="$(manpath -g)"
+if _dxm_fresh_manpath="$(manpath -g 2>/dev/null)"; then
+    :   #  Do nothing, it's already done.
 else
+    # For cases where the -g option is not available do it without.
     _dxm_fresh_manpath="$(manpath)"
 fi
-MANPATH="$_dxm_manpath"
+MANPATH=
 
 # --- 2. Initialize or extend MANPATH.
 if [ -z "$_dxm_manpath" ] || [ "$_dxm_manpath" = ":" ]; then
     # Not set (or set to special bare colon): seed from the fresh list.
     MANPATH="$_dxm_fresh_manpath"
-    _dxm_manpath_modified=true
 else
+    # Strip stray leading/trailing colons from MANPATH.
+    MANPATH="${MANPATH#:}"; MANPATH="${MANPATH%:}"
+
     # Already set: merge directories that manpath now knows about but that are
     # not yet in MANPATH (e.g. because PATH grew since the last sourcing).
     _dxm_IFS_save="$IFS"
     IFS=':'
     for _dxm_dir in $_dxm_fresh_manpath; do
         [ -z "$_dxm_dir" ] && continue
-        # Strip stray leading/trailing colons from MANPATH.
-        MANPATH="${MANPATH#:}"; MANPATH="${MANPATH%:}"
+
         case ":${MANPATH}:" in
             *":${_dxm_dir}:"*) ;;          # already present – skip
             *)
                 MANPATH="${MANPATH:+${MANPATH}:}${_dxm_dir}"
-                _dxm_manpath_modified=true
                 ;;
         esac
     done
@@ -122,7 +121,6 @@ if [ -n "$MANPATH_EXTRA_BEFORE" ]; then
             *":${_dxm_dir}:"*) ;;
             *)
                 MANPATH="${_dxm_dir}${MANPATH:+:${MANPATH}}"
-                _dxm_manpath_modified=true
                 ;;
         esac
     done
@@ -139,7 +137,6 @@ if [ -n "$MANPATH_EXTRA_AFTER" ]; then
             *":${_dxm_dir}:"*) ;;
             *)
                 MANPATH="${MANPATH:+${MANPATH}:}${_dxm_dir}"
-                _dxm_manpath_modified=true
                 ;;
         esac
     done
@@ -147,7 +144,7 @@ if [ -n "$MANPATH_EXTRA_AFTER" ]; then
 fi
 
 # --- 5. Report and export if anything changed.
-if [ "$_dxm_manpath_modified" = "true" ]; then
+if [ "$_dxm_manpath" != "$MANPATH" ]; then
     if [ "$MANPATH_SHOW_IF_MODIFIED" = "true" ] || [ "$1" = "verbose" ]; then
         printf ". MANPATH was modified: use 'showpath MAN' to display its value.\n"
     fi
@@ -156,7 +153,6 @@ fi
 
 # --- 6. Clean up temporary variables so they don't leak into the environment.
 unset _dxm_manpath _dxm_fresh_manpath _dxm_IFS_save _dxm_dir _dxm_rev
-unset _dxm_manpath_modified
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
