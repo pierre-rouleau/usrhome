@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 16:08:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 16:21:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -373,7 +373,7 @@ if [ "${os_name}" = "Darwin" ]; then
         printf " More info is available at:\n"
         printf "  https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/\n"
     }
-    alias info-rosetta2 info__rosetta2
+    alias info-rosetta2=info__rosetta2
 fi
 
 # ----------------------------------------------------------------------------
@@ -722,7 +722,7 @@ __git__cln()
         return 2
     fi
 }
-alias git-cln __git__cln
+alias git-cln=__git__cln
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Environment Setup Control

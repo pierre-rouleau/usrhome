@@ -3,7 +3,7 @@
 # Purpose   : Set/extend MANPATH from manpath output; safe to re-source.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 15:52:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 16:33:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -122,7 +122,9 @@ else
         esac
     done
 
-    # Then prepend any newly found directories to MANPATH.
+    # Then prepend any newly found directories to MANPATH but in same order as
+    # found in _dxm_fresh_manpath.
+    _dxm_new=
     _dxm_remainder="$_dxm_fresh_manpath"
     while [ -n "$_dxm_remainder" ]; do
         # Extract first colon-separated component — portable, no IFS needed.
@@ -138,12 +140,18 @@ else
         esac
         [ -z "$_dxm_dir" ] && continue
         case ":${MANPATH}:" in
-            *":${_dxm_dir}:"*) ;;          # already present – skip
+            *":${_dxm_dir}:"*) ;;          # already present in MANPATH – skip
             *)
-                MANPATH="${_dxm_dir}:${MANPATH:+${MANPATH}}"
+                _dxm_new="${_dxm_dir}:${_dxm_new:+${_dxm_new}}"
                 ;;
         esac
     done
+    if [ -n "$_dxm_new" ]; then
+        # strip any colon from start or end of _dmx_new
+        _dxm_new="${_dxm_new#:}"; _dxm_new="${_dxm_new%:}"
+        MANPATH="${_dxm_new}:$MANPATH"
+    fi
+    unset _dxm_new
     unset _dxm_remainder
 fi
 
