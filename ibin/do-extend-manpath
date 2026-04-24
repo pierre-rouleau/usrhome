@@ -3,7 +3,7 @@
 # Purpose   : Set/extend MANPATH from manpath output; safe to re-source.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 12:49:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 14:19:30 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -69,7 +69,13 @@
 #          setting MANPATH to a single colon to force manpath utility
 #          to return the system's list of man directories.
 
+# Store the value of MANPATH used by the shell into an internal variable
+# and stray leading/trailing colons from its value.
 _dxm_manpath="$MANPATH"
+_dxm_manpath="${_dxm_manpath#:}"; _dxm_manpath="${_dxm_manpath%:}"
+
+# Use manpath utility to read directories used by the system by forcing
+# it use use a MANPATH that has only a colon.
 MANPATH=":"
 if _dxm_fresh_manpath="$(manpath -g 2>/dev/null)"; then
     :   #  Do nothing, it's already done.
@@ -77,21 +83,29 @@ else
     # For cases where the -g option is not available do it without.
     _dxm_fresh_manpath="$(manpath)"
 fi
+
+# Clean MANPATH, it will be re-constructed.  Its shell value is in _dxm_manpath.
 MANPATH=
 
 # --- 2. Initialize or extend MANPATH.
-if [ -z "$_dxm_manpath" ] || [ "$_dxm_manpath" = ":" ]; then
+if [ -z "${_dxm_manpath}" ] || [ "${_dxm_manpath}" = ":" ]; then
     # Not set (or set to special bare colon): seed from the fresh list.
     MANPATH="$_dxm_fresh_manpath"
 else
-    # Strip stray leading/trailing colons from MANPATH.
-    MANPATH="${MANPATH#:}"; MANPATH="${MANPATH%:}"
-
     # Already set: merge directories that manpath now knows about but that are
-    # not yet in MANPATH (e.g. because PATH grew since the last sourcing).
+    # not yet in the shell's value of MANPATH (e.g. because PATH grew since
+    # the last sourcing).  Keep the beginning of the original MANPATH.
+
+    # Process the directories previously held in the shells' value of MANPATH
+    # (now stored in _dxm_manpath) and the new ones identified by
+    # _dxm_fresh_manpath.
+    _dmx_both_manpath="${_dxm_manpath}:${_dxm_fresh_manpath}"
+    _dxm_both_manpath="${_dxm_both_manpath#:}"; _dxm_both_manpath="${_dxm_both_manpath%:}"
+
     _dxm_IFS_save="$IFS"
     IFS=':'
-    for _dxm_dir in $_dxm_fresh_manpath; do
+
+    for _dxm_dir in $_dxm_both_manpath; do
         [ -z "$_dxm_dir" ] && continue
 
         case ":${MANPATH}:" in
@@ -152,7 +166,7 @@ if [ "$_dxm_manpath" != "$MANPATH" ]; then
 fi
 
 # --- 6. Clean up temporary variables so they don't leak into the environment.
-unset _dxm_manpath _dxm_fresh_manpath _dxm_IFS_save _dxm_dir _dxm_rev
+unset _dxm_manpath _dxm_fresh_manpath _dmx_both_manpath _dxm_IFS_save _dxm_dir _dxm_rev
 
 # ----------------------------------------------------------------------------
 #  Local Variables:

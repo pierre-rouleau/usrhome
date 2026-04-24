@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 12:55:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 13:07:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -46,7 +46,7 @@
 # to the value of the environment variables set by this script to double check
 # its validity.
 
-# Note:show the name of the environment variable in the trace.
+# Note: show "$USRHOME_DIR" in the trace as a help to write valid scripts.
 usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-homebrew"
 
 # 0 - Check if shell is interactive
@@ -65,7 +65,7 @@ case "$-" in
         ;;
 esac
 
-if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar)" > /dev/null; then
+if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar|/usr/local/opt/)" > /dev/null; then
     # If Homebrew has not already been placed inside PATH
     # then place it and set the homebrew environment.
     # Otherwise skip.

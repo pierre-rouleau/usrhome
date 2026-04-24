@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 12:32:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 14:50:13 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -76,12 +76,13 @@ usrhome_printf()
     # All argument passed to printf.
 
     #printf -- "... usrhome_printf:\n"
+    # Note: if SHELL_IS_INTERACTIVE is not set, then use as if it was set to "false".
     if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
         printf -- "$@"
     fi
 }
 
-info-shell-special-var()
+info_shell_special_var()
 {
     positionals=""
     sep=""
@@ -151,6 +152,8 @@ shown within single quotes.
     echo "Last argument extracted by position: $last_arg_by_pos"
     echo "-----------------------------------"
 }
+alias info-shell-special-var=info_shell_special_var
+
 
 # Topic: Title
 # ------------
@@ -230,33 +233,13 @@ case ${os_name} in
         ;;
 esac
 
-
-set_ls_options()
-{
-    case $(uname) in
-        'Darwin' )
-            # Supports the -O option: extra macOS flags.
-            # -G on macOS means colorize.
-            usrhome_ls_option_flag=-O
-            usrhome_ls_color_flag=-G
-            ;;
-        *)
-            # There's no support for the -O option normally.
-            # -G normally means to not display group info in long display (so we don't use this here)
-            # --color=auto activates colors
-            usrhome_ls_option_flag=
-            usrhome_ls_color_flag="--color=auto"
-            ;;
-    esac
-}
-
 # List directories
 lsd()
 {
     set_ls_options
-    if [[ -z $1 ]]; then
+    if [ -z $1 ]; then
         ( ls -d ${usrhome_ls_color_flag} */ ) 2> /dev/null
-    elif [[ $# > 1 ]]; then
+    elif [ $# -gt 1 ]; then
         echo "ERROR: lsd does not support glob, and more than 1 argument."
         echo "  You provided $# argument."
         echo " Usage: lsd [ARG]"
@@ -270,9 +253,9 @@ lsd()
 lsda()
 {
     set_ls_options
-    if [[ -z $1 ]]; then
+    if [ -z $1 ]; then
         ( ls -d ${usrhome_ls_color_flag} */ .[^.]*/ ) 2> /dev/null
-    elif [[ $# > 1 ]]; then
+    elif [ $# -gt 1 ]; then
         echo "ERROR: lsd does not support glob, and more than 1 argument."
         echo "  You provided $# argument"
         echo " Usage: lsda [ARG]"
@@ -290,8 +273,8 @@ lsda()
             has_hid=0
         fi
         # echo "has_reg: $has_reg, has_hid=$has_hid"
-        if [[ "$has_reg" = "1" ]]; then
-            if [[ "$has_hid" = "1" ]]; then
+        if [ "$has_reg" = "1" ]; then
+            if [ "$has_hid" = "1" ]; then
                 # has hidden and regular
                 ( ls -d ${usrhome_ls_color_flag} {.$1*/,$1*/} ) 2> /dev/null
             else
@@ -299,7 +282,7 @@ lsda()
                 ( ls -d ${usrhome_ls_color_flag} $1*/ ) 2> /dev/null
             fi
         else
-            if [[ "$has_hid" = "1" ]]; then
+            if [ "$has_hid" = "1" ]; then
                 # has hidden only
                 ( ls -d ${usrhome_ls_color_flag} .$1*/ ) 2> /dev/null
             else
@@ -338,13 +321,13 @@ lsl()
             long_ls="false"
             ;;
     esac
-    if [[ -z "$1" ]]; then
+    if [ -z "$1" ]; then
         if [[ "$long_ls" = "true" ]]; then
             find . -maxdepth 1 -type l | xargs -I % ls -l %
         else
             find . -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
         fi
-    elif [[ "$#" > 1 ]]; then
+    elif [ "$#" -gt 1 ]; then
         echo "ERROR: lsl does not support glob argument; it must be single quoted."
         echo "  You provided $# arguments (the shell expands your glob)."
         echo " Usage: lsl [-l] [NAME]"
@@ -381,7 +364,15 @@ fi
 alias setenv='source $USRHOME_DIR/ibin/do-setenv'
 alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
 alias add-to-path='source $USRHOME_DIR/ibin/do-add-to-path'
-alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.zsh'
+case $USRHOME_SHELL in
+    zsh)
+        alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.zsh'
+        ;;
+    *)
+        # For Bash and other shells use the POSIX compliant script.
+        alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.sh'
+        ;;
+esac
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Change Current Directory
@@ -401,7 +392,7 @@ alias use-sdkman='source $USRHOME_DIR/ibin/envfor-sdkman'
 # Set shortcut functions for Bash and the Z shell
 # -----------------------------------------------
 
-usrhome_cd()
+usrhome__cd()
 {
     # Arguments:
     # - 1: string: name of the environment variable identifying directory
@@ -418,7 +409,6 @@ usrhome_cd()
     fi
 }
 
-
 if [ "${os_name}" = "Darwin" ]; then
     cdv()
     {
@@ -429,17 +419,17 @@ fi
 
 cdh()
 {
-    usrhome_cd "USRHOME_DIR_MY" "$USRHOME_DIR_MY" "$1"
+    usrhome__cd "USRHOME_DIR_MY" "$USRHOME_DIR_MY" "$1"
 }
 
 cdlic()
 {
-    usrhome_cd "USRHOME_DIR_LIC" "$USRHOME_DIR_LIC" "$1"
+    usrhome__cd "USRHOME_DIR_LIC" "$USRHOME_DIR_LIC" "$1"
 }
 
 cdlog()
 {
-    usrhome_cd "USRHOME_DIR_LOG" "$USRHOME_DIR_LOG" "$1"
+    usrhome__cd "USRHOME_DIR_LOG" "$USRHOME_DIR_LOG" "$1"
 }
 
 
@@ -448,25 +438,25 @@ cdlog()
 
 cd-contract()
 {
-    usrhome_cd "USRHOME_DIR_CONTRACT" "$USRHOME_DIR_CONTRACT" "$1"
+    usrhome__cd "USRHOME_DIR_CONTRACT" "$USRHOME_DIR_CONTRACT" "$1"
 }
 alias cdcontract=cd-contract
 
 cd-public()
 {
-    usrhome_cd "USRHOME_DIR_PUBLIC" "$USRHOME_DIR_PUBLIC" "$1"
+    usrhome__cd "USRHOME_DIR_PUBLIC" "$USRHOME_DIR_PUBLIC" "$1"
 }
 alias cdpub=cd-public
 
 cd-local()
 {
-    usrhome_cd "USRHOME_DIR_LOCAL" "$USRHOME_DIR_LOCAL" "$1"
+    usrhome__cd "USRHOME_DIR_LOCAL" "$USRHOME_DIR_LOCAL" "$1"
 }
 alias cdlocal=cd-local
 
 cd-other()
 {
-    usrhome_cd "USRHOME_DIR_OTHER" "$USRHOME_DIR_OTHER" "$1"
+    usrhome__cd "USRHOME_DIR_OTHER" "$USRHOME_DIR_OTHER" "$1"
 }
 alias cdother=cd-other
 
@@ -474,7 +464,7 @@ alias cdother=cd-other
 
 cdtmp()
 {
-    usrhome_cd "USRHOME_DIR_TMP" "$USRHOME_DIR_TMP" "$1"
+    usrhome__cd "USRHOME_DIR_TMP" "$USRHOME_DIR_TMP" "$1"
 }
 
 cd..()
@@ -536,7 +526,7 @@ SEE ALSO:
         info-prompt()
         {
             if [ "$1" = "-q" ]; then
-                printf "Bash prompt model variables:
+                printf "Z shell prompt model variables:
 - USRHOME_PROMPT_MODEL         : %s
 - USRHOME_PROMPT_MODEL_OVERRIDE: %s
 " "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
@@ -592,11 +582,9 @@ esac
 # Gnome: DESKTOP_SESSION
 # XCFE: XDG_CURRENT_DESKTOP=XFCE
 # KDE:  XDG_CURRENT_DESKTOP=KDE
-info-desktop()
+info_esktop()
 {
-    if test -n "$USRHOME_DESKTOP"; then
-        USRHOME_DESKTOP=
-    fi
+    USRHOME_DESKTOP=
     case $(uname) in
         'Darwin' )
             USRHOME_DESKTOP="macOS"
@@ -631,6 +619,7 @@ inside: %s/ibin/setfor-alias
 " "$USRHOME_DIR"
     fi
 }
+alias info-desktop=info_desktop
 
 # ----------------------------------------------------------------------------
 # Topic: Emacs shells : eat terminal configuration
@@ -697,7 +686,7 @@ git-cln()
         # -- Proceed
         if git clone "$1" "$2"; then
             cd "$2" || return 1
-            git co "$2"
+            git checkout "$2"
             printf -- "*** Success!\n"
         else
             printf -- "*** ERROR: git clone failed!\n"
