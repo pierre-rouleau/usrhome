@@ -3,7 +3,7 @@
 # Purpose   : Set MANPATH to the value of manpath if not already set.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 10:33:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 12:24:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -13,7 +13,7 @@
 # Source (include) this file inside other sourced files before adding to the
 # MANPATH value.
 #
-# On some system MANPATH is set to an invalid value of ":".
+# On some systems MANPATH is set to an invalid value of ":".
 # In the man utility, a leading or trailing colon in MANPATH tells the system
 # to include the default system manual paths in addition to whatever custom
 # paths you've added.
@@ -21,8 +21,8 @@
 # That, however only works for the man utility.  It does not allow other tools
 # to inspect the list of directories holding man files as an explicit set of
 # directories listed inside the value of the MANPATH environment variable
-# does.  This is why the semicolon is removed and replaced by the list printed
-# by the manpath utility.
+# does.  This is why the colon is removed and replaced by the list printed by
+# the manpath utility.
 #
 #
 # If your system has an extra set of man directories somewhere outside of the
@@ -42,34 +42,121 @@
 # Code
 # ----
 #
+# Code strategy
+
+# - Always compute the fresh manpath/manpath -g output, regardless of whether
+#   MANPATH is already set.
+# - If MANPATH is empty/invalid, set it from that fresh output.
+# - If MANPATH is already set, merge any new directories from the fresh output
+#   that are not yet present — making re-sourcing after a PATH extension fully
+#   effective.
+# - Make MANPATH_EXTRA_BEFORE / MANPATH_EXTRA_AFTER idempotent (check
+#   component by component before prepending/appending) so repeated sourcing
+#   never creates duplicates.
+# - Unset all temporary variables to avoid polluting the shell environment.
+# - use _dxm_ prefix (for: Do eXtend Manpath) in internal variable.
 #
-manpath_modified=false
-if [ -z "$MANPATH" ] || [ "$MANPATH" = ":" ]; then
-    # Some Linux systems support the manpath -g option, which provides more
-    # entries. Try it.  If that fails use manpath without it.
-    if manpath -g > /dev/null 2>&1; then
-        MANPATH="$(manpath -g)"
-    else
-        MANPATH="$(manpath)"
-    fi
-    manpath_modified=true
+# POSIX compliant techniques used:
+# -  ${VAR:+word}    Expansion evaluates to word only when var is set and
+#                    non-empty, otherwise to nothing.
+# -  ${VAR#pattern}: Removes the shortest match of pattern from the beginning of
+#                    the string.
+# -  ${VAR%pattern}: Removes the shortest match from the end.
+
+_dxm_manpath_modified=false
+
+# --- 1. Obtain the freshest possible manpath list from the system.
+#        manpath(1) scans PATH, so this may grow as PATH is extended.
+#        - Ensure that manpath extracts the system list by temporary
+#          setting MANPATH to a single colon to force manpath utility
+#          to return the system's list of man directories.
+
+_dxm_manpath="$MANPATH"
+MANPATH=":"
+if manpath -g > /dev/null 2>&1; then
+    _dxm_fresh_manpath="$(manpath -g)"
+else
+    _dxm_fresh_manpath="$(manpath)"
+fi
+MANPATH="$_dxm_manpath"
+
+# --- 2. Initialize or extend MANPATH.
+if [ -z "$_dxm_manpath" ] || [ "$_dxm_manpath" = ":" ]; then
+    # Not set (or set to special bare colon): seed from the fresh list.
+    MANPATH="$_dxm_fresh_manpath"
+    _dxm_manpath_modified=true
+else
+    # Already set: merge directories that manpath now knows about but that are
+    # not yet in MANPATH (e.g. because PATH grew since the last sourcing).
+    _dxm_IFS_save="$IFS"
+    IFS=':'
+    for _dxm_dir in $_dxm_fresh_manpath; do
+        [ -z "$_dxm_dir" ] && continue
+        # Strip stray leading/trailing colons from MANPATH.
+        MANPATH="${MANPATH#:}"; MANPATH="${MANPATH%:}"
+        case ":${MANPATH}:" in
+            *":${_dxm_dir}:"*) ;;          # already present – skip
+            *)
+                MANPATH="${MANPATH:+${MANPATH}:}${_dxm_dir}"
+                _dxm_manpath_modified=true
+                ;;
+        esac
+    done
+    IFS="$_dxm_IFS_save"
 fi
 
+# --- 3. Prepend MANPATH_EXTRA_BEFORE (idempotent, component by component).
 if [ -n "$MANPATH_EXTRA_BEFORE" ]; then
-    MANPATH="$MANPATH_EXTRA_BEFORE:$MANPATH"
-    manpath_modified=true
-fi
-if [ -n "$MANPATH_EXTRA_AFTER" ]; then
-    MANPATH="$MANPATH:$MANPATH_EXTRA_AFTER"
-    manpath_modified=true
+    _dxm_IFS_save="$IFS"
+    IFS=':'
+    # Iterate in reverse so prepending keeps the declared order.
+    # Build a reversed list first.
+    _dxm_rev=""
+    for _dxm_dir in $MANPATH_EXTRA_BEFORE; do
+        [ -z "$_dxm_dir" ] && continue
+        _dxm_rev="${_dxm_dir}${_dxm_rev:+:$_dxm_rev}"
+    done
+    for _dxm_dir in $_dxm_rev; do
+        [ -z "$_dxm_dir" ] && continue
+        case ":${MANPATH}:" in
+            *":${_dxm_dir}:"*) ;;
+            *)
+                MANPATH="${_dxm_dir}${MANPATH:+:${MANPATH}}"
+                _dxm_manpath_modified=true
+                ;;
+        esac
+    done
+    IFS="$_dxm_IFS_save"
 fi
 
-if [ "$manpath_modified" = "true" ]; then
+# --- 4. Append MANPATH_EXTRA_AFTER (idempotent, component by component).
+if [ -n "$MANPATH_EXTRA_AFTER" ]; then
+    _dxm_IFS_save="$IFS"
+    IFS=':'
+    for _dxm_dir in $MANPATH_EXTRA_AFTER; do
+        [ -z "$_dxm_dir" ] && continue
+        case ":${MANPATH}:" in
+            *":${_dxm_dir}:"*) ;;
+            *)
+                MANPATH="${MANPATH:+${MANPATH}:}${_dxm_dir}"
+                _dxm_manpath_modified=true
+                ;;
+        esac
+    done
+    IFS="$_dxm_IFS_save"
+fi
+
+# --- 5. Report and export if anything changed.
+if [ "$_dxm_manpath_modified" = "true" ]; then
     if [ "$MANPATH_SHOW_IF_MODIFIED" = "true" ] || [ "$1" = "verbose" ]; then
         printf ". MANPATH was modified: use 'showpath MAN' to display its value.\n"
     fi
     export MANPATH
 fi
+
+# --- 6. Clean up temporary variables so they don't leak into the environment.
+unset _dxm_manpath _dxm_fresh_manpath _dxm_IFS_save _dxm_dir _dxm_rev
+unset _dxm_manpath_modified
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
