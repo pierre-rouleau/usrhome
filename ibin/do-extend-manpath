@@ -3,7 +3,7 @@
 # Purpose   : Set/extend MANPATH from manpath output; safe to re-source.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 15:23:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 15:52:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -92,51 +92,94 @@ if [ -z "${_dxm_manpath}" ] || [ "${_dxm_manpath}" = ":" ]; then
     # Not set (or set to special bare colon): seed from the fresh list.
     MANPATH="$_dxm_fresh_manpath"
 else
-    # Already set: merge directories that manpath now knows about but that are
-    # not yet in the shell's value of MANPATH (e.g. because PATH grew since
-    # the last sourcing).  Keep the beginning of the original MANPATH.
+    # Already set: merge directories discovered by the fresh manpath output
+    # that are not yet present in MANPATH.  Keep the original MANPATH order
+    # first.
 
-    # Process the directories previously held in the shells' value of MANPATH
-    # (now stored in _dxm_manpath) and the new ones identified by
-    # _dxm_fresh_manpath.
-    _dxm_both_manpath="${_dxm_manpath}:${_dxm_fresh_manpath}"
-    _dxm_both_manpath="${_dxm_both_manpath#:}"; _dxm_both_manpath="${_dxm_both_manpath%:}"
+    # To iterate through each component do not use the IFS=: trick because
+    # that does not work under zsh unless the SH_WORD_SPLIT option is set.
+    # Use a technique that works on every POSIX compliant shells.
 
-    # echo "********************************"
-    # echo "MANPATH: $MANPATH"
-    # echo "_dxm_both_manpath : $_dxm_both_manpath"
-    # echo "********************************"
-    _dxm_IFS_save="$IFS"
-    IFS=':'
-
-    for _dxm_dir in $_dxm_both_manpath; do
+    _dxm_remainder="$_dxm_manpath"
+    while [ -n "$_dxm_remainder" ]; do
+        # Extract first colon-separated component — portable, no IFS needed.
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
         [ -z "$_dxm_dir" ] && continue
-
         case ":${MANPATH}:" in
             *":${_dxm_dir}:"*) ;;          # already present – skip
             *)
-                # echo "** Adding: ${_dxm_dir}"
                 MANPATH="${MANPATH:+${MANPATH}:}${_dxm_dir}"
                 ;;
         esac
     done
-    IFS="$_dxm_IFS_save"
-    # echo "********************************"
 
+    # Then prepend any newly found directories to MANPATH.
+    _dxm_remainder="$_dxm_fresh_manpath"
+    while [ -n "$_dxm_remainder" ]; do
+        # Extract first colon-separated component — portable, no IFS needed.
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
+        [ -z "$_dxm_dir" ] && continue
+        case ":${MANPATH}:" in
+            *":${_dxm_dir}:"*) ;;          # already present – skip
+            *)
+                MANPATH="${_dxm_dir}:${MANPATH:+${MANPATH}}"
+                ;;
+        esac
+    done
+    unset _dxm_remainder
 fi
 
 # --- 3. Prepend MANPATH_EXTRA_BEFORE (idempotent, component by component).
 if [ -n "$MANPATH_EXTRA_BEFORE" ]; then
-    _dxm_IFS_save="$IFS"
-    IFS=':'
     # Iterate in reverse so prepending keeps the declared order.
-    # Build a reversed list first.
+    # Build reversed list using the portable splitter.
     _dxm_rev=""
-    for _dxm_dir in $MANPATH_EXTRA_BEFORE; do
+    _dxm_remainder="$MANPATH_EXTRA_BEFORE"
+    while [ -n "$_dxm_remainder" ]; do
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
         [ -z "$_dxm_dir" ] && continue
-        _dxm_rev="${_dxm_dir}${_dxm_rev:+:$_dxm_rev}"
+        _dxm_rev="${_dxm_dir}${_dxm_rev:+:${_dxm_rev}}"
     done
-    for _dxm_dir in $_dxm_rev; do
+
+    _dxm_remainder="$_dxm_rev"
+    while [ -n "$_dxm_remainder" ]; do
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
         [ -z "$_dxm_dir" ] && continue
         case ":${MANPATH}:" in
             *":${_dxm_dir}:"*) ;;
@@ -145,14 +188,23 @@ if [ -n "$MANPATH_EXTRA_BEFORE" ]; then
                 ;;
         esac
     done
-    IFS="$_dxm_IFS_save"
+    unset _dxm_remainder
 fi
 
 # --- 4. Append MANPATH_EXTRA_AFTER (idempotent, component by component).
 if [ -n "$MANPATH_EXTRA_AFTER" ]; then
-    _dxm_IFS_save="$IFS"
-    IFS=':'
-    for _dxm_dir in $MANPATH_EXTRA_AFTER; do
+    _dxm_remainder="$MANPATH_EXTRA_AFTER"
+    while [ -n "$_dxm_remainder" ]; do
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
         [ -z "$_dxm_dir" ] && continue
         case ":${MANPATH}:" in
             *":${_dxm_dir}:"*) ;;
@@ -161,7 +213,7 @@ if [ -n "$MANPATH_EXTRA_AFTER" ]; then
                 ;;
         esac
     done
-    IFS="$_dxm_IFS_save"
+    unset _dxm_remainder
 fi
 
 # --- 5. Report and export if anything changed.
@@ -173,7 +225,7 @@ if [ "$_dxm_manpath" != "$MANPATH" ]; then
 fi
 
 # --- 6. Clean up temporary variables so they don't leak into the environment.
-unset _dxm_manpath _dxm_fresh_manpath _dxm_both_manpath _dxm_IFS_save _dxm_dir _dxm_rev
+unset _dxm_manpath _dxm_fresh_manpath _dxm_IFS_save _dxm_dir _dxm_rev
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
