@@ -3,7 +3,7 @@
 # Purpose   : Set/extend MANPATH from manpath output; safe to re-source.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 16:33:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 17:23:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -233,7 +233,7 @@ if [ "$_dxm_manpath" != "$MANPATH" ]; then
 fi
 
 # --- 6. Clean up temporary variables so they don't leak into the environment.
-unset _dxm_manpath _dxm_fresh_manpath _dxm_IFS_save _dxm_dir _dxm_rev
+unset _dxm_manpath _dxm_fresh_manpath _dxm_dir _dxm_rev
 
 # ----------------------------------------------------------------------------
 #  Local Variables:

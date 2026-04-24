@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 16:21:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 19:29:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,6 +17,7 @@
 # ----
 #
 #
+# shellcheck disable=1091
 
 usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-alias"
 # --------
@@ -75,40 +76,40 @@ usrhome_printf()
     # Print text only when allowed.
     # All argument passed to printf.
 
-    #printf -- "... usrhome_printf:\n"
     # Note: if SHELL_IS_INTERACTIVE is not set, then use as if it was set to "false".
     if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
+        # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
         printf -- "$@"
     fi
 }
 
 info_shell_special_var()
 {
-    positionals=""
-    sep=""
-    pos=1
-    all_words=""
-    last_arg_numb="$#"
-    last_arg_val_extracted=
-    last_arg_by_pos=
+    _sa_positionals=""
+    _sa_sep=""
+    _sa_pos=1
+    _sa_all_words=""
+    _sa_last_arg_numb="$#"
+    _sa_last_arg_val_extracted=
+    _sa_last_arg_by_pos=
     for word in "$@"; do
-        echo "--- At position ${pos}, arg is: $word"
-        all_words="${all_words}${sep}\"${word}\""
-        positionals="${positionals}${sep}\$${pos}='${word}'"
-        sep=", "
-        last_arg_val_extracted="${word}"
-       if [ "$#" -eq "$pos" ]; then
-           last_arg_by_pos="$word"
+        echo "--- At position ${_sa_pos}, arg is: $word"
+        _sa_all_words="${_sa_all_words}${_sa_sep}\"${word}\""
+        _sa_positionals="${_sa_positionals}${_sa_sep}\$${_sa_pos}='${word}'"
+        _sa_sep=", "
+        _sa_last_arg_val_extracted="${word}"
+       if [ "$#" -eq "$_sa_pos" ]; then
+           _sa_last_arg_by_pos="$word"
         fi
-        pos=$(( pos + 1))
+        _sa_pos=$(( _sa_pos + 1))
     done
-    #all_words="$(echo "$all_words" | sed -e 's/[[:space:]]*$//')"
+    #_sa_all_words="$(echo "$_sa_all_words" | sed -e 's/[[:space:]]*$//')"
 
     case "$USRHOME_SHELL" in
         bash | zsh)
             # Note: printf arguments MUST math number of formatting meta-characters
             #       otherwise multiple printf executions is done to consume all arguments!
-            # This precludes pass in $@ to printf, so it was processed into the all_words variable.
+            # This precludes pass in $@ to printf, so it was processed into the _sa_all_words variable.
             printf -- "\
 The following shows the shell special shell parameters
 along with their values (except for positional parameters)
@@ -141,16 +142,18 @@ shown within single quotes.
  ----> '$!'
 
  - \$\$: Process ID of the shell.
- ----> '$$'\n" "$positionals" "$*" "$all_words"
+ ----> '$$'\n" "$_sa_positionals" "$*" "$_sa_all_words"
             ;;
 
         *)
             printf "The %s shell is not supported yet.\n" "$USRHOME_SHELL"
             ;;
     esac
-    echo "Last argument extracted by loop    : $last_arg_val_extracted"
-    echo "Last argument extracted by position: $last_arg_by_pos"
+    echo "Last argument extracted by loop    : $_sa_last_arg_val_extracted"
+    echo "Last argument extracted by position: $_sa_last_arg_by_pos"
     echo "-----------------------------------"
+    # cleanup
+    unset _sa_positionals _sa_sep _sa_pos _sa_all_words _sa_last_arg_numb _sa_last_arg_val_extracted _sa_last_arg_by_pos
 }
 alias info-shell-special-var=info_shell_special_var
 
@@ -238,12 +241,12 @@ __set__ls_options()
     case "$(uname)" in
         'Darwin')
             # -G on macOS means colorize.
-            usrhome_ls_color_flag=-G
+            _sa_usrhome_ls_color_flag=-G
             ;;
         *)
             # -G normally means to not display group info in long display (so we don't use this here)
             # --color=auto activates colors
-            usrhome_ls_color_flag="--color=auto"
+            _sa_usrhome_ls_color_flag="--color=auto"
             ;;
     esac
 }
@@ -253,7 +256,7 @@ lsd()
 {
     __set__ls_options
     if [ -z "$1" ]; then
-        ( ls -d ${usrhome_ls_color_flag} */ ) 2> /dev/null
+        ( ls -d ${_sa_usrhome_ls_color_flag} -- */ ) 2> /dev/null
     elif [ $# -gt 1 ]; then
         echo "ERROR: lsd does not support glob, and more than 1 argument."
         echo "  You provided $# argument."
@@ -261,53 +264,57 @@ lsd()
         echo "  ARG: full or partial directory name."
         return 1
     else
-        ( ls -d ${usrhome_ls_color_flag} $1*/ ) 2> /dev/null
+        ( ls -d ${_sa_usrhome_ls_color_flag} -- "$1*/" ) 2> /dev/null
     fi
-    unset usrhome_ls_color_flag
+    unset _sa_usrhome_ls_color_flag
 }
 
+# Note lsda is not reliable.
+#    I will eventually re-implement it in another language.
 lsda()
 {
     __set__ls_options
     if [ -z "$1" ]; then
-        ( ls -d ${usrhome_ls_color_flag} */ .[^.]*/ ) 2> /dev/null
+        # No argument
+        ( ls -d ${_sa_usrhome_ls_color_flag} -- */ .[^.]*/ ) 2> /dev/null
     elif [ $# -gt 1 ]; then
-        echo "ERROR: lsd does not support glob, and more than 1 argument."
+        # 2 arguments or more: not allowed.
+        echo "ERROR: lsda does not support glob, and more than 1 argument."
         echo "  You provided $# argument"
         echo " Usage: lsda [ARG]"
         echo "  ARG: full or partial directory name."
         return 1
     else
-        if ls -d "$1"*/ > /dev/null 2>&1; then
-            has_reg=1
+        # one argument
+        if ls -d -- "$1" > /dev/null 2>&1; then
+            _sa_has_reg=1
         else
-            has_reg=0
+            _sa_has_reg=0
         fi
-        if ls -d ".$1"*/ > /dev/null 2>&1; then
-            has_hid=1
+        if ls -d ".$1" > /dev/null 2>&1; then
+            _sa_has_hid=1
         else
-            has_hid=0
+            _sa_has_hid=0
         fi
-        # echo "has_reg: $has_reg, has_hid=$has_hid"
-        if [ "$has_reg" = "1" ]; then
-            if [ "$has_hid" = "1" ]; then
-                # has hidden and regular
-                ( ls -d ${usrhome_ls_color_flag} {.$1*/,$1*/} ) 2> /dev/null
+        if [ "$_sa_has_reg" = "1" ]; then
+            if [ "$_sa_has_hid" = "1" ]; then
+                echo "has hidden and regular"
+                ( ls -d ${_sa_usrhome_ls_color_flag} -- ".$1" "$1" ) 2> /dev/null
             else
-                # has regular only
-                ( ls -d ${usrhome_ls_color_flag} $1*/ ) 2> /dev/null
+                echo "has regular only"
+                ( ls -d ${_sa_usrhome_ls_color_flag} -- "$1" ) 2> /dev/null
             fi
         else
-            if [ "$has_hid" = "1" ]; then
+            if [ "$_sa_has_hid" = "1" ]; then
                 # has hidden only
-                ( ls -d ${usrhome_ls_color_flag} .$1*/ ) 2> /dev/null
+                ( ls -d ${_sa_usrhome_ls_color_flag} -- ".$1" ) 2> /dev/null
             else
                 # has nothing
                 return 1
             fi
         fi
     fi
-    unset usrhome_ls_color_flag
+    unset _sa_has_reg _sa_has_hid _sa_usrhome_ls_color_flag
 }
 
 # lsl: list symlinks
