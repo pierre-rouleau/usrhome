@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 14:50:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 14:57:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -237,7 +237,7 @@ esac
 lsd()
 {
     set_ls_options
-    if [ -z $1 ]; then
+    if [ -z "$1" ]; then
         ( ls -d ${usrhome_ls_color_flag} */ ) 2> /dev/null
     elif [ $# -gt 1 ]; then
         echo "ERROR: lsd does not support glob, and more than 1 argument."
@@ -253,7 +253,7 @@ lsd()
 lsda()
 {
     set_ls_options
-    if [ -z $1 ]; then
+    if [ -z "$1" ]; then
         ( ls -d ${usrhome_ls_color_flag} */ .[^.]*/ ) 2> /dev/null
     elif [ $# -gt 1 ]; then
         echo "ERROR: lsd does not support glob, and more than 1 argument."
@@ -322,7 +322,7 @@ lsl()
             ;;
     esac
     if [ -z "$1" ]; then
-        if [[ "$long_ls" = "true" ]]; then
+        if [ "$long_ls" = "true" ]; then
             find . -maxdepth 1 -type l | xargs -I % ls -l %
         else
             find . -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
@@ -336,7 +336,7 @@ lsl()
         echo " Example to list all symlink that start with .bas: : lsl '.bas*' "
         return 1
     else
-        if [[ "$long_ls" = "true" ]]; then
+        if [ "$long_ls" = "true" ]; then
             find . -maxdepth 1 -name "$1" -type l | xargs -I % ls -l %
         else
             find . -maxdepth 1 -name "$1" -type l | sed -e 's|\./||g' | sort | column
