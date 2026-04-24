@@ -3,8 +3,9 @@
 # Purpose   : Set MANPATH to the value of manpath if not already set.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-13 11:20:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 10:33:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
+
 # Module Description
 # ------------------
 #
@@ -12,16 +13,31 @@
 # Source (include) this file inside other sourced files before adding to the
 # MANPATH value.
 #
-# On some system MANPATH is set to an invalid value of ":".  If this is
-# detected, the script considers it invalid and resets it to what manpath
-# identifies.
+# On some system MANPATH is set to an invalid value of ":".
+# In the man utility, a leading or trailing colon in MANPATH tells the system
+# to include the default system manual paths in addition to whatever custom
+# paths you've added.
+#
+# That, however only works for the man utility.  It does not allow other tools
+# to inspect the list of directories holding man files as an explicit set of
+# directories listed inside the value of the MANPATH environment variable
+# does.  This is why the semicolon is removed and replaced by the list printed
+# by the manpath utility.
+#
 #
 # If your system has an extra set of man directories somewhere outside of the
 # standard places, identify them inside the MANPATH_XTRA_BEFORE or
 # MANPATH_XTRA_AFTER variables.  The value of MANPATH_XTRA_BEFORE is
 # pre-pended to the list and the value of MANPATH_XTRA_AFTER is appended to
 # the list.
-
+#
+# Usage:
+#  - Source it with: . "$USRHOME_DIR/ibin/do-extend-manpath"
+#  - To print info : . "$USRHOME_DIR/ibin/do-extend-manpath" verbose
+#
+# To activate the verbose output you may also set the MANPATH_SHOW_IF_MODIFIED
+# environment variable to the value: true
+#
 # ----------------------------------------------------------------------------
 # Code
 # ----
@@ -49,7 +65,7 @@ if [ -n "$MANPATH_EXTRA_AFTER" ]; then
 fi
 
 if [ "$manpath_modified" = "true" ]; then
-    if [ "$MANPATH_SHOW_IF_MODIFIED" = "true" ]; then
+    if [ "$MANPATH_SHOW_IF_MODIFIED" = "true" ] || [ "$1" = "verbose" ]; then
         printf ". MANPATH was modified: use 'showpath MAN' to display its value.\n"
     fi
     export MANPATH
