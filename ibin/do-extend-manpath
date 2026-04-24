@@ -3,7 +3,7 @@
 # Purpose   : Set/extend MANPATH from manpath output; safe to re-source.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 14:19:30 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 15:23:40 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -99,9 +99,13 @@ else
     # Process the directories previously held in the shells' value of MANPATH
     # (now stored in _dxm_manpath) and the new ones identified by
     # _dxm_fresh_manpath.
-    _dmx_both_manpath="${_dxm_manpath}:${_dxm_fresh_manpath}"
+    _dxm_both_manpath="${_dxm_manpath}:${_dxm_fresh_manpath}"
     _dxm_both_manpath="${_dxm_both_manpath#:}"; _dxm_both_manpath="${_dxm_both_manpath%:}"
 
+    # echo "********************************"
+    # echo "MANPATH: $MANPATH"
+    # echo "_dxm_both_manpath : $_dxm_both_manpath"
+    # echo "********************************"
     _dxm_IFS_save="$IFS"
     IFS=':'
 
@@ -111,11 +115,14 @@ else
         case ":${MANPATH}:" in
             *":${_dxm_dir}:"*) ;;          # already present – skip
             *)
+                # echo "** Adding: ${_dxm_dir}"
                 MANPATH="${MANPATH:+${MANPATH}:}${_dxm_dir}"
                 ;;
         esac
     done
     IFS="$_dxm_IFS_save"
+    # echo "********************************"
+
 fi
 
 # --- 3. Prepend MANPATH_EXTRA_BEFORE (idempotent, component by component).
@@ -166,7 +173,7 @@ if [ "$_dxm_manpath" != "$MANPATH" ]; then
 fi
 
 # --- 6. Clean up temporary variables so they don't leak into the environment.
-unset _dxm_manpath _dxm_fresh_manpath _dmx_both_manpath _dxm_IFS_save _dxm_dir _dxm_rev
+unset _dxm_manpath _dxm_fresh_manpath _dxm_both_manpath _dxm_IFS_save _dxm_dir _dxm_rev
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
