@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 09:27:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 08:46:08 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -74,7 +74,7 @@ if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
 /usr/local/opt/m4/bin
                 PATH=${usrhome_homebrew_path}:$PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
-                    usrhome_printf "- Using Homebrew tools from 'usr/local and /usr/local/Cellar\n"
+                    usrhome_printf "- Using Homebrew tools from /usr/local and /usr/local/Cellar\n"
                 fi
                 # Extend MANPATH
                 #   with new man directories that may be
