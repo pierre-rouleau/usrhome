@@ -23,7 +23,7 @@ USRHOME -- Easily Clonable Unix Shell Configuration & Tools
    :target: #how-to-set-it-up
 
 :Author:  Pierre Rouleau
-:Copyright: © 2024, 2025, Pierre Rouleau
+:Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 .. ---------------------------------------------------------------------------
 
@@ -678,7 +678,6 @@ USRHOME_DIR_LOG                    Directory where your own log files and notes 
                                    Change current directory to this directory with the ``cdlog``
                                    command.
 
-.. ---------------------------------------------------------------------------
 USRHOME_DIR_PUBLIC                 The root directory where your public
                                    development repositories are stored.
 
@@ -716,8 +715,6 @@ USRHOME_DIR_CONTRACT               The root directory that holds proprietary con
                                    - Used by used by USRHOME `Directory Navigation`_.
                                    - Change current directory to this directory with the ``cd-contract``
                                      command.
-
-.. ---------------------------------------------------------------------------
 
 USRHOME_DIR_TMP                    User local temporary directory.
                                    Change current directory to this directory with the ``cdtmp``
@@ -1129,6 +1126,19 @@ USRHOME Command Name               Description
                                    includes hidden directories.
 
                                    - NAME: optional name or first letters of the names.
+
+``lsdd [OPTION] [PATTERN]``        List directories.  Behaves as ``lsd`` by
+                                   default but supports several command line
+                                   options like ``-l``, ``-a``, ``-t`` and
+                                   ``-r`` which can be concatenated.  Prints
+                                   help with either ``-h`` or ``--help``.
+                                   Also supports glob entry and glob patterns
+                                   (which then needs to be passed inside
+                                   single quotes).
+
+                                   - Better implementation than ``lsda`` but
+                                     implemented as a `Pike`_ script; it
+                                     requires Pike installed.
 
 ``lsl [-l] ['NAME']``              List symbolic links in current directory.
 
@@ -2445,6 +2455,7 @@ Thanks!
 .. _usrhome/ibin/envfor-usrhome:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-usrhome
 .. _usrhome/ibin/envfor-homebrew:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-homebrew
 .. _conceptual directories:                            `Cd to Conceptual Directories`_
+.. _Pike:                                              https://en.wikipedia.org/wiki/Pike_(programming_language)
 
 
 .. ---------------------------------------------------------------------------
