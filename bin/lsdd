@@ -1,0 +1,126 @@
+#!/usr/bin/env pike
+// PIKE FILE: lsdd
+//
+// Purpose   : Print a list of directories.
+// Created   : Friday, April 24 2026.
+// Author    : Pierre Rouleau <prouleau001@gmail.com>
+// Time-stamp: <2026-04-24 20:02:16 EDT, updated by Pierre Rouleau>
+// -----------------------------------------------------------------------------
+// Program Description
+// -------------------
+//
+//  List directories.  Replaces lsd and lsda scripts and does it better.
+
+
+// -----------------------------------------------------------------------------
+// Dependencies
+// ------------
+//
+// Pike must be installed.
+// See https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-pike.pdf
+
+// -----------------------------------------------------------------------------
+// Code
+// ----
+//
+//
+
+void print_help(string prog_name) {
+    array(string) path_parts = prog_name / "/";
+    string name = path_parts[sizeof(path_parts)-1];
+
+    write("%s -- list directories\n" +
+          " Usage: %s [OPTIONS] [PATTERN]\n" +
+          " Options:\n" +
+          "   -h, --help    Show this help message\n" +
+          "   -a            Do not ignore entries starting with .\n" +
+          "   -l            Use a long listing format\n\n", name, name);
+}
+
+string format_mode(int mode) {
+    string s = "d";
+    string chars = "rwxrwxrwx";
+    for (int i = 0; i < 9; i++) {
+        s += (mode & (1 << (8 - i))) ? chars[i..i] : "-";
+    }
+    return s;
+}
+
+int main(int argc, array(string) argv)
+{
+    bool long_format = false;
+    bool show_all = false;
+    string pattern = "*";
+
+    // Parse arguments
+    for(int i = 1; i < argc; i++) {
+        if (argv[i] == "-h" || argv[i] == "--help") {
+            print_help(argv[0]);
+            return 0;
+        } else if (argv[i] == "-l") {
+            long_format = true;
+        } else if (argv[i] == "-a") {
+            show_all = true;
+        } else {
+            pattern = argv[i];
+        }
+    }
+
+    string COLOR_DIR = "\e[0;34m";
+    string COLOR_RESET = "\e[0m";
+
+    array(string) all_entries = get_dir(".");
+    array(string) matched_entries = glob(pattern, all_entries);
+    array(string) dirs = ({});
+
+    foreach(matched_entries, string entry) {
+        // Skip current and parent pointers always
+        if (entry == "." || entry == "..") continue;
+
+        // If -a is NOT set, skip names starting with "."
+        if (!show_all && has_prefix(entry, ".")) continue;
+
+        Stdio.Stat info = file_stat(entry);
+        if (info && info->isdir)
+            dirs += ({ entry });
+    }
+
+    // Return 1 if no directories were found
+    if (!sizeof(dirs)) {
+        return 1;
+    }
+
+    dirs = sort(dirs);
+
+    if (long_format) {
+        foreach(dirs, string entry) {
+            Stdio.Stat info = file_stat(entry);
+            string mode = format_mode(info->mode);
+            write("%s %8d %s %s%s/%s\n",
+                mode,
+                info->size,
+                ctime(info->mtime)[4..15],
+                COLOR_DIR, entry, COLOR_RESET);
+        }
+    } else {
+        int num_items = sizeof(dirs);
+        int num_cols = 4;
+        int num_rows = (num_items + num_cols - 1) / num_cols;
+
+        int max_len = 0;
+        foreach(dirs, string d) if (sizeof(d) > max_len) max_len = sizeof(d);
+        int col_width = max_len + 3;
+
+        for (int row = 0; row < num_rows; row++) {
+            for (int col = 0; col < num_cols; col++) {
+                int index = row + (col * num_rows);
+                if (index < num_items)
+                    write(COLOR_DIR + "%-" + col_width + "s" + COLOR_RESET, dirs[index] + "/");
+            }
+            write("\n");
+        }
+    }
+    return 0;
+}
+
+// -----------------------------------------------------------------------------

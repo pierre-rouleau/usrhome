@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 19:29:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 19:59:18 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -92,14 +92,14 @@ info_shell_special_var()
     _sa_last_arg_numb="$#"
     _sa_last_arg_val_extracted=
     _sa_last_arg_by_pos=
-    for word in "$@"; do
-        echo "--- At position ${_sa_pos}, arg is: $word"
-        _sa_all_words="${_sa_all_words}${_sa_sep}\"${word}\""
-        _sa_positionals="${_sa_positionals}${_sa_sep}\$${_sa_pos}='${word}'"
+    for _sa_word in "$@"; do
+        echo "--- At position ${_sa_pos}, arg is: $_sa_word"
+        _sa_all_words="${_sa_all_words}${_sa_sep}\"${_sa_word}\""
+        _sa_positionals="${_sa_positionals}${_sa_sep}\$${_sa_pos}='${_sa_word}'"
         _sa_sep=", "
-        _sa_last_arg_val_extracted="${word}"
+        _sa_last_arg_val_extracted="${_sa_word}"
        if [ "$#" -eq "$_sa_pos" ]; then
-           _sa_last_arg_by_pos="$word"
+           _sa_last_arg_by_pos="$_sa_word"
         fi
         _sa_pos=$(( _sa_pos + 1))
     done
@@ -153,7 +153,7 @@ shown within single quotes.
     echo "Last argument extracted by position: $_sa_last_arg_by_pos"
     echo "-----------------------------------"
     # cleanup
-    unset _sa_positionals _sa_sep _sa_pos _sa_all_words _sa_last_arg_numb _sa_last_arg_val_extracted _sa_last_arg_by_pos
+    unset _sa_positionals _sa_sep _sa_pos _sa_all_words _sa_last_arg_numb _sa_last_arg_val_extracted _sa_last_arg_by_pos _sa_word
 }
 alias info-shell-special-var=info_shell_special_var
 
@@ -264,7 +264,8 @@ lsd()
         echo "  ARG: full or partial directory name."
         return 1
     else
-        ( ls -d ${_sa_usrhome_ls_color_flag} -- "$1*/" ) 2> /dev/null
+        # shellcheck disable=SC2086 # don't quote to allow expansion of globs
+        ( ls -d ${_sa_usrhome_ls_color_flag} -- $1*/ ) 2> /dev/null
     fi
     unset _sa_usrhome_ls_color_flag
 }
