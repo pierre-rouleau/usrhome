@@ -4,7 +4,7 @@
 // Purpose   : Print a list of directories.
 // Created   : Friday, April 24 2026.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-25 12:40:42 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2026-04-25 13:10:15 EDT, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Program Description
 // -------------------
@@ -174,7 +174,15 @@ int main(int argc, array(string) argv)
     // - Store the final list of names to print in `dirs'.
     array(string) dirs = directory_name_list(inputs, show_all);
     if (!sizeof(dirs)) {
-        werror("No directory match found!\n", );
+        // Don't list requested FILE argument: the shell expanded globs and that
+        // could be a large list of file/directory names.  Just say nothing
+        // matched but remind user about the -a option if it was not used.
+        string extra_msg = "";
+        if (!show_all)
+        {
+            extra_msg = " Use -a to list hidden files.";
+        }
+        werror("lsdd: no directory match found!%s\n", extra_msg);
         return 1;
     }
 
