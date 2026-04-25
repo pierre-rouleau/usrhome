@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-25 16:05:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-25 16:23:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -86,11 +86,15 @@ usrhome_printf()
 usrhome_print_error()
 {
     # Arg: $1
-    # Print test of Arg after **ERROR: prefix in red.
-    _usrhome_RED='\033[1;31m' # Bold red
-    _usrhome_NC='\033[0m' # No Color
-    printf "${_usrhome_RED}** ERROR: %s${_usrhome_NC}\n" "$1"
-    unset _usrhome_RED _usrhome_NC
+    # Print Arg text after **ERROR: prefix in red unless TERM=dumb
+    if [ "$TERM" = "dumb" ]; then
+        printf "** ERROR: %s\n" "$1" >&2
+    else
+        _usrhome_RED='\033[1;31m' # Bold red
+        _usrhome_NC='\033[0m' # No Color
+        printf "${_usrhome_RED}** ERROR: %s${_usrhome_NC}\n" "$1" >&2
+        unset _usrhome_RED _usrhome_NC
+    fi
 }
 
 

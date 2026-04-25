@@ -1129,7 +1129,7 @@ USRHOME Command Name               Description
                                    - NAME: optional name or first letters of the names.
 
                                    - If the ``USRHOME_USE_PIKE`` environment variable
-                                     is defined inside your ``$USRCFG/setfor-all-config``
+                                     is set to 1 inside your ``$USRCFG/setfor-all-config``
                                      file, lsd is an alias to the ``lsdd`` tool utility
                                      described below and provides many more features.
 
@@ -1138,7 +1138,7 @@ USRHOME Command Name               Description
 
                                    - NAME: optional name or first letters of the names.
                                    - If the ``USRHOME_USE_PIKE`` environment variable
-                                     is defined inside your ``$USRCFG/setfor-all-config``
+                                     is set to 1 inside your ``$USRCFG/setfor-all-config``
                                      file, lsda is an alias to the ``lsdd -a`` tool utility
                                      described below and provides many more features.
 
