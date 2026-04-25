@@ -4,7 +4,7 @@
 // Purpose   : Print a list of directories.
 // Created   : Friday, April 24 2026.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-24 20:24:28 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2026-04-24 23:24:28 EDT, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Program Description
 // -------------------
@@ -40,8 +40,8 @@ void print_help(string prog_name) {
           "   -r            Reverse the order of the sort\n\n", name, name);
 }
 
-string format_mode(int mode) {
-    string s = "d";
+string format_mode(int mode, bool is_link) {
+    string s = is_link ? "l" : "d";
     string chars = "rwxrwxrwx";
     for (int i = 0; i < 9; i++) {
         s += (mode & (1 << (8 - i))) ? chars[i..i] : "-";
@@ -78,13 +78,13 @@ int main(int argc, array(string) argv)
         }
     }
 
-    // --- PIPE DETECTION HERE ---
     string COLOR_DIR = "";
+    string COLOR_LNK = "";
     string COLOR_RESET = "";
 
-    // Check if stdout is a TTY (terminal)
     if (Stdio.stdout->isatty()) {
-        COLOR_DIR = "\e[0;34m";
+        COLOR_DIR = "\e[0;34m"; // Blue
+        COLOR_LNK = "\e[0;35m"; // Magenta
         COLOR_RESET = "\e[0m";
     }
 
@@ -98,34 +98,38 @@ int main(int argc, array(string) argv)
         if (entry == "." || entry == "..") continue;
         if (!show_all && has_prefix(entry, ".")) continue;
 
-        Stdio.Stat info = file_stat(entry);
-        if (info && info->isdir)
+        // Use Lstat so we see the link itself, not the target it points to
+        Stdio.Stat info = file_stat(entry, 1);
+        if (info && (info->isdir || info->islnk)) {
+            // If it's a link, verify it points to a directory
+            if (info->islnk) {
+                Stdio.Stat target = file_stat(entry);
+                if (!target || !target->isdir) continue;
+            }
             dirs += ({ entry });
+        }
     }
 
     if (!sizeof(dirs)) return 1;
 
     if (sort_time) {
         array(int) times = ({});
-        foreach(dirs, string d) {
-            times += ({ file_stat(d)->mtime });
-        }
+        foreach(dirs, string d) times += ({ file_stat(d, 1)->mtime });
         sort(times, dirs);
         dirs = reverse(dirs);
     } else {
         dirs = sort(dirs);
     }
 
-    if (reverse_sort) {
-        dirs = reverse(dirs);
-    }
+    if (reverse_sort) dirs = reverse(dirs);
 
     if (long_format) {
         foreach(dirs, string entry) {
-            Stdio.Stat info = file_stat(entry);
+            Stdio.Stat info = file_stat(entry, 1);
+            string color = info->islnk ? COLOR_LNK : COLOR_DIR;
             write("%s %8d %s %s%s/%s\n",
-                format_mode(info->mode), info->size,
-                ctime(info->mtime)[4..15], COLOR_DIR, entry, COLOR_RESET);
+                format_mode(info->mode, info->islnk), info->size,
+                ctime(info->mtime)[4..15], color, entry, COLOR_RESET);
         }
     } else {
         int num_items = sizeof(dirs);
@@ -138,8 +142,12 @@ int main(int argc, array(string) argv)
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
                 int index = row + (col * num_rows);
-                if (index < num_items)
-                    write(COLOR_DIR + "%-" + col_width + "s" + COLOR_RESET, dirs[index] + "/");
+                if (index < num_items) {
+                    string entry = dirs[index];
+                    Stdio.Stat info = file_stat(entry, 1);
+                    string color = info->islnk ? COLOR_LNK : COLOR_DIR;
+                    write(color + "%-" + col_width + "s" + COLOR_RESET, entry + "/");
+                }
             }
             write("\n");
         }
