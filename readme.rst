@@ -1128,10 +1128,20 @@ USRHOME Command Name               Description
 
                                    - NAME: optional name or first letters of the names.
 
+                                   - If the ``USRHOME_USE_PIKE`` environment variable
+                                     is set to 1 inside your ``$USRCFG/setfor-all-config``
+                                     file, lsd is an alias to the ``lsdd`` tool utility
+                                     described below and provides many more features.
+
 ``lsda [NAME]``                    List sub-directories in current directory,
                                    includes hidden directories.
 
                                    - NAME: optional name or first letters of the names.
+                                   - If the ``USRHOME_USE_PIKE`` environment variable
+                                     is set to 1 inside your ``$USRCFG/setfor-all-config``
+                                     file, lsda is an alias to the ``lsdd -a`` tool utility
+                                     described below and provides many more features.
+
 
 ``lsdd [OPTION] [FILE...]``        List directories only.
 

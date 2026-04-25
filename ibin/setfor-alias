@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 19:59:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-25 16:23:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -82,6 +82,21 @@ usrhome_printf()
         printf -- "$@"
     fi
 }
+
+usrhome_print_error()
+{
+    # Arg: $1
+    # Print Arg text after **ERROR: prefix in red unless TERM=dumb
+    if [ "$TERM" = "dumb" ]; then
+        printf "** ERROR: %s\n" "$1" >&2
+    else
+        _usrhome_RED='\033[1;31m' # Bold red
+        _usrhome_NC='\033[0m' # No Color
+        printf "${_usrhome_RED}** ERROR: %s${_usrhome_NC}\n" "$1" >&2
+        unset _usrhome_RED _usrhome_NC
+    fi
+}
+
 
 info_shell_special_var()
 {
@@ -251,72 +266,78 @@ __set__ls_options()
     esac
 }
 
+if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
 # List directories
-lsd()
-{
-    __set__ls_options
-    if [ -z "$1" ]; then
-        ( ls -d ${_sa_usrhome_ls_color_flag} -- */ ) 2> /dev/null
-    elif [ $# -gt 1 ]; then
-        echo "ERROR: lsd does not support glob, and more than 1 argument."
-        echo "  You provided $# argument."
-        echo " Usage: lsd [ARG]"
-        echo "  ARG: full or partial directory name."
-        return 1
-    else
-        # shellcheck disable=SC2086 # don't quote to allow expansion of globs
-        ( ls -d ${_sa_usrhome_ls_color_flag} -- $1*/ ) 2> /dev/null
-    fi
-    unset _sa_usrhome_ls_color_flag
-}
+    lsd()
+    {
+        __set__ls_options
+        if [ -z "$1" ]; then
+            ( ls -d ${_sa_usrhome_ls_color_flag} -- */ ) 2> /dev/null
+        elif [ $# -gt 1 ]; then
+            echo "ERROR: lsd does not support glob, and more than 1 argument."
+            echo "  You provided $# argument."
+            echo " Usage: lsd [ARG]"
+            echo "  ARG: full or partial directory name."
+            return 1
+        else
+            # shellcheck disable=SC2086 # don't quote to allow expansion of globs
+            ( ls -d ${_sa_usrhome_ls_color_flag} -- $1*/ ) 2> /dev/null
+        fi
+        unset _sa_usrhome_ls_color_flag
+    }
 
-# Note lsda is not reliable.
-#    I will eventually re-implement it in another language.
-lsda()
-{
-    __set__ls_options
-    if [ -z "$1" ]; then
-        # No argument
-        ( ls -d ${_sa_usrhome_ls_color_flag} -- */ .[^.]*/ ) 2> /dev/null
-    elif [ $# -gt 1 ]; then
-        # 2 arguments or more: not allowed.
-        echo "ERROR: lsda does not support glob, and more than 1 argument."
-        echo "  You provided $# argument"
-        echo " Usage: lsda [ARG]"
-        echo "  ARG: full or partial directory name."
-        return 1
-    else
-        # one argument
-        if ls -d -- "$1" > /dev/null 2>&1; then
-            _sa_has_reg=1
+    # Note lsda is not reliable.
+    #    I will eventually re-implement it in another language.
+    lsda()
+    {
+        __set__ls_options
+        if [ -z "$1" ]; then
+            # No argument
+            ( ls -d ${_sa_usrhome_ls_color_flag} -- */ .[^.]*/ ) 2> /dev/null
+        elif [ $# -gt 1 ]; then
+            # 2 arguments or more: not allowed.
+            echo "ERROR: lsda does not support glob, and more than 1 argument."
+            echo "  You provided $# argument"
+            echo " Usage: lsda [ARG]"
+            echo "  ARG: full or partial directory name."
+            return 1
         else
-            _sa_has_reg=0
-        fi
-        if ls -d ".$1" > /dev/null 2>&1; then
-            _sa_has_hid=1
-        else
-            _sa_has_hid=0
-        fi
-        if [ "$_sa_has_reg" = "1" ]; then
-            if [ "$_sa_has_hid" = "1" ]; then
-                echo "has hidden and regular"
-                ( ls -d ${_sa_usrhome_ls_color_flag} -- ".$1" "$1" ) 2> /dev/null
+            # one argument
+            if ls -d -- "$1" > /dev/null 2>&1; then
+                _sa_has_reg=1
             else
-                echo "has regular only"
-                ( ls -d ${_sa_usrhome_ls_color_flag} -- "$1" ) 2> /dev/null
+                _sa_has_reg=0
             fi
-        else
-            if [ "$_sa_has_hid" = "1" ]; then
-                # has hidden only
-                ( ls -d ${_sa_usrhome_ls_color_flag} -- ".$1" ) 2> /dev/null
+            if ls -d ".$1" > /dev/null 2>&1; then
+                _sa_has_hid=1
             else
-                # has nothing
-                return 1
+                _sa_has_hid=0
+            fi
+            if [ "$_sa_has_reg" = "1" ]; then
+                if [ "$_sa_has_hid" = "1" ]; then
+                    echo "has hidden and regular"
+                    ( ls -d ${_sa_usrhome_ls_color_flag} -- ".$1" "$1" ) 2> /dev/null
+                else
+                    echo "has regular only"
+                    ( ls -d ${_sa_usrhome_ls_color_flag} -- "$1" ) 2> /dev/null
+                fi
+            else
+                if [ "$_sa_has_hid" = "1" ]; then
+                    # has hidden only
+                    ( ls -d ${_sa_usrhome_ls_color_flag} -- ".$1" ) 2> /dev/null
+                else
+                    # has nothing
+                    return 1
+                fi
             fi
         fi
-    fi
-    unset _sa_has_reg _sa_has_hid _sa_usrhome_ls_color_flag
-}
+        unset _sa_has_reg _sa_has_hid _sa_usrhome_ls_color_flag
+    }
+elif [ "$USRHOME_USE_PIKE" = "1" ]; then
+    # Topic: Use Pike
+    alias lsd=lsdd
+    alias lsda='lsdd -a'
+fi
 
 # lsl: list symlinks
 lsl()
@@ -377,7 +398,7 @@ lsl()
 if [ "${os_name}" = "Darwin" ]; then
     info__rosetta2()
     {
-        printf "Rosetta 2 is %sinstalled.\n" $(/usr/bin/pgrep -q oahd && echo "" || echo "not ")
+        printf "Rosetta 2 is %sinstalled.\n" "$(/usr/bin/pgrep -q oahd && echo "" || echo "not ")"
         printf " More info is available at:\n"
         printf "  https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/\n"
     }
