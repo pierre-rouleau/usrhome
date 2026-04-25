@@ -4,7 +4,7 @@
 // Purpose   : Print a list of directories.
 // Created   : Friday, April 24 2026.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-25 11:00:08 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2026-04-25 12:23:51 EDT, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Program Description
 // -------------------
@@ -48,16 +48,15 @@ void print_help(string prog_name) {
 // array of strings.
 //
 // Treat the list of arguments as potential names; retain only names that are
-// directories or symlink to directory.
-//
+// directories or symlink to directory.  Retain hidden directories only when
+// the -a option is set.
 array(string) directory_name_list(array(string) inputs, bool show_all) {
     array(string) dirs = ({});
 
     foreach(inputs, string entry) {
         // Skip hidden if -a isn't set (unless explicitly named in argv)
-        if (!show_all && has_prefix(entry, ".") && sizeof(inputs) > 1) {
-             // We allow it if it's the only arg, but skip in expanded globs
-             // This mimics standard 'ls' behaviour
+        if (!show_all && has_prefix(entry, ".") ) {
+            continue;
         }
 
         // Use lstat (1) to check the entry itself

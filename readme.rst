@@ -1131,7 +1131,7 @@ USRHOME Command Name               Description
 
                                    - FILE is either a file name or glob.
                                    - Either can use an absolute or relative path,
-                                     where ~ identifying users' home.
+                                     where ~ identifies the users' home directory.
                                    - Multiple FILE /globs can be specified.
                                    - Only directories or symlink to directories
                                      identified  from the FILE(s) are listed.
@@ -1146,8 +1146,8 @@ USRHOME Command Name               Description
                                    `lsdd`_ is implemented as a `Pike`_ script;
                                    to use it you must have `Pike`_ installed.
                                    Pike scripts are compiled then executed but the
-                                   compilation is fast.  To use it simply the command
-                                   on the shell.
+                                   compilation is fast.  To use it simply type the
+                                   command on the shell.
                                    It is a much better implementation than the shell
                                    scripts lsd and lsda.
 
