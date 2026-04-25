@@ -1132,9 +1132,8 @@ USRHOME Command Name               Description
                                    options like ``-l``, ``-a``, ``-t`` and
                                    ``-r`` which can be concatenated.  Prints
                                    help with either ``-h`` or ``--help``.
-                                   Also supports glob entry and glob patterns
-                                   (which then needs to be passed inside
-                                   single quotes).
+                                   The PATTERN can be a glob pattern
+                                   (pass them inside single quotes).
 
                                    - Better implementation than ``lsda`` but
                                      implemented as a `Pike`_ script; it
