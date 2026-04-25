@@ -31,9 +31,15 @@ Introduction
 ============
 
 USRHOME is Unix shell configuration project that provides a set of shell
-script tools.  It provides tools to *instrument* shells: specialize shells to
-add support for various tools, while leaving the main login shell intact if
-needed.
+script tools.  It provides:
+
+- Tools to *instrument* shells: specialize shells to
+  add support for various tools, while leaving the main login shell intact if
+  needed.
+- Several shell script command line tools that work on the Z shell and on Bash.
+  Most scripts are POSIX compliant and will work in other shell types.
+- Some scripts are written in `AWK`_ and in `Pike`_.
+- Several of these scripts are useful when using the PEL_ Emacs system.
 
 With USRHOME you can instrument multiple shells independently.
 Once the rules are set (in terms of sourced scripts) you can quickly open a
@@ -1127,17 +1133,29 @@ USRHOME Command Name               Description
 
                                    - NAME: optional name or first letters of the names.
 
-``lsdd [OPTION] [PATTERN]``        List directories.  Behaves as ``lsd`` by
-                                   default but supports several command line
-                                   options like ``-l``, ``-a``, ``-t`` and
-                                   ``-r`` which can be concatenated.  Prints
-                                   help with either ``-h`` or ``--help``.
-                                   The PATTERN can be a glob pattern
-                                   (pass them inside single quotes).
+``lsdd [OPTION] [FILE...]``        List directories only.
 
-                                   - Better implementation than ``lsda`` but
-                                     implemented as a `Pike`_ script; it
-                                     requires Pike installed.
+                                   - FILE is either a file name or glob.
+                                   - Either can use an absolute or relative path,
+                                     where ~ identifies the users' home directory.
+                                   - Multiple FILE /globs can be specified.
+                                   - Only directories or symlink to directories
+                                     identified  from the FILE(s) are listed.
+                                   - If no FILE is specified ``lsdd`` lists all
+                                     the directories in the current working directory.
+                                   - Hidden directories are not listed unless
+                                     the ``-a`` option is specified.
+                                   - The short OPTIONS can be concatenated
+                                     (as in ``-lart``) or passed separately
+                                     (as in ``-l -a -r -t``).
+
+                                   `lsdd`_ is implemented as a `Pike`_ script;
+                                   to use it you must have `Pike`_ installed.
+                                   Pike scripts are compiled then executed but the
+                                   compilation is fast.  To use it simply type the
+                                   command on the shell.
+                                   It is a much better implementation than the shell
+                                   scripts lsd and lsda.
 
 ``lsl [-l] ['NAME']``              List symbolic links in current directory.
 
@@ -2455,6 +2473,8 @@ Thanks!
 .. _usrhome/ibin/envfor-homebrew:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-homebrew
 .. _conceptual directories:                            `Cd to Conceptual Directories`_
 .. _Pike:                                              https://en.wikipedia.org/wiki/Pike_(programming_language)
+.. _lsdd:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/lsdd
+.. _AWK:                                               https://en.wikipedia.org/wiki/AWK
 
 
 .. ---------------------------------------------------------------------------

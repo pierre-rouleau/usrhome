@@ -4,7 +4,7 @@
 // Purpose   : Print a list of directories.
 // Created   : Friday, April 24 2026.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-24 20:24:28 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2026-04-25 13:10:15 EDT, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Program Description
 // -------------------
@@ -30,8 +30,12 @@ void print_help(string prog_name) {
     string name = path_parts[sizeof(path_parts)-1];
 
     write("%s -- list directories\n" +
-          " Usage: %s [OPTIONS] [PATTERN]\n" +
-          " PATTERN must be single quoted.\n" +
+          " Usage: %s [OPTIONS] [FILE...]\n" +
+          " FILE: a list of files or directories, glob supported.\n" +
+          "       Only directories or symlinks to directory\n" +
+          "       found in this list are printed.\n" +
+          "       Each can also specify a directory (absolute or relative)\n" +
+          "       If none is specified, the current working directory is used.\n" +
           " Options:\n" +
           "   -h, --help    Show this help message\n" +
           "   -a            Do not ignore entries starting with .\n" +
@@ -40,8 +44,79 @@ void print_help(string prog_name) {
           "   -r            Reverse the order of the sort\n\n", name, name);
 }
 
-string format_mode(int mode) {
-    string s = "d";
+// Identify the directory names from the arguments and return it inside an
+// array of strings.
+//
+// Treat the list of arguments as potential names; retain only names that are
+// directories or symlink to directory.  Retain hidden directories only when
+// the -a option is set.
+array(string) directory_name_list(array(string) inputs, bool show_all) {
+    array(string) dirs = ({});
+
+    foreach(inputs, string entry) {
+        // Skip hidden if -a isn't set (unless explicitly named in argv)
+        if (!show_all && has_prefix(entry, ".") ) {
+            continue;
+        }
+
+        // Use lstat (1) to check the entry itself
+        Stdio.Stat info = file_stat(entry, 1);
+        if (info && (info->isdir || info->islnk)) {
+            // If it's a link, ensure it points to a directory
+            if (info->islnk) {
+                Stdio.Stat target = file_stat(entry);
+                if (!target || !target->isdir) continue;
+            }
+            dirs += ({ entry });
+        }
+    }
+    return dirs;
+}
+
+// Detect terminal width and return it.
+int terminal_width()
+{
+    int default_width = 80;
+
+    // 1. Check environment variable (fastest)
+    string env_cols = getenv("COLUMNS");
+    if (env_cols && (int)env_cols > 0) {
+        return (int)env_cols;
+    }
+
+    // 2. Try the 'stty' command
+    catch {
+        mapping res = Process.run(({ "stty", "size" }));
+        if (res->stdout) {
+        // write("****stty size output: %s\n", res->stdout);
+            array(string) parts = res->stdout / " ";
+            if (sizeof(parts) >= 2 && (int)parts[1] > 0) {
+                return (int)parts[1];
+            }
+        }
+    };
+
+    // 3. Query the TTY device directly using stty
+    // This works even if stdout is piped because it talks to /dev/tty
+    catch {
+        mapping res = Process.run(({ "sh", "-c", "stty size < /dev/tty" }));
+        if (res->stdout) {
+            // write("*** stty size output: %s\n", res->stdout);
+            // stty size returns "rows cols", e.g., "40 120"
+            array(string) parts = res->stdout / " ";
+            if (sizeof(parts) >= 2) {
+                int cols = (int)parts[1];
+                if (cols > 0) return cols;
+            }
+        }
+    };
+
+    return default_width;
+}
+
+// Return long mode format string.
+string format_mode(int mode, bool is_link) {
+    string s = is_link ? "l" : "d";
     string chars = "rwxrwxrwx";
     for (int i = 0; i < 9; i++) {
         s += (mode & (1 << (8 - i))) ? chars[i..i] : "-";
@@ -49,14 +124,16 @@ string format_mode(int mode) {
     return s;
 }
 
+// Program entry point.
 int main(int argc, array(string) argv)
 {
-    bool long_format = false;
-    bool show_all = false;
-    bool sort_time = false;
-    bool reverse_sort = false;
-    string pattern = "*";
+    bool long_format     = false;
+    bool show_all        = false;
+    bool sort_time       = false;
+    bool reverse_sort    = false;
+    array(string) inputs = ({});
 
+    // Process command line options
     for(int i = 1; i < argc; i++) {
         if (argv[i] == "--help") {
             print_help(argv[0]);
@@ -67,79 +144,101 @@ int main(int argc, array(string) argv)
                 string flag = sprintf("%c", char_code);
                 switch(flag) {
                     case "h": print_help(argv[0]); return 0;
-                    case "l": long_format = true; break;
-                    case "a": show_all = true; break;
-                    case "t": sort_time = true; break;
+                    case "l": long_format  = true; break;
+                    case "a": show_all     = true; break;
+                    case "t": sort_time    = true; break;
                     case "r": reverse_sort = true; break;
                 }
             }
         } else {
-            pattern = argv[i];
+            inputs += ({ argv[i] });
         }
     }
 
-    // --- PIPE DETECTION HERE ---
+    // Identify inputs: the name of the directories/symlinks to directory to
+    // print.
+    //
+    // - Default to everything in current dir if no paths provided.
+    if (!sizeof(inputs)) {
+        array(string) entries = get_dir(".");
+        // Apply hidden filter to default get_dir results
+        if (!show_all) {
+            foreach(entries, string e)
+                if (!has_prefix(e, ".")) inputs += ({ e });
+        } else {
+            inputs = entries;
+        }
+    }
+    //
+    // - Filter directories further as identified by the command line arguments.
+    // - Store the final list of names to print in `dirs'.
+    array(string) dirs = directory_name_list(inputs, show_all);
+    if (!sizeof(dirs)) {
+        // Don't list requested FILE argument: the shell expanded globs and that
+        // could be a large list of file/directory names.  Just say nothing
+        // matched but remind user about the -a option if it was not used.
+        string extra_msg = "";
+        if (!show_all)
+        {
+            extra_msg = " Use -a to list hidden files.";
+        }
+        werror("lsdd: no directory match found!%s\n", extra_msg);
+        return 1;
+    }
+
+    // Identify colors and width: No colors and 80 columns for pipes.
     string COLOR_DIR = "";
+    string COLOR_LNK = "";
     string COLOR_RESET = "";
-
-    // Check if stdout is a TTY (terminal)
+    int term_width = 80;
     if (Stdio.stdout->isatty()) {
-        COLOR_DIR = "\e[0;34m";
+        COLOR_DIR = "\e[0;34m"; // blue
+        COLOR_LNK = "\e[0;35m"; // magenta
         COLOR_RESET = "\e[0m";
+        term_width = terminal_width();
     }
 
-    array(string) all_entries = get_dir(".");
-    if (!all_entries) return 1;
-
-    array(string) matched_entries = glob(pattern, all_entries);
-    array(string) dirs = ({});
-
-    foreach(matched_entries, string entry) {
-        if (entry == "." || entry == "..") continue;
-        if (!show_all && has_prefix(entry, ".")) continue;
-
-        Stdio.Stat info = file_stat(entry);
-        if (info && info->isdir)
-            dirs += ({ entry });
-    }
-
-    if (!sizeof(dirs)) return 1;
-
+    // Sort directory names in order of directory time or their names
     if (sort_time) {
         array(int) times = ({});
-        foreach(dirs, string d) {
-            times += ({ file_stat(d)->mtime });
-        }
+        foreach(dirs, string d) times += ({ file_stat(d, 1)->mtime });
         sort(times, dirs);
         dirs = reverse(dirs);
     } else {
         dirs = sort(dirs);
     }
+    if (reverse_sort) dirs = reverse(dirs);
 
-    if (reverse_sort) {
-        dirs = reverse(dirs);
-    }
-
+    // Print list in the requested format
     if (long_format) {
         foreach(dirs, string entry) {
-            Stdio.Stat info = file_stat(entry);
+            Stdio.Stat info = file_stat(entry, 1);
+            string color = info->islnk ? COLOR_LNK : COLOR_DIR;
             write("%s %8d %s %s%s/%s\n",
-                format_mode(info->mode), info->size,
-                ctime(info->mtime)[4..15], COLOR_DIR, entry, COLOR_RESET);
+                format_mode(info->mode, info->islnk), info->size,
+                ctime(info->mtime)[4..15], color, entry, COLOR_RESET);
         }
     } else {
-        int num_items = sizeof(dirs);
-        int num_cols = 4;
-        int num_rows = (num_items + num_cols - 1) / num_cols;
         int max_len = 0;
         foreach(dirs, string d) if (sizeof(d) > max_len) max_len = sizeof(d);
-        int col_width = max_len + 3;
+        int col_width = max_len + 3; // directory name + '/' + 2 spaces padding
+
+        // Dynamically calculate columns based on terminal width
+        int num_cols = term_width / col_width;
+        if (num_cols < 1) num_cols = 1;
+
+        int num_items = sizeof(dirs);
+        int num_rows = (num_items + num_cols - 1) / num_cols;
 
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
                 int index = row + (col * num_rows);
-                if (index < num_items)
-                    write(COLOR_DIR + "%-" + col_width + "s" + COLOR_RESET, dirs[index] + "/");
+                if (index < num_items) {
+                    string entry = dirs[index];
+                    Stdio.Stat info = file_stat(entry, 1);
+                    string color = info->islnk ? COLOR_LNK : COLOR_DIR;
+                    write(color + "%-" + col_width + "s" + COLOR_RESET, entry + "/");
+                }
             }
             write("\n");
         }
