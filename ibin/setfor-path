@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 16:58:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-25 16:05:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -148,6 +148,20 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             ;;
     esac
     export USRHOME_SHELL_OPEN_TIME
+
+    # ----------------------------------------------------------------------------
+    # Topic: Use Pike
+    # ---------------
+    # In case Pike support is provided by Homebrew its presence must be checked
+    # after Homebrew support is activated in the shell: now it's time.
+    if [ "$USRHOME_USE_PIKE" = "1" ]; then
+        if command -v pike > /dev/null; then
+            printf ". With %s\n" "$(pike --version 2>&1 | head -1)"
+        else
+            usrhome_print_error "USRHOME_USE_PIKE is set to 1 but pike is not found!  Please install Pike!"
+           USRHOME_USE_PIKE=0
+        fi
+    fi
 fi
 
 # ----------------------------------------------------------------------------
