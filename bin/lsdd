@@ -4,7 +4,7 @@
 // Purpose   : Print a list of directories.
 // Created   : Friday, April 24 2026.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-25 12:23:51 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2026-04-25 12:40:42 EDT, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Program Description
 // -------------------
@@ -173,7 +173,10 @@ int main(int argc, array(string) argv)
     // - Filter directories further as identified by the command line arguments.
     // - Store the final list of names to print in `dirs'.
     array(string) dirs = directory_name_list(inputs, show_all);
-    if (!sizeof(dirs)) return 1;
+    if (!sizeof(dirs)) {
+        werror("No directory match found!\n", );
+        return 1;
+    }
 
     // Identify colors and width: No colors and 80 columns for pipes.
     string COLOR_DIR = "";
