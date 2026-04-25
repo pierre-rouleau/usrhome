@@ -1,0 +1,150 @@
+#!/usr/bin/env pike
+// PIKE FILE: lsdd
+//
+// Purpose   : Print a list of directories.
+// Created   : Friday, April 24 2026.
+// Author    : Pierre Rouleau <prouleau001@gmail.com>
+// Time-stamp: <2026-04-24 20:24:28 EDT, updated by Pierre Rouleau>
+// -----------------------------------------------------------------------------
+// Program Description
+// -------------------
+//
+//  List directories.  Replaces lsd and lsda scripts and does it better.
+
+
+// -----------------------------------------------------------------------------
+// Dependencies
+// ------------
+//
+// Pike must be installed.
+// See https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-pike.pdf
+
+// -----------------------------------------------------------------------------
+// Code
+// ----
+//
+//
+
+void print_help(string prog_name) {
+    array(string) path_parts = prog_name / "/";
+    string name = path_parts[sizeof(path_parts)-1];
+
+    write("%s -- list directories\n" +
+          " Usage: %s [OPTIONS] [PATTERN]\n" +
+          " PATTERN must be single quoted.\n" +
+          " Options:\n" +
+          "   -h, --help    Show this help message\n" +
+          "   -a            Do not ignore entries starting with .\n" +
+          "   -l            Use a long listing format\n" +
+          "   -t            Sort by modification time (newest first)\n" +
+          "   -r            Reverse the order of the sort\n\n", name, name);
+}
+
+string format_mode(int mode) {
+    string s = "d";
+    string chars = "rwxrwxrwx";
+    for (int i = 0; i < 9; i++) {
+        s += (mode & (1 << (8 - i))) ? chars[i..i] : "-";
+    }
+    return s;
+}
+
+int main(int argc, array(string) argv)
+{
+    bool long_format = false;
+    bool show_all = false;
+    bool sort_time = false;
+    bool reverse_sort = false;
+    string pattern = "*";
+
+    for(int i = 1; i < argc; i++) {
+        if (argv[i] == "--help") {
+            print_help(argv[0]);
+            return 0;
+        }
+        if (has_prefix(argv[i], "-") && sizeof(argv[i]) > 1) {
+            foreach((array)argv[i][1..], int char_code) {
+                string flag = sprintf("%c", char_code);
+                switch(flag) {
+                    case "h": print_help(argv[0]); return 0;
+                    case "l": long_format = true; break;
+                    case "a": show_all = true; break;
+                    case "t": sort_time = true; break;
+                    case "r": reverse_sort = true; break;
+                }
+            }
+        } else {
+            pattern = argv[i];
+        }
+    }
+
+    // --- PIPE DETECTION HERE ---
+    string COLOR_DIR = "";
+    string COLOR_RESET = "";
+
+    // Check if stdout is a TTY (terminal)
+    if (Stdio.stdout->isatty()) {
+        COLOR_DIR = "\e[0;34m";
+        COLOR_RESET = "\e[0m";
+    }
+
+    array(string) all_entries = get_dir(".");
+    if (!all_entries) return 1;
+
+    array(string) matched_entries = glob(pattern, all_entries);
+    array(string) dirs = ({});
+
+    foreach(matched_entries, string entry) {
+        if (entry == "." || entry == "..") continue;
+        if (!show_all && has_prefix(entry, ".")) continue;
+
+        Stdio.Stat info = file_stat(entry);
+        if (info && info->isdir)
+            dirs += ({ entry });
+    }
+
+    if (!sizeof(dirs)) return 1;
+
+    if (sort_time) {
+        array(int) times = ({});
+        foreach(dirs, string d) {
+            times += ({ file_stat(d)->mtime });
+        }
+        sort(times, dirs);
+        dirs = reverse(dirs);
+    } else {
+        dirs = sort(dirs);
+    }
+
+    if (reverse_sort) {
+        dirs = reverse(dirs);
+    }
+
+    if (long_format) {
+        foreach(dirs, string entry) {
+            Stdio.Stat info = file_stat(entry);
+            write("%s %8d %s %s%s/%s\n",
+                format_mode(info->mode), info->size,
+                ctime(info->mtime)[4..15], COLOR_DIR, entry, COLOR_RESET);
+        }
+    } else {
+        int num_items = sizeof(dirs);
+        int num_cols = 4;
+        int num_rows = (num_items + num_cols - 1) / num_cols;
+        int max_len = 0;
+        foreach(dirs, string d) if (sizeof(d) > max_len) max_len = sizeof(d);
+        int col_width = max_len + 3;
+
+        for (int row = 0; row < num_rows; row++) {
+            for (int col = 0; col < num_cols; col++) {
+                int index = row + (col * num_rows);
+                if (index < num_items)
+                    write(COLOR_DIR + "%-" + col_width + "s" + COLOR_RESET, dirs[index] + "/");
+            }
+            write("\n");
+        }
+    }
+    return 0;
+}
+
+// -----------------------------------------------------------------------------

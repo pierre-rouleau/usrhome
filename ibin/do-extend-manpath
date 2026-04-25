@@ -1,10 +1,11 @@
 # Sourced script: do-extend-manpath  -*- mode: sh; -*-
 #
-# Purpose   : Set MANPATH to the value of manpath if not already set.
+# Purpose   : Set/extend MANPATH from manpath output; safe to re-source.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-13 11:20:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 17:23:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
+
 # Module Description
 # ------------------
 #
@@ -12,48 +13,227 @@
 # Source (include) this file inside other sourced files before adding to the
 # MANPATH value.
 #
-# On some system MANPATH is set to an invalid value of ":".  If this is
-# detected, the script considers it invalid and resets it to what manpath
-# identifies.
+# On some systems MANPATH is set to an invalid value of ":".
+# In the man utility, a leading or trailing colon in MANPATH tells the system
+# to include the default system manual paths in addition to whatever custom
+# paths you've added.
+#
+# That, however only works for the man utility.  It does not allow other tools
+# to inspect the list of directories holding man files as an explicit set of
+# directories listed inside the value of the MANPATH environment variable
+# does.  This is why the colon is removed and replaced by the list printed by
+# the manpath utility.
+#
 #
 # If your system has an extra set of man directories somewhere outside of the
-# standard places, identify them inside the MANPATH_XTRA_BEFORE or
-# MANPATH_XTRA_AFTER variables.  The value of MANPATH_XTRA_BEFORE is
-# pre-pended to the list and the value of MANPATH_XTRA_AFTER is appended to
+# standard places, identify them inside the MANPATH_EXTRA_BEFORE or
+# MANPATH_EXTRA_AFTER variables.  The value of MANPATH_EXTRA_BEFORE is
+# pre-pended to the list and the value of MANPATH_EXTRA_AFTER is appended to
 # the list.
-
+#
+# Usage:
+#  - Source it with: . "$USRHOME_DIR/ibin/do-extend-manpath"
+#  - To print info : . "$USRHOME_DIR/ibin/do-extend-manpath" verbose
+#
+# To activate the verbose output you may also set the MANPATH_SHOW_IF_MODIFIED
+# environment variable to the value: true
+#
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
+# Code strategy
+
+# - Always compute the fresh manpath/manpath -g output, regardless of whether
+#   MANPATH is already set.
+# - If MANPATH is empty/invalid, set it from that fresh output.
+# - If MANPATH is already set, merge any new directories from the fresh output
+#   that are not yet present — making re-sourcing after a PATH extension fully
+#   effective.
+# - Make MANPATH_EXTRA_BEFORE / MANPATH_EXTRA_AFTER idempotent (check
+#   component by component before prepending/appending) so repeated sourcing
+#   never creates duplicates.
+# - Unset all temporary variables to avoid polluting the shell environment.
+# - use _dxm_ prefix (for: Do eXtend Manpath) in internal variable.
 #
-manpath_modified=false
-if [ -z "$MANPATH" ] || [ "$MANPATH" = ":" ]; then
-    # Some Linux systems support the manpath -g option, which provides more
-    # entries. Try it.  If that fails use manpath without it.
-    if manpath -g > /dev/null 2>&1; then
-        MANPATH="$(manpath -g)"
-    else
-        MANPATH="$(manpath)"
+# POSIX compliant techniques used:
+# -  ${VAR:+word}    Expansion evaluates to word only when var is set and
+#                    non-empty, otherwise to nothing.
+# -  ${VAR#pattern}: Removes the shortest match of pattern from the beginning of
+#                    the string.
+# -  ${VAR%pattern}: Removes the shortest match from the end.
+
+# --- 1. Obtain the freshest possible manpath list from the system.
+#        manpath(1) scans PATH, so this may grow as PATH is extended.
+#        - Ensure that manpath extracts the system list by temporary
+#          setting MANPATH to a single colon to force manpath utility
+#          to return the system's list of man directories.
+
+# Store the value of MANPATH used by the shell into an internal variable
+# and stray leading/trailing colons from its value.
+_dxm_manpath="$MANPATH"
+_dxm_manpath="${_dxm_manpath#:}"; _dxm_manpath="${_dxm_manpath%:}"
+
+# Use manpath utility to read directories used by the system by forcing
+# it use use a MANPATH that has only a colon.
+MANPATH=":"
+if _dxm_fresh_manpath="$(manpath -g 2>/dev/null)"; then
+    :   #  Do nothing, it's already done.
+else
+    # For cases where the -g option is not available do it without.
+    _dxm_fresh_manpath="$(manpath)"
+fi
+
+# Clean MANPATH, it will be re-constructed.  Its shell value is in _dxm_manpath.
+MANPATH=
+
+# --- 2. Initialize or extend MANPATH.
+if [ -z "${_dxm_manpath}" ] || [ "${_dxm_manpath}" = ":" ]; then
+    # Not set (or set to special bare colon): seed from the fresh list.
+    MANPATH="$_dxm_fresh_manpath"
+else
+    # Already set: merge directories discovered by the fresh manpath output
+    # that are not yet present in MANPATH.  Keep the original MANPATH order
+    # first.
+
+    # To iterate through each component do not use the IFS=: trick because
+    # that does not work under zsh unless the SH_WORD_SPLIT option is set.
+    # Use a technique that works on every POSIX compliant shells.
+
+    _dxm_remainder="$_dxm_manpath"
+    while [ -n "$_dxm_remainder" ]; do
+        # Extract first colon-separated component — portable, no IFS needed.
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
+        [ -z "$_dxm_dir" ] && continue
+        case ":${MANPATH}:" in
+            *":${_dxm_dir}:"*) ;;          # already present – skip
+            *)
+                MANPATH="${MANPATH:+${MANPATH}:}${_dxm_dir}"
+                ;;
+        esac
+    done
+
+    # Then prepend any newly found directories to MANPATH but in same order as
+    # found in _dxm_fresh_manpath.
+    _dxm_new=
+    _dxm_remainder="$_dxm_fresh_manpath"
+    while [ -n "$_dxm_remainder" ]; do
+        # Extract first colon-separated component — portable, no IFS needed.
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
+        [ -z "$_dxm_dir" ] && continue
+        case ":${MANPATH}:" in
+            *":${_dxm_dir}:"*) ;;          # already present in MANPATH – skip
+            *)
+                _dxm_new="${_dxm_dir}:${_dxm_new:+${_dxm_new}}"
+                ;;
+        esac
+    done
+    if [ -n "$_dxm_new" ]; then
+        # strip any colon from start or end of _dmx_new
+        _dxm_new="${_dxm_new#:}"; _dxm_new="${_dxm_new%:}"
+        MANPATH="${_dxm_new}:$MANPATH"
     fi
-    manpath_modified=true
+    unset _dxm_new
+    unset _dxm_remainder
 fi
 
+# --- 3. Prepend MANPATH_EXTRA_BEFORE (idempotent, component by component).
 if [ -n "$MANPATH_EXTRA_BEFORE" ]; then
-    MANPATH="$MANPATH_EXTRA_BEFORE:$MANPATH"
-    manpath_modified=true
-fi
-if [ -n "$MANPATH_EXTRA_AFTER" ]; then
-    MANPATH="$MANPATH:$MANPATH_EXTRA_AFTER"
-    manpath_modified=true
+    # Iterate in reverse so prepending keeps the declared order.
+    # Build reversed list using the portable splitter.
+    _dxm_rev=""
+    _dxm_remainder="$MANPATH_EXTRA_BEFORE"
+    while [ -n "$_dxm_remainder" ]; do
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
+        [ -z "$_dxm_dir" ] && continue
+        _dxm_rev="${_dxm_dir}${_dxm_rev:+:${_dxm_rev}}"
+    done
+
+    _dxm_remainder="$_dxm_rev"
+    while [ -n "$_dxm_remainder" ]; do
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
+        [ -z "$_dxm_dir" ] && continue
+        case ":${MANPATH}:" in
+            *":${_dxm_dir}:"*) ;;
+            *)
+                MANPATH="${_dxm_dir}${MANPATH:+:${MANPATH}}"
+                ;;
+        esac
+    done
+    unset _dxm_remainder
 fi
 
-if [ "$manpath_modified" = "true" ]; then
-    if [ "$MANPATH_SHOW_IF_MODIFIED" = "true" ]; then
+# --- 4. Append MANPATH_EXTRA_AFTER (idempotent, component by component).
+if [ -n "$MANPATH_EXTRA_AFTER" ]; then
+    _dxm_remainder="$MANPATH_EXTRA_AFTER"
+    while [ -n "$_dxm_remainder" ]; do
+        case "$_dxm_remainder" in
+            *:*)
+                _dxm_dir="${_dxm_remainder%%:*}"
+                _dxm_remainder="${_dxm_remainder#*:}"
+                ;;
+            *)
+                _dxm_dir="$_dxm_remainder"
+                _dxm_remainder=""
+                ;;
+        esac
+        [ -z "$_dxm_dir" ] && continue
+        case ":${MANPATH}:" in
+            *":${_dxm_dir}:"*) ;;
+            *)
+                MANPATH="${MANPATH:+${MANPATH}:}${_dxm_dir}"
+                ;;
+        esac
+    done
+    unset _dxm_remainder
+fi
+
+# --- 5. Report and export if anything changed.
+if [ "$_dxm_manpath" != "$MANPATH" ]; then
+    if [ "$MANPATH_SHOW_IF_MODIFIED" = "true" ] || [ "$1" = "verbose" ]; then
         printf ". MANPATH was modified: use 'showpath MAN' to display its value.\n"
     fi
     export MANPATH
 fi
+
+# --- 6. Clean up temporary variables so they don't leak into the environment.
+unset _dxm_manpath _dxm_fresh_manpath _dxm_dir _dxm_rev
 
 # ----------------------------------------------------------------------------
 #  Local Variables:

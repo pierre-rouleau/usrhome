@@ -3,12 +3,13 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 09:27:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-24 13:07:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Add support for Homebrew.  Support x86 and Apple Silicon architectures.
+# Add support for Homebrew on macOS.
+# Supports the x86 and Apple Silicon architectures.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -35,25 +36,36 @@
 # directories in the PATH, while this does not have to be done on the old
 # architecture.
 #
-# Also note that once installed you can run the `brew shellenv` which prints
-# what should be added to the shell configuration. It would be possible to
-# execute that but the content was added here instead.
+# This script sets the values of the environment variables for Homebrew
+# explicitly instead of relying on `brew shellenv`.
+#
+# Note that once installed you can run the `brew shellenv` which prints what
+# should be added to the shell configuration. It would be possible to execute
+# that but the content was added here instead.  The HOMEBREW_SHELLENV_PREFIX
+# is also set explicitly. You may want to compare what `brew shellenv` prints
+# to the value of the environment variables set by this script to double check
+# its validity.
 
+# Note: show "$USRHOME_DIR" in the trace as a help to write valid scripts.
 usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-homebrew"
 
 # 0 - Check if shell is interactive
 # ---------------------------------
+# Check if shell is interactive and export a SHELL_IS_INTERACTIVE variable
+# set to true or false.  Other scripts can use this to determine how they must operate.
+#
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
+        export SHELL_IS_INTERACTIVE
         ;;
     *)
         SHELL_IS_INTERACTIVE=false
+        export SHELL_IS_INTERACTIVE
         ;;
 esac
 
-
-if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
+if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar|/usr/local/opt/)" > /dev/null; then
     # If Homebrew has not already been placed inside PATH
     # then place it and set the homebrew environment.
     # Otherwise skip.
@@ -64,31 +76,36 @@ if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
         'x86_64' | 'i386' )
             if [ -d /usr/local/Cellar ]; then
                 HOMEBREW_PREFIX="/usr/local"
+                export HOMEBREW_PREFIX
                 HOMEBREW_CELLAR="/usr/local/Cellar"
+                export HOMEBREW_CELLAR
                 HOMEBREW_REPOSITORY="/usr/local/Homebrew"
+                export HOMEBREW_REPOSITORY
                 HOMEBREW_SHELLENV_PREFIX="/usr/local"
+                export HOMEBREW_SHELLENV_PREFIX
                 usrhome_homebrew_path=\
 /usr/local/opt/make/libexec/gnubin:\
 /usr/local/bin:\
 /usr/local/sbin:\
 /usr/local/opt/m4/bin
                 PATH=${usrhome_homebrew_path}:$PATH
+                export PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
-                    usrhome_printf "- Using Homebrew tools from 'usr/local and /usr/local/Cellar\n"
+                    usrhome_printf "- Using Homebrew tools from /usr/local and /usr/local/Cellar\n"
                 fi
                 # Extend MANPATH
                 #   with new man directories that may be
                 #   in the new directories placed in PATH.
                 #   It exports the new MANPATH value.
-                #   This should include the /opt/homebrew/share/man
+                # shellcheck disable=1091
                 . "$USRHOME_DIR/ibin/do-extend-manpath"
                 #
-                MANPATH="/usr/local/share/man${MANPATH+:$MANPATH}:"
                 if [ "$INFOPATH" = "" ]; then
-                    export INFOPATH="/usr/local/share/info"
+                    INFOPATH="/usr/local/share/info"
                 else
-                    export INFOPATH="/usr/local/share/info:$INFOPATH"
+                    INFOPATH="/usr/local/share/info:$INFOPATH"
                 fi
+                export INFOPATH
             else
                 usrhome_printf "ERROR: Homebrew requested but not found in /usr/local/Cellar\n"
             fi
@@ -98,15 +115,21 @@ if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
             # Apple Silicon architecture
             if [ -d /opt/homebrew ]; then
                 # Activate Homebrew path and environment variables
-                export HOMEBREW_PREFIX="/opt/homebrew";
-                export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
-                export HOMEBREW_REPOSITORY="/opt/homebrew";
+                HOMEBREW_PREFIX="/opt/homebrew"
+                export HOMEBREW_PREFIX
+                HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+                export HOMEBREW_CELLAR
+                HOMEBREW_REPOSITORY="/opt/homebrew"
+                export HOMEBREW_REPOSITORY
+                HOMEBREW_SHELLENV_PREFIX="/opt/homebrew"
+                export HOMEBREW_SHELLENV_PREFIX
                 usrhome_homebrew_path=\
 /opt/homebrew/opt/make/libexec/gnubin:\
 /opt/homebrew/bin:\
 /opt/homebrew/sbin:\
 /opt/homebrew/opt/m4/bin
                 PATH=${usrhome_homebrew_path}:$PATH
+                export PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
                     usrhome_printf "- Using Homebrew tools from /opt/homebrew.\n"
                 fi
@@ -114,22 +137,27 @@ if ! echo "$PATH" | grep "/homebrew/" > /dev/null; then
                 #   with new man directories that may be
                 #   in the new directories placed in PATH.
                 #   It exports the new MANPATH value.
-                #   This should include the /opt/homebrew/share/man
+                # shellcheck disable=1091
                 . "$USRHOME_DIR/ibin/do-extend-manpath"
                 #
                 # Extend or set INFOPATH
                 if [ "$INFOPATH" = "" ]; then
-                    export INFOPATH="/opt/homebrew/share/info"
+                    INFOPATH="/opt/homebrew/share/info"
                 else
-                    export INFOPATH="/opt/homebrew/share/info:$INFOPATH"
+                    INFOPATH="/opt/homebrew/share/info:$INFOPATH"
                 fi
+                export INFOPATH
             else
                 usrhome_printf "ERROR: Homebrew requested but not found in /opt/homebrew\n"
             fi
             ;;
+
+        *)
+            usrhome_printf "ERROR: Homebrew: unsupported architecture: %s\n" "$arch"
+            ;;
     esac
 
-    unset usrhome_homebrew_path
+    unset arch usrhome_homebrew_path
 fi
 
 usrhome_trace_out
