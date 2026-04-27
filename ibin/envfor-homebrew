@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 15:58:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 16:00:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -85,7 +85,7 @@ if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar|/usr/local/opt/)" > /
                 export HOMEBREW_SHELLENV_PREFIX
                 # The directory usr/local/opt/make/libexec/gnubin is not always available
                 # insert the other homebrew directories and then insert that one if present.
-                usrhome_homebrew_path=/usr/local/bin:usr/local/sbin:usr/local/opt/m4/bin
+                usrhome_homebrew_path=/usr/local/bin:/usr/local/sbin:/usr/local/opt/m4/bin
                 prepend_to_path ${usrhome_homebrew_path}
                 if [ -d usr/local/opt/make/libexec/gnubin ]; then
                    prepend_to_path usr/local/opt/make/libexec/gnubin
