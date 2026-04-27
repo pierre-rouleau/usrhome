@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 15:41:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 16:03:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -103,12 +103,8 @@ prepend_to_path()
             continue
         fi
 
-        # Skip if already in PATH
-        case ":$PATH:" in
-            *:"$_usrhome_dir":*)
-                usrhome_print_error "Already in PATH; skip prepending: $_usrhome_dir"
-                continue ;;
-        esac
+        # Do NOT skip if already in PATH since we're pre-pending.
+        # The duplication will be fixed later.
 
         # Skip if already accumulated in the prefix (dedup within input list)
         case ":$_usrhome_prefix:" in
