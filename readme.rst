@@ -2049,8 +2049,6 @@ Set it to 0 to prevent tracing.
 Bash login shell execution sequence
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The execution sequence is the following:
-
 - ~/.bash_profile  --> $USRHOME_DIR/dot/bash_profile.bash
 
   - $$USRHOME_DIR_DIR_USRCFG/setfor-all-config.sh
@@ -2072,9 +2070,6 @@ The execution sequence is the following:
 
 Z Shell login shell execution sequence
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-The execution sequence is the following:
 
 - ~/.zshenv    --> $USRHOME_DIR/dot/zshenv.zsh
 
