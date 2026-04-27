@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 16:21:30 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 17:16:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -71,6 +71,8 @@ cduh()
     fi
 }
 
+# All print functions refrain from printing on a dumb shell to reduce output
+# on shells used by Emacs Tramp.
 usrhome_printf()
 {
     # Print text only when allowed.
@@ -83,13 +85,28 @@ usrhome_printf()
     fi
 }
 
+usrhome_printf_warning()
+{
+    # Print text only when allowed.
+    # All argument passed to printf.
+
+    # Note: if SHELL_IS_INTERACTIVE is not set, then use as if it was set to "false".
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
+        _usrhome_MAGENTA='\033[0;35m' # magenta
+        _usrhome_NC='\033[0m' # No Color
+        printf "${_usrhome_MAGENTA}" "$1" >&2
+        # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
+        printf -- "$@" >&2
+        printf "${_usrhome_NC}" "$1" >&2
+        unset _usrhome_MAGENTA _usrhome_NC
+    fi
+}
+
 usrhome_print_error()
 {
     # Arg: $1
-    # Print Arg text after **ERROR: prefix in red unless TERM=dumb
-    if [ "$TERM" = "dumb" ]; then
-        printf "** ERROR: %s\n" "$1" >&2
-    else
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
+        # Print Arg text after **ERROR: prefix in red unless TERM=dumb
         _usrhome_RED='\033[1;31m' # Bold red
         _usrhome_NC='\033[0m' # No Color
         printf "${_usrhome_RED}** ERROR: %s${_usrhome_NC}\n" "$1" >&2
@@ -100,14 +117,11 @@ usrhome_print_error()
 usrhome_print_warning()
 {
     # Arg: $1
-    # Print Arg text after **WARNING: prefix in red unless TERM=dumb
-    if [ "$TERM" = "dumb" ]; then
-        printf "** WARNING: %s\n" "$1" >&2
-    else
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
         _usrhome_MAGENTA='\033[0;35m' # magenta
         _usrhome_NC='\033[0m' # No Color
         printf "${_usrhome_MAGENTA}** WARNING: %s${_usrhome_NC}\n" "$1" >&2
-        unset _usrhome_RED _usrhome_NC
+        unset _usrhome_MAGENTA _usrhome_NC
     fi
 }
 
