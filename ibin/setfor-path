@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 15:15:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 15:41:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -56,11 +56,17 @@ append_to_path()
         [ -z "$_usrhome_dir" ] && continue
 
         # Skip if the directory does not exist
-        [ ! -d "$_usrhome_dir" ] && continue
+        if [ ! -d "$_usrhome_dir" ]; then
+            usrhome_print_error "Does not exists; skip appending: $_usrhome_dir"
+            continue
+        fi
 
         # Check if dir is already in PATH
         case ":$PATH:" in
-            *:"$_usrhome_dir":*) ;;                   # skip if already present
+            *:"$_usrhome_dir":*)
+                # skip if already present
+                userhome_print_error "Already in PATH; skip appending: $_usrhome_dir"
+                ;;
             *) PATH="${PATH:+$PATH:}$_usrhome_dir" ;; # Append to PATH
         esac
     done
@@ -92,11 +98,16 @@ prepend_to_path()
         [ -z "$_usrhome_dir" ] && continue
 
         # Skip if the directory does not exist
-        [ ! -d "$_usrhome_dir" ] && continue
+        if [ ! -d "$_usrhome_dir" ]; then
+            usrhome_print_error "Does not exists; skip prepending: $_usrhome_dir"
+            continue
+        fi
 
         # Skip if already in PATH
         case ":$PATH:" in
-            *:"$_usrhome_dir":*) continue ;;
+            *:"$_usrhome_dir":*)
+                usrhome_print_error "Already in PATH; skip prepending: $_usrhome_dir"
+                continue ;;
         esac
 
         # Skip if already accumulated in the prefix (dedup within input list)
