@@ -2037,6 +2037,71 @@ and Z shell start as a login or as a sub-shell.
 
 .. figure:: res/zsh-bash-startup-01.png
 
+
+Shell Startup File Execution Sequences
+--------------------------------------
+
+Activate startup file tracing by setting ``USRHOME_TRACE_SHELL_CONFIG`` to 1
+inside your ``$USRHOME_DIR_USRCFG/setfor-all-config.sh`` file.
+Set it to 0 to prevent tracing.
+
+
+Bash login shell execution sequence
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The execution sequence is the following:
+
+- ~/.bash_profile  --> $USRHOME_DIR/dot/bash_profile.bash
+
+  - $$USRHOME_DIR_DIR_USRCFG/setfor-all-config.sh
+
+    - $$USRHOME_DIR_DIR_USRCFG/do-user-bash_profile.bash
+
+- ~/.bashrc        --> $USRHOME_DIR/dot/bashrc.bash
+
+  - $$USRHOME_DIR_DIR_USRCFG/setfor-all-config.sh
+  - $USRHOME_DIR/ibin/setfor-bash-alias
+
+    - $USRHOME_DIR/ibin/setfor-alias
+
+  - $USRHOME_DIR/ibin/setfor-path
+
+    - $USRHOME_DIR/ibin/setfor-homebrew
+    - $USRHOME_DIR/ibin/envfor-$USRHOME_DIR
+
+
+Z Shell login shell execution sequence
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+The execution sequence is the following:
+
+- ~/.zshenv    --> $USRHOME_DIR/dot/zshenv.zsh
+
+  - $USRHOME_DIR_USRCFG/setfor-all-config.sh
+
+- ~/.zprofile  --> $USRHOME_DIR/dot/zprofile.zsh
+
+    - $USRHOME_DIR/ibin/setfor-path
+    - $USRHOME_DIR_USRCFG/do-user-zprofile.zsh
+
+- ~/.zshrc     --> $USRHOME_DIR/dot/zshrc.zsh
+
+    -  $USRHOME_DIR/ibin/setfor-zsh-alias
+
+      -  $USRHOME_DIR/ibin/setfor-alias
+
+    -  $USRHOME_DIR/ibin/setfor-path
+
+      -  $USRHOME_DIR/ibin/envfor-homebrew
+      -  $USRHOME_DIR/ibin/envfor-usrhome
+
+    -  $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user-zshrc.zsh
+
+      -  $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user.sh
+
+- ~/.zlogin    --> $USRHOME_DIR/dot/zlogin.zsh
+
 Activate Tracing of the Sourcing of the Shell Configuration Files
 -----------------------------------------------------------------
 
