@@ -3,7 +3,7 @@
 # Purpose   : Activate GCC 15 tool-chain in the current macOS shell.
 # Created   : Wednesday, August 27 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-27 15:24:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 13:55:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -74,7 +74,7 @@ if [ -z "$USRHOME_USING_GCC15_ON_MACOS" ]; then
     #   at the beginning, before /usr/bin where the macOS
     #   installed gcc is located.
     #   in case some tools need those.
-    PATH="$HOME/bin/gcc-15:$HOME/bin/aarch64-gcc-15:$PATH"
+    prepend_to_path "$HOME/bin/gcc-15:$HOME/bin/aarch64-gcc-15"
     export PATH
     if [ -z "$LIB" ]; then
         LIB="/opt/homebrew/lib/gcc/current"

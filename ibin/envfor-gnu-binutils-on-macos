@@ -3,7 +3,7 @@
 # Purpose   : Activate the GNU Binutils Utilities in the current macOS shell.
 # Created   : Tuesday, August 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-03-24 08:26:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 14:03:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,7 +28,8 @@
 #       this script.
 #
 #
-# GNU tools that replace macOS native tools:
+# - USRHOME function prepend_to_path
+# - GNU tools that replace macOS native tools:
 #
 # -------------------------- ------------------------- ----------------------
 # macOS native               Gnu equivalent            brew install command
@@ -52,7 +53,7 @@
 # ----
 #
 #
-PATH="/opt/homebrew/opt/binutils/bin:$PATH"
+prepend_to_path "/opt/homebrew/opt/binutils/bin"
 export PATH
 
 # For compilers to find binutils:

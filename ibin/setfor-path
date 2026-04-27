@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-25 16:31:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 15:15:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,7 +26,97 @@
 #
 usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-path"
 
-# ------------
+# ----------------------------------------------------------------------------
+# Topic: PATH management
+# ----------------------
+#
+# Define functions that append and prepend directories to PATH
+
+# POSIX-compliant function to append to PATH uniquely
+# - Tilde (~) is NOT expanded inside the argument; pass "$HOME/bin"
+#   instead of "~/bin", or let the shell expand ~ before the call.
+# - Does not export PATH.  Caller must do it.
+append_to_path()
+{
+    # Arg: 1  a :-separated list of directories
+    _usrhome_remainder="$1"
+
+    while [ -n "$_usrhome_remainder" ]; do
+        # Extract the first directory from the remainder
+        _usrhome_dir="${_usrhome_remainder%%:*}"
+
+        # Advance past this entry (handle single-element case)
+        if [ "$_usrhome_dir" = "$_usrhome_remainder" ]; then
+            _usrhome_remainder=""
+        else
+            _usrhome_remainder="${_usrhome_remainder#*:}"
+        fi
+
+        # Skip empty entries
+        [ -z "$_usrhome_dir" ] && continue
+
+        # Skip if the directory does not exist
+        [ ! -d "$_usrhome_dir" ] && continue
+
+        # Check if dir is already in PATH
+        case ":$PATH:" in
+            *:"$_usrhome_dir":*) ;;                   # skip if already present
+            *) PATH="${PATH:+$PATH:}$_usrhome_dir" ;; # Append to PATH
+        esac
+    done
+    unset _usrhome_remainder _usrhome_dir
+}
+
+# POSIX-compliant function to prepend to PATH uniquely
+# - Tilde (~) is NOT expanded inside the argument; pass "$HOME/bin"
+#   instead of "~/bin", or let the shell expand ~ before the call.
+# - Does not export PATH.  Caller must do it.
+prepend_to_path()
+{
+    # Arg: 1  a :-separated list of directories
+    _usrhome_remainder="$1"
+    _usrhome_prefix=""
+
+    while [ -n "$_usrhome_remainder" ]; do
+        # Extract the first directory from the remainder
+        _usrhome_dir="${_usrhome_remainder%%:*}"
+
+        # Advance past this entry (handle single-element case)
+        if [ "$_usrhome_dir" = "$_usrhome_remainder" ]; then
+            _usrhome_remainder=""
+        else
+            _usrhome_remainder="${_usrhome_remainder#*:}"
+        fi
+
+        # Skip empty entries
+        [ -z "$_usrhome_dir" ] && continue
+
+        # Skip if the directory does not exist
+        [ ! -d "$_usrhome_dir" ] && continue
+
+        # Skip if already in PATH
+        case ":$PATH:" in
+            *:"$_usrhome_dir":*) continue ;;
+        esac
+
+        # Skip if already accumulated in the prefix (dedup within input list)
+        case ":$_usrhome_prefix:" in
+            *:"$_usrhome_dir":*) continue ;;
+        esac
+
+        # Collect in original order: prefix grows as A → A:B → A:B:C
+        _usrhome_prefix="${_usrhome_prefix:+$_usrhome_prefix:}$_usrhome_dir"
+    done
+
+    # Prepend the whole collected prefix to PATH in a single step
+    [ -n "$_usrhome_prefix" ] && PATH="${_usrhome_prefix}${PATH:+:$PATH}"
+
+    unset _usrhome_remainder _usrhome_dir _usrhome_prefix
+}
+
+
+
+# ----------------------------------------------------------------------------
 
 if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
     # if not a login shell OR user allows configuration at login...

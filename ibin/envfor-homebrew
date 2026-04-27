@@ -3,19 +3,19 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 13:07:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 14:02:35 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Add support for Homebrew on macOS.
-# Supports the x86 and Apple Silicon architectures.
+# Supports Homebrew for macOS on Intel and Apple Silicon architectures.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-# Support Homebrew for macOS on Intel and Apple Silicon architectures.
+# - USRHOME function prepend_to_path
 
 # ----------------------------------------------------------------------------
 # Code
@@ -88,7 +88,8 @@ if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar|/usr/local/opt/)" > /
 /usr/local/bin:\
 /usr/local/sbin:\
 /usr/local/opt/m4/bin
-                PATH=${usrhome_homebrew_path}:$PATH
+
+                prepend_to_path ${usrhome_homebrew_path}
                 export PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
                     usrhome_printf "- Using Homebrew tools from /usr/local and /usr/local/Cellar\n"
@@ -128,7 +129,8 @@ if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar|/usr/local/opt/)" > /
 /opt/homebrew/bin:\
 /opt/homebrew/sbin:\
 /opt/homebrew/opt/m4/bin
-                PATH=${usrhome_homebrew_path}:$PATH
+
+                prepend_to_path ${usrhome_homebrew_path}
                 export PATH
                 if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
                     usrhome_printf "- Using Homebrew tools from /opt/homebrew.\n"
