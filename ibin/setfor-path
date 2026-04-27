@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-25 16:31:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 13:34:25 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,7 +26,66 @@
 #
 usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-path"
 
-# ------------
+# ----------------------------------------------------------------------------
+# Topic: PATH management
+# ----------------------
+#
+# Define functions that append and prepend directories to PATH
+
+# POSIX-compliant function to append to PATH uniquely
+# - Does not export PATH.  Caller must do it.
+append_to_path()
+{
+    # Arg: 1  a :-separated list of directories
+    _usrhome_new_dirs="$1"
+
+    # Use a here-document to pipe the list into a while loop.
+    # This is a robust POSIX way to split strings without changing IFS globally.
+    printf '%s\n' "$_usrhome_new_dirs" | tr ':' '\n' | while read -r _usrhome_dir; do
+        # Skip empty lines
+        [ -z "$_usrhome_dir" ] && continue
+
+        # Skip if the directory does not exist
+        [ ! -d "$_usrhome_dir" ] && continue
+
+        # Check if dir is already in PATH
+        case ":$PATH:" in
+            *:"$_usrhome_dir":*) ;;                  # skip if already present
+            *) PATH="${PATH:+$PATH:}$_usrhome_dir" ;; # Append to PATH
+        esac
+    done
+    unset _usrhome_new_dirs _usrhome_dir
+}
+
+
+
+# POSIX-compliant function to prepend to PATH uniquely
+# - Does not export PATH.  Caller must do it.
+prepend_to_path()
+{
+    # Arg: 1  a :-separated list of directories
+    _usrhome_new_dirs="$1"
+
+    # Use a here-document to pipe the list into a while loop.
+    # This is a robust POSIX way to split strings without changing IFS globally.
+    printf '%s\n' "$_usrhome_new_dirs" | tr ':' '\n' | while read -r _usrhome_dir; do
+        # Skip empty lines
+        [ -z "$_usrhome_dir" ] && continue
+
+        # Skip if the directory does not exist
+        [ ! -d "$_usrhome_dir" ] && continue
+
+        # Check if dir is already in PATH
+        case ":$PATH:" in
+            *:"$_usrhome_dir":*) ;;                  # skip if already present
+            *) PATH="$_usrhome_dir${PATH:+:$PATH}" ;; # Prepend to PATH
+        esac
+    done
+    unset _usrhome_new_dirs _usrhome_dir
+}
+
+
+# ----------------------------------------------------------------------------
 
 if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
     # if not a login shell OR user allows configuration at login...
