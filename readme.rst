@@ -2082,23 +2082,23 @@ The execution sequence is the following:
 
 - ~/.zprofile  --> $USRHOME_DIR/dot/zprofile.zsh
 
-    - $USRHOME_DIR/ibin/setfor-path
-    - $USRHOME_DIR_USRCFG/do-user-zprofile.zsh
+  - $USRHOME_DIR/ibin/setfor-path
+  - $USRHOME_DIR_USRCFG/do-user-zprofile.zsh
 
 - ~/.zshrc     --> $USRHOME_DIR/dot/zshrc.zsh
 
-    -  $USRHOME_DIR/ibin/setfor-zsh-alias
+  - $USRHOME_DIR/ibin/setfor-zsh-alias
 
-      -  $USRHOME_DIR/ibin/setfor-alias
+    - $USRHOME_DIR/ibin/setfor-alias
 
-    -  $USRHOME_DIR/ibin/setfor-path
+  - $USRHOME_DIR/ibin/setfor-path
 
-      -  $USRHOME_DIR/ibin/envfor-homebrew
-      -  $USRHOME_DIR/ibin/envfor-usrhome
+    - $USRHOME_DIR/ibin/envfor-homebrew
+    - $USRHOME_DIR/ibin/envfor-usrhome
 
-    -  $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user-zshrc.zsh
+  - $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user-zshrc.zsh
 
-      -  $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user.sh
+    - $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user.sh
 
 - ~/.zlogin    --> $USRHOME_DIR/dot/zlogin.zsh
 
