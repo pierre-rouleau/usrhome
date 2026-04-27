@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 15:06:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 15:13:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,8 +37,7 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-path"
 append_to_path()
 {
     # Arg: 1  a :-separated list of directories
-    _usrhome_new_dirs="$1"
-    _usrhome_remainder="$_usrhome_new_dirs"
+    _usrhome_remainder="$1"
 
     while [ -n "$_usrhome_remainder" ]; do
         # Extract the first directory from the remainder
@@ -63,7 +62,7 @@ append_to_path()
             *) PATH="${PATH:+$PATH:}$_usrhome_dir" ;; # Append to PATH
         esac
     done
-    unset _usrhome_new_dirs _usrhome_remainder _usrhome_dir
+    unset _usrhome_remainder _usrhome_dir
 }
 
 # POSIX-compliant function to prepend to PATH uniquely
@@ -71,8 +70,7 @@ append_to_path()
 prepend_to_path()
 {
     # Arg: 1  a :-separated list of directories
-    _usrhome_new_dirs="$1"
-    _usrhome_remainder="$_usrhome_new_dirs"
+    _usrhome_remainder="$1"
     _usrhome_prefix=""
 
     while [ -n "$_usrhome_remainder" ]; do
@@ -109,7 +107,7 @@ prepend_to_path()
     # Prepend the whole collected prefix to PATH in a single step
     [ -n "$_usrhome_prefix" ] && PATH="${_usrhome_prefix}${PATH:+:$PATH}"
 
-    unset _usrhome_new_dirs _usrhome_remainder _usrhome_dir _usrhome_prefix
+    unset _usrhome_remainder _usrhome_dir _usrhome_prefix
 }
 
 
