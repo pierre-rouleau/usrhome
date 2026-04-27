@@ -3,7 +3,7 @@
 # Purpose   : Add directory to PATH in the current shell
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 13:48:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 14:36:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -45,6 +45,8 @@ add-to-path -- Add a directory to the beginning or the end of PATH.
              If not specified DIRPATH is placed at the beginning of PATH.
              In both cases DIRPATH can be one directory or a list of
              colon-separated directories.
+
+     CAUTION: shells only expand ~ at the beginning of a string!
 "
 }
 

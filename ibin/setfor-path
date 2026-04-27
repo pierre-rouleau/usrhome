@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 13:34:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 14:28:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -57,8 +57,6 @@ append_to_path()
     unset _usrhome_new_dirs _usrhome_dir
 }
 
-
-
 # POSIX-compliant function to prepend to PATH uniquely
 # - Does not export PATH.  Caller must do it.
 prepend_to_path()
@@ -66,9 +64,13 @@ prepend_to_path()
     # Arg: 1  a :-separated list of directories
     _usrhome_new_dirs="$1"
 
-    # Use a here-document to pipe the list into a while loop.
-    # This is a robust POSIX way to split strings without changing IFS globally.
-    printf '%s\n' "$_usrhome_new_dirs" | tr ':' '\n' | while read -r _usrhome_dir; do
+    # Reverse the list so that prepending one-by-one preserves the original order.
+    # e.g. "A:B:C" → iterate C, B, A → PATH = A:B:C:$PATH
+    printf '%s\n' "$_usrhome_new_dirs" | tr ':' '\n' \
+        | awk '{a[NR]=$0} END{for(i=NR;i>=1;i--) print a[i]}' \
+        | while read -r _usrhome_dir; do
+
+        echo "-----> process: $_usrhome_dir"
         # Skip empty lines
         [ -z "$_usrhome_dir" ] && continue
 
@@ -77,7 +79,7 @@ prepend_to_path()
 
         # Check if dir is already in PATH
         case ":$PATH:" in
-            *:"$_usrhome_dir":*) ;;                  # skip if already present
+            *:"$_usrhome_dir":*) ;;                   # skip if already present
             *) PATH="$_usrhome_dir${PATH:+:$PATH}" ;; # Prepend to PATH
         esac
     done

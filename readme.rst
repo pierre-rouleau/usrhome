@@ -1244,19 +1244,28 @@ USRHOME Command Name               Description
                                    - Examples:
 
                                      - ``append_to_path ~/my-bin``
-                                     - ``append_to_path ~/my-bin:~/other-bin``
+                                     - ``append_to_path ~/my-bin:$HOME/other-bin``
+                                     - ``append_to_path $HOME/my-bin:$HOME/other-bin``
+
+                                   - **Caution**: shells only expand the ~ at the beginning
+                                     of strings, therefore you cannot use it elsewhere in the
+                                     list!
 
 ``prepend_to_path DIRS``           Prepend directories to PATH.
 
                                    - DIRS is either one directory or a list a
                                      colon-separated directories.
-                                   - Appends only the directories that exits
+                                   - Prepends only the directories that exits
                                      and are not already present in PATH.
                                     - Examples:
 
                                      - ``prepend_to_path ~/my-bin``
-                                     - ``prepend_to_path ~/my-bin:~/other-bin``
+                                     - ``prepend_to_path ~/my-bin:$HOME/other-bin``
+                                     - ``prepend_to_path $HOME/my-bin:$HOME/other-bin``
 
+                                   - **Caution**: shells only expand the ~ at the beginning
+                                     of strings, therefore you cannot use it elsewhere in the
+                                     list!
 
 ``showpath [-n] [varname][PATH]``  Print the value of PATH, MANPATH or LIBPATH, or any PATH
                                    specific environment variable placing each directory
