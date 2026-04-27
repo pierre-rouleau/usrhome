@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 15:13:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 15:15:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -33,6 +33,8 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-path"
 # Define functions that append and prepend directories to PATH
 
 # POSIX-compliant function to append to PATH uniquely
+# - Tilde (~) is NOT expanded inside the argument; pass "$HOME/bin"
+#   instead of "~/bin", or let the shell expand ~ before the call.
 # - Does not export PATH.  Caller must do it.
 append_to_path()
 {
@@ -66,6 +68,8 @@ append_to_path()
 }
 
 # POSIX-compliant function to prepend to PATH uniquely
+# - Tilde (~) is NOT expanded inside the argument; pass "$HOME/bin"
+#   instead of "~/bin", or let the shell expand ~ before the call.
 # - Does not export PATH.  Caller must do it.
 prepend_to_path()
 {
