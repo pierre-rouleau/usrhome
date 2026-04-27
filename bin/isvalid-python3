@@ -4,7 +4,7 @@
 # Purpose   : Check if file is Python 3 compliant.
 # Created   : Tuesday, April 22 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-04-23 13:54:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 18:23:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,7 +26,11 @@
 #
 #
 
-pgm_name="$(basename "$0")"
+if basename "$0" 2> /dev/null; then
+    pgm_name="$(basename "$0")"
+else
+    pgm_name=isvalid-python
+fi
 
 print_usage()
 {

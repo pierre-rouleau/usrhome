@@ -4,7 +4,7 @@
 # Purpose   : Find all Python files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-04-23 08:04:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 18:22:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,7 +25,11 @@
 #
 #
 
-pgm_name="$(basename "$0")"
+if basename "$0" 2> /dev/null; then
+    pgm_name="$(basename "$0")"
+else
+    pgm_name=find-py
+fi
 
 print_usage()
 {

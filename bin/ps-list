@@ -4,7 +4,7 @@
 # Purpose   : List running Processes.
 # Created   : Saturday, March  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-03-03 14:28:52 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 18:23:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,7 +24,11 @@
 # ----
 #
 #
-pgm_name="$(basename "$0")"
+if basename "$0" 2> /dev/null; then
+    pgm_name="$(basename "$0")"
+else
+    pgm_name=ps-lisp
+fi
 
 selinux_is_available=false
 selinux_msg="NOT "

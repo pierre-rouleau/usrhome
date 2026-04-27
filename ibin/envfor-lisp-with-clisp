@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run GNU clisp via the 'lisp' command.
 # Created   : Tuesday, May 18 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 17:34:34 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 18:24:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,7 +30,11 @@
 # ------
 #
 #
-pgm_name="$(basename "$0")"
+if basename "$0" 2> /dev/null; then
+    pgm_name="$(basename "$0")"
+else
+    pgm_name=envfor-lisp-with-clisp
+fi
 
 print_usage()
 {
