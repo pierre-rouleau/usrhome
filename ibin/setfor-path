@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 16:03:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-04-27 17:29:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -138,13 +138,13 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             # Arg1: optional: "disputed"
             echo ""
             if [ "$1" = "disputed" ]; then
-                usrhome_printf "Potential (disputed) security issue detected by usrhome:\n%s\n" \
+                usrhome_printf_warning "Potential (disputed) security issue detected by usrhome:\n%s\n" \
                                " - Possibly compromised version ${xz_ver} of xz installed!"
             else
-                usrhome_printf "SECURITY ISSUE DETECTED By USRHOME:\n%s\n" \
+                usrhome_printf_warning "SECURITY ISSUE DETECTED By USRHOME:\n%s\n" \
                                " - Compromised version ${xz_ver} of xz installed!"
             fi
-            usrhome_printf " - in: %s\n    See: https://repology.org/project/xz/cves\n" "${xz_path}"
+            usrhome_printf_warning " - in: %s\n    See: https://repology.org/project/xz/cves\n" "${xz_path}"
         }
 
         usrhome_security_check()
