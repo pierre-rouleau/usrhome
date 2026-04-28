@@ -4,7 +4,7 @@
 // Purpose   : Print a list of directories.
 // Created   : Friday, April 24 2026.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-28 09:53:23 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2026-04-28 10:07:18 EDT, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Program Description
 // -------------------
@@ -153,6 +153,9 @@ int main(int argc, array(string) argv)
                     case "a": show_all     = true; break;
                     case "t": sort_time    = true; break;
                     case "r": reverse_sort = true; break;
+                default:
+                    werror("lsdd: invalid option -- %s\n", flag);
+                    return 1;
                 }
             }
         } else {
@@ -218,6 +221,10 @@ int main(int argc, array(string) argv)
     if (long_format) {
         foreach(dirs, string entry) {
             Stdio.Stat info = file_stat(entry, 1);
+            if (!info) {
+                werror("lsdd: skipping vanished entry: %s\n", entry);
+                continue;
+            }
             string target = info->islnk ? readlink(entry) : "";
             string color  = info->islnk ? COLOR_LNK : COLOR_DIR;
             write("%s %8d %s %s%s/",
