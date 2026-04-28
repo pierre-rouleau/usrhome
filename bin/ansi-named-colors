@@ -1,0 +1,65 @@
+#!/bin/sh
+# SH FILE: ansi-named-colors
+#
+# Purpose   : Print ANSI named colors and their code.
+# Created   : Friday, April 24 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-04-28 10:16:15 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print the list on ANSI named color sequences.
+# Mainly acts as a reminder for the ANSI color sequences.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+#!/bin/bash
+# Named ANSI Color Sequences Script
+
+# Reset code
+NC='\033[0m'
+
+# Named Standard Colors (30-37)
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[0;37m'
+
+# Named High Intensity Colors (90-97)
+I_BLACK='\033[0;90m'
+I_RED='\033[0;91m'
+I_GREEN='\033[0;92m'
+I_YELLOW='\033[0;93m'
+I_BLUE='\033[0;94m'
+I_MAGENTA='\033[0;95m'
+I_CYAN='\033[0;96m'
+I_WHITE='\033[0;97m'
+
+echo -e "\nNamed Standard ANSI Colors:"
+echo -e "${BLACK}Black   (30)${NC} | ${RED}Red     (31)${NC} | ${GREEN}Green   (32)${NC} | ${YELLOW}Yellow  (33)${NC}"
+echo -e "${BLUE}Blue    (34)${NC} | ${MAGENTA}Magenta (35)${NC} | ${CYAN}Cyan    (36)${NC} | ${WHITE}White   (37)${NC}"
+
+echo -e "\nNamed High Intensity Colors:"
+echo -e "${I_BLACK}D. Gray (90)${NC} | ${I_RED}L. Red  (91)${NC} | ${I_GREEN}L. Green(92)${NC} | ${I_YELLOW}L. Yellow(93)${NC}"
+echo -e "${I_BLUE}L. Blue (94)${NC} | ${I_MAGENTA}L. Purp (95)${NC} | ${I_CYAN}L. Cyan (96)${NC} | ${I_WHITE}L. White(97)${NC}"
+
+# Example of Background usage
+echo -e "\nBackground Names (Example):"
+echo -e "\033[41m  Red BG (41)  \033[0m  \033[44m  Blue BG (44)  \033[0m"
+
+# ----------------------------------------------------------------------------
