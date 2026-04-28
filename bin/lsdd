@@ -4,20 +4,22 @@
 // Purpose   : Print a list of directories.
 // Created   : Friday, April 24 2026.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-25 13:10:15 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2026-04-28 09:53:23 EDT, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Program Description
 // -------------------
 //
-//  List directories.  Replaces lsd and lsda scripts and does it better.
-
+//  List directories.
+//  Replaces the lsd and lsda shell scripts and does it better with more features.
 
 // -----------------------------------------------------------------------------
 // Dependencies
 // ------------
 //
 // Pike must be installed.
-// See https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-pike.pdf
+// See:
+// - https://pike.lysator.liu.se/
+// - https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-pike.pdf
 
 // -----------------------------------------------------------------------------
 // Code
@@ -41,7 +43,10 @@ void print_help(string prog_name) {
           "   -a            Do not ignore entries starting with .\n" +
           "   -l            Use a long listing format\n" +
           "   -t            Sort by modification time (newest first)\n" +
-          "   -r            Reverse the order of the sort\n\n", name, name);
+          "   -r            Reverse the order of the sort\n\n" +
+          " LIMITATION: Does not print broken symlinks to directories.\n" +
+          "             When a symlink to a directory is broken, it\n" +
+          "             does not print the symlink at all.\n", name, name);
 }
 
 // Identify the directory names from the arguments and return it inside an
@@ -213,10 +218,13 @@ int main(int argc, array(string) argv)
     if (long_format) {
         foreach(dirs, string entry) {
             Stdio.Stat info = file_stat(entry, 1);
-            string color = info->islnk ? COLOR_LNK : COLOR_DIR;
-            write("%s %8d %s %s%s/%s\n",
-                format_mode(info->mode, info->islnk), info->size,
-                ctime(info->mtime)[4..15], color, entry, COLOR_RESET);
+            string target = info->islnk ? readlink(entry) : "";
+            string color  = info->islnk ? COLOR_LNK : COLOR_DIR;
+            write("%s %8d %s %s%s/",
+                  format_mode(info->mode, info->islnk), info->size,
+                ctime(info->mtime)[4..15], color, entry);
+            if (info->islnk)  write(" -> %s", target);
+            write("%s\n", COLOR_RESET);
         }
     } else {
         int max_len = 0;
