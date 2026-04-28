@@ -1,0 +1,50 @@
+#!/bin/sh
+# SH FILE: ansi-colors
+#
+# Purpose   : Print ANSI escape sequences and their colors.
+# Created   : Friday, April 24 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-04-28 10:11:37 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print the list on ANSI color sequences to see the colors possible.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+
+# Standard ANSI Colors (0-15)
+echo "--- Standard 16 Colors ---"
+for i in {0..15}; do
+    # \e[38;5;${i}m sets the foreground color to index i
+    # \e[0m resets all formatting
+    printf "\e[38;5;${i}m  %3d  \e[0m" "$i"
+    # Print 8 colors per line
+    if [ $((($i + 1) % 8)) -eq 0 ]; then echo; fi
+done
+
+echo -e "\n--- 256 Color Palette ---"
+# Extended 256-color set (16-255)
+for i in {16..255}; do
+    printf "\e[38;5;${i}m  %3d  \e[0m" "$i"
+    # Break lines every 6 colors for the 6x6x6 cube (16-231)
+    # and every 12 for the grayscale (232-255)
+    if [ $i -lt 232 ]; then
+        if [ $((($i - 15) % 6)) -eq 0 ]; then echo; fi
+    else
+        if [ $((($i - 231) % 12)) -eq 0 ]; then echo; fi
+    fi
+done
+
+# ----------------------------------------------------------------------------
