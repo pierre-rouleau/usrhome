@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 19:02:12 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-04 10:58:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -468,7 +468,7 @@ alias use-sdkman='source $USRHOME_DIR/ibin/envfor-sdkman'
 # Set shortcut functions for Bash and the Z shell
 # -----------------------------------------------
 
-__usrhome__cd()
+usrhome_cd()
 {
     # Arguments:
     # - 1: string: name of the environment variable identifying directory
@@ -495,17 +495,17 @@ fi
 
 cdh()
 {
-    __usrhome__cd "USRHOME_DIR_MY" "$USRHOME_DIR_MY" "$1"
+    usrhome_cd "USRHOME_DIR_MY" "$USRHOME_DIR_MY" "$1"
 }
 
 cdlic()
 {
-    __usrhome__cd "USRHOME_DIR_LIC" "$USRHOME_DIR_LIC" "$1"
+    usrhome_cd "USRHOME_DIR_LIC" "$USRHOME_DIR_LIC" "$1"
 }
 
 cdlog()
 {
-    __usrhome__cd "USRHOME_DIR_LOG" "$USRHOME_DIR_LOG" "$1"
+    usrhome_cd "USRHOME_DIR_LOG" "$USRHOME_DIR_LOG" "$1"
 }
 
 
@@ -514,28 +514,28 @@ cdlog()
 
 __cd__contract()
 {
-    __usrhome__cd "USRHOME_DIR_CONTRACT" "$USRHOME_DIR_CONTRACT" "$1"
+    usrhome_cd "USRHOME_DIR_CONTRACT" "$USRHOME_DIR_CONTRACT" "$1"
 }
 alias cdcontract=__cd__contract
 alias cd-contract=__cd__contract
 
 __cd__public()
 {
-    __usrhome__cd "USRHOME_DIR_PUBLIC" "$USRHOME_DIR_PUBLIC" "$1"
+    usrhome_cd "USRHOME_DIR_PUBLIC" "$USRHOME_DIR_PUBLIC" "$1"
 }
 alias cdpub=__cd__public
 alias cd-public=__cd__public
 
 __cd__local()
 {
-    __usrhome__cd "USRHOME_DIR_LOCAL" "$USRHOME_DIR_LOCAL" "$1"
+    usrhome_cd "USRHOME_DIR_LOCAL" "$USRHOME_DIR_LOCAL" "$1"
 }
 alias cdlocal=__cd__local
 alias cd-local=__cd__local
 
 __cd__other()
 {
-    __usrhome__cd "USRHOME_DIR_OTHER" "$USRHOME_DIR_OTHER" "$1"
+    usrhome_cd "USRHOME_DIR_OTHER" "$USRHOME_DIR_OTHER" "$1"
 }
 alias cdother=__cd__other
 alias cd-other=__cd__other
@@ -544,7 +544,7 @@ alias cd-other=__cd__other
 
 cdtmp()
 {
-    __usrhome__cd "USRHOME_DIR_TMP" "$USRHOME_DIR_TMP" "$1"
+    usrhome_cd "USRHOME_DIR_TMP" "$USRHOME_DIR_TMP" "$1"
 }
 
 __cd__()
