@@ -1,0 +1,201 @@
+#!/bin/sh
+# SH FILE: macos-fix-iworks
+#
+# Purpose   : Prevent macOS to prompt for upgrading Number, Pages and Keynotes.
+# Created   : Friday, October  2 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-02 10:12:43 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# The latest version of macOS Number, Pages and Keynotes are slower and
+# annoyingly full of pop-ups.  Their slowness is related to AI tools and the
+# connection to the cloud.  The previous versions of these applications are
+# still distributed and installed by default but nag the user to upgrade.
+#
+# This script disables the upgrading.
+# It can be executed multiple times.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# macOS with Number 14.5 installed
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+pgm_name="$(basename "$0")"
+apps="Numbers Pages Keynote"
+
+print_usage ()
+{
+    printf -- "
+%s -- Fix iWorks suite: stop upgrade nagging
+      on version 14.5 through 14.9, and 15.0.
+
+ Usage: %s -h | --help
+
+  • Print this help information.
+
+ Usage: %s [-b DIR | --backup=DIR] [-n | --no-backup]
+
+  • Change the defaults of the iWorks applications (%s)
+    to prevent them from periodically nagging the user to upgrade
+    to the new and slower applications promoted by Apple.
+
+  • First backup the original plist files in a directory specified
+    by the -b or --backup option.
+  • Prompt the user for the directory to store the backup file
+    if its is not identified by the -b|--backup option unless
+    the -n|--no-backup option is also specified.
+
+" "$pgm_name" "$pgm_name" "$pgm_name" "$apps"
+}
+
+# ----------------------------------------------------------------------------
+# Initialize and parse command line
+
+backup_dir=""
+do_backup=-1 # -1 := unassigned, 0 := no, 1 := yes
+exit_code=0
+
+# Parse Command-Line Options; in POSIX compliant-way
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h|--help)
+            print_usage
+            exit 0
+            ;;
+        -n|--no-backup)
+            do_backup=0
+            shift
+            ;;
+        -b)
+            if [ -n "$2" ]; then
+                backup_dir="$2"
+                do_backup=1
+                shift 2
+            else
+                printf -- "** ERROR: -b requires a path argument.\n" >&2
+                exit 1
+            fi
+            ;;
+        --backup=*)
+            # Extract the path following the '=' sign
+            backup_dir="${1#*=}"
+            if [ -n "$backup_dir" ]; then
+                do_backup=1
+                shift
+            else
+                printf -- "** ERROR: --backup= requires a non-empty path argument.\n" >&2
+                exit 1
+            fi
+            ;;
+        *)
+            printf -- "** ERROR: Unknown option: %s\n" "$1" >&2
+            printf -- "Use '%s --help' for usage details.\n" "$pgm_name" >&2
+            exit 1
+            ;;
+    esac
+done
+
+# --
+# Prompt for backup directory if none was specified and --no-prompt is not used.
+
+if [ "$do_backup" -eq -1 ]; then
+    printf -- "Do you wish to backup iWorks preference first? (y/n): "
+    read -r response
+    case "$response" in
+        [yY]|[yY][eE][sS])
+            printf -- "Enter backup directory path (Default: ~/Desktop/iWork_Backup): "
+            read -r user_path
+            # Fallback to default if user just pressed Enter
+            if [ -z "$user_path" ]; then
+                backup_dir="${HOME}/Desktop/iWork_Backup"
+            else
+                # Evaluate leading tilde (~) explicitly; 'read' doesn't auto-expand it
+                case "$user_path" in
+                    ~*) user_path="${HOME}${user_path#\~}" ;;
+                esac
+                backup_dir="$user_path"
+            fi
+            do_backup=1
+            ;;
+        *)
+            printf -- "- Proceeding without creating backups.\n"
+            do_backup=0
+            ;;
+    esac
+fi
+
+# ----------------------------------------------------------------------------
+# - Proceed
+
+for app in $apps; do
+    app_path="/Applications/${app}.app"
+    plist_id="com.apple.iWork.${app}"
+
+    # Check if the app directory exists
+    if [ -d "$app_path" ]; then
+        # Fetch the exact version string
+        version=$(defaults read "$app_path/Contents/Info" CFBundleShortVersionString 2>/dev/null)
+        printf -- "Found: %s (Version %s)\n" "$app" "$version"
+
+        # POSIX-compliant case matching
+        case "$version" in
+            14.[5-9]*|15.0*)
+                printf -- "   --> This version prompts for upgrades. Preparing fix...\n"
+
+                # Handle Backup Logic
+                if [ "$do_backup" -eq 1 ]; then
+                    # Create custom backup directory if missing
+                    if [ ! -d "$backup_dir" ]; then
+                        mkdir -p "$backup_dir"
+                        printf -- "- Created backup directory at %s\n" "$backup_dir"
+                    fi
+
+                    src_plist="${HOME}/Library/Preferences/${plist_id}.plist"
+                    dest_plist="${backup_dir}/${plist_id}.plist.bak"
+
+                    if [ -f "$src_plist" ]; then
+                        if [ ! -f "$dest_plist" ]; then
+                            cp "$src_plist" "$dest_plist"
+                            printf -- "- Saved original config to %s\n" "$dest_plist"
+                        else
+                            printf -- "- Existing backup found. Skipping overwrite.\n"
+                        fi
+                    else
+                        printf -- "- No existing preference file found to back up.\n"
+                    fi
+                fi
+
+                # Apply the preference flag to turn off the application nagging prompt
+                defaults write "$plist_id" TSADisableUpdateNotifications -bool yes
+
+                # Verify it was written successfully
+                verification=$(defaults read "$plist_id" TSADisableUpdateNotifications 2>/dev/null)
+                if [ "$verification" = "1" ]; then
+                    printf -- "SUCCESS: Prompts permanently disabled for %s.\n" "$app"
+                else
+                    printf -- "**ERROR: Failed to write setting for %s.\n" "$app"
+                    exit_code=2
+                fi
+                ;;
+            *)
+                printf -- "   --> This version (%s) does not require the prompt fix.\n" "$version"
+                ;;
+        esac
+    else
+        printf -- "Not Found: %s is not installed in /Applications.\n" "$app"
+        exit_code=2
+    fi
+done
+exit "$exit_code"
+
+# ----------------------------------------------------------------------------
