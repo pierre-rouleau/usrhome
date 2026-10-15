@@ -4,7 +4,7 @@
 # Purpose   : Setup support for Hammerspoon: https://www.hammerspoon.org/
 # Created   : Thursday, October 15 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-15 15:31:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-15 15:45:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -109,13 +109,32 @@ if [ ! -d "${HAMMERSPOON_DIR}" ]; then
     exit 3
 fi
 
+if [ ! -x "${HAMMERSPOON_DIR}/hs" ]; then
+    printf "Hammerspoon hs executable is not present where expected, aborting!\n"
+    exit 3
+fi
+
+if [ -z "$USRHOME_DIR" ]; then
+    printf "\
+The USRHOME_DIR environment variable does not exists!
+Please review USRHOME installation.
+Aborting\n"
+    exit 3
+fi
+
 # --
 # At this point Hammerspoon is installed, create a symbolic link in
 # $USRHOME_DIR/bin/macos pointing to Hammerspoon hs command.
 
 if [ -L "${USRHOME_DIR}/bin/macos/hs" ]; then
     printf -- "The symlink %s already exists!\n" "${USRHOME_DIR}/bin/macos/hs"
-    exit 1
+    if [ "$(readlink "${USRHOME_DIR}/bin/macos/hs")" = "${HAMMERSPOON_DIR}/hs" ]; then
+        printf -- "And it points to the expected location.  No need to do anything else.\n"
+        exit 0
+    else
+        printf -- "But it points to the wrong location.  Please check!\n"
+        exit 1
+    fi
 else
     ln -s "${HAMMERSPOON_DIR}/hs" "${USRHOME_DIR}/bin/macos/hs"
     printf -- "\
