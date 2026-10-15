@@ -4,7 +4,7 @@
 # Purpose   : Setup support for Hammerspoon: https://www.hammerspoon.org/
 # Created   : Thursday, October 15 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-15 15:48:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-15 16:00:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -73,7 +73,7 @@ prompt_yn()
         printf "%s [yn]? " "$1"
         if ! read -r yn; then
             prompt_yn_return=n
-            printf '\nCannot read a valid response; cancelling Emacs launch.\n' >&2
+            printf '\nCannot read a valid response; aborting.\n' >&2
             return 1
         fi
         case $yn in
@@ -135,13 +135,25 @@ if [ -L "${USRHOME_DIR}/bin/macos/hs" ]; then
         printf -- "But it points to the wrong location.  Please check!\n"
         exit 1
     fi
+elif [ -e "${USRHOME_DIR}/bin/macos/hs" ]; then
+    printf "ERROR: Destination exists but is not a symbolic link: %s\n" "${USRHOME_DIR}/bin/macos/hs" >&2
+    exit 1
 else
     if ln -s "${HAMMERSPOON_DIR}/hs" "${USRHOME_DIR}/bin/macos/hs"; then
         printf -- "\
 You can now use the hs Hammerspoon command.
-Try 'hs -h' to print its help\n"
+Try 'hs -h' to print its help.
+
+Also create the ~/.hammerspoon/init.lua, add the following to it
+and then reload Hammerspoon:
+
+  --
+  require(\"hs.ipc\")
+  --
+
+\n"
     else
-        printf -- "ERROR: Failed creating the symbolic link!\n"
+        printf -- "ERROR: Failed creating the symbolic link!\n" >&2
         exit 1
     fi
 fi
