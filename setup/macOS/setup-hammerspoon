@@ -4,7 +4,7 @@
 # Purpose   : Setup support for Hammerspoon: https://www.hammerspoon.org/
 # Created   : Thursday, October 15 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-15 16:00:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-15 16:09:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -49,6 +49,11 @@ print_usage()
 
   • Setup Hammerspoon: create an accessible hs command
     - Really a symlink to the real location of the hs command.
+
+    Once this is done you need to ensure that ~/.hammerspoon/init.lua
+    holds the following line and reload Hammerspoon:
+
+  require(\"hs.ipc\")
 
 " "$pgm_name" "$pgm_name" "$pgm_name"
 }
@@ -95,7 +100,7 @@ prompt_yn()
 
 if [ ! -d "${HAMMERSPOON_DIR}" ]; then
     printf "Hammerspoon ( https://www.hammerspoon.org/ ) is not installed.\n"
-    printf " Please install it manually\n".
+    printf " Please install it manually.\n"
     prompt_yn " Proceed, now that it is installed"
     if [ "$prompt_yn_return" = "n" ]; then
         printf -- "Aborting\n"
