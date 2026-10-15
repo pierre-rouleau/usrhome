@@ -1,0 +1,126 @@
+#!/bin/sh
+# SH FILE: setup-hammerspoon
+#
+# Purpose   : Setup support for Hammerspoon: https://www.hammerspoon.org/
+# Created   : Thursday, October 15 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-15 15:31:19 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+
+# Module Description
+# ------------------
+#
+# A simple script that creates a symlink to the hs command, the only command
+# of the Hammerspoon tool for macOS that provides the ability to create macOS
+# process controlling scripts written in Lua.
+#
+# The script does not install Hammerspoon, but checks for its presence inside
+# the /Applications directory.  You must install Hammerspoon manually by
+# downloading the .app Zip file from its website, expand it and move it into
+# /Applications.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+HAMMERSPOON_DIR="/Applications/Hammerspoon.app/Contents/Frameworks/hs"
+
+pgm_name="${0##*/}"
+
+print_usage()
+{
+    printf -- "
+%s -- Setup Hammerspoon into macOS.
+      See: https://www.hammerspoon.org/
+
+ Usage: %s -h | --help
+
+  • Print this help information.
+
+ Usage: %s
+
+  • Setup Hammerspoon: create an accessible hs command
+    - Really a symlink to the real location of the hs command.
+
+" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# Handle help request
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# --
+# Define a prompter
+
+prompt_yn_return=
+prompt_yn()
+{
+    # Arg 1: string prompt
+    while true; do
+        printf "%s [yn]? " "$1"
+        if ! read -r yn; then
+            prompt_yn_return=n
+            printf '\nCannot read a valid response; cancelling Emacs launch.\n' >&2
+            return 1
+        fi
+        case $yn in
+            [Yy]* )
+                prompt_yn_return=y
+                break
+                ;;
+            [Nn]* )
+                prompt_yn_return=n
+                break
+                ;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
+
+# --
+# Check if Hammerspoon is installed, prompt user if not.
+
+if [ ! -d "${HAMMERSPOON_DIR}" ]; then
+    printf "Hammerspoon ( https://www.hammerspoon.org/ ) is not installed.\n"
+    printf " Please install it manually\n".
+    prompt_yn " Proceed, now that it is installed"
+    if [ "$prompt_yn_return" = "n" ]; then
+        printf -- "Aborting\n"
+        exit 2
+    fi
+fi
+
+# Check that it's really installed
+if [ ! -d "${HAMMERSPOON_DIR}" ]; then
+    printf "Hammerspoon is still not installed, aborting!\n"
+    exit 3
+fi
+
+# --
+# At this point Hammerspoon is installed, create a symbolic link in
+# $USRHOME_DIR/bin/macos pointing to Hammerspoon hs command.
+
+if [ -L "${USRHOME_DIR}/bin/macos/hs" ]; then
+    printf -- "The symlink %s already exists!\n" "${USRHOME_DIR}/bin/macos/hs"
+    exit 1
+else
+    ln -s "${HAMMERSPOON_DIR}/hs" "${USRHOME_DIR}/bin/macos/hs"
+    printf -- "\
+You can now use the hs Hammerspoon command.
+Try 'hs -h' to print its help\n"
+fi
+
+# ----------------------------------------------------------------------------
