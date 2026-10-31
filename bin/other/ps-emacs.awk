@@ -3,7 +3,7 @@
 # Purpose   : List Emacs processes.
 # Created   : Monday, September 29 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-29 23:13:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 16:30:04 EDT, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -15,27 +15,25 @@
 #
 # that prints lines like this:
 #
-#   501 98197     1   0 Fri10am ttys003    0:36.73 /Users/roup/my/bin/emacs --chdir=/Users/roup/my/dvp/elisp/veri-kompass
+#   501 98197     1   0 Fri10am ttys003    0:36.73 /Users/some/my/bin/emacs --chdir=/Users/some/my/dvp/elisp/veri-kompass
 #   501 15680 15679   0  8Sep25 ttys007    1:28.05 emacs -nw .
 #
 # where the columns are:
 # 1   UID  : user ID
 # 2   PID  : process ID
-# 3   PPID : Parent process ID
+# 3   PPID : parent process ID
 # 4   C    : CPU utilization of process or thread
-# 5   STIME: system CPU time
+# 5   STIME: process start time.
 # 6   TTY  : controlling terminal
 # 7   TIME : total CPU time (user + system) since it started
 # 8   CMD  : command
 #
-# The script identify emacs processes from the 8th column and print these lines.
+# Print each original record whose command field (field 8) is exactly "emacs".
+# This comparison is case-sensitive and does not accept executable paths.
 #
-# To extract the current working directory of a process ID, we use
-# lsof and AWK again:
+# This script only filters records. It does not look up a CWD or change
+# the record's formatting.
 #
-#   lsof -a -d cwd -p $PPID -n -Fn | awk '/^n/ {print substr($0,2)}'
-#
-
 # ------------------------------------------------------------------------------
 # Dependencies
 # ------------
@@ -46,7 +44,10 @@
 # Code
 # ----
 #
+# Accept emacs, emacs.app, emacsclient, emacs-lucid, and architecture-suffixed
+# arm64 or x86_64 Emacs names with numeric version components separated by
+# underscores or dots.
 #
-$8 == "emacs"  { print $0 }
+$8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/  { print $0 }
 
 # ------------------------------------------------------------------------------

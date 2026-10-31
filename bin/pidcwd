@@ -4,7 +4,7 @@
 # Purpose   : Print the current working directory of specified process ID.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-22 17:22:26 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 13:14:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -63,10 +63,25 @@ fi
 # --
 # proceed
 
-if lsof -p "$1" > /dev/null 2>&1; then
-    lsof -a -d cwd -p "$1" -n -Fn | awk '/^n/ {print substr($0,2)}'
+# NOTE:
+#  When Linux lsof cannot read /proc/PID/cwd, it can place
+#   "(readlink: Permission denied)" in the CWD NAME field.
+#  This script strips the n marker and prints that diagnostic
+#  as the CWD. Therefore it reject NAME values containing the readlink
+#  diagnostic before printing them, and return an error instead.
+
+if cwd_info=$(lsof -a -d cwd -p "$1" -n -Fn 2>/dev/null); then
+    case "$cwd_info" in
+        *"Permission denied"*|*" (readlink:"*)
+            printf -- "*** Error pidcwd: cannot read CWD for PID %s\n" "$1" >&2
+            exit 1
+            ;;
+        *)
+            printf '%s\n' "$cwd_info" | awk '/^n/ {print substr($0,2)}'
+            ;;
+    esac
 else
-    printf -- "*** Error pidcwd: PID %s does not exists\n" "$1"
+    printf -- "*** Error pidcwd: cannot read CWD for PID %s\n" "$1" >&2
     exit 1
 fi
 

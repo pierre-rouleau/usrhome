@@ -3,7 +3,7 @@
 # Purpose   : Set SBCL for the Common Lisp command: 'lisp'.
 # Created   : Friday, April 16 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 18:28:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-30 23:31:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -35,11 +35,7 @@
 #  Code
 #  ----
 
-if basename "$0" 2> /dev/null; then
-    pgm_name="$(basename "$0")"
-else
-    pgm_name=envfor-lisp-with-sbcl
-fi
+pgm_name="${0##*/}"
 
 print_usage()
 {
