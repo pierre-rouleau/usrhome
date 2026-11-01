@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run GNU clisp via the 'lisp' command.
 # Created   : Tuesday, May 18 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 23:30:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 21:05:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,14 +30,15 @@
 # ------
 #
 #
-pgm_name="${0##*/}"
+pgm_name="$0"
 
 print_usage()
 {
     printf -- "
-%s:  Select GNU CLisp as Common Lisp executed by 'lisp'.
+use-lisp-with-clisp:  Select GNU CLisp as Common Lisp executed by 'lisp'.
 
      - Ref: https://www.gnu.org/software/clisp/
+     - Note: This is sourcing %s
 
 " "$pgm_name"
 }

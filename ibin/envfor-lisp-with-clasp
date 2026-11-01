@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run Clasp via the 'lisp' command.
 # Created   : Wednesday, February 11 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 23:30:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 21:04:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,14 +30,15 @@
 # ------
 #
 #
-pgm_name="${0##*/}"
+pgm_name="$0"
 
 print_usage()
 {
     printf -- "
-%s:  Select Clasp as Common Lisp executed by 'lisp'.
+use-lisp-with-clasp:  Select Clasp as Common Lisp executed by 'lisp'.
 
      - Ref: https://clasp-developers.github.io/
+     - Note: This is sourcing %s
 
 " "$pgm_name"
 }
