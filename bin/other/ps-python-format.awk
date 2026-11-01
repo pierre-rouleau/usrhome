@@ -3,7 +3,7 @@
 # Purpose   : EXtract Python process from psl-list putput.
 # Created   : Tuesday, September 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-30 07:58:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-01 08:40:12 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -19,9 +19,9 @@
 # where the columns are:
 # 1   UID  : user ID
 # 2   PID  : process ID
-# 3   PPID : Parent process ID
+# 3   PPID : parent process ID
 # 4   C    : CPU utilization of process or thread
-# 5   STIME: system CPU time
+# 5   STIME: process start time
 # 6   TTY  : controlling terminal
 # 7   TIME : total CPU time (user + system) since it started
 # 8   CMD  : command
@@ -46,11 +46,15 @@
 # ----
 #
 #
-$8~/[Pp]ython/{
-      command = "pidcwd " $2
-      command |& getline path_result
-      close(command)
-      print $0, "  ▶︎▶︎▶︎ CWD: ", path_result
-}
 
+$8 ~ /[Pp]ython/ {
+    # Do not reuse another process's CWD if this lookup fails.
+    path_result = ""
+    command = "pidcwd " $2
+    if ((command |& getline path_result) != 1) {
+        path_result = ""
+    }
+    close(command)
+    print $0, "  ▶︎▶︎▶︎ CWD: ", path_result
+}
 # ------------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run GNU clisp via the 'lisp' command.
 # Created   : Tuesday, May 18 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 18:24:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 21:26:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,18 +30,21 @@
 # ------
 #
 #
-if basename "$0" 2> /dev/null; then
-    pgm_name="$(basename "$0")"
+if [ -n "${BASH_VERSION-}" ]; then
+    pgm_name="${BASH_SOURCE[0]}"
+elif [ -n "${ZSH_VERSION-}" ]; then
+    pgm_name="${(%):-%x}"
 else
-    pgm_name=envfor-lisp-with-clisp
+    pgm_name="$0"
 fi
 
 print_usage()
 {
     printf -- "
-%s:  Select GNU CLisp as Common Lisp executed by 'lisp'.
+use-lisp-with-clisp:  Select GNU CLisp as Common Lisp executed by 'lisp'.
 
      - Ref: https://www.gnu.org/software/clisp/
+     - Note: This is sourcing %s
 
 " "$pgm_name"
 }

@@ -4,7 +4,7 @@
 # Purpose   : Prevent macOS to prompt for upgrading Number, Pages and Keynotes.
 # Created   : Friday, October  2 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-02 10:12:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-30 23:29:32 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,7 +30,7 @@
 # ----
 #
 #
-pgm_name="$(basename "$0")"
+pgm_name="${0##*/}"
 apps="Numbers Pages Keynote"
 
 print_usage ()

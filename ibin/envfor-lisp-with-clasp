@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run Clasp via the 'lisp' command.
 # Created   : Wednesday, February 11 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 18:24:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 21:25:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,18 +30,21 @@
 # ------
 #
 #
-if basename "$0" 2> /dev/null; then
-    pgm_name="$(basename "$0")"
+if [ -n "${BASH_VERSION-}" ]; then
+    pgm_name="${BASH_SOURCE[0]}"
+elif [ -n "${ZSH_VERSION-}" ]; then
+    pgm_name="${(%):-%x}"
 else
-    pgm_name=envfor-lisp-with-clasp
+    pgm_name="$0"
 fi
 
 print_usage()
 {
     printf -- "
-%s:  Select Clasp as Common Lisp executed by 'lisp'.
+use-lisp-with-clasp:  Select Clasp as Common Lisp executed by 'lisp'.
 
      - Ref: https://clasp-developers.github.io/
+     - Note: This is sourcing %s
 
 " "$pgm_name"
 }
