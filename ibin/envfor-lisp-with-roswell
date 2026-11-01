@@ -3,7 +3,7 @@
 # Purpose   : Set environment to be able to run Roswell-luanched Lisp REPL via the 'lisp' command.
 # Created   : Saturday, February 14 2026
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 21:08:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 21:24:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,7 +30,13 @@
 # ------
 #
 #
-pgm_name="$0"
+if [ -n "${BASH_VERSION-}" ]; then
+    pgm_name="${BASH_SOURCE[0]}"
+elif [ -n "${ZSH_VERSION-}" ]; then
+    pgm_name="${(%):-%x}"
+else
+    pgm_name="$0"
+fi
 
 print_usage()
 {

@@ -3,7 +3,7 @@
 # Purpose   : Set SBCL for the Common Lisp command: 'lisp'.
 # Created   : Friday, April 16 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 21:05:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 21:26:25 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -35,7 +35,13 @@
 #  Code
 #  ----
 
-pgm_name="$0"
+if [ -n "${BASH_VERSION-}" ]; then
+    pgm_name="${BASH_SOURCE[0]}"
+elif [ -n "${ZSH_VERSION-}" ]; then
+    pgm_name="${(%):-%x}"
+else
+    pgm_name="$0"
+fi
 
 print_usage()
 {
