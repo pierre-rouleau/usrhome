@@ -1,0 +1,38 @@
+# Sourced script: do-sanitize-path  -*- mode: sh; -*-
+#
+# Purpose   : Sanitize PATH.
+# Created   : Friday, November  6 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-06 15:17:41 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Bash/Zsh dispatcher to the do-sanitize-path script: fix issues in PATH value
+# and report any detected problems.
+#
+# This script is mostly used by other scripts that modify the PATH to validate
+# their changes and prevent problems.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#  USRHOME_SHELL environment variable set by startup scripts via $USRHOME/ibin/which-shell
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+# Using USRHOME_SHELL variable that USRHOME sets
+case "${USRHOME_SHELL:-}" in
+    zsh)
+        [ -f "${USRHOME_DIR}/ibin/do-sanitize-path.zsh" ] && . "${USRHOME_DIR}/ibin/do-sanitize-path.zsh"
+        ;;
+    bash)
+        [ -f "${USRHOME_DIR}/ibin/do-sanitize-path.sh" ] && . "${USRHOME_DIR}/ibin/do-sanitize-path.sh"
+        ;;
+esac
+
+# ----------------------------------------------------------------------------
