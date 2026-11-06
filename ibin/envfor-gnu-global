@@ -3,7 +3,7 @@
 # Purpose   : Add GNU Global support to the shell's environment.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-06 13:59:53 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-06 14:27:03 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -78,6 +78,8 @@ fi
 # Prevent multiple invocations
 if [ -n "${USRHOME__GNU_GLOBAL_VERSION:-}" ]; then
     printf -- "*** use-gnu-global %s is already active.\n" "${USRHOME__GNU_GLOBAL_VERSION}"
+    printf -- "    Start a new shell if a new version was installed since this shell started.\n"
+    printf -- "    This shell started %s seconds ago.\n" "$SECONDS"
     return 1
 fi
 
@@ -133,7 +135,7 @@ fi
 # Verbose activation Log
 
 if [ "${USRHOME_SHOW_PATH_ACTIVATION:-0}" = "1" ]; then
-    _gg_ver="$(${USRHOME_DIR_GNU_GLOBAL}/bin/global --version | head -n 1)"
+    _gg_ver="$("${USRHOME_DIR_GNU_GLOBAL}/bin/global" --version | head -n 1)"
     printf -- ". With %s activated from %s\n" "${_gg_ver}" "${USRHOME_DIR_GNU_GLOBAL}"
 fi
 
