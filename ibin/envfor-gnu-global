@@ -1,0 +1,146 @@
+# Sourced script: envfor-gnu-global  -*- mode: sh; -*-
+#
+# Purpose   : Add GNU Global support to the shell's environment.
+# Created   : Friday, November  6 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-06 13:59:53 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Installs support for GNU Global tools in the current shell.
+# - Invocation: use-gnu-global
+#   - The alias is defined in: $USRHOME_DIR/ibin/setfor-alias
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - GNU Global installed in a directory identified by USRHOME_DIR_GNU_GLOBAL
+#   environment variable set inside your $USRHOME_DIR_USRCFG/setfor-all-config.sh
+#
+# - Build Instructions
+#
+#    GNU Global must have been built from source and the binary placed
+#    into a local directory.
+#    - Download the latest from https://ftp.gnu.org/pub/gnu/global/
+#    - Expand the file
+#    - cd to the directory and execute the following commands. I normally
+#      store the output inside the $HOME/my/bin/gnu-global directory.
+#      Use what you prefer.
+#
+#      ./configure --prefix=$HOME/my/bin/gnu-global --with-universal-ctags=/opt/homebrew/bin/ctags --with-ncurses --with-sqlite3
+#      make
+#      make install
+#
+#   With these instructions, USRHOME_DIR_USRCFG value would be $HOME/my/bin/gnu-global
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+
+if [ -n "${BASH_VERSION-}" ]; then
+    pgm_name="${BASH_SOURCE[0]}"
+elif [ -n "${ZSH_VERSION-}" ]; then
+    pgm_name="${(%):-%x}"
+else
+    pgm_name="$0"
+fi
+
+print_usage()
+{
+    printf -- "
+use-gnu-global:  Activate GNU Global commands in current shell.
+     - Add GNU Global bin directory to PATH
+     - Add GNU Global man directory to MANPATH
+
+     - Note: This is sourcing %s
+
+" "$pgm_name"
+}
+
+# --
+# Validate arguments
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    print_usage
+    return 0
+fi
+if [ -n "$1" ]; then
+    printf -- "*** use-gnu-global ERROR: Invalid argument '%s'\n" "$1"
+    printf -- "    Type 'use-gnu-global -h' to show usage.\n"
+    return 1
+fi
+
+# --
+# Prevent multiple invocations
+if [ -n "${USRHOME__GNU_GLOBAL_VERSION:-}" ]; then
+    printf -- "*** use-gnu-global %s is already active.\n" "${USRHOME__GNU_GLOBAL_VERSION}"
+    return 1
+fi
+
+
+# -- Validate environment
+#    - Check presence of USRHOME_DIR_GNU_GLOBAL
+if [ -z "${USRHOME_DIR_GNU_GLOBAL}" ]; then
+    printf "*** use-gnu-global ERROR: \$USRHOME_DIR_GNU_GLOBAL is not defined.\n" >&2
+    printf "    To fix this, define it inside your usrcfg/setfor-all-config.sh file.\n" >&2
+    printf "    Example: export USRHOME_DIR_GNU_GLOBAL=\"\$HOME/my/bin/gnu-global\"\n" >&2
+    return 1
+fi
+#    - Check validity of USRHOME_DIR_GNU_GLOBAL
+if [ ! -d "${USRHOME_DIR_GNU_GLOBAL}/bin" ]; then
+    printf "*** use-gnu-global ERROR: Directory does not exist at \"%s/bin\"\n" "${USRHOME_DIR_GNU_GLOBAL}" >&2
+    printf "    Please verify the path defined in your usrcfg/setfor-all-config.sh file.\n" >&2
+    return 1
+fi
+
+# 2. Ensure path management and tracing infrastructure are loaded
+# If the framework tracing functions are missing, hydrate them first
+if ! command -v usrhome_trace_in >/dev/null 2>&1; then
+    if [ -f "${USRHOME_DIR}/ibin/shell-tracing.sh" ]; then
+        . "${USRHOME_DIR}/ibin/shell-tracing.sh"
+    else
+        # Safe fallback: create empty stubs if shell-tracing.sh isn't found
+        usrhome_trace_in() { :; }
+        usrhome_trace_out() { :; }
+    fi
+fi
+#    - Ensure path management infrastructure is sourced
+#      If the framework function isn't loaded yet, import it from setfor-path
+if ! command -v prepend_to_path >/dev/null 2>&1; then
+    . "${USRHOME_DIR}/ibin/setfor-path"
+fi
+
+# --
+# Proceed
+
+# -- Add GNU Global to PATH
+prepend_to_path "${USRHOME_DIR_GNU_GLOBAL}/bin"
+
+# -- Add GNU Global Manual Pages To MANPATH
+if [ -d "${USRHOME_DIR_GNU_GLOBAL}/share/man" ]; then
+    if [ -z "${MANPATH}" ]; then
+        export MANPATH="${USRHOME_DIR_GNU_GLOBAL}/share/man:"
+    else
+        export MANPATH="${USRHOME_DIR_GNU_GLOBAL}/share/man:${MANPATH}"
+    fi
+fi
+
+# --
+# Verbose activation Log
+
+if [ "${USRHOME_SHOW_PATH_ACTIVATION:-0}" = "1" ]; then
+    _gg_ver="$(${USRHOME_DIR_GNU_GLOBAL}/bin/global --version | head -n 1)"
+    printf -- ". With %s activated from %s\n" "${_gg_ver}" "${USRHOME_DIR_GNU_GLOBAL}"
+fi
+
+# --
+# Cache GNU Global in envar used as gate.
+USRHOME__GNU_GLOBAL_VERSION="${_gg_ver}"
+export USRHOME__GNU_GLOBAL_VERSION
+unset _gg_ver
+
+# ----------------------------------------------------------------------------
