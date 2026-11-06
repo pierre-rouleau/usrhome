@@ -402,15 +402,18 @@ The files used by the *use-ENV* commands.  These commands setup the current
 shell to use a specific set of commands or tools.  USRHOME provides some of
 these commands:
 
-========================================== ========================================================
-``$USRHOME/ibin`` File                     Purpose
-========================================== ========================================================
-`envfor-cbr`_                              Implements the `use-cbr command`_.
-`envfor-diff`_                             Implements the `use-diff command`_ that sets up how
-                                           USRHOME diff_ operates in the current shell.
-`envfor-emacs-for-man`_                    Implements the `use-emacs-for-man command`_.
-`envfor-pel`_                              Implements the `pel command`_.
-========================================== ========================================================
+===================== =========================== ========================================================
+Alias                 ``$USRHOME/ibin`` File      Purpose
+===================== =========================== ========================================================
+**use-cbr**           `envfor-cbr`_               Implements the `use-cbr command`_.
+**use-diff**          `envfor-diff`_              Implements the `use-diff command`_ that sets up how
+                                                  USRHOME diff_ operates in the current shell.
+**use-emacs-for-man** `envfor-emacs-for-man`_     Activate Emacs as Man reader.
+**use-gnu-global**    `envfor-gnu-global`_        Activate the GNU Global tool-chain in shell.
+                                                  See source for information on how to install GNU Global.
+
+**pel**               `envfor-pel`_               Change current directory to PEL root. Set terminal title.
+===================== =========================== ========================================================
 
 The user would probably want to create some extra ones;  the
 `usrhome/template/usrcfg/ibin`_ directory provides some examples.
@@ -1257,11 +1260,12 @@ USRHOME Command Name               Description
                                      colon-separated directories.
                                    - Prepends only the directories that exits
                                      and are not already present in PATH.
+
                                     - Examples:
 
-                                     - ``prepend_to_path ~/my-bin``
-                                     - ``prepend_to_path ~/my-bin:$HOME/other-bin``
-                                     - ``prepend_to_path $HOME/my-bin:$HOME/other-bin``
+                                      - ``prepend_to_path ~/my-bin``
+                                      - ``prepend_to_path ~/my-bin:$HOME/other-bin``
+                                      - ``prepend_to_path $HOME/my-bin:$HOME/other-bin``
 
                                    - **Caution**: shells only expand the ~ at the beginning
                                      of strings, therefore you cannot use it elsewhere in the
@@ -2212,9 +2216,10 @@ a command available to the Operating System, or adding support for the tools
 required for a programming language.
 
 The method:
-  Add a ``use-ENV`` alias command that sources a ``envfor-ENV`` script,
+
+- Add a ``use-ENV`` alias command that sources a ``envfor-ENV`` script,
   where ``ENV`` is the name of the environment concept.
-  Add the alias statement into the usrcfg/do-user-zshrc.zsh file.
+- Add the alias statement into the usrcfg/do-user-zshrc.zsh file.
   Store the ``envfor-ENV`` script inside the usrcfg directory.
 
 Examples follow.
@@ -2508,6 +2513,7 @@ Thanks!
 .. _envfor-cbr:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
 .. _envfor-emacs-for-man:                              https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
 .. _envfor-pel:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-pel
+.. _envfor-gnu-global:                                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gnu-global
 .. _setfor-alias:                                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
 .. _setfor-bash-alias:                                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-bash-alias
 .. _setfor-path:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-path
