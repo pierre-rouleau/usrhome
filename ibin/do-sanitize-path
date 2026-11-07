@@ -3,7 +3,7 @@
 # Purpose   : Sanitize PATH.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-06 15:17:41 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-06 17:51:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,10 +28,10 @@
 # Using USRHOME_SHELL variable that USRHOME sets
 case "${USRHOME_SHELL:-}" in
     zsh)
-        [ -f "${USRHOME_DIR}/ibin/do-sanitize-path.zsh" ] && . "${USRHOME_DIR}/ibin/do-sanitize-path.zsh"
+        [ -f "${USRHOME_DIR}/ibin/do-sanitize-path.zsh" ] && . "${USRHOME_DIR}/ibin/do-sanitize-path.zsh" "$@"
         ;;
     bash)
-        [ -f "${USRHOME_DIR}/ibin/do-sanitize-path.sh" ] && . "${USRHOME_DIR}/ibin/do-sanitize-path.sh"
+        [ -f "${USRHOME_DIR}/ibin/do-sanitize-path.sh" ] && . "${USRHOME_DIR}/ibin/do-sanitize-path.sh" "$@"
         ;;
 esac
 
