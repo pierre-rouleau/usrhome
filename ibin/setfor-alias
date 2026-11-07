@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-06 13:25:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-06 18:06:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -440,15 +440,16 @@ fi
 alias setenv='source $USRHOME_DIR/ibin/do-setenv'
 alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
 alias add-to-path='source $USRHOME_DIR/ibin/do-add-to-path'
-case $USRHOME_SHELL in
-    zsh)
-        alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.zsh'
+
+case "${USRHOME_SHELL:-}" in
+    bash)
+        . "${USRHOME_DIR}/ibin/xtra/sanitize-path.bash" || return 1
         ;;
-    *)
-        # For Bash and other shells use the POSIX compliant script.
-        alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.sh'
+    zsh)
+        . "${USRHOME_DIR}/ibin/xtra/sanitize-path.zsh" || return 1
         ;;
 esac
+alias sanitize-path='_usrhome_sanitize_path'
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Change Current Directory
