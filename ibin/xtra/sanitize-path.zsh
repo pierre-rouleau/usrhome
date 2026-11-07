@@ -3,7 +3,7 @@
 # Purpose   : PATH sanitizer for Zsh.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-06 18:17:58 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-07 13:39:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,7 +24,7 @@
 #
 #
 
-. "${USRHOME_DIR}/ibin/xtra/sanitize-path-core.sh"
+. "${USRHOME_DIR}/ibin/xtra/sanitize-path-core.sh" || return 1
 
 _usrhome_sanitize_path_validate() {
     zmodload zsh/parameter || return 1

@@ -3,7 +3,7 @@
 # Purpose   : Core PATH-like variable sanitize logic.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-07 07:23:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-07 13:37:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -67,9 +67,7 @@ _usrhome_sanitize_path_value() (
             done
         fi
 
-        if [ "$duplicate" -eq 0 ] &&
-           { [ -n "$entry" ] ||
-             { [ "$target" != PATH ] && [ "$target" != MANPATH ]; }; }; then
+        if [ "$duplicate" -eq 0 ] && [ -n "$entry" ]; then
             if [ "$first" -eq 0 ]; then
                 result="${result}:"
             fi
