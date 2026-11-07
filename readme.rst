@@ -30,9 +30,9 @@ USRHOME -- Easily Clonable Unix Shell Configuration & Tools
 Introduction
 ============
 
-USRHOME is Unix shell configuration project that provides a set of shell
-script tools.  It provides:
+USRHOME is a Unix shell configuration project that provides:
 
+- A **secure**, **specialized** and **configurable** multi-shell environment.
 - Tools to *instrument* shells: specialize shells to
   add support for various tools, while leaving the main login shell intact if
   needed.
@@ -49,7 +49,6 @@ adds gcc-based C++ compiler on macOS while keeping the Clang as default for
 its normal shell. Each shell can have its own, independent PATH easily set by
 the script that controls the shell environment.  You retain the standard shell
 untouched unless you want to activate some of these environments inside it.
-
 
 USRHOME support:
 
@@ -111,7 +110,7 @@ variable to control the behaviour of some features when they are invoked
 inside a shell running inside Emacs.
 
 
-USRHOME makes one important assumption about the organization of the
+USRHOME makes **one important assumption** about the organization of the
 directories in your file system: it specifically assumes that:
 
 - The directory that holds the USRHOME directory tree also holds
@@ -132,6 +131,77 @@ To help you create your *usrcfg* repository, USRHOME provides a set of `usrcfg
 template files`_ that correspond to what I use in my *usrcfg* repository.
 This also corresponds to what is shown in the diagram included in the section
 titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
+
+Once you have this setup, you will have a development environment that is
+highly configurable, easy to reproduce in multiple hosts and highly
+**secure** by eliminating problems that can lead to several shell-based
+exploits.  You will have tools to take control your PATH, MANPATH variables
+while USRHOME shells will sanitize their value and warn you when the
+sanization changes them.
+
+
+USRHOME Security Architecture
+=============================
+
+USRHOME is designed following strict Unix security principles. Rather than
+assuming the host runtime environment is perfectly configured, USRHOME treats
+shell initialization defensively. It actively mitigates common local
+environment-manipulation, path-poisoning, and supply-chain threats through
+several structural mechanisms:
+
+**No Elevated Privileges (Secure User-Space Sandbox)**
+
+  The framework completely bypasses the need for ``sudo`` or administrative
+  intervention during toolchain deployments. By strictly leveraging local home
+  folder structures (e.g., configuring software with
+  ``--prefix=$HOME/local/...``), the root operating system, system binaries,
+  and macOS System Integrity Protection (SIP) remain entirely isolated and
+  protected from malicious or poorly written installation scripts.
+
+**Lazy Environment Loading (Reduced Attack Surface)**
+
+  Instead of permanently polluting the global system ``PATH`` across all
+  terminal sessions, external software suites are managed on an on-demand
+  basis. Primitives are kept dormant and unmapped until a developer explicitly
+  hydrates a targeted terminal session via designated framework wrappers (such
+  as the ``use-gnu-global`` macro alias). This strictly limits the runtime
+  exposure window of external binaries.
+
+**Automated Path Firewalling and Sanitization**
+
+  On shell initialization and nested subshell spawning, USRHOME drops
+  lower-level security firewalls via its ``do-sanitize-path.sh`` and
+  ``do-sanitize-path.zsh`` engine utilities. These scripts parse and clean
+  runtime configurations to neutralize the dangerous "Empty Path Loophole":
+
+  - It detects and strips out double-separators (``::``), leading colons, and
+    trailing colons (``:``), which POSIX shells interpret as the Current
+    Working Directory (``.``). This prevents malicious local executables
+    dropped in shared spaces (like a shared repository or a messy
+    ``~/Downloads`` folder) from hijacking and shadowing core terminal
+    binaries.
+
+  - It aggressively removes duplicate path configurations, enforcing
+    deterministic lookups and stripping away redundant or hijacked lookup
+    paths.
+
+**Proactive Supply-Chain Auditing**
+
+  USRHOME features integrated background checking hooks built directly into
+  its core path management infrastructure. On startup, initialization logic
+  scans environment states to cross-reference and report high-severity
+  packages or compromised dependencies (such as the ``xz`` utility
+  vulnerability spectrum), warning the user before operations execute.
+
+**Strict Privacy Boundary Separation**
+
+  By separating core framework logic (``usrhome``) from localized parameters
+  (``usrcfg``), the design enforces an absolute boundary between open-source
+  framework assets and sensitive host configurations. Personal deployment
+  variables, internal server network topologies, and private paths stay
+  contained within an isolated, private repository ecosystem, minimizing the
+  risk of accidental exposure to public version-control systems.
+
 
 Quick Overview Example
 ======================
@@ -1293,9 +1363,12 @@ USRHOME Command Name               Description
                                    - ``showpath MAN``: prints MANPATH without numbers.
 
                                    If the format of the path variable is incorrect, the command
-                                   prints an error message on stderr. The errors detected include
-                                   a leading or trailing separator or multiple consecutive
-                                   separators.  The exit code are:
+                                   prints an error message on stderr. Empty entries are errors,
+                                   except for one MANPATH marker: a leading colon, a trailing
+                                   colon, or one internal double colon. Multiple markers and
+                                   whitespace-only entries are errors.
+
+                                   The exit codes are:
 
                                    - 0 on success (or help),
                                    - 1 on invalid argument(s),
@@ -1317,11 +1390,20 @@ USRHOME Command Name               Description
                                    PATH value the system had inside the shell before USRHOME
                                    added support for itself and other tools.
 
-``sanitize-path``                  Check the PATH value of the current shell and sanitizes it:
+``sanitize-path [VARIABLE]``       Sanitize a PATH-like variable in the current shell.
+                                   The default variable is PATH. The command removes leading
+                                   whitespace from entries, removes duplicates while keeping the
+                                   first occurrence, and removes empty entries.
 
-                                   - removes duplicate entries.
-                                   - removes empty entries,
-                                   - print a warning when it modifies PATH.
+                                   For MANPATH, one original empty entry is retained if it is
+                                   the only exception: a leading colon, a trailing colon, or an
+                                   internal double colon. Multiple empty entries or a
+                                   whitespace-only entry invalidate all exceptions. An internal
+                                   marker is removed if deduplication leaves no directory on
+                                   one side.
+
+                                   In an interactive shell, the command warns when it changes
+                                   the value, unless TERM is ``dumb``.
 ================================== ================================================================
 
 Dynamic Path Management

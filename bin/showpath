@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-06 23:07:46 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-07 15:18:43 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -110,6 +110,31 @@ else
 fi
 
 
+# Check separator fields without changing the caller's variables.
+showpath_valid_separators() (
+    rest=$1
+    variable=$2
+    markers=0
+    directories=0
+    while :; do
+        raw=${rest%%:*}
+        entry=${raw#"${raw%%[![:space:]]*}"}
+        if [ -z "$entry" ]; then
+            # Whitespace-only fields cannot be MANPATH markers.
+            [ "$variable" = MANPATH ] && [ -z "$raw" ] || return 1
+            markers=$((markers + 1))
+            [ "$markers" -le 1 ] || return 1
+        else
+            directories=$((directories + 1))
+        fi
+        case "$rest" in
+            *:*) rest=${rest#*:} ;;
+            *) break ;;
+        esac
+    done
+    [ "$directories" -gt 0 ]
+)
+
 
 show_path()
 {
@@ -143,17 +168,8 @@ show_path()
             printf -- "- "
             echo "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
         fi
-        if echo "$path_value" | grep '::' > /dev/null; then
-            >&2 echo "ERROR: $vname has empty entries!"
-            exit 3
-        elif echo "$path_value" | grep '^:' > /dev/null; then
-            >&2 echo "ERROR: $vname starts with an empty entry!"
-            exit 3
-        elif echo "$path_value" | grep ':$' > /dev/null; then
-            if [ "$vname" != "MANPATH" ]; then
-                >&2 echo "ERROR: $vname ends with an empty entry!"
-                exit 3
-            fi
+        if ! showpath_valid_separators "$path_value" "$vname"; then
+            >&2 echo "ERROR: $vname has invalid empty entries!"
         fi
     fi
 }
