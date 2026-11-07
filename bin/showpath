@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-05 16:41:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-06 23:07:46 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -150,8 +150,10 @@ show_path()
             >&2 echo "ERROR: $vname starts with an empty entry!"
             exit 3
         elif echo "$path_value" | grep ':$' > /dev/null; then
-            >&2 echo "ERROR: $vname ends with an empty entry!"
-            exit 3
+            if [ "$vname" != "MANPATH" ]; then
+                >&2 echo "ERROR: $vname ends with an empty entry!"
+                exit 3
+            fi
         fi
     fi
 }
