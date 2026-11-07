@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-07 15:18:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-07 15:41:27 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -145,11 +145,11 @@ show_path()
 
     eval path_value='$'$vname
     if [ -z "$path_value" ]; then
-        >&2 echo "WARNING: $vname is not defined!"
+        printf -- "WARNING: $vname is not defined!\n" >&2
         if [ "$vname" = "MANPATH" ]; then
             if command -v manpath > /dev/null 2>&1; then
                 if [ -n "$(manpath)" ]; then
-                    >&2 echo " However the manpath command provides the list:"
+                    printf -- " However the manpath command provides the list:\n" >&2
                     if [ "$numbered" = "true" ]; then
                         manpath | tr ':' '\n' | nl -b a -n ln
                     else
@@ -163,13 +163,14 @@ show_path()
         exit 2
     else
         if [ "$numbered" = "true" ]; then
-            echo "$path_value" | tr ':' '\n' | nl -b a -n ln
+            printf -- "%s\n" "$path_value" | tr ':' '\n' | nl -b a -n ln
         else
             printf -- "- "
-            echo "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
+            printf -- "%s\n" "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
         fi
         if ! showpath_valid_separators "$path_value" "$vname"; then
-            >&2 echo "ERROR: $vname has invalid empty entries!"
+            printf -- "ERROR: %s has invalid empty entries!\n" "$vname" >&2
+            exit 3
         fi
     fi
 }

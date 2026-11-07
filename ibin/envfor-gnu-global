@@ -3,7 +3,7 @@
 # Purpose   : Add GNU Global support to the shell's environment.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-06 15:10:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-07 16:18:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -134,9 +134,11 @@ fi
 # --
 # Sanitize PATH
 if [ -f "${USRHOME_DIR}/ibin/do-sanitize-path" ]; then
-    . "${USRHOME_DIR}/ibin/do-sanitize-path"
+    . "${USRHOME_DIR}/ibin/do-sanitize-path" || return 1
+    if [ -d "${USRHOME_DIR_GNU_GLOBAL}/share/man" ]; then
+        . "${USRHOME_DIR}/ibin/do-sanitize-path" MANPATH || return 1
+    fi
 fi
-
 
 # --
 # Verbose activation Log

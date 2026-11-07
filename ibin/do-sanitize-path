@@ -3,7 +3,7 @@
 # Purpose   : Sanitize PATH.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-07 07:25:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-07 16:36:14 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -29,17 +29,33 @@
 case "${USRHOME_SHELL:-}" in
     zsh)
         if [ -f "${USRHOME_DIR}/ibin/do-sanitize-path.zsh" ]; then
-            . "${USRHOME_DIR}/ibin/do-sanitize-path.zsh" "$@"
+            . "${USRHOME_DIR}/ibin/do-sanitize-path.zsh" || return 1
         else
             printf '%s\n' 'Missing do-sanitize-path.zsh; PATH was not sanitized.' >&2
+            return 2
         fi
         ;;
     bash)
         if [ -f "${USRHOME_DIR}/ibin/do-sanitize-path.sh" ]; then
-            . "${USRHOME_DIR}/ibin/do-sanitize-path.sh" "$@"
+            . "${USRHOME_DIR}/ibin/do-sanitize-path.sh" "$@" || return 1
         else
             printf '%s\n' 'Missing do-sanitize-path.sh; PATH was not sanitized.' >&2
+            return 2
         fi
+        ;;
+
+    sh|dash|ksh)
+        if [ -f "${USRHOME_DIR}/ibin/do-sanitize-path.posix.sh" ] &&
+           [ -r "${USRHOME_DIR}/ibin/do-sanitize-path.posix.sh" ]; then
+            . "${USRHOME_DIR}/ibin/do-sanitize-path.posix.sh" || return 1
+        else
+            printf '%s\n' 'Missing or unreadable do-sanitize-path.posix.sh.' >&2
+            return 2
+        fi
+    ;;
+    *)
+        printf 'do-sanitize-path: unsupported shell: %s\n' "${USRHOME_SHELL:-<unset>}" >&2
+        return 2
         ;;
 esac
 
