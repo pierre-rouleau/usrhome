@@ -4,7 +4,7 @@
 # Purpose   : Run all tests using specific shells.
 # Created   : Sunday, November  8 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 13:59:13 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 15:12:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,16 +25,60 @@
 #
 #
 
-printf -- '==== /bin/sh\n'
-printf -- '     /bin/sh ./test/test-sanitize-path.sh\n'
-/bin/sh ./test/test-sanitize-path.sh
+# The test expects to run from the repository root.
+# Invoke this script with a path, for example ./test/run-tests.
+test_dir=$(CDPATH= cd -P "$(dirname "$0")" && pwd -P) || {
+    printf '%s\n' 'ERROR: Cannot locate the test directory.' >&2
+    exit 2
+}
+cd "$test_dir/.." || exit 2
 
-printf -- '==== bash\n'
-printf -- '     bash ./test/test-sanitize-path.sh\n'
-bash ./test/test-sanitize-path.sh
+test_file=./test/test-sanitize-path.sh
+if [ ! -f "$test_file" ] || [ ! -r "$test_file" ]; then
+    printf 'ERROR: Cannot read test file: %s\n' "$test_file" >&2
+    exit 2
+fi
 
-printf -- '\n\n==== Zsh\n'
-printf -- '   zsh -f ./test/test-sanitize-path.sh\n'
-zsh -f ./test/test-sanitize-path.sh
+passed=0
+failed=0
+skipped=0
+
+# Arguments: shell, optional shell arguments, test file.
+run_test() {
+    if ! command -v "$1" >/dev/null 2>&1; then
+        printf 'SKIP: %s is not available\n' "$1"
+        skipped=$((skipped + 1))
+        return
+    fi
+
+    printf '\n=== Running with %s ===\n' "$1"
+    # Run the test inside a separate shell process via "$@"
+    if "$@"; then
+        printf 'PASS: %s\n' "$1"
+        passed=$((passed + 1))
+    else
+        status=$?
+        printf 'FAIL: %s (status %s)\n' "$1" "$status" >&2
+        failed=$((failed + 1))
+    fi
+}
+
+run_test /bin/sh "$test_file"
+run_test bash "$test_file"
+run_test zsh -f "$test_file"
+
+printf '\nShell runs: %s passed, %s failed, %s skipped\n' \
+    "$passed" "$failed" "$skipped"
+
+if [ "$failed" -ne 0 ]; then
+    exit 1
+fi
+if [ "$passed" -eq 0 ]; then
+    printf '%s\n' 'ERROR: No shell runs were completed.' >&2
+    exit 2
+fi
+exit 0
+
+
 
 # ----------------------------------------------------------------------------
