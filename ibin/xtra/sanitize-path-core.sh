@@ -3,7 +3,7 @@
 # Purpose   : Core PATH-like variable sanitize logic.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-07 14:36:49 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 10:33:17 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -83,7 +83,12 @@
 # Code
 # ----
 #
+# This file provides the following functions.
+# They are called from other files and have the following call hierarchy.
 #
+# - _usrhome_sanitize_path
+#   - _usrhome_sanitize_path_value
+#   - _usrhome_sanitize_path_check_result
 
 _usrhome_sanitize_path_value() (
     # The subshell keeps these variables out of the calling shell.
@@ -190,6 +195,20 @@ _usrhome_sanitize_path_value() (
     printf '%s' "$_uspv_result"
 )
 
+# An empty PATH can cause the shell to search the current directory.
+_usrhome_sanitize_path_check_result() {
+    if [ "$1" = PATH ] && [ -z "$2" ]; then
+        if ! export PATH='/usr/bin:/bin'; then
+            printf "sanitize-path: could not set fallback PATH\n" >&2
+            return 1
+        fi
+        printf "sanitize-path: no PATH directories remain; using /usr/bin:/bin\n" >&2
+        return 1
+    fi
+    return 0
+}
+
+
 _usrhome_sanitize_path() {
     if [ "$#" -gt 1 ]; then
         printf '%s\n' 'Usage: sanitize-path [VARIABLE_NAME]' >&2
@@ -216,6 +235,9 @@ _usrhome_sanitize_path() {
     set -- "$1" "${2%.}"
     set -- "$1" "$2" "$(_usrhome_sanitize_path_value "$2" "$1"; printf '.')"
     set -- "$1" "$2" "${3%.}"
+
+    # Verify that we're not going to wipe the value of the path-like variable.
+    _usrhome_sanitize_path_check_result "$1" "$3" || return 9
 
     if [ "$2" != "$3" ] &&
        [ "${SHELL_IS_INTERACTIVE:-}" = true ] &&

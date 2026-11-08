@@ -149,14 +149,12 @@ shell initialization defensively. It actively mitigates common local
 environment-manipulation, path-poisoning, and supply-chain threats through
 several structural mechanisms:
 
-**No Elevated Privileges (Secure User-Space Sandbox)**
+**No Elevated Privileges**
 
-  The framework completely bypasses the need for ``sudo`` or administrative
-  intervention during toolchain deployments. By strictly leveraging local home
-  folder structures (e.g., configuring software with
-  ``--prefix=$HOME/local/...``), the root operating system, system binaries,
-  and macOS System Integrity Protection (SIP) remain entirely isolated and
-  protected from malicious or poorly written installation scripts.
+
+  Local-prefix installations do not require ``sudo``. Installation scripts
+  normally run with the invoking user's permissions. This does not sandbox
+  them or protect files accessible to that user.
 
 **Lazy Environment Loading (Reduced Attack Surface)**
 
@@ -1394,6 +1392,10 @@ USRHOME Command Name               Description
                                    The default variable is PATH. The command removes leading
                                    whitespace from entries, removes duplicates while keeping the
                                    first occurrence, and removes empty entries.
+
+                                   If no PATH entries remain, the command sets PATH to
+                                   ``/usr/bin:/bin``, reports the condition, and returns
+                                   status 9.
 
                                    For MANPATH, one original empty entry is retained if it is
                                    the only exception: a leading colon, a trailing colon, or an

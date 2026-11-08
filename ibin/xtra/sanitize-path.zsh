@@ -3,7 +3,7 @@
 # Purpose   : PATH sanitizer for Zsh.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-07 15:11:34 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 10:36:07 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -82,7 +82,7 @@ _usrhome_sanitize_path_validate() {
             return 0
             ;;
 
-        # Accept PATH, MANPATH, CDPATH and FDPATH
+        # Accept PATH, MANPATH, CDPATH and FPATH
         scalar-*)
             # Allow the special tied path parameters.
             case "$1" in
