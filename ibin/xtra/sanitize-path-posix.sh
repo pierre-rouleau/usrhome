@@ -3,7 +3,7 @@
 # Purpose   : Sanitize PATH-like variable content.  POSIX- Compliant logic.
 # Created   : Sunday, November 08 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 12:58:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 17:36:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -250,7 +250,7 @@ _usrhome_sanitize_path_value() (
 
 _usrhome_sanitize_path() {
     if [ "$#" -gt 1 ]; then
-        printf -- 'Usage: _usrhome_sanitize_path [VARIABLE_NAME]\n' >&2
+        usrhome_printf_error -- 'Usage: _usrhome_sanitize_path [VARIABLE_NAME]\n'
         return 1
     fi
     set -- "${1-PATH}"
@@ -258,7 +258,7 @@ _usrhome_sanitize_path() {
     # Only the validated name, not its value, is inserted into eval text.
     case $1 in
         ''|[0123456789]*|*[!abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*)
-            printf -- '*** ERROR sanitize-path: invalid variable name\n' >&2
+            usrhome_printf_error -- 'sanitize-path: invalid variable name\n'
             return 1
             ;;
     esac
@@ -266,7 +266,7 @@ _usrhome_sanitize_path() {
     # A readonly assignment can terminate a non-interactive shell.
     # Test it in a subshell, before assigning in the calling shell.
     if ! (eval '[ "${'"$1"'+x}" = x ] && '"$1"'=${'"$1"'}') 2>/dev/null; then
-        printf -- '*** ERROR sanitize-path: %s must be set and writable\n' "$1" >&2
+        usrhome_printf_error -- 'sanitize-path: %s must be set and writable\n' "$1"
         return 1
     fi
 
@@ -284,27 +284,27 @@ _usrhome_sanitize_path() {
     case $3 in
         *.0) set -- "$1" "$2" "${3%.0}" ;;
         *)
-            printf -- '*** ERROR sanitize-path: could not process %s\n' "$1" >&2
+            usrhome_printf_error -- 'sanitize-path: could not process %s\n' "$1"
             return 1
             ;;
     esac
 
     # Do not export an empty result. The original value remains unchanged.
     if [ -z "$3" ]; then
-        printf -- '*** ERROR sanitize-path: %s has no directories after cleanup\n' "$1" >&2
+        usrhome_printf_error -- 'sanitize-path: %s has no directories after cleanup\n' "$1"
         return 2
     fi
 
     # The assignment occurs in the calling shell.
     if ! export "$1=$3"; then
-        printf -- '*** ERROR sanitize-path: could not export %s\n' "$1" >&2
+        usrhome_printf_error -- 'sanitize-path: could not export %s\n' "$1"
         return 1
     fi
 
     if [ "$2" != "$3" ] &&
        [ "${SHELL_IS_INTERACTIVE:-}" = true ] &&
        [ "${TERM:-}" != dumb ]; then
-        printf -- 'USRHOME has sanitized your %s.\n' "$1" >&2
+        usrhome_printf_warning -- 'USRHOME has sanitized your %s.\n' "$1"
     fi
     return 0
 }
