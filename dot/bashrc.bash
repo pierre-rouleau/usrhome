@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2026-11-08 12:39:26 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 13:34:11 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -188,7 +188,9 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
     # Sanitize PATH
     # -------------
     #
-    _usrhome_sanitize_path
+    # Attempt to sanitize PATH.  On failure it will print a warning .
+    # If that occurs, continue configuring the shell.
+    _usrhome_sanitize_path || :
 fi
 
 # ----------------------------------------------------------------------------

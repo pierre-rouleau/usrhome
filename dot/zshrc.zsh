@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2026-11-08 12:43:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 13:34:09 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -66,7 +66,9 @@ usrhome_trace_in "~/.zshrc    --> \$USRHOME_DIR/dot/zshrc.zsh"
 # Sanitize PATH
 # -------------
 #
-_usrhome_sanitize_path
+# Attempt to sanitize PATH.  On failure it will print a warning .
+# If that occurs, continue configuring the shell.
+_usrhome_sanitize_path || :
 
 # ----------------------------------------------------------------------------
 # Activate the help for zsh builtins
