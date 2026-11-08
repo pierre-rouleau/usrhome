@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-06 13:25:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 12:19:32 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -94,7 +94,7 @@ usrhome_printf_warning()
     if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
         _usrhome_MAGENTA='\033[0;35m' # magenta
         _usrhome_NC='\033[0m' # No Color
-        printf "${_usrhome_MAGENTA}** WARNING: " >&2
+        printf -- "${_usrhome_MAGENTA}** WARNING " >&2
         # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
         printf -- "$@" >&2
         printf "${_usrhome_NC}" >&2
@@ -440,15 +440,24 @@ fi
 alias setenv='source $USRHOME_DIR/ibin/do-setenv'
 alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
 alias add-to-path='source $USRHOME_DIR/ibin/do-add-to-path'
-case $USRHOME_SHELL in
-    zsh)
-        alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.zsh'
-        ;;
-    *)
-        # For Bash and other shells use the POSIX compliant script.
-        alias sanitize-path='source $USRHOME_DIR/ibin/do-sanitize-path.sh'
-        ;;
-esac
+
+# Set sanitize-path alias if possible, warn otherwise.
+_usrhome_sanitize_file="${USRHOME_DIR:-}/ibin/xtra/sanitize-path-posix.sh"
+if [ -n "${USRHOME_DIR:-}" ] &&
+   [ -f "$_usrhome_sanitize_file" ] &&
+   [ -r "$_usrhome_sanitize_file" ]; then
+    # shellcheck source=xtra/sanitize-path-posix.sh
+    if . "$_usrhome_sanitize_file"; then
+        alias sanitize-path='_usrhome_sanitize_path'
+    else
+        usrhome_printf_warning 'Failed sourcing %s
+            Cannot create sanitize-path alias\n' "$_usrhome_sanitize_file"
+    fi
+else
+    usrhome_printf_warning 'Sanitizer file is missing or unreadable: %s
+            Cannot create sanitize-path alias\n' "$_usrhome_sanitize_file"
+fi
+unset _usrhome_sanitize_file
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Change Current Directory

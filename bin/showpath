@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-05 16:41:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-07 15:41:27 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -110,6 +110,31 @@ else
 fi
 
 
+# Check separator fields without changing the caller's variables.
+showpath_valid_separators() (
+    rest=$1
+    variable=$2
+    markers=0
+    directories=0
+    while :; do
+        raw=${rest%%:*}
+        entry=${raw#"${raw%%[![:space:]]*}"}
+        if [ -z "$entry" ]; then
+            # Whitespace-only fields cannot be MANPATH markers.
+            [ "$variable" = MANPATH ] && [ -z "$raw" ] || return 1
+            markers=$((markers + 1))
+            [ "$markers" -le 1 ] || return 1
+        else
+            directories=$((directories + 1))
+        fi
+        case "$rest" in
+            *:*) rest=${rest#*:} ;;
+            *) break ;;
+        esac
+    done
+    [ "$directories" -gt 0 ]
+)
+
 
 show_path()
 {
@@ -120,11 +145,11 @@ show_path()
 
     eval path_value='$'$vname
     if [ -z "$path_value" ]; then
-        >&2 echo "WARNING: $vname is not defined!"
+        printf -- "WARNING: $vname is not defined!\n" >&2
         if [ "$vname" = "MANPATH" ]; then
             if command -v manpath > /dev/null 2>&1; then
                 if [ -n "$(manpath)" ]; then
-                    >&2 echo " However the manpath command provides the list:"
+                    printf -- " However the manpath command provides the list:\n" >&2
                     if [ "$numbered" = "true" ]; then
                         manpath | tr ':' '\n' | nl -b a -n ln
                     else
@@ -138,19 +163,13 @@ show_path()
         exit 2
     else
         if [ "$numbered" = "true" ]; then
-            echo "$path_value" | tr ':' '\n' | nl -b a -n ln
+            printf -- "%s\n" "$path_value" | tr ':' '\n' | nl -b a -n ln
         else
             printf -- "- "
-            echo "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
+            printf -- "%s\n" "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
         fi
-        if echo "$path_value" | grep '::' > /dev/null; then
-            >&2 echo "ERROR: $vname has empty entries!"
-            exit 3
-        elif echo "$path_value" | grep '^:' > /dev/null; then
-            >&2 echo "ERROR: $vname starts with an empty entry!"
-            exit 3
-        elif echo "$path_value" | grep ':$' > /dev/null; then
-            >&2 echo "ERROR: $vname ends with an empty entry!"
+        if ! showpath_valid_separators "$path_value" "$vname"; then
+            printf -- "ERROR: %s has invalid empty entries!\n" "$vname" >&2
             exit 3
         fi
     fi

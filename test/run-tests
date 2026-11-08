@@ -1,0 +1,129 @@
+#!/bin/sh
+# SH FILE: run-tests
+#
+# Purpose   : Run all tests using specific shells.
+# Created   : Sunday, November  8 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-08 17:04:05 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# The test expects to run from the repository root.
+# Invoke this script with a path, for example ./test/run-tests.
+test_dir=$(CDPATH= cd -P "$(dirname "$0")" && pwd -P) || {
+    printf '%s\n' 'ERROR: Cannot locate the test directory.' >&2
+    exit 2
+}
+cd "$test_dir/.." || exit 2
+
+test_file=./test/test-sanitize-path.sh
+if [ ! -f "$test_file" ] || [ ! -r "$test_file" ]; then
+    printf 'ERROR: Cannot read test file: %s\n' "$test_file" >&2
+    exit 2
+fi
+
+passed=0
+failed=0
+skipped=0
+
+
+run_test() {
+    run_label=$1
+    shift
+
+    if run_shell=$(command -v "$1" 2>/dev/null); then
+        :
+    else
+        printf 'SKIP: %s is not available\n' "$run_label"
+        skipped=$((skipped + 1))
+        return
+    fi
+
+    printf '\n=== Running with %s (%s) ===\n' "$run_label" "$run_shell"
+    if "$@"; then
+        printf 'PASS: %s\n' "$run_label"
+        passed=$((passed + 1))
+    else
+        status=$?
+        printf 'FAIL: %s (status %s)\n' "$run_label" "$status" >&2
+        failed=$((failed + 1))
+    fi
+}
+
+# BusyBox may exist without a particular shell applet.
+run_busybox_applet() {
+    if ! command -v busybox >/dev/null 2>&1; then
+        printf 'SKIP: busybox %s is not available\n' "$1"
+        skipped=$((skipped + 1))
+    elif applets=$(busybox --list 2>/dev/null); then
+        if printf '%s\n' "$applets" | grep -Fxq "$1"; then
+            run_test "busybox $1" busybox "$1" "$test_file"
+        else
+            printf 'SKIP: busybox %s applet is not available\n' "$1"
+            skipped=$((skipped + 1))
+        fi
+    else
+        printf 'FAIL: cannot list BusyBox applets for %s\n' "$1" >&2
+        failed=$((failed + 1))
+    fi
+}
+
+# --
+# Run tests on available shells
+# Arguments: label, shell, optional shell arguments, test file.
+
+run_test '/bin/sh'      /bin/sh "$test_file"
+run_test 'bash'         bash "$test_file"
+run_test 'bash --posix' bash --posix "$test_file"
+run_test 'zsh -f'       zsh -f "$test_file"
+
+run_test 'dash'  dash "$test_file"
+run_test 'ash'   ash "$test_file"
+run_test 'ksh'   ksh "$test_file"
+run_test 'ksh93' ksh93 "$test_file"
+run_test 'mksh'  mksh "$test_file"
+run_test 'lksh'  lksh "$test_file"
+run_test 'oksh'  oksh "$test_file"
+run_test 'pdksh' pdksh "$test_file"
+run_test 'posh'  posh "$test_file"
+run_test 'yash'  yash "$test_file"
+
+run_test 'osh' osh --norc "$test_file"
+run_test 'oils-for-unix osh' oils-for-unix osh --norc "$test_file"
+
+run_busybox_applet ash
+run_busybox_applet hush
+
+# --
+printf '\nShell runs: %s passed, %s failed, %s skipped\n' \
+    "$passed" "$failed" "$skipped"
+
+if [ "$failed" -ne 0 ]; then
+    exit 1
+fi
+if [ "$passed" -eq 0 ]; then
+    printf '%s\n' 'ERROR: No shell runs were completed.' >&2
+    exit 2
+fi
+exit 0
+
+
+
+# ----------------------------------------------------------------------------

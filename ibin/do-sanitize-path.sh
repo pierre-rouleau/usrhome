@@ -1,9 +1,11 @@
-# Sourced script: do-sanitize-path  -*- mode: sh; -*-
+# Sourced script: do-sanitize-path.sh  -*- mode: sh; -*-
 #
 # Purpose   : Sanitize current shell PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 16:25:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 12:56:48 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# NOTE: THIS FILE WILL BE REMOVE SOON.  IT'S ONLY KEPT FOR REFERENCE.
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -11,6 +13,8 @@
 # Sanitize the current shell's PATH
 # - Replace '::' by ':'
 # - Remove duplicate entries in the PATH, leave first one seen.
+# - Remove any trailing ':'
+# - Remove leading whitespace
 #
 # BUGS: Does not check if specified directories are present.
 #       TODO: to be done later.
@@ -19,51 +23,50 @@
 # Dependencies
 # ------------
 #
-#  - POSIX shell utilities: printf, tr, sed, awk, wc, xargs, tail
-#  - USRHOME showpath
-#
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
 #
-# - Replace '::' by ':'
-# - Remove duplicate entries in the PATH, leave first one seen.
-# - Then remove the trailing ':' injected.
-#
-# If the old path had to be sanitized, display a warning
-# describing the number of directory entries in each.
-# Use xargs to remove leading spaces from the number strings.
 
-path_entries="$(printf "%s\n" "$PATH" | tr ':' '\n' | wc -l | xargs)"
-sanitized_path="$(printf "%s" "$PATH" | sed 's/::/:/g' | tr ':' '\n' | awk '!seen[$0]++' | tr '\n' ':')"
+# Legacy entry point: always sanitize PATH.
 
-# remove any trailing ':' character
-if [ "$(printf "%s" "${sanitized_path}"  | tail -c 1)"  = ":" ]; then
-    sanitized_path="$(printf "%s" "$sanitized_path" | sed 's/.$//')"
-fi
+if [ -n "${BASH_VERSION:-}" ]; then
+    # shellcheck disable=SC1091 # fail to identify file
+    . "${USRHOME_DIR}/ibin/xtra/sanitize-path.bash" || return 1
+    _usrhome_sanitize_path PATH
+else
+    # shellcheck disable=SC1091 # fail to identify file
+    . "${USRHOME_DIR}/ibin/xtra/sanitize-path-core.sh" || return 1
 
-sanitized_path_entries="$(printf "%s\n" "$sanitized_path" | tr ':' '\n' | wc -l | xargs)"
-if [ "$path_entries" != "$sanitized_path_entries" ]; then
-    if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
-        usrhome_print_warning "USRHOME has sanitized your PATH."
-        if [ "$USRHOME_TRACE_SHELL_CONFIG" = "1" ]; then
-            echo "Original PATH: $PATH"
-            printf "%s\n" "         It had $path_entries directories, it now has $sanitized_path_entries."
-            echo " The original PATH was:"
-            showpath -n
-        else
-            echo "- Edit: \$USRHOME_DIR_USRCFG/setfor-all-config.sh; Set USRHOME_TRACE_SHELL_CONFIG to 1 in to see more info."
+    _usrhome_sanitize_legacy_path() {
+        if [ "${PATH+x}" != x ] || ! ( PATH=$PATH ) 2>/dev/null; then
+            printf '%s\n' 'sanitize-path: PATH must be set and writable' >&2
+            return 1
         fi
-    fi
-fi
-export PATH="$sanitized_path"
 
-# cleanup
-unset path_entries
-unset sanitized_path
-unset sanitized_path_entries
+        # The sentinel preserves trailing newlines in the sanitized value.
+        set -- "$PATH" "$(_usrhome_sanitize_path_value "$PATH" PATH; printf '.')"
+        set -- "$1" "${2%.}"
+
+        if [ "$1" != "$2" ] &&
+           [ "${SHELL_IS_INTERACTIVE:-}" = true ] &&
+           [ "${TERM:-}" != dumb ]; then
+            if command -v usrhome_print_warning >/dev/null 2>&1; then
+                usrhome_print_warning "USRHOME has sanitized your PATH."
+            else
+                printf '%s\n' 'USRHOME has sanitized your PATH.' >&2
+            fi
+            if [ "${USRHOME_TRACE_SHELL_CONFIG:-}" = 1 ]; then
+                printf 'Original PATH: %s\nSanitized PATH: %s\n' "$1" "$2"
+            fi
+        fi
+        export PATH="$2"
+    }
+    _usrhome_sanitize_legacy_path
+fi
+
 
 # ----------------------------------------------------------------------------
 #  Local Variables:

@@ -30,9 +30,9 @@ USRHOME -- Easily Clonable Unix Shell Configuration & Tools
 Introduction
 ============
 
-USRHOME is Unix shell configuration project that provides a set of shell
-script tools.  It provides:
+USRHOME is a Unix shell configuration project that provides:
 
+- A **secure**, **specialized** and **configurable** multi-shell environment.
 - Tools to *instrument* shells: specialize shells to
   add support for various tools, while leaving the main login shell intact if
   needed.
@@ -49,7 +49,6 @@ adds gcc-based C++ compiler on macOS while keeping the Clang as default for
 its normal shell. Each shell can have its own, independent PATH easily set by
 the script that controls the shell environment.  You retain the standard shell
 untouched unless you want to activate some of these environments inside it.
-
 
 USRHOME support:
 
@@ -111,7 +110,7 @@ variable to control the behaviour of some features when they are invoked
 inside a shell running inside Emacs.
 
 
-USRHOME makes one important assumption about the organization of the
+USRHOME makes **one important assumption** about the organization of the
 directories in your file system: it specifically assumes that:
 
 - The directory that holds the USRHOME directory tree also holds
@@ -132,6 +131,75 @@ To help you create your *usrcfg* repository, USRHOME provides a set of `usrcfg
 template files`_ that correspond to what I use in my *usrcfg* repository.
 This also corresponds to what is shown in the diagram included in the section
 titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
+
+Once you have this setup, you will have a development environment that is
+highly configurable and easy to reproduce across multiple hosts.
+USRHOME provides tools to manage PATH and MANPATH.
+Startup attempts to sanitize PATH.
+The sanitizer warns about changes in interactive shells when TERM is not
+``dumb``.
+
+USRHOME Security Architecture
+=============================
+
+USRHOME is designed following strict Unix security principles. Rather than
+assuming the host runtime environment is perfectly configured, USRHOME treats
+shell initialization defensively. It actively mitigates common local
+environment-manipulation, path-poisoning, and supply-chain threats through
+several structural mechanisms:
+
+**No Elevated Privileges**
+
+
+  Local-prefix installations do not require ``sudo``. Installation scripts
+  normally run with the invoking user's permissions. This does not sandbox
+  them or protect files accessible to that user.
+
+**Lazy Environment Loading (Reduced Attack Surface)**
+
+  Instead of permanently polluting the global system ``PATH`` across all
+  terminal sessions, external software suites are managed on an on-demand
+  basis. Primitives are kept dormant and unmapped until a developer explicitly
+  hydrates a targeted terminal session via designated framework wrappers (such
+  as the ``use-gnu-global`` macro alias). This strictly limits the runtime
+  exposure window of external binaries.
+
+**PATH Sanitization**
+
+  USRHOME loads ``ibin/xtra/sanitize-path-posix.sh`` through its alias
+  setup.  The file defines ``_usrhome_sanitize_path``.  If loading succeeds,
+  alias setup defines ``sanitize-path``.  Loading alone does not sanitize PATH.
+
+  Zsh startup attempts to sanitize PATH.  Bash startup attempts to sanitize
+  PATH in non-login shells and in login shells when
+  ``USRHOME_CONFIG_AT_LOGIN`` is ``1``.  GNU Global setup also attempts to
+  sanitize PATH and, when its man directory exists, MANPATH.
+
+  For PATH, the sanitizer removes empty entries and duplicate entries.
+  Empty PATH entries can cause the shell to search the current directory.
+  Removing them reduces that risk.  MANPATH has separate rules for an
+  empty-entry marker; see the `sanitize-path command`_.
+
+  If sanitization fails, the caller must not assume that PATH is safe.
+  The sanitizer does not check whether directories exist or are trusted.
+
+**Proactive Supply-Chain Auditing**
+
+  USRHOME features integrated background checking hooks built directly into
+  its core path management infrastructure. On startup, initialization logic
+  scans environment states to cross-reference and report high-severity
+  packages or compromised dependencies (such as the ``xz`` utility
+  vulnerability spectrum), warning the user before operations execute.
+
+**Strict Privacy Boundary Separation**
+
+  By separating core framework logic (``usrhome``) from localized parameters
+  (``usrcfg``), the design enforces an absolute boundary between open-source
+  framework assets and sensitive host configurations. Personal deployment
+  variables, internal server network topologies, and private paths stay
+  contained within an isolated, private repository ecosystem, minimizing the
+  risk of accidental exposure to public version-control systems.
+
 
 Quick Overview Example
 ======================
@@ -427,8 +495,6 @@ The user would probably want to create some extra ones;  the
 `do-cbr`_                                  Implements the `cbr command`_.
 `do-cd-to`_                                Implements the `cd-to command`_.
 `do-clrenv`_                               Implements the `clrenv command`_.
-`do-sanitize-path.sh`_                     Implements the `sanitize-path command`_ for Bash and sh.
-`do-sanitize-path.zsh`_                    Implements the `sanitize-path command`_ for zsh.
 `do-setenv`_                               Implements the `setenv command`_.
 `do-usrcfg`_                               Implements the `usrcfg command`_.
 `do-usrhome`_                              Implements the `usrhome command`_.
@@ -439,6 +505,7 @@ The user would probably want to create some extra ones;  the
 ========================================== ========================================================
 ``$USRHOME/ibin`` File                     Purpose
 ========================================== ========================================================
+`xtra/sanitize-path-posix.sh`_             Defines the function used by the `sanitize-path command`_.
 `which-shell`_                             Identifies the shell (Bash, Z Shell, or other): sets the
                                            USRHOME_SHELL environment variable to "zsh", "bash",
                                            etc.
@@ -1293,9 +1360,12 @@ USRHOME Command Name               Description
                                    - ``showpath MAN``: prints MANPATH without numbers.
 
                                    If the format of the path variable is incorrect, the command
-                                   prints an error message on stderr. The errors detected include
-                                   a leading or trailing separator or multiple consecutive
-                                   separators.  The exit code are:
+                                   prints an error message on stderr. Empty entries are errors,
+                                   except for one MANPATH marker: a leading colon, a trailing
+                                   colon, or one internal double colon. Multiple markers and
+                                   whitespace-only entries are errors.
+
+                                   The exit codes are:
 
                                    - 0 on success (or help),
                                    - 1 on invalid argument(s),
@@ -1317,11 +1387,34 @@ USRHOME Command Name               Description
                                    PATH value the system had inside the shell before USRHOME
                                    added support for itself and other tools.
 
-``sanitize-path``                  Check the PATH value of the current shell and sanitizes it:
+``sanitize-path [VARIABLE]``       Sanitize a PATH-like variable in the current shell.
+                                   The alias calls ``_usrhome_sanitize_path``.  The default
+                                   variable is PATH.  The named variable must be set and
+                                   writable.  The command removes leading whitespace from
+                                   entries, removes duplicates while keeping the first
+                                   occurrence, and removes empty entries.  On success, it
+                                   exports the sanitized variable.
 
-                                   - removes duplicate entries.
-                                   - removes empty entries,
-                                   - print a warning when it modifies PATH.
+                                   The function returns:
+
+                                   - 0 on success;
+                                   - 1 for an invalid request or processing error;
+                                   - 2 if no directories remain after cleanup.  In this case,
+                                     the original value is unchanged.
+
+                                   The sanitizer does not check that directories exist or are
+                                   safe.  If sanitization fails, do not assume the original
+                                   value is safe.
+
+                                   For MANPATH, one original empty entry is retained if it is
+                                   the only exception: a leading colon, a trailing colon, or an
+                                   internal double colon. Multiple empty entries or a
+                                   whitespace-only entry invalidate all exceptions. An internal
+                                   marker is removed if deduplication leaves no directory on
+                                   one side.
+
+                                   In an interactive shell, the command warns when it changes
+                                   the value, unless TERM is ``dumb``.
 ================================== ================================================================
 
 Dynamic Path Management
@@ -2016,10 +2109,10 @@ user configuration, as shown in the following diagram portion.
 - Since the `usrhome/dot/zshrc.zsh`_ is used both in the login and the sub-shell,
   it's the file that sources the `usrhome/ibin/setfor-zsh-alias`_ to inject
   the USRHOME alias commands and sell functions inside the shell.
-  That's also the file that sanitizes
-  the PATH; it removes empty entries and duplicates if there's any.  And in
-  that case it prints a warning.  That's an indication to take a look at your
-  configuration files (or to the application that launched a sub-shell).
+  That file also attempts to sanitize PATH.  When sanitization changes PATH,
+  an interactive shell prints a warning unless TERM is ``dumb``.  Check your
+  configuration files or the application that launched the sub-shell if
+  this warning appears.
 
 The user can provide extra startup logic for the Z Shell.  USRHOME Z Shell
 startup code sources the following user configuration files stored in the user
@@ -2504,8 +2597,7 @@ Thanks!
 .. _do-cbr:                                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
 .. _do-cd-to:                                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cd-to
 .. _do-clrenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
-.. _do-sanitize-path.sh:                               https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-sanitize-path.sh
-.. _do-sanitize-path.zsh:                              https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-sanitize-path.zsh
+.. _xtra/sanitize-path-posix.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/xtra/sanitize-path-posix.sh
 .. _do-setenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
 .. _do-usrcfg:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrcfg
 .. _do-usrhome:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrhome
