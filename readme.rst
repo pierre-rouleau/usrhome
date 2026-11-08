@@ -133,12 +133,11 @@ This also corresponds to what is shown in the diagram included in the section
 titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 
 Once you have this setup, you will have a development environment that is
-highly configurable, easy to reproduce in multiple hosts and highly
-**secure** by eliminating problems that can lead to several shell-based
-exploits.  You will have tools to take control your PATH, MANPATH variables
-while USRHOME shells will sanitize their value and warn you when the
-sanization changes them.
-
+highly configurable and easy to reproduce across multiple hosts.
+USRHOME provides tools to manage PATH and MANPATH.
+Startup attempts to sanitize PATH.
+The sanitizer warns about changes in interactive shells when TERM is not
+``dumb``.
 
 USRHOME Security Architecture
 =============================
@@ -165,23 +164,24 @@ several structural mechanisms:
   as the ``use-gnu-global`` macro alias). This strictly limits the runtime
   exposure window of external binaries.
 
-**Automated Path Firewalling and Sanitization**
+**PATH Sanitization**
 
-  On shell initialization and nested subshell spawning, USRHOME drops
-  lower-level security firewalls via its ``do-sanitize-path.sh`` and
-  ``do-sanitize-path.zsh`` engine utilities. These scripts parse and clean
-  runtime configurations to neutralize the dangerous "Empty Path Loophole":
+  USRHOME loads ``ibin/xtra/sanitize-path-posix.sh`` through its alias
+  setup.  The file defines ``_usrhome_sanitize_path``.  If loading succeeds,
+  alias setup defines ``sanitize-path``.  Loading alone does not sanitize PATH.
 
-  - It detects and strips out double-separators (``::``), leading colons, and
-    trailing colons (``:``), which POSIX shells interpret as the Current
-    Working Directory (``.``). This prevents malicious local executables
-    dropped in shared spaces (like a shared repository or a messy
-    ``~/Downloads`` folder) from hijacking and shadowing core terminal
-    binaries.
+  Zsh startup attempts to sanitize PATH.  Bash startup attempts to sanitize
+  PATH in non-login shells and in login shells when
+  ``USRHOME_CONFIG_AT_LOGIN`` is ``1``.  GNU Global setup also attempts to
+  sanitize PATH and, when its man directory exists, MANPATH.
 
-  - It aggressively removes duplicate path configurations, enforcing
-    deterministic lookups and stripping away redundant or hijacked lookup
-    paths.
+  For PATH, the sanitizer removes empty entries and duplicate entries.
+  Empty PATH entries can cause the shell to search the current directory.
+  Removing them reduces that risk.  MANPATH has separate rules for an
+  empty-entry marker; see the `sanitize-path command`_.
+
+  If sanitization fails, the caller must not assume that PATH is safe.
+  The sanitizer does not check whether directories exist or are trusted.
 
 **Proactive Supply-Chain Auditing**
 
@@ -495,8 +495,6 @@ The user would probably want to create some extra ones;  the
 `do-cbr`_                                  Implements the `cbr command`_.
 `do-cd-to`_                                Implements the `cd-to command`_.
 `do-clrenv`_                               Implements the `clrenv command`_.
-`do-sanitize-path.sh`_                     Implements the `sanitize-path command`_ for Bash and sh.
-`do-sanitize-path.zsh`_                    Implements the `sanitize-path command`_ for zsh.
 `do-setenv`_                               Implements the `setenv command`_.
 `do-usrcfg`_                               Implements the `usrcfg command`_.
 `do-usrhome`_                              Implements the `usrhome command`_.
@@ -507,6 +505,7 @@ The user would probably want to create some extra ones;  the
 ========================================== ========================================================
 ``$USRHOME/ibin`` File                     Purpose
 ========================================== ========================================================
+`xtra/sanitize-path-posix.sh`_             Defines the function used by the `sanitize-path command`_.
 `which-shell`_                             Identifies the shell (Bash, Z Shell, or other): sets the
                                            USRHOME_SHELL environment variable to "zsh", "bash",
                                            etc.
@@ -1389,13 +1388,23 @@ USRHOME Command Name               Description
                                    added support for itself and other tools.
 
 ``sanitize-path [VARIABLE]``       Sanitize a PATH-like variable in the current shell.
-                                   The default variable is PATH. The command removes leading
-                                   whitespace from entries, removes duplicates while keeping the
-                                   first occurrence, and removes empty entries.
+                                   The alias calls ``_usrhome_sanitize_path``.  The default
+                                   variable is PATH.  The named variable must be set and
+                                   writable.  The command removes leading whitespace from
+                                   entries, removes duplicates while keeping the first
+                                   occurrence, and removes empty entries.  On success, it
+                                   exports the sanitized variable.
 
-                                   If no PATH entries remain, the command sets PATH to
-                                   ``/usr/bin:/bin``, reports the condition, and returns
-                                   status 9.
+                                   The function returns:
+
+                                   - 0 on success;
+                                   - 1 for an invalid request or processing error;
+                                   - 2 if no directories remain after cleanup.  In this case,
+                                     the original value is unchanged.
+
+                                   The sanitizer does not check that directories exist or are
+                                   safe.  If sanitization fails, do not assume the original
+                                   value is safe.
 
                                    For MANPATH, one original empty entry is retained if it is
                                    the only exception: a leading colon, a trailing colon, or an
@@ -2100,10 +2109,10 @@ user configuration, as shown in the following diagram portion.
 - Since the `usrhome/dot/zshrc.zsh`_ is used both in the login and the sub-shell,
   it's the file that sources the `usrhome/ibin/setfor-zsh-alias`_ to inject
   the USRHOME alias commands and sell functions inside the shell.
-  That's also the file that sanitizes
-  the PATH; it removes empty entries and duplicates if there's any.  And in
-  that case it prints a warning.  That's an indication to take a look at your
-  configuration files (or to the application that launched a sub-shell).
+  That file also attempts to sanitize PATH.  When sanitization changes PATH,
+  an interactive shell prints a warning unless TERM is ``dumb``.  Check your
+  configuration files or the application that launched the sub-shell if
+  this warning appears.
 
 The user can provide extra startup logic for the Z Shell.  USRHOME Z Shell
 startup code sources the following user configuration files stored in the user
@@ -2588,8 +2597,7 @@ Thanks!
 .. _do-cbr:                                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
 .. _do-cd-to:                                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cd-to
 .. _do-clrenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
-.. _do-sanitize-path.sh:                               https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-sanitize-path.sh
-.. _do-sanitize-path.zsh:                              https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-sanitize-path.zsh
+.. _xtra/sanitize-path-posix.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/xtra/sanitize-path-posix.sh
 .. _do-setenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
 .. _do-usrcfg:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrcfg
 .. _do-usrhome:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrhome
