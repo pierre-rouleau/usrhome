@@ -1,0 +1,40 @@
+#!/bin/sh
+# SH FILE: run-tests
+#
+# Purpose   : Run all tests using specific shells.
+# Created   : Sunday, November  8 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-08 13:59:13 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+printf -- '==== /bin/sh\n'
+printf -- '     /bin/sh ./test/test-sanitize-path.sh\n'
+/bin/sh ./test/test-sanitize-path.sh
+
+printf -- '==== bash\n'
+printf -- '     bash ./test/test-sanitize-path.sh\n'
+bash ./test/test-sanitize-path.sh
+
+printf -- '\n\n==== Zsh\n'
+printf -- '   zsh -f ./test/test-sanitize-path.sh\n'
+zsh -f ./test/test-sanitize-path.sh
+
+# ----------------------------------------------------------------------------
