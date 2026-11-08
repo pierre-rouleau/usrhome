@@ -3,7 +3,9 @@
 # Purpose   : Core PATH-like variable sanitize logic.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 10:33:17 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 12:57:30 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# NOTE: THIS FILE WILL BE REMOVE SOON.  IT'S ONLY KEPT FOR REFERENCE.
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

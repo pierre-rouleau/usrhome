@@ -3,7 +3,7 @@
 # Purpose   : Add GNU Global support to the shell's environment.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 11:03:17 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 13:06:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -132,13 +132,19 @@ if [ -d "${USRHOME_DIR_GNU_GLOBAL}/share/man" ]; then
 fi
 
 # --
-# Sanitize PATH
+# Sanitize PATH and MANPATH if appropriate.
+if [ -z "${USRHOME_DIR:-}" ] ||
+   [ ! -f "${USRHOME_DIR}/ibin/xtra/sanitize-path-posix.sh" ] ||
+   [ ! -r "${USRHOME_DIR}/ibin/xtra/sanitize-path-posix.sh" ]; then
+    printf '%s\n' 'ERROR: Sanitizer file is missing or unreadable.' >&2
+    return 1
+fi
 
-if [ -f "${USRHOME_DIR}/ibin/do-sanitize-path" ]; then
-    . "${USRHOME_DIR}/ibin/do-sanitize-path" || return 1
-    if [ -d "${USRHOME_DIR_GNU_GLOBAL}/share/man" ]; then
-        . "${USRHOME_DIR}/ibin/do-sanitize-path" MANPATH || return 1
-    fi
+. "${USRHOME_DIR}/ibin/xtra/sanitize-path-posix.sh" || return $?
+_usrhome_sanitize_path PATH || return $?
+
+if [ -d "${USRHOME_DIR_GNU_GLOBAL}/share/man" ]; then
+    _usrhome_sanitize_path MANPATH || return $?
 fi
 
 # --

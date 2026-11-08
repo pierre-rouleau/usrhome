@@ -3,7 +3,9 @@
 # Purpose   : Sanitize PATH-like variable.
 # Created   : Saturday, November  7 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-07 16:35:19 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 12:55:44 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# NOTE: THIS FILE WILL BE REMOVE SOON.  IT'S ONLY KEPT FOR REFERENCE.
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

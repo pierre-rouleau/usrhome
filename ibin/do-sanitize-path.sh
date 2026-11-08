@@ -3,7 +3,9 @@
 # Purpose   : Sanitize current shell PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-07 15:14:34 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 12:56:48 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# NOTE: THIS FILE WILL BE REMOVE SOON.  IT'S ONLY KEPT FOR REFERENCE.
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

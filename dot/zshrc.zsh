@@ -2,9 +2,9 @@
 #
 # Purpose   : Z Shell Recource Configuration - Define alias, functions, prompt.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Copyright (C) 2024 by Pierre Rouleau
+# Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-12-02 16:04:19 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 12:43:15 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -52,18 +52,21 @@ usrhome_trace_in "~/.zshrc    --> \$USRHOME_DIR/dot/zshrc.zsh"
 # ----------------------------------------------------------------------------
 # Set shortcut alias for Z shell
 # ------------------------------
+# source #1 (shown in diagram: zsh-bash-startup-01.png)
 . $USRHOME_DIR/ibin/setfor-zsh-alias
+# The above also sources ibin/setfor-alias which defines _usrhome_sanitize_path
 
 # ----------------------------------------------------------------------------
 # Update Path in sub-shells if not already done
 # ---------------------------------------------
+# source #2 (shown in diagram: zsh-bash-startup-01.png)
 . "$USRHOME_DIR/ibin/setfor-path"
 
 # ----------------------------------------------------------------------------
 # Sanitize PATH
 # -------------
 #
-. $USRHOME_DIR/ibin/do-sanitize-path.zsh
+_usrhome_sanitize_path
 
 # ----------------------------------------------------------------------------
 # Activate the help for zsh builtins
@@ -351,6 +354,8 @@ fi
 #
 # This is done last.  Allowing user's code to overwrite variables and
 # functions defined by USRHOME logic.
+#
+# source #3 (shown in diagram: zsh-bash-startup-01.png)
 #
 user_zshrc="$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 if [ -e "$user_zshrc" ]; then

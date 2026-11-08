@@ -2,9 +2,9 @@
 #
 # Purpose   : ~/.bashrc Bash Configuration File - Always sourced.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Copyright (C) 2024 by Pierre Rouleau
+# Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2024-12-02 16:17:51 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 12:39:26 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -113,6 +113,7 @@ fi
 # 2 - Determine User Shell Configuration
 # --------------------------------------
 #
+# source #1 (shown in diagram: zsh-bash-startup-01.png)
 usrhome_config="$USRHOME_DIR_USRCFG/setfor-all-config.sh"
 if [ -e "$usrhome_config" ]; then
     # shellcheck disable=SC1090
@@ -164,9 +165,10 @@ usrhome_trace_in "~/.bashrc    --> \$USRHOME_DIR/dot/bashrc.bash"
 # Set shortcut aliases and short functions for Bash shell
 # -------------------------------------------------------
 
-# source #3 (shown in diagram)
-# shellcheck disable=SC1091
+# source #2 (shown in diagram: zsh-bash-startup-01.png)
+# shellcheck source=../ibin/setfor-bash-alias
 . "$USRHOME_DIR/ibin/setfor-bash-alias"
+# The above also sources ibin/setfor-alias which defines _usrhome_sanitize_path.
 
 # ----------------------------------------------------------------------------
 if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
@@ -178,7 +180,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
     # ----------------------------------------------------------------------------
     # Update Path in sub-shells if not already done
     # ---------------------------------------------
-    # source #4 (shown in diagram)
+    # source #3 (shown in diagram: zsh-bash-startup-01.png)
     # shellcheck disable=SC1091
     . "$USRHOME_DIR/ibin/setfor-path"
 
@@ -186,9 +188,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
     # Sanitize PATH
     # -------------
     #
-    # source #4a (not shown in the diagram)
-    # shellcheck disable=SC1091
-    . "$USRHOME_DIR/ibin/do-sanitize-path.sh"
+    _usrhome_sanitize_path
 fi
 
 # ----------------------------------------------------------------------------
