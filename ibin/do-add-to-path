@@ -3,7 +3,7 @@
 # Purpose   : Add directory to PATH in the current shell
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 14:36:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 17:55:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -72,7 +72,7 @@ if [ "$1" = "--end" ]; then
 fi
 
 if [ ! -d "$1" ]; then
-    printf -- "*** ERROR: Directory does not exists: %s\n" "$1"
+    usrhome_printf_error 'Directory does not exists: %s\n' "$1"
     return 2
 fi
 

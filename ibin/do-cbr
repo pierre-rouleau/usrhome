@@ -3,7 +3,7 @@
 # Purpose   : CBR: check, build or run files in current directory.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:51:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 17:58:55 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,8 +55,8 @@ case "$1" in
         op=run
         ;;
     *)
-        echo "cbr ERROR: invalid arg ($1)."
-        echo "Usage: c|b|r"
+        usrhome_printf_error  "cbr: invalid arg: %s
+        Usage: c|b|r\n" "$1"
         return 1
 esac
 
@@ -232,8 +232,7 @@ case $bt in
         ;;
 
     *)
-        echo "ERROR: no appropriate build type found."
-        echo " $cbr_error"
+        usrhome_printf_error "No appropriate build type found: %s\n"  "$cbr_error"
         return 1
         ;;
 esac
