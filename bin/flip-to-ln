@@ -4,7 +4,7 @@
 # Purpose   : Move a file to a directory and create a symlink to it's new location.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 14:09:51 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 12:45:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -71,55 +71,33 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 if [ -z "$2" ] || [ -z "$1" ]; then
-    >&2 printf "\
-***ERROR***
- - flip-to-ln: requires 2 arguments, %d provided.
-***********
-" "$#"
-    print_usage
+    usrhome_printf_error 'flip-to-ln: requires 2 arguments, %d provided.\n' "$#"
+    usrhome_printf_stderr 'Use flip-to-ln -h to show usage.\n'
     exit 1
 fi
 
 
 if [ -d "$2" ]; then
-    >&2 printf "\
-***ERROR***
- - flip-to-ln arg 2 identifies a directory: %s
-***********
-" "$2"
-    print_usage
+    usrhome_printf_error 'flip-to-ln: arg 2 identifies a directory: %s\n' "$2"
+    usrhome_printf_stderr 'Use flip-to-ln -h to show usage.\n'
     exit 2
 fi
 
 if [ -h "$2" ]; then
-    >&2 printf "\
-***ERROR***
- - flip-to-ln arg 2 identifies a symbolic link: %s
-
-   Has this already been done?
-***********
-" "$2"
-    print_usage
+    usrhome_printf_error 'flip-to-ln: arg 2 identifies a symbolic link: %s\n' "$2"
+    usrhome_printf_stderr '\tHas this already been done?\n\tUse flip-to-ln -h to show usage.\n'
     exit 2
 fi
 
 if [ ! -f "$2" ]; then
-    >&2 printf "\
-***ERROR***
- - flip-to-ln: arg 2: invalid file (not found): %s
-***********
-" "$2"
-    print_usage
+    usrhome_printf_error 'flip-to-ln: invalid file (not found): %s\n' "$2"
+    usrhome_printf_stderr 'Use flip-to-ln -h to show usage.\n'
     exit 2
 fi
 
 if [ ! -d "$1" ]; then
-    >&2 printf "\
-***ERROR***
- - flip-to-ln: arg 1: invalid directory: %s
-***********
-" "$1"
-    print_usage
+    usrhome_printf_error 'flip-to-ln: invalid directory: %s\n' "$1"
+    usrhome_printf_stderr 'Use flip-to-ln -h to show usage.\n'
     exit 2
 fi
 

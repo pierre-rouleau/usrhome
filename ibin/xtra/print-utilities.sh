@@ -3,7 +3,7 @@
 # Purpose   : Define usrhome printing functions.
 # Created   : Monday, November  9 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 10:47:13 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 12:24:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,6 +42,18 @@ usrhome_printf()
     if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
         # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
         printf -- "$@"
+    fi
+}
+
+usrhome_printf_stderr()
+{
+    # Print text only when allowed.
+    # All argument passed to printf.
+
+    # Note: if SHELL_IS_INTERACTIVE is not set, then use as if it was set to "false".
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
+        # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
+        printf -- "$@" >&2
     fi
 }
 

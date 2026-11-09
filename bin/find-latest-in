@@ -4,7 +4,7 @@
 # Purpose   : Find and list all new and recently modified files.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2025-01-08 11:05:49 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 12:24:55 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -58,14 +58,19 @@ find-latest-in: Find and print the name of the recently created and modified fil
 "
 }
 
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
+
 print_error()
 {
-    >&2 printf -- "\
-***ERROR*** find-latest-in:
- %s
- Use find-latest-in -h to show usage.
-***********
-" "$1"
+    usrhome_printf_error 'find-latest-in: %s\n' "$1"
+    usrhome_printf_stderr 'Use find-latest-in -h to show usage.\n'
 }
 
 

@@ -4,7 +4,7 @@
 # Purpose   : List files in specified directory tree.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-12 07:55:11 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 12:26:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -66,19 +66,27 @@ else
 fi
 shift
 
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
 
 if [ -n "$2" ]; then
-    printf -- "*** files-in ERROR: unexpected arguments: %s\n" "$*"
-    print_usage
+    usrhome_printf_error 'files-in: unexpected arguments: %s\n' "$*"
+    usrhome_printf_stderr 'Use files-in -h to show usage.\n'
     exit 1
 elif [ -n "$1" ]; then
-    printf -- "*** files-in ERROR: unexpected argument: %s\n" "$1"
-    print_usage
+    usrhome_printf_error 'files-in: unexpected argument: %s\n' "$1"
+    usrhome_printf_stderr 'Use files-in -h to show usage.\n'
     exit 1
 fi
 
 if [ ! -d "$dirpath" ]; then
-    printf -- "*** files-in ERROR: no such file or directory: %s\n" "$dirpath"
+    usrhome_printf_error 'files-in: no such file or directory: %s\n' "$dirpath"
     exit 1
 fi
 

@@ -4,7 +4,7 @@
 # Purpose   : Print all executable files found in the specified directory tree.
 # Created   : Wednesday, July 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-28 18:08:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 12:25:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -46,15 +46,20 @@ find-executable: Find and print all executable files in ROOT directory tree.
 "
 }
 
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
+
 print_error_and_exit()
 {
     # $1 : error message
-    printf -- "
-*** find-executable ERROR:
-      %s
-******************
-    Use -h to print usage.
-" "$1"
+    usrhome_printf_error 'find-executable: %s\n' "$1"
+    usrhome_stderr_printf 'Use -h to print usage.\n'
     exit 2
 }
 

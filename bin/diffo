@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-05-05 17:58:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 12:36:04 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -60,13 +60,6 @@ diffo -- Compare 2 object files by comparing their assembler code.
 "
 }
 
-print_usage_short()
-{
-    printf -- "\
-  Use diffo -h to print its command line usage.
-"
-}
-
 # --
 # validate arguments
 
@@ -75,6 +68,21 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     # help requested explicitly: no error.
     exit 0
 fi
+
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
+
+print_usage_short()
+{
+    usrhome_printf_stderr 'Use diffo -h to print its command line usage.\n'
+}
+
 
 
 # check for optional switches.
@@ -98,13 +106,13 @@ done
 
 # Check if remaining arguments are 2 file names
 if [ "$#" -ge 3 ]; then
-    printf -- "*** diffo ERROR: too many arguments: %s\n" "$*"
+    usrhome_printf_error 'diffo: too many arguments: %s\n' "$*"
     print_usage_short
     exit 1
 fi
 
 if [ -z "$1" ] || [ -z "$2" ]; then
-    printf -- "*** diffo ERROR: missing arguments.\n"
+    usrhome_printf_error 'diffo: missing arguments.\n'
     print_usage_short
     exit 1
 fi
@@ -115,13 +123,13 @@ objf_new=
 if  [ -f "$1" ]; then
     objf_old="$1"
 else
-    printf -- "*** diffo ERROR: File does not exist: %s\n" "$1"
+    usrhome_printf_error 'diffo: File does not exist: %s\n' "$1"
     exit 2
 fi
 if  [ -f "$2" ]; then
     objf_new="$2"
 else
-    printf -- "*** diffo ERROR: File does not exist: %s\n" "$2"
+    usrhome_printf_error 'diffo: File does not exist: %s\n' "$2"
     exit 2
 fi
 shift

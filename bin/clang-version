@@ -4,7 +4,7 @@
 # Purpose   : Print version of Clang compiler on stdout.
 # Created   : Tuesday, September  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-02 11:43:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 12:48:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,6 +32,16 @@
 # ----
 #
 #
+
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
+
 program="$USRHOME_DIR/bin/compiled/cpp/clang-version/clang-version"
 
 # --
@@ -42,15 +52,18 @@ if [ ! -x "${program}" ]; then
     make clang-version || exit 1
 fi
 if [ ! -x "${program}" ]; then
-    printf -- "\
-*** ERROR: clang-version script failed to compile the C++ program
-    located at: %s.cpp
-
-    Check if you have GNU make installed in your system."  "${program}"
+    usrhome_printf_error 'clang-version script failed to compile the C++ program
+            located at: %s.cpp\n' "${program}"
+    usrhome_printf_stderr 'Check if you have GNU make installed in your system.\n'
     exit 1
 fi
 
 # --
 # proceed
-"${program}" $@
+
+"${program}" "$@"
+
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
