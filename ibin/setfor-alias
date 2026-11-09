@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 12:19:32 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 23:51:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,13 +40,13 @@ os_name="$(uname)"
 #      login shells.  But showpath is very useful in those shells too.
 #      A alias is defined here to allow the command in these login shells as well.
 #
-alias showpath='$USRHOME_DIR/bin/showpath'
+alias showpath='"$USRHOME_DIR/bin/showpath"'
 
 # Topic: Alias: usrhome-env
 # -------------------------
 #
 # This is the same as showpath, but for usrhome-env.
-alias usrhome-env='$USRHOME_DIR/bin/usrhome-env'
+alias usrhome-env='"$USRHOME_DIR/bin/usrhome-env"'
 
 # No other aliases for USRHOME/bin files as these other commands
 # are not only showing values.
@@ -71,8 +71,19 @@ cduh()
     fi
 }
 
+# ----------------------------------------------------------------------------
+# Topic: USRHOME Print Functions
+# ------------------------------
+
 # All print functions refrain from printing on a dumb shell to reduce output
 # on shells used by Emacs Tramp.
+
+# - usrhome_printf         FORMAT ARGS...
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+# - usrhome_print_warning  TEXT
+# - usrhome_print_error    TEXT
+
 usrhome_printf()
 {
     # Print text only when allowed.
@@ -94,13 +105,32 @@ usrhome_printf_warning()
     if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
         _usrhome_MAGENTA='\033[0;35m' # magenta
         _usrhome_NC='\033[0m' # No Color
-        printf -- "${_usrhome_MAGENTA}** WARNING " >&2
+        #printf -- "${_usrhome_MAGENTA}** WARNING " >&2
+        printf -- '%b** WARNING ' "${_usrhome_MAGENTA}" >&2
         # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
         printf -- "$@" >&2
-        printf "${_usrhome_NC}" >&2
+        printf -- '%b' "${_usrhome_NC}" >&2
         unset _usrhome_MAGENTA _usrhome_NC
     fi
 }
+
+usrhome_printf_error()
+{
+    # Print text only when allowed.
+    # All argument passed to printf.
+
+    # Note: if SHELL_IS_INTERACTIVE is not set, then use as if it was set to "false".
+    if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
+        _usrhome_RED='\033[1;31m' # Bold red
+        _usrhome_NC='\033[0m' # No Color
+        printf -- '%b** ERROR ' "${_usrhome_RED}" >&2
+        # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
+        printf -- "$@" >&2
+        printf -- '%b' "${_usrhome_NC}" >&2
+        unset _usrhome_RED _usrhome_NC
+    fi
+}
+
 
 usrhome_print_error()
 {
@@ -125,6 +155,7 @@ usrhome_print_warning()
     fi
 }
 
+# ----------------------------------------------------------------------------
 
 info_shell_special_var()
 {
