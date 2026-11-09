@@ -4,7 +4,7 @@
 # Purpose   : Move a file to a directory and create a symlink to it's new location.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 12:45:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 14:04:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -69,6 +69,15 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     exit 0
 fi
+
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
 
 if [ -z "$2" ] || [ -z "$1" ]; then
     usrhome_printf_error 'flip-to-ln: requires 2 arguments, %d provided.\n' "$#"

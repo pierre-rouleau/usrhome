@@ -4,7 +4,7 @@
 # Purpose   : Find and list all new and recently modified files.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2026-11-09 12:24:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 14:17:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -85,8 +85,8 @@ filepattern=
 
 args=$#
 while [ "$args" -ge 1 ]; do
-    echo "Arg1: $1"
-    echo "Arg2: $2"
+    # echo "Arg1: $1"
+    # echo "Arg2: $2"
     case "$1" in
         -h | --help )
             print_usage
@@ -130,25 +130,16 @@ done
 # --
 # Build options and execute search.
 
-# TODO: fix following for sh script.
-
-options='--changed-within '
-options+=${cktime}
-options+=" "
-options+=${opt_hidden}
-options+=" "
-options+=${opt_ignore}
-
-# TODO: cleanup output: allow printing only the file
+options="--changed-within ${cktime} ${opt_hidden} ${opt_ignore}"
 #echo "OPTIONS: [${options}]  FILEPATTERN: [${filepattern}]   DIR: [${dirname}]"
 case "$(uname)" in
     Darwin)
-        fd -t f ${options} ${filepattern} "${dirname}"  | xargs -I $ ls -l $
+        fd -t f ${options} ${filepattern} ${dirname}  | xargs -I $ ls -l $
         # fd -t f ${options} ${filepattern} "${dirname}"  | xargs -I $ stat -f '%N %Sm' -t '%Y:%m:%d @  %H:%M:%S' $
         ;;
 
     Linux)
-        fd -t f ${options} ${filepattern} "${dirname}" | xargs -I $ stat --format '%Y :%y %n' $ | sort -nr | cut -d: -f2-
+        fd -t f ${options} ${filepattern} ${dirname} | xargs -I $ stat --format '%Y :%y %n' $ | sort -nr | cut -d: -f2-
         ;;
 esac
 

@@ -4,7 +4,7 @@
 # Purpose   : Print all executable files found in the specified directory tree.
 # Created   : Wednesday, July 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 12:25:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 14:02:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -59,7 +59,7 @@ print_error_and_exit()
 {
     # $1 : error message
     usrhome_printf_error 'find-executable: %s\n' "$1"
-    usrhome_stderr_printf 'Use -h to print usage.\n'
+    usrhome_printf_stderr 'Use -h to print usage.\n'
     exit 2
 }
 

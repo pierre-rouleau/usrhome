@@ -4,7 +4,7 @@
 # Purpose   : Find all files in directory tree created or modified after a specific file.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2026-11-09 12:39:22 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 14:04:12 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -83,6 +83,15 @@ find-since: Find and print the name of files created and modified after
 
 "
 }
+
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
 
 print_error()
 {
