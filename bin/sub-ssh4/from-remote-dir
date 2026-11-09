@@ -3,7 +3,7 @@
 # Purpose   : Copy directory from the specified remote computer to the current local directory.
 # Created   : Thursday, July 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 11:05:45 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 11:09:16 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -106,7 +106,7 @@ remotedir="$(echo "$1" | sed "s:$HOME:${homeroot}/${username}:")"
 localdir="."
 if [ -n "$2" ]; then
     if [ ! -d "$2" ]; then
-        usrhome_printf_error '%s: invalid LOCALDIR:
+        usrhome_printf_error '%s: invalid LOCALDIR: %s
             Use the -h or --help option to print usage.\n' "${pgm_name}" "$2"
         exit 1
     fi
