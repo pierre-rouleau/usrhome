@@ -4,7 +4,7 @@
 # Purpose   : Find and list all new and recently modified files.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2026-11-09 14:17:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 16:01:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -127,28 +127,177 @@ while [ "$args" -ge 1 ]; do
     args=$(( args - 1 ))
 done
 
+
+
 # --
 # Build options and execute search.
 
-options="--changed-within ${cktime} ${opt_hidden} ${opt_ignore}"
-#echo "OPTIONS: [${options}]  FILEPATTERN: [${filepattern}]   DIR: [${dirname}]"
-case "$(uname)" in
-    Darwin)
-        fd -t f ${options} ${filepattern} ${dirname}  | xargs -I $ ls -l $
-        # fd -t f ${options} ${filepattern} "${dirname}"  | xargs -I $ stat -f '%N %Sm' -t '%Y:%m:%d @  %H:%M:%S' $
-        ;;
+if command -v fd > /dev/null; then
+    # Use fd : https://github.com/sharkdp/fd
+    # --------------------------------------
+    # Build one positional parameter for each fd argument.
+    set -- -t f --changed-within "$cktime"
 
-    Linux)
-        fd -t f ${options} ${filepattern} ${dirname} | xargs -I $ stat --format '%Y :%y %n' $ | sort -nr | cut -d: -f2-
+    if [ -n "$opt_hidden" ]; then
+        set -- "$@" "$opt_hidden"
+    fi
+
+    if [ -n "$opt_ignore" ]; then
+        set -- "$@" "$opt_ignore"
+    fi
+
+    # Pass the pattern even when it is empty, followed by the search directory.
+    set -- "$@" -- "$filepattern" "$dirname"
+
+    case "$(uname)" in
+        Darwin)
+            fd "$@" | xargs -I '$' ls -l '$'
+            ;;
+
+        Linux)
+            fd "$@" | xargs -I '$' stat --format '%Y :%y %n' '$' | sort -nr | cut -d: -f2-
+            ;;
+    esac
+    exit "$?"
+fi
+
+
+# Use find when fd is not available
+# ---------------------------------
+
+# Use fd when it is available.
+platform=$(uname)
+
+case "$platform" in
+    Darwin|Linux) ;;
+    *)
+        print_error "Unsupported operating system: $platform"
+        exit 1
         ;;
 esac
 
+# find does not implement fd's ignore-file rules.
+if [ -z "$opt_ignore" ]; then
+    print_error "fd is unavailable. Use -I to search without ignore rules."
+    exit 1
+fi
 
+# Convert the documented integer duration to seconds.
+case "$cktime" in
+    *s) unit=1 ;;
+    *m) unit=60 ;;
+    *h) unit=3600 ;;
+    *)
+        print_error "Invalid time: $cktime"
+        exit 1
+        ;;
+esac
 
-# TODO: support systems where fd is not installed.
-# A method to use find might be needed for system where fd is not installed.
-# It will be slower, but at least something would be available.
-#
-# find $1 -type f -print0 | xargs -0 stat --format '%Y :%y %n' | sort -nr | cut -d: -f2-
-#
+n=${cktime%?}
+case "$n" in
+    ''|*[!0-9]*)
+        print_error "Invalid time: $cktime"
+        exit 1
+        ;;
+esac
+
+# Remove leading zeroes before shell arithmetic.
+n=$(printf '%s\n' "$n" | sed 's/^0*//')
+[ -n "$n" ] || n=0
+
+# Keep arithmetic within a conservative range.
+if [ "${#n}" -gt 6 ] || [ "$n" -gt 100000 ]; then
+    print_error "Time value is too large: $cktime"
+    exit 1
+fi
+seconds=$((n * unit))
+
+# Validate the fallback's regular expression before starting find.
+if [ -n "$filepattern" ]; then
+    printf '\n' | grep -E -e "$filepattern" >/dev/null 2>&1
+    grep_status=$?
+    if [ "$grep_status" -gt 1 ]; then
+        print_error "Invalid extended regular expression: $filepattern"
+        exit 1
+    fi
+fi
+
+# Use UTC for both date and touch to avoid daylight-saving ambiguity.
+case "$platform" in
+    Darwin)
+        cutoff=$(TZ=UTC0 date -v-"${seconds}"S '+%Y%m%d%H%M.%S') || exit 1
+        ;;
+    Linux)
+        cutoff=$(TZ=UTC0 date -d "$seconds seconds ago" '+%Y%m%d%H%M.%S') || exit 1
+        ;;
+esac
+
+work=$(mktemp -d "${TMPDIR:-/tmp}/find-latest-in.XXXXXX") || exit 1
+trap 'rm -f "$work/stamp" "$work/results"; rmdir "$work"' 0
+trap 'exit 1' HUP INT TERM
+
+TZ=UTC0 touch -t "$cutoff" "$work/stamp" || exit 1
+
+# Prevent find from interpreting a relative directory as an expression.
+case "$dirname" in
+    '') print_error "Directory is empty"; exit 1 ;;
+    -*|'!'*|'('* ) dirname="./$dirname" ;;
+esac
+
+set -- "$dirname" -mindepth 1
+
+if [ -z "$opt_hidden" ]; then
+    # Skip hidden files and do not descend into hidden directories.
+    set -- "$@" \( -name '.*' -prune \) -o
+fi
+
+# The single-quoted code runs in the child shell, not the current shell.
+# shellcheck disable=SC2016
+set -- "$@" \( -type f -newer "$work/stamp" -exec sh -c '
+    pattern=$1
+    platform=$2
+    shift 2
+    result=0
+
+    for path do
+        name=${path##*/}
+
+        if [ -n "$pattern" ]; then
+            # Approximate fd smart case: uppercase makes the match sensitive.
+            case "$pattern" in
+                *[[:upper:]]*)
+                    printf "%s\n" "$name" | grep -Eq -e "$pattern"
+                    ;;
+                *)
+                    printf "%s\n" "$name" | grep -Eiq -e "$pattern"
+                    ;;
+            esac
+
+            status=$?
+            [ "$status" -eq 1 ] && continue
+            [ "$status" -eq 0 ] || { result=1; continue; }
+        fi
+
+        case "$platform" in
+            Darwin) ls -l "$path" || result=1 ;;
+            Linux) stat --format "%Y :%y %n" -- "$path" || result=1 ;;
+        esac
+    done
+
+    exit "$result"
+' sh "$filepattern" "$platform" '{}' + \)
+
+if ! find "$@" > "$work/results"; then
+    print_error "find failed"
+    exit 1
+fi
+
+case "$platform" in
+    Darwin) cat "$work/results" ;;
+    Linux) sort -nr "$work/results" | cut -d: -f2- ;;
+esac
+
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
