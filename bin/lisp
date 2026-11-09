@@ -4,7 +4,7 @@
 # Purpose   : Run the Common Lisp REPL selected for this shell.
 # Created   : Tuesday, February 10 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 16:54:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-08 23:45:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -98,13 +98,12 @@ else
         # Use e, the Emacs launcher.
         if [ -z "$RLWRAP_EDITOR" ]; then
             if [ ! -f "$HOME/.inputrc" ]; then
-                printf -- "\
-*** WARNING: You do not have a ~/.inputrc file!
-             It's best to use one that holds the following lines
+                usrhome_printf_warning 'You do not have a ~/.inputrc file!
+             It is best to use one that holds the following lines
              to allow invoking an editor to edit multi-line entries:
 set editing-mode emacs
 \"\\C-xe\": rlwrap-call-editor
-***\n\n"
+***\n\n'
             fi
             RLWRAP_EDITOR="emacs +%L:%C %F"
             export RLWRAP_EDITOR
@@ -136,7 +135,7 @@ set editing-mode emacs
 
 
         *)
-            printf -- "*** ERROR: unsupported value of USRHOME_PGMFOR_LISP: %s\n" "$USRHOME_PGMFOR_LISP"
+            usrhome_printf_error 'Unsupported value of USRHOME_PGMFOR_LISP: %s\n' "$USRHOME_PGMFOR_LISP"
             exit 1
             ;;
         esac
