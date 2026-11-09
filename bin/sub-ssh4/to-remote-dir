@@ -4,7 +4,7 @@
 # Purpose   : Copy a complete directory to the remote computer.
 # Created   : Thursday, July 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 08:38:06 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 11:06:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,9 +41,7 @@
 #
 #
 
-# Validate environment
-envfor_cmd_arg1=to-remote-dir
-
+# ---
 # Execute $USRHOME_DIR/bin/sub-ssh4/envfor-cmds to set the following environment variables:
 # - pgm_name
 # - hostname
@@ -52,6 +50,18 @@ envfor_cmd_arg1=to-remote-dir
 # - homeroot
 #shellcheck source=./envfor-cmds
 . "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
+
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
+
+# Validate environment
+envfor_cmd_arg1=to-remote-dir
 
 # Validate command line arguments
 if [ -z "$1" ]; then

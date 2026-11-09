@@ -4,7 +4,7 @@
 # Purpose   : Run the Common Lisp REPL selected for this shell.
 # Created   : Tuesday, February 10 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 23:45:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 11:01:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -62,6 +62,15 @@ print_usage()
 
 " "$pgm_name" "$pgm_name"
 }
+
+# ----------------------------------------------------------------------------
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ----------------------------------------------------------------------------
 
 # Check validity of arguments
 if [ -z "$USRHOME_PGMFOR_LISP" ]; then
