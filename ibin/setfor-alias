@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 23:51:54 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 10:08:46 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -105,7 +105,6 @@ usrhome_printf_warning()
     if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
         _usrhome_MAGENTA='\033[0;35m' # magenta
         _usrhome_NC='\033[0m' # No Color
-        #printf -- "${_usrhome_MAGENTA}** WARNING " >&2
         printf -- '%b** WARNING ' "${_usrhome_MAGENTA}" >&2
         # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
         printf -- "$@" >&2

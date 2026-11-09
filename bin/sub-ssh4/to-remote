@@ -3,7 +3,7 @@
 # Purpose   : Copy file to remote computer selected by environment.
 # Created   : Tuesday, July 16 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-16 11:27:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 08:35:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -50,14 +50,14 @@ envfor_cmd_arg1=to-remote
 # - ipv4addr
 # - username
 # - homeroot
-
+# shellcheck source=./envfor-cmds
 . "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
 
 
 # Validate command line arguments
 if [ -z "$1" ]; then
-    printf -- "*** %s ERROR: missing local file name.\n" "${pgm_name}"
-    printf -- "    Use the -h or --help option to print usage\n"
+    usrhome_printf_error '%s: missing local file name.
+            Use the -h or --help option to print usage\n' "${pgm_name}"
     exit 1
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     printf -- "\
@@ -111,11 +111,11 @@ if [ "$1" = "-n" ] || [ "$1" = "--dryrun" ]; then
 fi
 
 if [ -z "$1" ]; then
-    printf -- "*** %s ERROR: missing source file name.\n" "${pgm_name}"
-    printf -- "    Use the -h or --help option to print usage\n"
+    usrhome_printf_error '%s: missing source file name.
+            Use the -h or --help option to print usage\n' "${pgm_name}"
     exit 1
 elif [ ! -f "$1" ]; then
-    printf -- "*** %s ERROR: specified file does not exists: %s\n" "${pgm_name}" "$1"
+    usrhome_printf_error '%s: specified file does not exists: %s\n' "${pgm_name}" "$1"
     exit 1
 else
 
@@ -129,28 +129,23 @@ else
     if [ -z "$2" ]; then
         # Command line does not specify the destination directory.
         if [ -z "$USRHOME_SSH4__REM_DIR" ]; then
-            printf -- "\
-*** %s ERROR: please identify remote directory in DNAME or USRHOME_SSH4__REM_DIR
-" "${pgm_name}"
+            usrhome_printf_error '%s: please identify remote directory in DNAME or USRHOME_SSH4__REM_DIR\n' "${pgm_name}"
             exit 1
         fi
         first_char="$(echo "$USRHOME_SSH4__REM_DIR" | cut -c 1)"
         if [ "$first_char" != "/" ]; then
-            printf -- "\
-*** %s ERROR: USRHOME_SSH4__REM_DIR must be an absolute path name.
-" "${pgm_name}"
+            usrhome_printf_error '%s: USRHOME_SSH4__REM_DIR must be an absolute path name.\n' "${pgm_name}"
             exit 1
         fi
         last_char="$(printf "%s" "$USRHOME_SSH4__REM_DIR" | tail -c 1)"
         if [ "$last_char" = "/" ]; then
-            printf -- "\
-*** %s ERROR: USRHOME_SSH4__REM_DIR value must not end with a slash!
-" "${pgm_name}"
+            usrhome_printf_error '%s: USRHOME_SSH4__REM_DIR value must not end with a slash!\n' "${pgm_name}"
             exit 1
         fi
 
         # - Compute path delta from local_base_dpath to FNAME. Store in result
         #   - Define usrhome_relpath() by sourcing the required file.
+        # shellcheck source=../../ibin/inc/fpath.sh
         . "${USRHOME_DIR}/ibin/inc/fpath.sh"
         #   - get the local directory path reference
         local_base_dpath="$(realpath "$(pwd)")"
@@ -180,7 +175,7 @@ else
     if [ "$dryrun" = "false" ]; then
         scp "${fname}" "scp://${username}@${ipv4addr}/${dest_dir}"
     else
-        printf -- "*** %s WARNING: dry run: nothing is copied.\n" "${pgm_name}"
+        usrhome_printf_warning '%s: dry run: nothing is copied.\n' "${pgm_name}"
     fi
 fi
 

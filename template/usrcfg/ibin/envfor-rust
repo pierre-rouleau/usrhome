@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-03 16:38:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 10:09:26 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -91,7 +91,7 @@ Rust source is NOT installed!
         unset usrhome_rustv
         unset usrhome_rustv_fpathname
     else
-        usrhome_printf ". WARNING: Requesting Rust, but it is not installed!\n"
+        usrhome_printf_warning 'Requesting Rust, but it is not installed!\n'
     fi
 fi
 

@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-07 15:41:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 08:14:33 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -145,7 +145,7 @@ show_path()
 
     eval path_value='$'$vname
     if [ -z "$path_value" ]; then
-        printf -- "WARNING: $vname is not defined!\n" >&2
+        usrhome_printf_warning '%s is not defined!\n' "$vname"
         if [ "$vname" = "MANPATH" ]; then
             if command -v manpath > /dev/null 2>&1; then
                 if [ -n "$(manpath)" ]; then
@@ -169,7 +169,7 @@ show_path()
             printf -- "%s\n" "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
         fi
         if ! showpath_valid_separators "$path_value" "$vname"; then
-            printf -- "ERROR: %s has invalid empty entries!\n" "$vname" >&2
+            usrhome_printf_error '%s has invalid empty entries!\n' "$vname" >&2
             exit 3
         fi
     fi
