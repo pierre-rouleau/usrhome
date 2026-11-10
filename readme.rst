@@ -1774,6 +1774,155 @@ find-dir_                          Find and print directories DIR inside directo
                                    the current process.
 ================================== ================================================================
 
+
+Additional Scripts
+------------------
+
+The following scripts supplement the commands described above. Scripts in
+``bin`` are available when the USRHOME command directory is on ``PATH``.
+Platform-specific directories and internal helpers are identified separately.
+
+Files and searches
+~~~~~~~~~~~~~~~~~~
+
+* ``files-in`` lists entries in a directory tree, including symbolic links.
+  ``-l`` requests a long listing.
+* ``find-executable`` searches a directory tree for executable files.
+  ``-H`` includes hidden directories and ``-L`` includes links to files.
+* ``find-latest-in`` lists recently modified files. Use ``-d`` for the
+  directory, ``-t`` for the time window, and ``-f`` for a filename pattern.
+  ``-H`` includes hidden entries and ``-I`` disables ignore rules. If ``fd``
+  is unavailable, the ``find`` fallback requires ``-I`` and uses extended
+  regular expressions. Its matching and timestamp precision can differ.
+* ``find-perl`` finds Perl files and scripts. It can also search Perl's
+  ``@INC`` directories. ``find-py`` finds Python files.
+* ``find-since`` lists files newer than a marker file.
+* ``lslink`` lists symbolic links under the current directory on Linux and
+  macOS. ``lslink-broken`` lists broken symbolic links.
+* ``echo-grep`` prints a filename header and searches that file with
+  ``grep``. It accepts a pattern and a filename.
+* ``rg-all`` runs ``rg -L`` to follow symbolic links. ``rgabs`` searches
+  with absolute paths and can use ``rga``. ``rgf`` searches selected file
+  types with ``rg`` or ``rga``; ``bin/sub/rg-f`` implements its type dispatch.
+* ``print-if-exists`` reads paths from standard input and prints the
+  normalized paths that exist.
+* ``withh-ls`` and ``withh-rpm`` print a header for the last argument before
+  invoking ``ls`` or ``rpm``.
+
+Development and conversion
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``clang-version`` prints the Clang version. If its C++ executable is
+  missing, the wrapper attempts to build it with ``make``.
+* ``diffo`` compares object files by their disassembled code. ``dumpo``
+  prints an object's disassembly. ``mk-diffo`` records and compares object
+  code across versions; it requires the ``USRHOME_DIFFO_*`` environment.
+* ``isvalid-python3`` checks a file with Python 3's ``compileall`` module.
+* ``git-lbr`` lists selected local or remote Git branches. ``git-log``
+  formats Git history. ``git-status`` adds HEAD information to Git status.
+  ``git-sw`` checks out a branch and can use shell completion.
+* ``iconv-iso8859-utf8`` converts a file from ISO-8859-1 to UTF-8. It copies
+  the original to ``USRHOME_DIR_TMP`` and overwrites the input file.
+  ``iconv-iso8859-utf8-all`` uses ``fd`` and ``file`` to select files for
+  the same conversion. Review the selection and keep backups before use.
+* ``download-website`` uses ``wget`` to download a URL tree into the
+  current directory and adjusts links for local viewing.
+* ``lisp`` launches the Common Lisp implementation selected by a
+  ``use-lisp-with-*`` environment script.
+
+System and process information
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``ansi-colors`` and ``ansi-named-colors`` are intended to display ANSI color codes.
+* ``info-gcc`` reports GCC tool information. ``info-gcc-c-include`` and
+  ``info-gcc-c++-include`` list existing GCC header search directories.
+* ``info-java`` reports Java environment information. ``info-lisp`` reports
+  the selected Lisp implementation. ``info-versions`` reports available
+  language tool versions.
+* ``info-os`` prints operating-system information. ``info-screen`` reports
+  whether the shell is in a GNU screen session.
+* ``pidcwd`` reports a process's working directory. It uses ``pwdx`` when
+  available, otherwise ``lsof`` and ``awk``.
+* ``ps-list`` lists process information. ``ps-emacs`` lists Emacs processes;
+  ``ps-erlang``, ``ps-perl``, and ``ps-python`` list their respective
+  processes running in terminals.
+* ``shell-age`` reports when the shell opened and its age.
+* ``show-binutils`` lists the availability of GNU binutils commands.
+  ``show-perl-inc`` prints Perl's ``@INC`` search directories.
+* ``ssh-agent-isit-running`` checks for running SSH agents and reports
+  multiple agents.
+
+Platform-specific scripts
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``bin/linux`` is added to ``PATH`` on Linux; ``bin/macOS`` is added on
+macOS. Scripts in nested directories may require an explicit path.
+
+* ``bin/au-longest-typename`` reports the maximum audit record type length.
+* ``bin/linux/au-format`` and ``bin/macOS/au-format`` format audit log
+  records from standard input. The implementations have different dependencies.
+* ``bin/linux/au-convert-date`` is marked obsolete; use ``au-format``.
+  ``bin/macOS/au-convert-date`` is an older audit timestamp filter.
+* ``bin/linux/au-gensyscall-lookup`` generates an AWK system-call lookup
+  table using ``ausyscall``.
+* ``bin/linux/tail-audit4avc`` follows the audit log and formats AVC and
+  SYSCALL records. ``bin/linux/gnopen`` opens a directory with ``gnome-open``.
+* ``bin/linux/selinux/se-build-te`` builds SELinux policy files.
+  ``se-find-definition`` and ``se-find-interface`` locate policy definitions
+  or interfaces; ``se-show-definition`` and ``se-show-interface`` show them.
+  These search helpers require an SELinux development environment.
+  ``se-show-rpms`` reports selected SELinux RPMs.
+* ``bin/macOS/finder-show-hidden`` and ``finder-hide-hidden`` change Finder's
+  hidden-file preference and restart Finder.
+* ``bin/macOS/macos-fix-iworks`` changes supported iWork application
+  preferences to suppress upgrade prompts. It can back up preferences first.
+
+Internal and setup scripts
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``bin/sub-ssh4/envfor-cmds`` reads SSH target settings.
+  ``from-remote`` and ``from-remote-dir`` implement remote-to-local copies;
+  ``to-remote`` and ``to-remote-dir`` implement local-to-remote copies.
+  ``ssh4-scoped`` implements an SSH connection. These are base scripts for
+  target-specific commands; see `SSH helper documentation
+  <bin/sub-ssh4/readme.rst>`_.
+* ``bin/linux/selinux/hidden/do-se-env-check`` validates the SELinux policy
+  development environment for the SELinux helpers.
+* The ``bin/other/au-extra-format*.awk``, ``au-log-lineup*.awk``, and
+  ``au-log-syscall2name.awk`` files are audit-formatting filters.
+  ``bin/other/ps-emacs.awk`` filters Emacs process records; the
+  ``ps-*-format.awk`` files format process records for the process commands.
+* ``ibin/change_prompt`` applies prompt changes.
+  ``ibin/do-extend-manpath`` prepares ``MANPATH`` for extension.
+  ``ibin/inc/fpath.sh`` defines path-relationship functions.
+* ``ibin/setfor-bash-common`` and ``ibin/setfor-zsh-common`` define
+  shell-specific functions used during configuration.
+* ``ibin/xtra/print-utilities.sh`` defines shared print, warning, and error
+  functions. They suppress output unless ``SHELL_IS_INTERACTIVE`` is
+  ``true`` and ``TERM`` is not ``dumb``.
+* ``ibin/envfor-cc-options`` configures extra options for the augmented
+  ``cc`` command. ``ibin/envfor-mk-diffo`` configures ``mk-diffo``.
+* ``ibin/envfor-git-extra`` sets up extra Git completion where supported.
+  ``ibin/envfor-perlbrew`` and ``ibin/envfor-sdkman`` activate installed
+  Perlbrew and SDKMAN environments.
+* ``ibin/envfor-lisp-with-clasp``, ``envfor-lisp-with-clisp``,
+  ``envfor-lisp-with-roswell``, and ``envfor-lisp-with-sbcl`` select the
+  implementation used by ``lisp``.
+* On macOS, ``ibin/envfor-gcc15-on-macos`` activates a GCC 15 toolchain;
+  ``ibin/envfor-gnu-binutils-on-macos`` and ``envfor-gnubin-on-macos``
+  activate Homebrew GNU tools. ``ibin/envfor-llvm`` activates Homebrew LLVM.
+* ``ibin/macos_bin_bash.sh`` and ``ibin/macos_homebrew_gnu_bash.bash``
+  launch login Bash shells for macOS Terminal profiles.
+* ``setup/macOS/create-gcc-as-gcc15.sh`` creates GCC 15 toolchain links
+  for Apple Silicon Homebrew. ``setup/macOS/setup-beyond-compare`` and
+  ``setup/macOS/setup-hammerspoon`` create command links for installed
+  applications.
+* ``template/usrcfg/do-user-bash-profile.bash`` is a template for
+  user-specific login Bash configuration.
+* ``test/run-tests`` runs ``test/test-sanitize-path.sh`` with available
+  shells. Run it from the repository root with ``./test/run-tests``.
+
+
 USRHOME Prompt
 ==============
 
