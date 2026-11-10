@@ -60,6 +60,12 @@ and Linux systems.
   *usrcfg* directory tree with the technology you prefer to activate similar
   shells across multiple computers using the same or different operating
   systems.
+- **Battery-included workspace for team-work:** USRHOME gives a team a common,
+  opinionated command-line environment. It provides a complete workspace with
+  framework-maintained control scripts from `ibin/`_ available in each member’s
+  shell. These scripts give team members a shared set of navigation and
+  debugging shortcuts from the start. The shared commands give the team a
+  common vocabulary for daily work.
 
 .. ---------------------------------------------------------------------------
 
@@ -237,7 +243,6 @@ trace and PATH values to that file. You can use
 ``usrhome-shell-toggle-tracing`` to toggle tracing and restart the
 current Bash or Zsh shell. Tracing output is suppressed in non-interactive
 shells and when ``TERM`` is ``dumb``.
-
 
 Technologies
 ------------
@@ -1962,7 +1967,7 @@ Development and conversion
   ``git-sw`` checks out a branch and can use shell completion.
 * ``iconv-iso8859-utf8`` converts a file from ISO-8859-1 to UTF-8. It copies
   the original to ``USRHOME_DIR_TMP`` and overwrites the input file.
-  ``iconv-iso8859-utf8-all`` uses ``fd`` and ``file`` to select files for
+  ``iconv-iso8859-utf8-all`` uses ``fd`` (or ``find``) and ``file`` to select files for
   the same conversion. Review the selection and keep backups before use.
 * ``download-website`` uses ``wget`` to download a URL tree into the
   current directory and adjusts links for local viewing.
@@ -2015,8 +2020,12 @@ macOS. Scripts in nested directories may require an explicit path.
   hidden-file preference and restart Finder.
 * ``bin/macOS/macos-fix-iworks`` changes supported iWork application
   preferences to suppress upgrade prompts. It can back up preferences first.
-* ``f-numbers`` command alias lists all macOS Numbers files found in the directory
-  tree.
+* Some commands are defined inside templates for macOS and need to be
+  installed locally.  See the `template/usrcfg/do-user.sh`_ for:
+
+  * ``f-numbers`` command alias lists all macOS Numbers files found in the directory
+    tree.  This skips hidden files (such as files in ``.git`` directories) by
+    default when ``fd`` is used.
 
 
 Internal and setup scripts
@@ -2971,6 +2980,8 @@ Thanks!
 .. _installation:
 .. _How to install USRHOME:                            `Install USRHOME - How to Set it Up`_
 .. _find:                                              https://en.wikipedia.org/wiki/Find_(Unix)
+.. _template/usrcfg/do-user.sh:                        template/usrcfg/do-user.sh
+.. _ibin/:                                             ibin/
 
 
 .. ---------------------------------------------------------------------------
