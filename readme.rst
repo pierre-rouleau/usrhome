@@ -107,6 +107,13 @@ template files`_ that correspond to what I use in my *usrcfg* repository.
 This also corresponds to what is shown in the diagram included in the section
 titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 
+Shell support and portability
+-----------------------------
+
+USRHOME supports Bash and Zsh. Much of its shell code uses POSIX shell
+conventions, although some scripts use shell-specific features. The
+project is working to improve POSIX compatibility to make support for
+other shells possible. Other shells are not yet officially supported.
 
 Session-specific tool environments
 ----------------------------------
