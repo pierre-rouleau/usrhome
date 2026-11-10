@@ -218,6 +218,20 @@ These are:
 - over Linux web terminal applications such as `Cockpit`_,
 - inside Emacs various terminal shell modes.
 
+Shell startup tracing
+---------------------
+
+USRHOME can trace the sourcing of its shell configuration files to help
+you diagnose startup problems. The trace shows the order and nesting of
+participating files. Set ``USRHOME_TRACE_SHELL_CONFIG`` to ``1`` in
+``usrcfg/setfor-all-config.sh`` to print the trace to the shell. Set it
+to an absolute file name in an existing directory to also append the
+trace and PATH values to that file. You can use
+``usrhome-shell-toggle-tracing`` to toggle tracing and restart the
+current Bash or Zsh shell. Tracing output is suppressed in non-interactive
+shells and when ``TERM`` is ``dumb``.
+
+
 Technologies
 ------------
 
