@@ -60,12 +60,10 @@ and Linux systems.
   *usrcfg* directory tree with the technology you prefer to activate similar
   shells across multiple computers using the same or different operating
   systems.
-- **Battery-included workspace for team-work:** USRHOME gives a team a common,
-  opinionated command-line environment. It provides a complete workspace with
-  framework-maintained control scripts from `bin/`_ and `ibin/`_ available in each member’s
-  shell. These scripts give team members a shared set of navigation and
-  debugging shortcuts from the start. The shared commands give the team a
-  common vocabulary for daily work.
+- **Battery-included workspace:** USRHOME provides an opinionated command-line
+  environment with commands and scripts from its `bin/`_ and `ibin/`_
+  directories.  It provides some tools implemented in AWK and Pike (`lsdd`_)
+  [#pike_note].
 
 .. ---------------------------------------------------------------------------
 
@@ -190,6 +188,14 @@ USRHOME also includes limited checks for specific known problematic
 Keeping ``usrcfg`` separate helps you manage private configuration, but
 you remain responsible for keeping that repository and its contents
 private.
+
+USRHOME provides Linux tools for SELinux policy development and
+troubleshooting. The tools can search for and display policy macro and
+interface definitions, and build a policy package from a
+type-enforcement file. The search tools require an SELinux policy
+development environment. Other tools report selected SELinux RPMs,
+follow AVC and SYSCALL audit records, and display process security
+context labels.
 
 Emacs integration
 -----------------
@@ -317,14 +323,6 @@ empty-entry marker; see the `sanitize-path command`_.
 
 If sanitization fails, the caller must not assume that PATH is safe.
 The sanitizer does not check whether directories exist or are trusted.
-
-**Proactive Supply-Chain Auditing**
-
-USRHOME features integrated background checking hooks built directly into
-its core path management infrastructure. On startup, initialization logic
-scans environment states to cross-reference and report high-severity
-packages or compromised dependencies (such as the ``xz`` utility
-vulnerability spectrum), warning the user before operations execute.
 
 **Strict Privacy Boundary Separation**
 
@@ -832,14 +830,11 @@ USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
 
 
 
-USRHOME_DIR_HELPDIR             Optional environment variable.  If defined it
-                                identifies the directory where Zsh Builtin
-                                Help files are located. Define it only when
-                                the default USRHOME logic in
-                                ``usrhome/dot/zshrc.zsh`` is not able to
-                                identify that directory for your system and
-                                therefore the help command is not able to
-                                operate like it would under Bash.
+USRHOME_DIR_HELPDIR             Optional Zsh help directory. A non-empty
+                                value takes precedence over ``HELPDIR``.
+                                The directory must contain a readable
+                                ``cd`` or ``print`` help file. See
+                                `Help for Zsh Builtin Commands`_.
 
 USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
                                 syntax of the prompt used by the shell.
@@ -860,15 +855,11 @@ USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
                                 issuing a ``usrhome-prompt-model-to NUMBER``
                                 command.
 
-                                **Caution!!** Under zsh it might be necessary to
-                                execute ``exec zsh`` to update the prompt.
-                                This depends on how the prompt is implemented.
-
-                                - You can identify a prompt number that would
-                                  require restarting zsh in the environment
-                                  variable USRHOME_PROMPT_MODEL_REQUIRES_RESTART.
-                                - The command will check if the zsh has any
-                                  running job and will proceed only if there are none.
+                                Under Zsh, changing the prompt may restart the
+                                shell. In that case the command will prompt
+                                before proceeding.
+                                See `Shell Behavior Control`_ for restart
+                                confirmation details.
 
 USRHOME_ORIGINAL_PATH           Set to the value of PATH before USRHOME adds to it.
                                 You can restore that value with the
@@ -990,23 +981,16 @@ USRHOME Command Name               Description
                                      identified by `usrhome/template/setfor-all-config.sh`_
                                      used to initialize the usrcfg file.
 
-                                   **Caution** this command perform an exec command for the current
-                                   shell, which will wipe history.  The command check if there a re
-                                   any running jobs and will not proceed if there are any.
-
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
 
 `usrhome-prompt-toggle-usr-host`_  Toggle the inclusion of the user name and host name inside
                                    the prompt.
 
-                                   **Caution!!** Under zsh it might be necessary to
-                                   execute ``exec zsh`` to update the prompt.
-                                   This depends on how the prompt is implemented.
-
-                                   - You can identify a prompt number that would
-                                     require restarting zsh in the environment
-                                     variable USRHOME_PROMPT_MODEL_REQUIRES_RESTART.
-                                   - The command will check if the zsh has any
-                                     running job and will proceed only if there are none.
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
 
                                    The command is not affected by this limitation when issued
                                    in the Bash shell.
@@ -1016,25 +1000,32 @@ USRHOME Command Name               Description
                                    - This command also supports the ``-h`` and ``--help`` command
                                      line options which pint the usage.
 
-                                   **Caution!!** Under zsh it might be necessary to
-                                   execute ``exec zsh`` to update the prompt.
-                                   This depends on how the prompt is implemented.
-
-                                   - You can identify a prompt number that would
-                                     require restarting zsh in the environment
-                                     variable USRHOME_PROMPT_MODEL_REQUIRES_RESTART.
-                                   - The command will check if the zsh has any
-                                     running job and will proceed only if there are none.
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
 
                                    The command is not affected by this limitation when issued
                                    in the Bash shell.
 ================================== ================================================================
 
-Note that the above commands will not execute if there are any running
-sub-process jobs under the shell.  That's because these commands execute
-``exec zsh`` and that wipes out shell knowledge about these background jobs,
-making it difficult to bring them back into the foreground.
+The above commands may need to restart the shell under some conditions.
+Before a command restarts the shell, it warns that unsaved shell history
+and other shell state may be lost, and asks for confirmation. The
+confirmation does not save shell history. The result depends on the shell
+history configuration.
 
+Enter ``y`` or ``Y`` to restart. Any other response, including an empty
+response or end of input, cancels the restart and leaves the setting
+unchanged. If the command cannot prompt in an interactive terminal, it
+cancels the restart.
+
+The commands do not restart the shell while unfinished jobs are present.
+Terminate the jobs before retrying.
+
+If you want to force a shell restart, set
+the ``USRHOME_PROMPT_MODEL_REQUIRES_RESTART`` to 1 in your
+``usrcfg`` settings (such as ``usrcfg/do-user-zshrc.zsh``).  This will
+force a prompt in the above commands.
 
 
 Shell Status Info
@@ -1573,30 +1564,51 @@ Apple Silicon CPU architecture.
 Help for Zsh Builtin Commands
 -----------------------------
 
-The Z shell does not support a ``help`` command that provides information on
-the shell builtin commands like Bash does.  The Z Shell provides the run-help
-command instead but that is not always available.  For instance, under macOS,
-it is aliased to ``man``, which causes help requests to open the generic man
-page on zsh; something not very useful.  On some Linux distributions, like
-Kali Linux, run-help is a shell function and will display the requested
-builtin help.
+USRHOME provides a ``help`` function in interactive Zsh shells. Use it
+to request help for a builtin command. For example::
 
-USRHOME implements the help command for zsh as an alias to run-help.  It also
-sets the HELPDIR environment variable, used by run-help, to identify the
-location of the zsh help files directory.
+  help cd
+  help kill
 
-- Under Linux, it's: ``/usr/share/zsh/help``
-- Under OS/X and macOS that's: ``/usr/share/zsh/VVV/help`` with ``VVV``
-  replaced by the zsh version number.
+On the first call, ``help`` initializes Zsh's ``run-help`` function.
+It preserves an existing ``run-help`` function or autoload declaration.
+If neither exists, it attempts to load ``run-help`` from ``fpath``.
+Later calls use ``run-help`` without repeating directory discovery.
 
-The logic is inside USRHOME `dot/zshrc.zsh`_ file.
+USRHOME selects a Zsh help directory in this order:
 
-Therefore, on most systems you should end-up with the zsh shell providing a
-help command that shows information on zsh builtin commands.
+1. A non-empty ``USRHOME_DIR_HELPDIR`` value.
+2. A non-empty ``HELPDIR`` value.
+3. A directory found in common Zsh installation locations.
 
-If it does not work for your system, check the value of DIRHELP.
-You can set it to the value you need inside your file
-``usrcfg/setfor-all-config.sh``
+For discovery, USRHOME checks versioned and unversioned ``help``
+directories under ``/usr/share/zsh``, ``/usr/local/share/zsh``, and
+``/opt/homebrew/share/zsh``. If necessary, it searches within those
+installation directories using ``fd`` or, if ``fd`` is unavailable,
+``find``.
+
+The selected directory must contain a readable ``cd`` or ``print`` help
+file. If an explicitly configured directory fails this check, ``help``
+reports an error instead of searching for another directory. If discovery
+finds no directory, ``help`` reports a warning and lets ``run-help`` use
+its default and other help sources.
+
+If ``run-help`` cannot be loaded, ``help`` uses the system ``man``
+command. With a topic, it passes the topic to ``man``. Without a topic,
+it requests ``man zshbuiltins``.
+
+To select a help directory, set ``USRHOME_DIR_HELPDIR`` before the first
+``help`` call. For a persistent setting, add a line like this to
+``usrcfg/setfor-all-config.sh``, using the path for your system::
+
+  export USRHOME_DIR_HELPDIR="/path/to/zsh/help"
+
+After successful initialization, open a new interactive Zsh shell to
+repeat discovery with changed settings. If an explicit directory is
+invalid, correct the value and retry ``help`` in the current shell.
+
+USRHOME skips this configuration when ``TERM`` is ``dumb`` and
+``INSIDE_EMACS`` is unset.
 
 **Example on Kali Linux:**
 
@@ -2011,11 +2023,6 @@ macOS. Scripts in nested directories may require an explicit path.
   table using ``ausyscall``.
 * ``bin/linux/tail-audit4avc`` follows the audit log and formats AVC and
   SYSCALL records. ``bin/linux/gnopen`` opens a directory with ``gnome-open``.
-* ``bin/linux/selinux/se-build-te`` builds SELinux policy files.
-  ``se-find-definition`` and ``se-find-interface`` locate policy definitions
-  or interfaces; ``se-show-definition`` and ``se-show-interface`` show them.
-  These search helpers require an SELinux development environment.
-  ``se-show-rpms`` reports selected SELinux RPMs.
 * ``bin/macOS/finder-show-hidden`` and ``finder-hide-hidden`` change Finder's
   hidden-file preference and restart Finder.
 * ``bin/macOS/macos-fix-iworks`` changes supported iWork application
@@ -2026,6 +2033,29 @@ macOS. Scripts in nested directories may require an explicit path.
   * ``f-numbers`` command alias lists all macOS Numbers files found in the directory
     tree.  This skips hidden files (such as files in ``.git`` directories) by
     default when ``fd`` is used.
+
+SELinux utilities
+~~~~~~~~~~~~~~~~~
+
+USRHOME provides Linux tools for SELinux policy development and
+troubleshooting. The scripts in ``bin/linux/selinux`` can search and
+display policy macro and interface definitions, build a policy package
+from a type-enforcement file, and report selected SELinux RPMs. To use
+the search scripts, set ``USRHOME_SELINUX_POLICY_LOCATION`` to a policy
+directory containing ``policy/modules`` or ``include``. Building a
+policy package requires ``checkmodule`` and ``semodule_package``.
+``tail-audit4avc`` follows and formats AVC and SYSCALL audit records.
+``ps-list -Z`` includes process security context labels when
+``getenforce`` is available. The scripts in ``bin/linux/selinux`` may
+require an explicit path because the directory is not automatically
+added to ``PATH``.
+
+* ``bin/linux/selinux/se-build-te`` builds SELinux policy files.
+  ``se-find-definition`` and ``se-find-interface`` locate policy definitions
+  or interfaces; ``se-show-definition`` and ``se-show-interface`` show them.
+  These search helpers require an SELinux development environment.
+  ``se-show-rpms`` reports selected SELinux RPMs.
+
 
 
 Internal and setup scripts
@@ -2848,6 +2878,14 @@ tool chain instead of the Apple-supplied Clang tool chain.
                                           PATH, effectively activating the GCC commands.
 = ===================================== =============================================================
 
+
+.. ---------------------------------------------------------------------------
+
+Notes
+=====
+
+.. [#pike_note] Although `Pike`_ is not deployed in most system it is easy to setup and use.
+           It's also not necessary if you do not use that simple command.
 
 
 Feedback's Welcome!

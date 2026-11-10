@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2026-11-08 13:34:09 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 15:48:01 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -71,82 +71,15 @@ usrhome_trace_in "~/.zshrc    --> \$USRHOME_DIR/dot/zshrc.zsh"
 _usrhome_sanitize_path || :
 
 # ----------------------------------------------------------------------------
-# Activate the help for zsh builtins
-# ----------------------------------
+# Initialize Zsh help on first use
+# --------------------------------
 #
-# The Z Shell has zsh builtin help inside a directory like the following:
-#
-# - Linux:  /usr/share/zsh/help
-# - macOS:  /usr/share/zsh/VVV/help  , where VVV is zsh version number
-#
-# With zsh installed with Homebrew it might be /usr/local/share/help
-#
-# Unfortunately, by default, help does not work in zsh the way it does
-# inside Bash. The Z Shell provides run-help but it is normally aliased
-# to man and then you need to know which section of what man page to
-# find the information about the Z shell builtin.
-#
-# The following activates a working help command for builtin inside the Z
-# shell that works like the help in bash.
-#
-# 1 - HELPDIR:
-#
-# The following logic sets the HELPDIR environment variable to the
-# path where the zsh files are stored, unless USRHOME_DIR_HELPDIR
-# is set, in that case it uses that.
-if [[ -n "$USRHOME_DIR_HELPDIR" ]]; then
-    export HELPDIR="$USRHOME_DIR_HELPDIR"
-else
-    os_type=$(uname)
-    case $os_type in
-        'Darwin' )
-            # The following works since at least OS/X Snow Leopard 10.6.8
-            zsh_version=$(zsh --version | awk '{print $2}')
-            export HELPDIR=/usr/share/zsh/${zsh_version}/help
-            ;;
+unalias help 2>/dev/null || :
 
-        *)
-            # This works on Kali Linux, Ubuntu,
-            # On Rocky Linux zsh may not be available, and if it is,
-            # the help files may not be present in this directory
-            if [[ -d /usr/share/zsh/help ]]; then
-                export HELPDIR=/usr/share/zsh/help
-            else
-                usrhome_printf "\
-WARNING! The zsh help files expected in /usr/share/zsh/help
-         are not present!
-         It might be a problem with the Linux distribution of zsh.
-         You can get the files from the zsh source tarball in the
-         Doc/help directory at:
-           https://sourceforge.net/projects/zsh/files/zsh/
-"
-            fi
-            ;;
-    esac
-    unset os_type
-fi
-if [[ -n "$HELPDIR" ]]; then
-#
-# Check the validity of HELPDIR and proceed if it's OK.
-    if [[ -d "$HELPDIR" ]]; then
-        # 2 - If necessary, Un-alias run-help, then autoload run-help
-        if type run-help | grep alias > /dev/null; then
-            unalias run-help 2> /dev/null
-            autoload run-help
-        fi
-        #
-        # 3 - Set an help alias
-        alias help=run-help
-    else
-        usrhome_printf "\
-WARNING! The value of HELPDIR variable is invalid!
-         It should identify the location of zsh help directory,
-         but the directory it identifies does not exist!
-         Please investigate -- report the problem to USRHOME
-                               by filing a bug report."
-    fi
-fi
-
+help() {
+    builtin source "$USRHOME_DIR/dot/xtra/zsh-help-init.sh" || return 1
+    \usrhome_help_init "$@"
+}
 
 #
 # ------------------------------------------

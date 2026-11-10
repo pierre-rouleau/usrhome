@@ -3,7 +3,7 @@
 # Purpose   : Toggle tracing of shell configuration file sourcing.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:58:16 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 14:18:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -11,20 +11,34 @@
 # Toggle printing the sourcing of shell configuration file.
 # This tracing helps show which configuration file is used in various
 # situations.
-
+#
+# This source script is meant to be executed as the command named:
+#    usrhome-shell-toggle-tracing
+#
+#
+# The script $USRHOME_DIR/ibin/setfor-alias sets the alias.
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
-#
-if [[ -n "$(jobs)" ]]; then
-    # Don't allow re-starting zsh when there are running jobs
-    # inside the shell.  The exec zsh might kill them if they
-    # were not detached.  Warn the user and quit.
-    echo "Unfinished jobs running.  Terminate them first!"
-    return 1
-fi
+
+# shellcheck source=./which-shell
+. "$USRHOME_DIR/ibin/which-shell" || return 1
+
+case "$USRHOME_SHELL" in
+    zsh | bash) ;;
+    *)
+        printf "USRHOME does not support tracing in '%s' shell.\n" "$USRHOME_SHELL" >&2
+        return 1
+        ;;
+esac
+
+# shellcheck source=xtra/confirm-shell-restart.sh
+. "$USRHOME_DIR/ibin/xtra/confirm-shell-restart.sh" || return 1
+usrhome_confirm_shell_restart || return 1
+
+# --
 
 if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
     export USRHOME_TRACE_SHELL_CONFIG=1

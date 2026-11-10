@@ -3,7 +3,7 @@
 # Purpose   : Change zsh prompt model in current shell.
 # Created   : Wednesday, April  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-20 12:29:06 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 14:23:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -11,12 +11,9 @@
 # Set the prompt model to the number specified by the argument.
 #
 # This source script is meant to be executed as the command named:
-# 'usrhome-prompt-model-to'
+#   usrhome-prompt-model-to
 #
-# The script $USRHOME_DIR/ibin/setfor-alias sets up the following alias:
-#
-# alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
-#
+# The script $USRHOME_DIR/ibin/setfor-alias sets the alias.
 #
 
 # ----------------------------------------------------------------------------
@@ -65,7 +62,7 @@ Usage:  usrhome-prompt-model-to -h|--help
 
 # Validate user input
 # ------------------
-if [[ -z "$1" ]]; then
+if [ -z "$1" ]; then
     >&2 printf "\
 ***ERROR***
  - usrhome-prompt-model-to:  requires the prompt model number.
@@ -108,24 +105,21 @@ case "$1" in
                 echo "Overriding cancelled, nothing else to do."
                 return 0
             else
+                # shellcheck source=xtra/confirm-shell-restart.sh
+                . "$USRHOME_DIR/ibin/xtra/confirm-shell-restart.sh" || return 1
+                usrhome_prompt_restart_preflight "${USRHOME_PROMPT_MODEL-}" || return 1
+
                 echo "Restoring configuration requested prompt model: $USRHOME_PROMPT_MODEL"
                 unset USRHOME_PROMPT_MODEL_OVERRIDE
             fi
         fi
         ;;
 
-    0)
-        export USRHOME_PROMPT_MODEL_OVERRIDE=0
-        ;;
-    1)
-        export USRHOME_PROMPT_MODEL_OVERRIDE=1
-        ;;
-    2)
-        export USRHOME_PROMPT_MODEL_OVERRIDE=2
-        ;;
-
-    3)
-        export USRHOME_PROMPT_MODEL_OVERRIDE=3
+    0 | 1 | 2 | 3)
+        # shellcheck source=xtra/confirm-shell-restart.sh
+        . "$USRHOME_DIR/ibin/xtra/confirm-shell-restart.sh" || return 1
+        usrhome_prompt_restart_preflight "$1" || return 1
+        export USRHOME_PROMPT_MODEL_OVERRIDE="$1"
         ;;
 
     *)
@@ -138,7 +132,8 @@ esac
 # Proceed, using method required by shell
 # ---------------------------------------
 
-source  "$USRHOME_DIR/ibin/change_prompt"
+# shellcheck source=./change_prompt
+. "$USRHOME_DIR/ibin/change_prompt"
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
