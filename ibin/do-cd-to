@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 08:40:48 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 13:30:20 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -129,6 +129,7 @@ print_usage()
 cd-to : Search for file in current directory tree.
         If ONE is found: change current directory to its parent.
         If more than 1 file found, list them and offer to edit them.
+        Uses fd when available, uses find used when fd is unavailable.
 
    Usage:  cd-to [-h|--help]
            cd-to    [-H] [-I] [-L] [-e] FILENAME
@@ -136,15 +137,19 @@ cd-to : Search for file in current directory tree.
 
      OPTIONS:
       -H : Search hidden directories. Not searched by default.
-      -I : no-ignored directories: search ignored directories
-           which are skipped by default. See fd -I option.
+      -I : with fd only: search ignored directory.
+           When fd is not present, find is used and all
+           ignored directories (such as .git) are searched.
       -L : follow symbolic links.  Not followed by default.
       -e : edit file(s).  Edit the file if only one is found.
                           If several file/directories are found
                           that option is ignored, it prompts
                           for editing the files anyway.
 
-     FILENAME or DIRNAME may use the glob syntax supported by fd.
+     NOTE:
+     - With fd, FILENAME or DIRNAME may use fd glob syntax.
+     - Without fd, find uses basename globs and does not apply
+       fd ignore rules.
 
      EXIT CODE:
       - 0: ONE file found, or selected out of many and cd done.
@@ -158,15 +163,7 @@ cd-to : Search for file in current directory tree.
 "
 }
 
-# Check for availability of the fd command.
-if ! command -v fd > /dev/null 2>&1; then
-    echo "ERROR: the fd command is not available!"
-    echo "  See: https://github.com/sharkdp/fd "
-    echo "  Install it with your package manager."
-    return 1
-fi
-
-
+# --
 # Set option default values, can be modified by check_option()
 search_hidden=false
 search_ignored=false
@@ -294,36 +291,94 @@ esac
 
 # echo "PROCEEDING: the_fname=$the_fname, search_hidden=$search_hidden, search_for=$search_for"
 
-if [ "${search_hidden}" = "true" ]; then
-    if [ "$search_for" = "directories" ]; then
-        if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -H -I -L --type d -g "$the_fname")"
+if command -v fd > /dev/null 2>&1; then
+    # Use fd for quick file searching
+    if [ "${search_hidden}" = "true" ]; then
+        if [ "$search_for" = "directories" ]; then
+            if [ "$search_ignored" = "true" ]; then
+                the_filepath="$(fd -H -I -L --type d -g "$the_fname")"
+            else
+                the_filepath="$(fd -H -L --type d -g "$the_fname")"
+            fi
         else
-            the_filepath="$(fd -H -L --type d -g "$the_fname")"
+            if [ "$search_ignored" = "true" ]; then
+                the_filepath="$(fd -H -I -L --type f -g "$the_fname")"
+            else
+                the_filepath="$(fd -H -L --type f -g "$the_fname")"
+            fi
         fi
     else
-        if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -H -I -L --type f -g "$the_fname")"
+        if [ "$search_for" = "directories" ]; then
+            if [ "$search_ignored" = "true" ]; then
+                the_filepath="$(fd -I -L --type=d -g "$the_fname")"
+            else
+                the_filepath="$(fd -L --type=d -g "$the_fname")"
+            fi
         else
-            the_filepath="$(fd -H -L --type f -g "$the_fname")"
+            if [ "$search_ignored" = "true" ]; then
+                the_filepath="$(fd -I -L --type=f -g "$the_fname")"
+            else
+                the_filepath="$(fd ${link_opt} --type=f -g "$the_fname")"
+            fi
         fi
     fi
 else
-    if [ "$search_for" = "directories" ]; then
-        if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -I -L --type=d -g "$the_fname")"
-        else
-            the_filepath="$(fd -L --type=d -g "$the_fname")"
-        fi
-    else
-        if [ "$search_ignored" = "true" ]; then
-            the_filepath="$(fd -I -L --type=f -g "$the_fname")"
-        else
-            the_filepath="$(fd ${link_opt} --type=f -g "$the_fname")"
-        fi
+    # Use find
+    if ! command -v find > /dev/null 2>&1; then
+        echo "ERROR: neither fd nor find is available." >&2
+        return 1
     fi
+
+    case "$the_fname" in
+        */*)
+            echo "ERROR: find fallback supports basename patterns only." >&2
+            return 1
+            ;;
+    esac
+
+    if [ "$search_ignored" != "true" ]; then
+        echo "WARNING: find cannot apply fd ignore rules; searching ignored entries." >&2
+    fi
+
+    cd_to_type=f
+    if [ "$search_for" = "directories" ]; then
+        cd_to_type=d
+    fi
+
+    cd_to_find() {
+        if [ -n "$link_opt" ]; then
+            command find -L "$@"
+        else
+            command find "$@"
+        fi
+    }
+
+    if [ "$search_hidden" = "true" ]; then
+        the_filepath="$(cd_to_find . '!' -path . -type "$cd_to_type" \
+            -name "$the_fname" -print)"
+        cd_to_find_status=$?
+    else
+        the_filepath="$(cd_to_find . '!' -path . -name '.*' -prune -o \
+            '!' -path . -type "$cd_to_type" -name "$the_fname" -print)"
+        cd_to_find_status=$?
+    fi
+    unset -f cd_to_find
+    unset cd_to_type
+
+    if [ "$cd_to_find_status" -ne 0 ]; then
+        unset cd_to_find_status
+        echo "ERROR: find failed." >&2
+        return 1
+    fi
+    unset cd_to_find_status
 fi
 
+if [ -z "$the_filepath" ]; then
+    echo "ERROR: no ${search_for1} found for: $the_fname" >&2
+    return 1
+fi
+
+# --
 # Use grep -c to count number of lines on stdout.  Accept anything.
 file_count=$(printf "%s" "$the_filepath" | grep -c . )
 
@@ -346,9 +401,9 @@ if [ "${file_count}" -gt  1 ]; then
                     the_fnames=$(printf "%s" "$the_filepath" | tr '\n' ' ')
                     case $USRHOME_SHELL in
                         "zsh")
-                            # The next line is OK in zsh!  Ignore the shellcheck error.
-                            #  or find a way to tell shellcheck that the next line is used
-                            #  when zsh is running this script.
+                            # The next line is OK in zsh!
+                            # Ignore the shellcheck error reported on sh mode.
+                            #  or silence it by using zsh mode (see bottom of file)
                             read -A the_fnames_arr <<< "$the_fnames"
                             eval "$EDITOR $the_fnames_arr"
                             unset the_fnames_arr
@@ -453,7 +508,8 @@ else
     return 0
 fi
 
+# The sh-shell is using zsh to allow shellcheck to validate
 # ----------------------------------------------------------------------------
 #  Local Variables:
-#  sh-shell: sh
+#  sh-shell: zsh
 #  End:
