@@ -3,7 +3,7 @@
 # Purpose   : USRHOME template for user's startup configuration of Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-03 16:33:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 16:22:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -52,7 +52,10 @@ if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
 fi
 
 # Get definitions of usrhome_trace_in() and usrhome_trace_out()
-. "$USRHOME_DIR/ibin/shell-tracing.sh"
+if [ "${USRHOME_TRACE_SHELL_CONFIG:-0}" != "0" ]; then
+    # shellcheck source=../usrhome/ibin/shell-tracing.sh
+    . "$USRHOME_DIR/ibin/shell-tracing.sh"
+fi
 
 # Trace if requested by user.
 usrhome_trace_in "\$USRHOME_DIR_USRCFG/setfor-all-config.sh"
