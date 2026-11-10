@@ -3,7 +3,7 @@
 # Purpose   : Define shell tracing functions.
 # Created   : Saturday, April 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-28 18:03:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 16:42:44 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -29,6 +29,16 @@
 #
 #
 # Topic: Shell Tracing Functions
+# ==============================
+
+# Fast turn off.
+if [ "${USRHOME_TRACE_SHELL_CONFIG:-0}" = "0" ]; then
+    # When tracing is off, instantly define empty, zero-overhead stubs
+    usrhome_trace_in() { :; }
+    usrhome_trace_out() { :; }
+    return 0 # Instantly stop reading the rest of the file
+fi
+
 
 # 0 - Check if shell is interactive
 # ---------------------------------
