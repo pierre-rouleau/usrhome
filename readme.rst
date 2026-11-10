@@ -760,6 +760,21 @@ See the section titled
 `The Z Shell Startup, Dot Files and User Configuration`_
 for more information.
 
+Checking configuration nodes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``setup/check-nodes`` is intended to help audit the ``usrcfg`` node
+configuration and selected shell startup links in the home directory.
+
+The tool is not yet operational. Except for ``-h`` and ``--help``, it
+exits with status 44 before performing an audit. It does not currently
+validate host names or remove files.
+
+To display the available help, run this command from the USRHOME root::
+
+    setup/check-nodes --help
+
+
 The USRHOME Configuration Environment Variables
 -----------------------------------------------
 

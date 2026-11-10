@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 09:29:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 16:13:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -243,35 +243,37 @@ man()
             ;;
 
         '-s' | '-S')
-            # Use emacsclient to the running Emacs daemon
-            # Check if the emacsclient is running, if not warn user
-            # and exit.
-            if ! lsof -c emacsclient > /dev/null; then
-                echo "ERROR: Emacs client NOT running!"
-                echo "Start emacsclient inside another window and try again."
-                return 1
-            else
-                local found
-                case $man_mode in
-                    '-s')
-                        found=$(emacsclient --eval "(progn (man \"$topic\") \
+            # Use a sub-shell (to avoid having to use the non-POSIX `local`)
+            (
+                # Use emacsclient to the running Emacs daemon
+                # Check if the emacsclient is running, if not warn user
+                # and exit.
+                if ! lsof -c emacsclient > /dev/null; then
+                    echo "ERROR: Emacs client NOT running!"
+                    echo "Start emacsclient inside another window and try again."
+                    exit 1
+                else
+                    case $man_mode in
+                        '-s')
+                            found=$(emacsclient --eval "(progn (man \"$topic\") \
                                                            (delete-window) \
                                                            (with-current-buffer \"*Messages*\" \
                                                              (end-of-buffer) \
                                                              (when (search-backward (format \"%s man page formatted\" \"$topic\") nil :noerror) t)))")
-                        ;;
-                    '-S')
-                        found=$(emacsclient --eval "(progn (man \"$topic\") \
+                            ;;
+                        '-S')
+                            found=$(emacsclient --eval "(progn (man \"$topic\") \
                                                            (with-current-buffer \"*Messages*\" \
                                                              (end-of-buffer) \
                                                              (when (search-backward (format \"%s man page formatted\" \"$topic\") nil :noerror) t)))")
-                        ;;
-                esac
-                if [ "$found" = "nil" ]; then
-                    usrhome_printf "ERROR: No man page found for %s\n" "$topic" >&2
-                    return 4
+                            ;;
+                    esac
+                    if [ "$found" = "nil" ]; then
+                        usrhome_printf "ERROR: No man page found for %s\n" "$topic" >&2
+                        exit 4
+                    fi
                 fi
-            fi
+            )
             ;;
 
         '-t' | '-T')
