@@ -448,17 +448,21 @@ Install USRHOME - How to Set it Up
       directory.  Before proceeding it will create backup of files that are
       already present.
 
-Once that's done you should be able to open a Z Shell with the ``zsh`` command
-and see the basic prompt supported by the project and have access to the
-commands documented below.
+Once that's done you should be able to open:
 
-The next step will to migrate any Z Shell startup logic you might have had in
-your old files that have been backed up by the startup script.  USRHOME
-expects that extra user-specific logic to be stored inside files located
-inside the usrcfg directory.
+- A Bash shell with the ``bash`` command (if this is not already you default
+  shell).
+- A `Z Shell`_ with the ``zsh`` command (if your system has access to zsh) and
+  see the basic prompt supported by the project and have access to the
+  commands documented below.
 
-For that you need to understand which file is sourced when the Z Shell is started
-in the various ways it is started. Read the section titled
+The next step will to migrate any Bash and or Z Shell startup logic you might
+have had in your old files that have been backed up by the startup script.
+USRHOME expects that extra user-specific logic to be stored inside files
+located inside the usrcfg directory.
+
+For that you need to understand which file is sourced when the Bash or the Z
+Shell is started in the various ways it is started. Read the section titled
 `The Z Shell Startup, Dot Files and User Configuration`_.
 
 Then you can decide to use your original ``~/.zshrc`` and other Z Shell configuration
@@ -467,6 +471,8 @@ content inside the corresponding files inside the usrcfg directory.
 
 You can also take a look at the other example files located in the `usrhome/template`_
 directory and use ideas from there.
+
+.. ---------------------------------------------------------------------------
 
 USRHOME Organization
 ====================
