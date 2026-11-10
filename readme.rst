@@ -8,7 +8,7 @@ USRHOME -- Reproducible Multi-Shell Configuration & Tools for Bash and Zsh
 
 .. image:: https://img.shields.io/badge/State-Stable,_Supports_Bash_&_Z_Shell-green
    :alt: Version
-   :target: https://github.com/pierre-rouleau/usrhome
+   :target: #shell-support-and-portability
 
 .. image:: https://img.shields.io/badge/Supports-macOS,_Kali_Linux,_zsh_as_main_or_subshell-green
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
@@ -17,10 +17,10 @@ USRHOME -- Reproducible Multi-Shell Configuration & Tools for Bash and Zsh
    :target: #using-usrhome-on-kali-linux
 
 .. image:: https://img.shields.io/badge/Installer_tested_on-macOS,_Kali_zsh-green
-   :target: #installation
+   :target: #install-usrhome---how-to-set-it-up
 
 .. image:: https://img.shields.io/badge/Installer_tested_on-Ubuntu_Linux,_Rocky_Linux_Bash-green
-   :target: #installation
+   :target: #install-usrhome---how-to-set-it-up
 
 :Author:  Pierre Rouleau
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
