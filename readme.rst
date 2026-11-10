@@ -241,7 +241,7 @@ USRHOME uses or integrates with the following technologies:
   and scripts provide the configuration and commands. Bash and Zsh (`Z Shell`_) are
   the supported USRHOME shells.  Most scripts are POSIX compliant and can
   be used in even more shells.
-- **AWK_ and Pike:** Some command-line utilities use code written
+- **AWK and Pike:** Some command-line utilities use code written
   in `AWK`_ and `Pike`_ languages.
 - **Git and symbolic links:** Git can version the configuration, and
   symbolic links connect shell startup files to USRHOME.
@@ -251,7 +251,9 @@ USRHOME uses or integrates with the following technologies:
   activate when configured.
 - **GNU Make and Rust Cargo:** Build tools supported by the optional CBR
   commands.
-- **fd:** Used by the ``cd-to`` file-search command.
+- **fd:** The fast file search tool, `fd`_ is used by several tools when
+  available, such as ``cd-to``, ``find-lastest-in`` and ``find-since``
+  file-search commands.
 
 Optional tools must be installed separately when a command needs them.
 See the setup, command, and customization sections below for details.
