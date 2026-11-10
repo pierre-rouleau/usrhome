@@ -313,7 +313,8 @@ Setup Examples
 Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
 9.3.
 
-**macOS shells**
+macOS shells
+------------
 
 The macOS Sonoma default shell is zsh. I have installed the latest Bash
 shell via Homebrew and also installed Rust.   These are available on the
@@ -339,7 +340,8 @@ exit code (127) followed by a red ⨯.
 
 .. figure:: res/macOS-shells.png
 
-**Rocky Linux 9.3 shells**
+Rocky Linux 9.3 shell
+---------------------
 
 The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
 default shell is Bash 5.1. Again here I
@@ -382,7 +384,8 @@ prompt to red and the color of the non-login prompt to blue.
 .. figure:: res/RockyLinux-shells.png
 
 
-**Kali Linux zsh shells with tracing enable**
+Kali Linux zsh shells with tracing enable
+-----------------------------------------
 
 You can activate shell tracing with USRHOME.
 When enabled, the shell prints what file is sourced when the shell starts,
