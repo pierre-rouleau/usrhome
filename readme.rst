@@ -62,7 +62,7 @@ and Linux systems.
   systems.
 - **Battery-included workspace for team-work:** USRHOME gives a team a common,
   opinionated command-line environment. It provides a complete workspace with
-  framework-maintained control scripts from `ibin/`_ available in each member’s
+  framework-maintained control scripts from `bin/`_ and `ibin/`_ available in each member’s
   shell. These scripts give team members a shared set of navigation and
   debugging shortcuts from the start. The shared commands give the team a
   common vocabulary for daily work.
@@ -2982,6 +2982,7 @@ Thanks!
 .. _find:                                              https://en.wikipedia.org/wiki/Find_(Unix)
 .. _template/usrcfg/do-user.sh:                        template/usrcfg/do-user.sh
 .. _ibin/:                                             ibin/
+.. _bin/:                                              bin/
 
 
 .. ---------------------------------------------------------------------------
