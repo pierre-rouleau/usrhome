@@ -1,0 +1,150 @@
+#!/bin/sh
+# SH FILE: check-nodes
+#
+# Purpose   : Validate the usrcfg scripts -- are there any stale host nodes?.
+# Created   : Tuesday, November 10 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-10 17:02:18 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#  A tool that checks the validity of your USRHOME usrcfg files, specially the
+#  validity of host names used as nodes.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+
+#!/bin/sh
+# usrhome-clean-nodes - Audit and prune stale configurations and broken symlinks
+# Fully POSIX compliant. Runs safely on macOS and Linux.
+
+# Print script usage instructions
+print_usage() {
+    printf -- "%s\n" "Usage: usrhome-clean-nodes [OPTION]"
+    printf -- "\n%s\n" "Description:"
+    printf -- "%s\n" "  A maintenance utility designed to audit and safely prune stale workspace data"
+    printf -- "%s\n" "  from your local environment without affecting core runtime shell execution."
+    printf -- "%s\n" "  The script scans your workstation in two distinct phases:"
+    printf -- "%s\n" "    1. Scans 'usrcfg/node/' for abandoned or completely empty configuration"
+    printf -- "%s\n" "       directories (such as testing fragments or retired systems tagged with"
+    printf -- "%s\n" "       a '.orphaned' file). Valid, populated node configurations tracking"
+    printf -- "%s\n" "       your other active computers are strictly preserved."
+    printf -- "%s\n" "    2. Audits the root user home directory for broken symbolic links left"
+    printf -- "%s\n" "       behind by older framework installations or system migrations."
+    printf -- "\n%s\n" "Options:"
+    printf -- "  %-15s %s\n" "-h, --help" "Display this detailed help message and exit."
+    printf -- "  %-15s %s\n" "--apply" "Execute the pruning action (deletes abandoned nodes and broken symlinks)."
+    printf -- "\n%s\n" "Behavior:"
+    printf -- "%s\n" "  By default, running this script executes a safe [AUDIT ONLY] dry run."
+    printf -- "%s\n" "  It logs anomalies to stdout without deleting or altering any files."
+}
+
+# Handle help options before checking directories
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
+
+exit 44
+
+
+# Ensure framework path variables are visible
+if [ -z "$USRHOME_DIR" ] || [ -z "$USRHOME_DIR_USRCFG" ]; then
+    # Infer parent path if executed inside the setup folder
+    SCRIPT_DIR=$(cd "$(dirname -- "$0")" 2>/dev/null && pwd)
+    USRHOME_DIR=$(cd -- "$SCRIPT_DIR/../.." 2>/dev/null && pwd)
+    USRHOME_DIR_USRCFG=$(cd -- "$USRHOME_DIR/../usrcfg" 2>/dev/null && pwd)
+fi
+
+NODE_DIR="$USRHOME_DIR_USRCFG/node"
+CURRENT_HOST=$(hostname -s 2>/dev/null || hostname)
+DRY_RUN=1
+
+# Parse command line flags
+if [ "$1" = "--apply" ]; then
+    DRY_RUN=0
+elif [ -n "$1" ]; then
+    printf -- "[!] Error: Invalid option '%s'\n\n" "$1" >&2
+    print_usage >&2
+    exit 1
+fi
+
+printf -- "%s\n" "=================================================="
+printf -- "%s\n" " USRHOME Environment Audit Tool"
+printf -- " Current Host System: %s\n" "$CURRENT_HOST"
+if [ "$DRY_RUN" -eq 1 ]; then
+    printf -- "%s\n" " MODE: [AUDIT ONLY] (Pass --apply to execute deletion)"
+else
+    printf -- "%s\n" " MODE: [PRUNE ACTIVE]"
+fi
+printf -- "%s\n" "=================================================="
+
+# --- PHASE 1: Audit Machine-Specific Nodes ---
+printf -- "\n%s\n" "Checking for untracked or abandoned configuration nodes..."
+if [ -d "$NODE_DIR" ]; then
+    orphans_found=0
+
+    for node_path in "$NODE_DIR"/*; do
+        if [ -d "$node_path" ]; then
+            node_name=$(basename -- "$node_path")
+
+            # Skip core framework template placeholders
+            if [ "$node_name" = "template" ] || [ "$node_name" = "*" ]; then
+                continue
+            fi
+
+            # Protect multi-node setups: Only flag a directory if it contains
+            # an explicit '.orphaned' tag or is physically empty (leftover from testing).
+            if [ -f "$node_path/.orphaned" ] || [ -z "$(ls -A -- "$node_path" 2>/dev/null)" ]; then
+                orphans_found=1
+                printf -- "[-] Found stale/empty configuration node: %s\n" "$node_name"
+                if [ "$DRY_RUN" -eq 0 ]; then
+                    printf -- "    Removing: %s\n" "$node_path"
+                    rm -rf -- "$node_path"
+                fi
+            fi
+        fi
+    done
+
+    if [ "$orphans_found" -eq 0 ]; then
+        printf -- "[+] All multi-node configuration folders verified clean and active.\n"
+    fi
+else
+    printf -- "[!] Configuration node directory not found at: %s\n" "$NODE_DIR"
+fi
+
+# --- PHASE 2: Audit Broken Home Symlinks ---
+printf -- "\n%s\n" "Checking for broken framework symlinks in home directory..."
+# Safely loop through standard hidden files USRHOME manages in $HOME
+for dotfile in .profile .bash_profile .bash_login .bashrc .bash_logout .zshenv .zprofile .zshrc .zlogin .zlogout; do
+    target_link="$HOME/$dotfile"
+
+    # Check if the file is a symbolic link
+    if [ -L "$target_link" ]; then
+        # POSIX way to check if a symlink is broken: test if its target exists
+        if [ ! -e "$target_link" ]; then
+            printf -- "[-] Broken framework symlink detected: %s\n" "$target_link"
+            if [ "$DRY_RUN" -eq 0 ]; then
+                printf -- "    Unlinking: %s\n" "$target_link"
+                rm -- "$target_link"
+            fi
+        fi
+    fi
+done
+
+printf -- "\n%s\n" "=================================================="
+printf -- "%s\n" " Audit completed."
+printf -- "%s\n" "=================================================="
+
+# ----------------------------------------------------------------------------
