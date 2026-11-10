@@ -409,21 +409,23 @@ titled `The Z Shell Startup, Dot Files and User Configuration`_).
 Install USRHOME - How to Set it Up
 ==================================
 
-- Open the default Bash or Z Shell.
-- Create a directory that will hold 2 sub-directories: usrhome (the USRHOME
+- **1** Open the default Bash or Z Shell.
+- **2** Create a directory that will hold 2 sub-directories: usrhome (the USRHOME
   repo directory tree) and usrcfg (your own repository that will hold your
   configuration for your computer(s).  I use ``~/my/shell`` for that.
-- Change the current directory to the directory you just created (for example
+- **3** Change the current directory to the directory you just created (for example
   ``cd ~/my/shell`` ).
-- Clone the USRHOME repository by doing:
+- **4** Clone the USRHOME repository by doing:
   ``git clone https://github.com/pierre-rouleau/usrhome.git``
-- Change the current directory to the root of your USRHOME repository:
+- **5** Change the current directory to the root of your USRHOME repository:
   ``cd usrhome``
-- Execute the setup script **from the root directory of the USRHOME depot**.
+- **6** Execute the setup script **from the root directory of the USRHOME depot**.
   This way the script can identify the location of your usrhome directory and
   create a usrcfg with some basic files can can later update to suit your
   needs.  So, do this from the directory like ``~/my/shell`` you selected
-  before::
+  before:
+
+  ::
 
     cd usrhome
     setup/setup-usrhome
