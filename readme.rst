@@ -230,8 +230,8 @@ USRHOME uses or integrates with the following technologies:
   in `AWK`_ and `Pike`_ languages.
 - **Git and symbolic links:** Git can version the configuration, and
   symbolic links connect shell startup files to USRHOME.
-- **Emacs, Tramp, and PEL_:** Optional editor and remote-shell integrations.
-  Several scripts are useful when using the PEL_ Emacs system.
+- **Emacs, Tramp, and PEL:** Optional editor and remote-shell integrations.
+  Several scripts are useful when using the Emacs PEL_ system.
 - **Homebrew and GNU Global:** Optional tool environments that USRHOME can
   activate when configured.
 - **GNU Make and Rust Cargo:** Build tools supported by the optional CBR
@@ -256,54 +256,54 @@ several structural mechanisms:
 **No Elevated Privileges**
 
 
-  Local-prefix installations do not require ``sudo``. Installation scripts
-  normally run with the invoking user's permissions. This does not sandbox
-  them or protect files accessible to that user.
+Local-prefix installations do not require ``sudo``. Installation scripts
+normally run with the invoking user's permissions. This does not sandbox
+them or protect files accessible to that user.
 
 **Lazy Environment Loading (Reduced Attack Surface)**
 
-  Instead of permanently polluting the global system ``PATH`` across all
-  terminal sessions, external software suites are managed on an on-demand
-  basis. Primitives are kept dormant and unmapped until a developer explicitly
-  hydrates a targeted terminal session via designated framework wrappers (such
-  as the ``use-gnu-global`` macro alias). This strictly limits the runtime
-  exposure window of external binaries.
+Instead of permanently polluting the global system ``PATH`` across all
+terminal sessions, external software suites are managed on an on-demand
+basis. Primitives are kept dormant and unmapped until a developer explicitly
+hydrates a targeted terminal session via designated framework wrappers (such
+as the ``use-gnu-global`` macro alias). This strictly limits the runtime
+exposure window of external binaries.
 
 **PATH Sanitization**
 
-  USRHOME loads ``ibin/xtra/sanitize-path-posix.sh`` through its alias
-  setup.  The file defines ``_usrhome_sanitize_path``.  If loading succeeds,
-  alias setup defines ``sanitize-path``.  Loading alone does not sanitize PATH.
+USRHOME loads ``ibin/xtra/sanitize-path-posix.sh`` through its alias
+setup.  The file defines ``_usrhome_sanitize_path``.  If loading succeeds,
+alias setup defines ``sanitize-path``.  Loading alone does not sanitize PATH.
 
-  Zsh startup attempts to sanitize PATH.  Bash startup attempts to sanitize
-  PATH in non-login shells and in login shells when
-  ``USRHOME_CONFIG_AT_LOGIN`` is ``1``.  GNU Global setup also attempts to
-  sanitize PATH and, when its man directory exists, MANPATH.
+Zsh startup attempts to sanitize PATH.  Bash startup attempts to sanitize
+PATH in non-login shells and in login shells when
+``USRHOME_CONFIG_AT_LOGIN`` is ``1``.  GNU Global setup also attempts to
+sanitize PATH and, when its man directory exists, MANPATH.
 
-  For PATH, the sanitizer removes empty entries and duplicate entries.
-  Empty PATH entries can cause the shell to search the current directory.
-  Removing them reduces that risk.  MANPATH has separate rules for an
-  empty-entry marker; see the `sanitize-path command`_.
+For PATH, the sanitizer removes empty entries and duplicate entries.
+Empty PATH entries can cause the shell to search the current directory.
+Removing them reduces that risk.  MANPATH has separate rules for an
+empty-entry marker; see the `sanitize-path command`_.
 
-  If sanitization fails, the caller must not assume that PATH is safe.
-  The sanitizer does not check whether directories exist or are trusted.
+If sanitization fails, the caller must not assume that PATH is safe.
+The sanitizer does not check whether directories exist or are trusted.
 
 **Proactive Supply-Chain Auditing**
 
-  USRHOME features integrated background checking hooks built directly into
-  its core path management infrastructure. On startup, initialization logic
-  scans environment states to cross-reference and report high-severity
-  packages or compromised dependencies (such as the ``xz`` utility
-  vulnerability spectrum), warning the user before operations execute.
+USRHOME features integrated background checking hooks built directly into
+its core path management infrastructure. On startup, initialization logic
+scans environment states to cross-reference and report high-severity
+packages or compromised dependencies (such as the ``xz`` utility
+vulnerability spectrum), warning the user before operations execute.
 
 **Strict Privacy Boundary Separation**
 
-  By separating core framework logic (``usrhome``) from localized parameters
-  (``usrcfg``), the design enforces an absolute boundary between open-source
-  framework assets and sensitive host configurations. Personal deployment
-  variables, internal server network topologies, and private paths stay
-  contained within an isolated, private repository ecosystem, minimizing the
-  risk of accidental exposure to public version-control systems.
+By separating core framework logic (``usrhome``) from localized parameters
+(``usrcfg``), the design enforces an absolute boundary between open-source
+framework assets and sensitive host configurations. Personal deployment
+variables, internal server network topologies, and private paths stay
+contained within an isolated, private repository ecosystem, minimizing the
+risk of accidental exposure to public version-control systems.
 
 
 Setup Examples
