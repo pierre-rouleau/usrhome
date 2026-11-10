@@ -1,6 +1,6 @@
-===========================================================
-USRHOME -- Easily Clonable Unix Shell Configuration & Tools
-===========================================================
+==========================================================================
+USRHOME -- Reproducible Multi-Shell Configuration & Tools for Bash and Zsh
+==========================================================================
 
 .. image:: https://img.shields.io/:License-gpl3-blue.svg
    :alt: License
@@ -30,96 +30,70 @@ USRHOME -- Easily Clonable Unix Shell Configuration & Tools
 Introduction
 ============
 
-USRHOME is a Unix shell configuration project that provides:
+USRHOME provides shell configuration and command-line tools for Bash and
+Zsh (the `Z Shell`_).
+It helps you create a consistent development environment across macOS
+and Linux systems.
 
-- A **secure**, **specialized** and **configurable** multi-shell environment.
-- Tools to *instrument* shells: specialize shells to
-  add support for various tools, while leaving the main login shell intact if
-  needed.
-- Several shell script command line tools that work on the Z shell and on Bash.
-  Most scripts are POSIX compliant and will work in other shell types.
-- Some scripts are written in `AWK`_ and in `Pike`_.
-- Several of these scripts are useful when using the PEL_ Emacs system.
+- **Switch shells as needed:** Use the login shell imposed by your OS.
+  Then start Bash from Zsh or Zsh from Bash without changing your login
+  shell. Exit the nested shell to return to the previous one.
+- **Reuse your configuration:** Share shell settings across computers while
+  allowing host-specific customization.
+- **Keep personal settings separate:** Store your configuration in a private
+  ``usrcfg`` repository alongside USRHOME.
+- **Configure each shell:** Enable tools for one shell without changing other
+  shell sessions.
+- **Activate tools in shells when needed:** Enable supported tools in the current
+  shell without adding them to the system-wide PATH. You can use different
+  tools in different shell sessions. Activating a tool does not change
+  the PATH of other existing sessions.
+- **Manage your paths:** Use tools to inspect and sanitize PATH-like
+  variables, removing duplicate and empty entries.
+  Removing empty PATH entries can reduce the risk of executing a program from
+  the current directory.
+- **Work with Emacs:** Use shell configuration that is aware of Emacs and
+  designed to limit output for remote access through Tramp.
+- **Use it on multiple computers:** Clone USRHOME directory tree on several
+  computers with Git and manage your private settings inside your sibling
+  *usrcfg* directory tree with the technology you prefer to activate similar
+  shells across multiple computers using the same or different operating
+  systems.
 
-With USRHOME you can instrument multiple shells independently.
-Once the rules are set (in terms of sourced scripts) you can quickly open a
-shell and activate support for the tools you need *just for that shell*.
-You can for instance have a shell that supports Rust development, another that
-adds gcc-based C++ compiler on macOS while keeping the Clang as default for
-its normal shell. Each shell can have its own, independent PATH easily set by
-the script that controls the shell environment.  You retain the standard shell
-untouched unless you want to activate some of these environments inside it.
+.. ---------------------------------------------------------------------------
 
-USRHOME support:
+USRHOME Overview
+================
 
-- macOS and multiple Linux distributions.
-- The `Z Shell`_ and Bash shell.
-- Multiple computers:
+USRHOME provides shell configuration and command-line tools for Bash and
+Zsh on macOS and several Linux distributions. It supports login and
+non-login shells. You can start Bash from Zsh, or Zsh from Bash, and exit
+the nested shell to return to the previous shell.
 
-  - the configuration infrastructure logic is held inside this USRHOME Git
-    repository,
-  - the user-specific configuration logic for several computers or VMs
-    is stored inside a *sibling*, private, repository; the *usrcfg* (and
-    USRHOME provides template files for it).
+Configuration and setup
+-----------------------
+
+USRHOME separates shared shell configuration from your personal settings:
+
+- The ``usrhome`` repository contains the shell startup files, shared
+  configuration, scripts, commands, and templates.
+- A sibling ``usrcfg`` directory contains your user-specific configuration.
+  You can keep it in a private version-control repository and use it across
+  computers. Its scripts can select settings for a particular host or shell.
+
+The setup script creates initial ``usrcfg`` files from templates. It also
+backs up existing shell startup files and creates symbolic links from the
+home directory to the USRHOME startup files. When a shell starts, these
+files load the appropriate shared and user configuration.
 
 With USRHOME, all user shell configuration dot files (such as your
 ``~/.bashrc``) are turned into symbolic links to `USRHOME dot files`_,
 allowing shell configuration logic to be under VCS control.
 
-USRHOME repository files provides the basic shell configuration infrastructure
-logic.  It uses your own personal/private configuration logic stored into your
-files located inside your *usrcfg* repository.
-
-- That can be used inside all the computers you use;
-  the *usrcfg* files can select logic based on host names or other criteria.
-  The goal is to be able to store all shell configuration logic
-  into two VCS repositories: the public one (USRHOME) and your private one.
-
-At the moment USRHOME supports:
-
-- A basic configuration of zsh and Bash for macOS and several Linux
-  distributions.
-
-  - It works when Bash or zsh is used as the default shell for login and
-    non-login shells.
-  - It supports the latest versions of macOS where zsh is the default shell
-    (since macOS 10.15 Catalina), and older versions of macOS where an old
-    version of Bash is the default shell.
-  - It also supports several Linux distributions where Bash is the default
-    shell and some where zsh is the default shell.
-
-USRHOME provides several defined prompt configurations with ability to control
-the terminal title bar.  It comes with a default but you can select the prompt
-model for the Bash and Z shell independently.
-The intent of these prompts is *not* to provide colourful configurations with
-fancy fonts and emoji but just provide a basic environment that will work over
-several versions of Operating Systems and will support both shells in several
-terminal emulator programs.
-
-These are:
-
-- the default macOS Terminal.app,
-- the default Linux terminal applications,
-- inside Emacs various terminal shell modes.
-
-USRHOME is also designed to work well when used with Emacs using my `Pragmatic
-Emacs Library`_ which provides extensive key bindings for use in these
-Operating systems and allow extended use of the `numeric keypad`_.
-USRHOME logic is Emacs aware and uses the INSIDE_EMACS environment
-variable to control the behaviour of some features when they are invoked
-inside a shell running inside Emacs.
-
-
-USRHOME makes **one important assumption** about the organization of the
-directories in your file system: it specifically assumes that:
-
-- The directory that holds the USRHOME directory tree also holds
-  a directory tree called ``usrcfg`` that holds the user-specific
-  and private configuration information.
-
-It is recommended to create a directory that only holds the USRHOME and your
-*usrcfg* repositories; this will help you perform search restricted to the
-content of the files stored inside these only.
+The goal of the USRHOME project is to be able to store all shell configuration
+logic into two VCS repositories: the public one (USRHOME) and your private one
+(``usrcfg``).  This allows you to evolve your system with the ability to back
+it up, to easily revert changes and to monitor its evolution.
 
 The sections titled `The zsh Configuration Files`_ and
 `The User Configuration Files used by USRHOME`_  describe the files used.
@@ -132,12 +106,143 @@ template files`_ that correspond to what I use in my *usrcfg* repository.
 This also corresponds to what is shown in the diagram included in the section
 titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 
-Once you have this setup, you will have a development environment that is
-highly configurable and easy to reproduce across multiple hosts.
-USRHOME provides tools to manage PATH and MANPATH.
-Startup attempts to sanitize PATH.
-The sanitizer warns about changes in interactive shells when TERM is not
-``dumb``.
+
+Session-specific tool environments
+----------------------------------
+
+USRHOME can configure tools for the current shell without adding their
+directories to the system-wide ``PATH``. Its ``use-`` commands source
+environment scripts in that shell. For example, ``use-gnu-global`` activates
+GNU Global support, and ``use-cbr`` enables the single letter ``c`` check,
+``b`` build, and ``r`` run commands.
+
+All ``use-`` commands are alias to sourcing the ``envfor-`` script with the
+same prefix name.
+
+You can add your own ``use-`` commands in ``usrcfg``. The examples in
+this document show how to activate Rust or a Homebrew version of curl in
+selected shells. You can also configure tools to activate at startup.
+
+Changes to the current shell do not change the environment of other
+existing shell sessions. A process started from that shell can inherit its
+exported environment variables, including ``PATH``.
+
+With USRHOME you can instrument multiple shells independently.
+Once the rules are set (in terms of sourced scripts) you can quickly open a
+shell and activate support for the tools you need *just for that shell*.
+You can for instance have a shell that supports Rust development, another that
+adds gcc-based C++ compiler on macOS while keeping the Clang as default for
+its normal shell. Each shell can have its own, independent PATH easily set by
+the script that controls the shell environment.  You retain the standard shell
+untouched unless you want to activate some of these environments inside it.
+
+Commands and prompts
+--------------------
+
+USRHOME provides aliases, shell functions, and scripts for common tasks.
+They include:
+
+- Directory navigation and shortcuts to configured directories.
+- File and directory listing, searching, and inspection.
+- Display and modification of environment variables and paths.
+- Shell status information and terminal title control.
+- Optional ``c``, ``b``, and ``r`` commands to check, build, or run
+  supported projects. These commands can also use a project-specific
+  ``cbr`` executable.
+- Startup tracing to help identify which configuration files are sourced.
+
+USRHOME provides several prompt models. You can select prompt settings
+for Bash and Zsh independently. Depending on the model, a prompt can show
+information such as the current directory, command status, shell nesting
+level, and background jobs.  Some prompts have the ability to control the text
+shown in the title bar of the terminal.
+
+Path management and security
+----------------------------
+
+The ``showpath`` command displays the entries in a PATH-like variable.
+The ``sanitize-path`` command removes leading whitespace, duplicate
+entries, and unwanted empty entries. ``MANPATH`` has separate rules for
+its empty-entry marker. Startup attempts to sanitize ``PATH`` in the
+configured shell contexts described below.
+
+When PATH sanitization succeeds, removing empty entries reduces the risk
+of searching the current directory because of an empty PATH entry. The
+sanitizer does not verify that directories exist or are trusted. If
+sanitization fails, do not assume the original PATH is safe.
+
+USRHOME also includes limited checks for specific known problematic
+``xz`` versions. These checks are not a general vulnerability scanner.
+Keeping ``usrcfg`` separate helps you manage private configuration, but
+you remain responsible for keeping that repository and its contents
+private.
+
+Emacs integration
+-----------------
+
+USRHOME detects when a shell runs inside Emacs and adapts some behavior.
+It also provides support for using Emacs as a manual-page reader and for
+working with the `Pragmatic Emacs Library`_ (PEL_).
+
+PEL_ provides extensive key bindings for use in these
+Operating systems and allow extended use of the `numeric keypad`_.
+USRHOME logic is Emacs aware and uses the INSIDE_EMACS environment
+variable to control the behaviour of some features when they are invoked
+inside a shell running inside Emacs.
+
+Some diagnostic output is limited to support remote shell access through Emacs
+Tramp.
+
+
+Terminal support
+----------------
+
+USRHOME provides prompts for macOS and Linux terminal applications and
+for shells running inside Emacs. Outside Emacs, the ``set-title`` command
+can set the title of a compatible terminal. When ``TERM`` is ``dumb`` and
+the shell is not running inside Emacs, USRHOME uses a simple prompt and
+skips the remaining shell configuration to support Emacs Tramp. Its
+diagnostic helpers also limit output in non-interactive shells and when
+``TERM`` is ``dumb``. For Emacs EAT on macOS with ARM64, USRHOME sets
+``TERM`` to ``xterm-256color`` during alias setup.
+
+The intent of these prompts is to provide a basic environment that will work
+over several versions of Operating Systems and will support both shells in
+several terminal emulator programs.
+
+These are:
+
+- the default macOS Terminal.app,
+- the default Linux terminal applications,
+- over Linux web terminal applications such as `Cockpit`_,
+- inside Emacs various terminal shell modes.
+
+Technologies
+------------
+
+USRHOME uses or integrates with the following technologies:
+
+- **Bash, Zsh, and POSIX shell:** Shell startup files, functions, aliases,
+  and scripts provide the configuration and commands. Bash and Zsh (`Z Shell`_) are
+  the supported USRHOME shells.  Most scripts are POSIX compliant and can
+  be used in even more shells.
+- **AWK_ and Pike:** Some command-line utilities use code written
+  in `AWK`_ and `Pike`_ languages.
+- **Git and symbolic links:** Git can version the configuration, and
+  symbolic links connect shell startup files to USRHOME.
+- **Emacs, Tramp, and PEL_:** Optional editor and remote-shell integrations.
+  Several scripts are useful when using the PEL_ Emacs system.
+- **Homebrew and GNU Global:** Optional tool environments that USRHOME can
+  activate when configured.
+- **GNU Make and Rust Cargo:** Build tools supported by the optional CBR
+  commands.
+- **fd:** Used by the ``cd-to`` file-search command.
+
+Optional tools must be installed separately when a command needs them.
+See the setup, command, and customization sections below for details.
+
+
+.. ---------------------------------------------------------------------------
 
 USRHOME Security Architecture
 =============================
@@ -201,8 +306,8 @@ several structural mechanisms:
   risk of accidental exposure to public version-control systems.
 
 
-Quick Overview Example
-======================
+Setup Examples
+==============
 
 Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
 9.3.
@@ -300,8 +405,8 @@ If you want to know how this all works, read on (and see the section
 titled `The Z Shell Startup, Dot Files and User Configuration`_).
 
 
-How to Set it Up
-================
+Install USRHOME - How to Set it Up
+==================================
 
 - Open the default Bash or Z Shell.
 - Create a directory that will hold 2 sub-directories: usrhome (the USRHOME
@@ -2826,6 +2931,7 @@ Thanks!
 .. _Pike:                                              https://en.wikipedia.org/wiki/Pike_(programming_language)
 .. _lsdd:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/lsdd
 .. _AWK:                                               https://en.wikipedia.org/wiki/AWK
+.. _Cockpit:                                           https://cockpit-project.org/
 
 
 .. ---------------------------------------------------------------------------
