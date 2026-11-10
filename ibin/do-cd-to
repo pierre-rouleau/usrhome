@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 12:16:04 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 13:30:20 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -129,6 +129,7 @@ print_usage()
 cd-to : Search for file in current directory tree.
         If ONE is found: change current directory to its parent.
         If more than 1 file found, list them and offer to edit them.
+        Uses fd when available, uses find used when fd is unavailable.
 
    Usage:  cd-to [-h|--help]
            cd-to    [-H] [-I] [-L] [-e] FILENAME
@@ -136,15 +137,19 @@ cd-to : Search for file in current directory tree.
 
      OPTIONS:
       -H : Search hidden directories. Not searched by default.
-      -I : no-ignored directories: search ignored directories
-           which are skipped by default. See fd -I option.
+      -I : with fd only: search ignored directory.
+           When fd is not present, find is used and all
+           ignored directories (such as .git) are searched.
       -L : follow symbolic links.  Not followed by default.
       -e : edit file(s).  Edit the file if only one is found.
                           If several file/directories are found
                           that option is ignored, it prompts
                           for editing the files anyway.
 
-     FILENAME or DIRNAME may use the glob syntax supported by fd.
+     NOTE:
+     - With fd, FILENAME or DIRNAME may use fd glob syntax.
+     - Without fd, find uses basename globs and does not apply
+       fd ignore rules.
 
      EXIT CODE:
       - 0: ONE file found, or selected out of many and cd done.
