@@ -3,7 +3,7 @@
 # Purpose   : Toggle showing host and user name in the prompt.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:58:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 14:39:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -15,13 +15,10 @@
 # ----
 #
 #
-if [[ -n "$(jobs)" ]]; then
-    # Don't allow re-starting zsh when there are running jobs
-    # inside the shell.  The exec zsh might kill them if they
-    # were not detached.  Warn the user and quit.
-    echo "Unfinished jobs running.  Terminate them first!"
-    return 1
-fi
+
+# shellcheck source=xtra/confirm-shell-restart.sh
+. "$USRHOME_DIR/ibin/xtra/confirm-shell-restart.sh" || return 1
+usrhome_prompt_restart_preflight "${USRHOME_PROMPT_MODEL_OVERRIDE:-${USRHOME_PROMPT_MODEL-}}" || return 1
 
 if [ -z "$USRHOME_PROMPT_SHOW_USR_HOST" ]; then
     export USRHOME_PROMPT_SHOW_USR_HOST=1
@@ -42,7 +39,8 @@ fi
 # Proceed, using method required by shell
 # ---------------------------------------
 
-source  "$USRHOME_DIR/ibin/change_prompt"
+# shellcheck source=./change_prompt
+. "$USRHOME_DIR/ibin/change_prompt"
 
 
 # ----------------------------------------------------------------------------
