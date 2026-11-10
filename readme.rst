@@ -254,6 +254,7 @@ USRHOME uses or integrates with the following technologies:
 - **fd:** The fast file search tool, `fd`_ is used by several tools when
   available, such as ``cd-to``, ``find-lastest-in`` and ``find-since``
   file-search commands.
+  The `find`_ utility is used when `fd`_ is not available.
 
 Optional tools must be installed separately when a command needs them.
 See the setup, command, and customization sections below for details.
@@ -2961,6 +2962,7 @@ Thanks!
 .. _AWK:                                               https://en.wikipedia.org/wiki/AWK
 .. _Cockpit:                                           https://cockpit-project.org/
 .. _How to install USRHOME:                            `Install USRHOME - How to Set it Up`_
+.. _find:                                              https://en.wikipedia.org/wiki/Find_(Unix)
 
 
 .. ---------------------------------------------------------------------------
