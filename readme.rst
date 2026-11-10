@@ -822,14 +822,11 @@ USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
 
 
 
-USRHOME_DIR_HELPDIR             Optional environment variable.  If defined it
-                                identifies the directory where Zsh Builtin
-                                Help files are located. Define it only when
-                                the default USRHOME logic in
-                                ``usrhome/dot/zshrc.zsh`` is not able to
-                                identify that directory for your system and
-                                therefore the help command is not able to
-                                operate like it would under Bash.
+USRHOME_DIR_HELPDIR             Optional Zsh help directory. A non-empty
+                                value takes precedence over ``HELPDIR``.
+                                The directory must contain a readable
+                                ``cd`` or ``print`` help file. See
+                                `Help for Zsh Builtin Commands`_.
 
 USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
                                 syntax of the prompt used by the shell.
@@ -1559,30 +1556,51 @@ Apple Silicon CPU architecture.
 Help for Zsh Builtin Commands
 -----------------------------
 
-The Z shell does not support a ``help`` command that provides information on
-the shell builtin commands like Bash does.  The Z Shell provides the run-help
-command instead but that is not always available.  For instance, under macOS,
-it is aliased to ``man``, which causes help requests to open the generic man
-page on zsh; something not very useful.  On some Linux distributions, like
-Kali Linux, run-help is a shell function and will display the requested
-builtin help.
+USRHOME provides a ``help`` function in interactive Zsh shells. Use it
+to request help for a builtin command. For example::
 
-USRHOME implements the help command for zsh as an alias to run-help.  It also
-sets the HELPDIR environment variable, used by run-help, to identify the
-location of the zsh help files directory.
+  help cd
+  help kill
 
-- Under Linux, it's: ``/usr/share/zsh/help``
-- Under OS/X and macOS that's: ``/usr/share/zsh/VVV/help`` with ``VVV``
-  replaced by the zsh version number.
+On the first call, ``help`` initializes Zsh's ``run-help`` function.
+It preserves an existing ``run-help`` function or autoload declaration.
+If neither exists, it attempts to load ``run-help`` from ``fpath``.
+Later calls use ``run-help`` without repeating directory discovery.
 
-The logic is inside USRHOME `dot/zshrc.zsh`_ file.
+USRHOME selects a Zsh help directory in this order:
 
-Therefore, on most systems you should end-up with the zsh shell providing a
-help command that shows information on zsh builtin commands.
+1. A non-empty ``USRHOME_DIR_HELPDIR`` value.
+2. A non-empty ``HELPDIR`` value.
+3. A directory found in common Zsh installation locations.
 
-If it does not work for your system, check the value of DIRHELP.
-You can set it to the value you need inside your file
-``usrcfg/setfor-all-config.sh``
+For discovery, USRHOME checks versioned and unversioned ``help``
+directories under ``/usr/share/zsh``, ``/usr/local/share/zsh``, and
+``/opt/homebrew/share/zsh``. If necessary, it searches within those
+installation directories using ``fd`` or, if ``fd`` is unavailable,
+``find``.
+
+The selected directory must contain a readable ``cd`` or ``print`` help
+file. If an explicitly configured directory fails this check, ``help``
+reports an error instead of searching for another directory. If discovery
+finds no directory, ``help`` reports a warning and lets ``run-help`` use
+its default and other help sources.
+
+If ``run-help`` cannot be loaded, ``help`` uses the system ``man``
+command. With a topic, it passes the topic to ``man``. Without a topic,
+it requests ``man zshbuiltins``.
+
+To select a help directory, set ``USRHOME_DIR_HELPDIR`` before the first
+``help`` call. For a persistent setting, add a line like this to
+``usrcfg/setfor-all-config.sh``, using the path for your system::
+
+  export USRHOME_DIR_HELPDIR="/path/to/zsh/help"
+
+After successful initialization, open a new interactive Zsh shell to
+repeat discovery with changed settings. If an explicit directory is
+invalid, correct the value and retry ``help`` in the current shell.
+
+USRHOME skips this configuration when ``TERM`` is ``dumb`` and
+``INSIDE_EMACS`` is unset.
 
 **Example on Kali Linux:**
 
