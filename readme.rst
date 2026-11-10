@@ -2015,6 +2015,9 @@ macOS. Scripts in nested directories may require an explicit path.
   hidden-file preference and restart Finder.
 * ``bin/macOS/macos-fix-iworks`` changes supported iWork application
   preferences to suppress upgrade prompts. It can back up preferences first.
+* ``f-numbers`` command alias lists all macOS Numbers files found in the directory
+  tree.
+
 
 Internal and setup scripts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

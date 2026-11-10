@@ -4,7 +4,7 @@
 # Purpose   : Convert all specified files in a directory tree from ISO-8859 to UTF-8.
 # Created   : Monday, September  8 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-08 22:51:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 12:15:12 EST, updated by Pierre Rouleau>
 
 # ----------------------------------------------------------------------------
 # Module Description
@@ -26,7 +26,36 @@
 # ----
 #
 #
-fd "$1" | xargs -I $ file $ | grep Non-ISO  | cut -f1 -d":" | xargs -I $ iconv-iso8859-utf8 $
-fd "$1" | xargs -I $ file $ | grep ISO-8859 | cut -f1 -d":" | xargs -I $ iconv-iso8859-utf8 $
+
+if [ "$#" -gt 1 ]; then
+    printf 'Usage: %s [basename-glob]\n' "$0" >&2
+    exit 1
+fi
+
+if command -v fd > /dev/null; then
+    fd "$1" | xargs -I $ file $ | grep Non-ISO  | cut -f1 -d":" | xargs -I $ iconv-iso8859-utf8 $
+    fd "$1" | xargs -I $ file $ | grep ISO-8859 | cut -f1 -d":" | xargs -I $ iconv-iso8859-utf8 $
+    exit "$?"
+else
+    pattern=${1:-'*'}
+
+    find . ! -name . -name '.*' -prune -o \
+         -type f -name "$pattern" -exec sh -c '
+        status=0
+        for path do
+            if description=$(file -b "$path"); then
+                case $description in
+                    *Non-ISO*|*ISO-8859*)
+                        iconv-iso8859-utf8 "$path" || status=1
+                        ;;
+                esac
+            else
+                printf "ERROR: file failed for %s\n" "$path" >&2
+                status=1
+            fi
+        done
+        exit "$status"
+    ' sh {} +
+fi
 
 # ----------------------------------------------------------------------------
