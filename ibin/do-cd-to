@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-17 21:28:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 08:40:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -338,8 +338,8 @@ if [ "${file_count}" -gt  1 ]; then
         if [ "$prompt_yn_return" = "y" ]; then
             case $EDITOR in
                 cd* | rm* | sudo* | disk* )
-                    printf "WARNING!! Unsafe EDITOR: '%s'\n" "$EDITOR"
-                    printf "WARNING!! Files are not edited! Change value of EDITOR\n"
+                    urhome_printf_warning 'Unsafe EDITOR: %s
+            !Files are not edited! Change value of EDITOR\n' "$EDITOR"
                     ;;
 
                 *)

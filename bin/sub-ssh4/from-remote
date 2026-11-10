@@ -4,7 +4,7 @@
 # Purpose   : Copy file from the specified remote computer to the current local directory.
 # Created   : Thursday, July 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-16 11:25:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 11:05:02 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,21 +41,32 @@
 #
 #
 
-# Validate environment
-envfor_cmd_arg1=from-remote
-
+# ---
 # Execute $USRHOME_DIR/bin/sub-ssh4/envfor-cmds to set the following environment variables:
 # - pgm_name
 # - hostname
 # - ipv4addr
 # - username
 # - homeroot
+# shellcheck source=./envfor-cmds
 . "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
+
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
+
+# Validate environment
+envfor_cmd_arg1=from-remote
 
 # Validate command line arguments
 if [ -z "$1" ]; then
-    printf -- "*** %s ERROR: missing remote file name.\n" "${pgm_name}"
-    printf -- "    Use the -h or --help option to print usage.\n"
+    usrhome_printf_error '%s : missing remote file name.
+            Use the -h or --help option to print usage.\n'  "${pgm_name}"
     exit 1
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     printf -- "\
@@ -86,8 +97,8 @@ if [ "$1" = "-n" ] || [ "$1" = "--dryrun" ]; then
     shift
 fi
 if [ -z "$1" ]; then
-    printf -- "*** %s: ERROR: missing REMOTEFNAME\n" "${pgm_name}"
-    printf -- "    Use the -h or --help option to print usage.\n"
+    usrhome_printf_error '%s: missing REMOTEFNAME
+            Use the -h or --help option to print usage.\n' "${pgm_name}"
     exit 1
 fi
 
@@ -99,7 +110,7 @@ echo "scp scp://${username}@${ipv4addr}/${remotefname} ${localfname}"
 if [ "$dryrun" = "false" ]; then
     scp  "scp://${username}@${ipv4addr}/${remotefname}" "$localfname"
 else
-    printf -- "*** %s WARNING: dry run: nothing is copied.\n" "${pgm_name}"
+    usrhome_printf_warning '%s dry run: nothing is copied.\n' "${pgm_name}"
 fi
 
 # ----------------------------------------------------------------------------

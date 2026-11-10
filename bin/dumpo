@@ -4,13 +4,12 @@
 # Purpose   : Dump object file into assembler.
 # Created   : Friday, July  5 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-05 09:15:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 12:37:46 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 #
-
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -45,13 +44,6 @@ dumpo -- Print the assembler corresponding to a object file.
 "
 }
 
-print_usage_short()
-{
-    printf -- "\
-  Use dumpo -h to print its command line usage.
-"
-}
-
 # --
 # validate arguments
 
@@ -60,6 +52,20 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     # help requested explicitly: no error.
     exit 0
 fi
+
+# ---
+# Define printing utilities:
+# - usrhome_printf_warning FORMAT ARGS...
+# - usrhome_printf_error   FORMAT ARGS...
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
+
+print_usage_short()
+{
+    usrhome_printf_stderr 'Use dumpo -h to print its command line usage.\m'
+}
 
 # check for optional switches.
 with_source=
@@ -78,13 +84,13 @@ done
 
 # Check if remaining argument is 1 file name
 if [ "$#" -ge 2 ]; then
-    printf -- "*** dumpo ERROR: too many arguments: %s\n" "$*"
+    usrhome_printf_error 'dumpo: too many arguments: %s\n' "$*"
     print_usage_short
     exit 1
 fi
 
 if [ -z "$1" ]; then
-    printf -- "*** dumpo ERROR: missing OBJ argument.\n"
+    usrhome_printf_error 'dumpo: missing OBJ argument.\n'
     print_usage_short
     exit 1
 fi
@@ -94,7 +100,7 @@ objf=
 if  [ -f "$1" ]; then
     objf="$1"
 else
-    printf -- "*** dumpo ERROR: File does not exist: %s\n" "$1"
+    usrhome_printf_error 'dumpo: File does not exist: %s\n' "$1"
     exit 2
 fi
 shift

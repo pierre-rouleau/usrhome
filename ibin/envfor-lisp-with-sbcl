@@ -3,7 +3,7 @@
 # Purpose   : Set SBCL for the Common Lisp command: 'lisp'.
 # Created   : Friday, April 16 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 21:26:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 11:26:58 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -70,10 +70,13 @@ if command -v sbcl >/dev/null; then
     if command -v rlwrap > /dev/null; then
         printf -- "   With %s to enhance REPL line editing and history.\n" "$(rlwrap -v)"
     else
-        printf -- "   WARNING: rlwrap is not available.  Install it to enhance SBCL REPL.\n"
+        usrhome_printf_warning 'rlwrap is not available.  Install it to enhance SBCL REPL.\n'
     fi
 else
-    printf -- "***ERROR*** SBCL is not in PATH!\n"
+    usrhome_printf_error 'SBCL is not in PATH!\n'
 fi
 
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

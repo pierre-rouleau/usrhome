@@ -3,7 +3,7 @@
 # Purpose   : Activate extra Git support.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 08:59:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-09 08:43:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -24,7 +24,7 @@
 #
 
 # Set USRHOME_SHELL to zsh, bash, ... or unknown
-# shellcheck disable=SC1091 # shellcheck does not find source
+# shellcheck source=./which-shell
 .  "$USRHOME_DIR/ibin/which-shell"
 
 # Define completion for the arguments of some of the extra git commands available
@@ -40,7 +40,7 @@ case "$USRHOME_SHELL" in
         ;;
 
     zsh)
-        usrhome_printf "*** envfor-git-extra WARNING: no support for %s shell\n" "$USRHOME_SHELL"
+        usrhome_printf_warning 'envfor-git-extra: no support for %s shell\n' "$USRHOME_SHELL"
         case "$(uname)" in
             Darwin)
                 if [ -f "${HOMEBREW_PREFIX}/opt/git-extras/share/git-extras/git-extras-completion.zsh" ]; then
@@ -50,7 +50,7 @@ case "$USRHOME_SHELL" in
         esac
     ;;
     *)
-        usrhome_printf "*** envfor-git-extra WARNING: no support for %s shell\n" "$USRHOME_SHELL"
+        usrhome_printf_warning 'envfor-git-extra: no support for %s shell\n' "$USRHOME_SHELL"
         ;;
 esac
 
