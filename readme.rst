@@ -189,6 +189,14 @@ Keeping ``usrcfg`` separate helps you manage private configuration, but
 you remain responsible for keeping that repository and its contents
 private.
 
+USRHOME provides Linux tools for SELinux policy development and
+troubleshooting. The tools can search for and display policy macro and
+interface definitions, and build a policy package from a
+type-enforcement file. The search tools require an SELinux policy
+development environment. Other tools report selected SELinux RPMs,
+follow AVC and SYSCALL audit records, and display process security
+context labels.
+
 Emacs integration
 -----------------
 
