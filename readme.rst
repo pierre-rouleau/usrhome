@@ -17,10 +17,10 @@ USRHOME -- Reproducible Multi-Shell Configuration & Tools for Bash and Zsh
    :target: #using-usrhome-on-kali-linux
 
 .. image:: https://img.shields.io/badge/Installer_tested_on-macOS,_Kali_zsh-green
-   :target: #how-to-set-it-up
+   :target: #installation
 
 .. image:: https://img.shields.io/badge/Installer_tested_on-Ubuntu_Linux,_Rocky_Linux_Bash-green
-   :target: #how-to-set-it-up
+   :target: #installation
 
 :Author:  Pierre Rouleau
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
@@ -252,7 +252,7 @@ USRHOME uses or integrates with the following technologies:
 - **GNU Make and Rust Cargo:** Build tools supported by the optional CBR
   commands.
 - **fd:** The fast file search tool, `fd`_ is used by several tools when
-  available, such as ``cd-to``, ``find-lastest-in`` and ``find-since``
+  available, such as ``cd-to``, ``find-latest-in`` and ``find-since``
   file-search commands.
   The `find`_ utility is used when `fd`_ is not available.
 
@@ -437,9 +437,7 @@ Install USRHOME - How to Set it Up
   ``cd ~/my/shell`` ).
 - **4** Clone the USRHOME repository by doing:
   ``git clone https://github.com/pierre-rouleau/usrhome.git``
-- **5** Change the current directory to the root of your USRHOME repository:
-  ``cd usrhome``
-- **6** Execute the setup script **from the root directory of the USRHOME depot**.
+- **5** Execute the setup script **from the root directory of the USRHOME depot**.
   This way the script can identify the location of your usrhome directory and
   create a usrcfg with some basic files can can later update to suit your
   needs.  So, do this from the directory like ``~/my/shell`` you selected
@@ -2861,7 +2859,6 @@ Thanks!
 .. _Mercurial:                                         https://en.wikipedia.org/wiki/Mercurial
 .. _manpath:                                           https://man7.org/linux/man-pages/man1/manpath.1.html
 .. _pngquant:                                          https://pngquant.org/
-.. _installation:                                      #how-to-set-it-up
 .. _xz version 5.6.0 and 5.6.1:                        https://nvd.nist.gov/vuln/detail/CVE-2024-3094
 .. _xz version 5.2.5:                                  https://nvd.nist.gov/vuln/detail/CVE-2020-22916
 .. _man (or woman):                                    https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
@@ -2961,6 +2958,7 @@ Thanks!
 .. _lsdd:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/lsdd
 .. _AWK:                                               https://en.wikipedia.org/wiki/AWK
 .. _Cockpit:                                           https://cockpit-project.org/
+.. _installation:
 .. _How to install USRHOME:                            `Install USRHOME - How to Set it Up`_
 .. _find:                                              https://en.wikipedia.org/wiki/Find_(Unix)
 
