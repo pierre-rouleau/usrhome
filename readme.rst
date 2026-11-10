@@ -60,12 +60,10 @@ and Linux systems.
   *usrcfg* directory tree with the technology you prefer to activate similar
   shells across multiple computers using the same or different operating
   systems.
-- **Battery-included workspace for team-work:** USRHOME gives a team a common,
-  opinionated command-line environment. It provides a complete workspace with
-  framework-maintained control scripts from `bin/`_ and `ibin/`_ available in each member’s
-  shell. These scripts give team members a shared set of navigation and
-  debugging shortcuts from the start. The shared commands give the team a
-  common vocabulary for daily work.
+- **Battery-included workspace:** USRHOME provides an opinionated command-line
+  environment with commands and scripts from its `bin/`_ and `ibin/`_
+  directories.  It provides some tools implemented in AWK and Pike (`lsdd`_)
+  [#pike_note].
 
 .. ---------------------------------------------------------------------------
 
@@ -317,14 +315,6 @@ empty-entry marker; see the `sanitize-path command`_.
 
 If sanitization fails, the caller must not assume that PATH is safe.
 The sanitizer does not check whether directories exist or are trusted.
-
-**Proactive Supply-Chain Auditing**
-
-USRHOME features integrated background checking hooks built directly into
-its core path management infrastructure. On startup, initialization logic
-scans environment states to cross-reference and report high-severity
-packages or compromised dependencies (such as the ``xz`` utility
-vulnerability spectrum), warning the user before operations execute.
 
 **Strict Privacy Boundary Separation**
 
@@ -860,15 +850,11 @@ USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
                                 issuing a ``usrhome-prompt-model-to NUMBER``
                                 command.
 
-                                **Caution!!** Under zsh it might be necessary to
-                                execute ``exec zsh`` to update the prompt.
-                                This depends on how the prompt is implemented.
-
-                                - You can identify a prompt number that would
-                                  require restarting zsh in the environment
-                                  variable USRHOME_PROMPT_MODEL_REQUIRES_RESTART.
-                                - The command will check if the zsh has any
-                                  running job and will proceed only if there are none.
+                                Under Zsh, changing the prompt may restart the
+                                shell. In that case the command will prompt
+                                before proceeding.
+                                See `Shell Behavior Control`_ for restart
+                                confirmation details.
 
 USRHOME_ORIGINAL_PATH           Set to the value of PATH before USRHOME adds to it.
                                 You can restore that value with the
@@ -990,23 +976,16 @@ USRHOME Command Name               Description
                                      identified by `usrhome/template/setfor-all-config.sh`_
                                      used to initialize the usrcfg file.
 
-                                   **Caution** this command perform an exec command for the current
-                                   shell, which will wipe history.  The command check if there a re
-                                   any running jobs and will not proceed if there are any.
-
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
 
 `usrhome-prompt-toggle-usr-host`_  Toggle the inclusion of the user name and host name inside
                                    the prompt.
 
-                                   **Caution!!** Under zsh it might be necessary to
-                                   execute ``exec zsh`` to update the prompt.
-                                   This depends on how the prompt is implemented.
-
-                                   - You can identify a prompt number that would
-                                     require restarting zsh in the environment
-                                     variable USRHOME_PROMPT_MODEL_REQUIRES_RESTART.
-                                   - The command will check if the zsh has any
-                                     running job and will proceed only if there are none.
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
 
                                    The command is not affected by this limitation when issued
                                    in the Bash shell.
@@ -1016,25 +995,32 @@ USRHOME Command Name               Description
                                    - This command also supports the ``-h`` and ``--help`` command
                                      line options which pint the usage.
 
-                                   **Caution!!** Under zsh it might be necessary to
-                                   execute ``exec zsh`` to update the prompt.
-                                   This depends on how the prompt is implemented.
-
-                                   - You can identify a prompt number that would
-                                     require restarting zsh in the environment
-                                     variable USRHOME_PROMPT_MODEL_REQUIRES_RESTART.
-                                   - The command will check if the zsh has any
-                                     running job and will proceed only if there are none.
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
 
                                    The command is not affected by this limitation when issued
                                    in the Bash shell.
 ================================== ================================================================
 
-Note that the above commands will not execute if there are any running
-sub-process jobs under the shell.  That's because these commands execute
-``exec zsh`` and that wipes out shell knowledge about these background jobs,
-making it difficult to bring them back into the foreground.
+The above commands may need to restart the shell under some conditions.
+Before a command restarts the shell, it warns that unsaved shell history
+and other shell state may be lost, and asks for confirmation. The
+confirmation does not save shell history. The result depends on the shell
+history configuration.
 
+Enter ``y`` or ``Y`` to restart. Any other response, including an empty
+response or end of input, cancels the restart and leaves the setting
+unchanged. If the command cannot prompt in an interactive terminal, it
+cancels the restart.
+
+The commands do not restart the shell while unfinished jobs are present.
+Terminate the jobs before retrying.
+
+If you want to force a shell restart, set
+the ``USRHOME_PROMPT_MODEL_REQUIRES_RESTART`` to 1 in your
+``usrcfg`` settings (such as ``usrcfg/do-user-zshrc.zsh``).  This will
+force a prompt in the above commands.
 
 
 Shell Status Info
@@ -2848,6 +2834,14 @@ tool chain instead of the Apple-supplied Clang tool chain.
                                           PATH, effectively activating the GCC commands.
 = ===================================== =============================================================
 
+
+.. ---------------------------------------------------------------------------
+
+Notes
+=====
+
+.. [#pike_note] Although `Pike`_ is not deployed in most system it is easy to setup and use.
+           It's also not necessary if you do not use that simple command.
 
 
 Feedback's Welcome!
