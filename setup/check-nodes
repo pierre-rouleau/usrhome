@@ -4,7 +4,7 @@
 # Purpose   : Validate the usrcfg scripts -- are there any stale host nodes?.
 # Created   : Tuesday, November 10 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 17:02:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 17:07:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,8 +55,6 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     exit 0
 fi
-
-exit 44
 
 
 # Ensure framework path variables are visible
