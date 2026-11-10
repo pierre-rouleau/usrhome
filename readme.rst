@@ -2015,11 +2015,6 @@ macOS. Scripts in nested directories may require an explicit path.
   table using ``ausyscall``.
 * ``bin/linux/tail-audit4avc`` follows the audit log and formats AVC and
   SYSCALL records. ``bin/linux/gnopen`` opens a directory with ``gnome-open``.
-* ``bin/linux/selinux/se-build-te`` builds SELinux policy files.
-  ``se-find-definition`` and ``se-find-interface`` locate policy definitions
-  or interfaces; ``se-show-definition`` and ``se-show-interface`` show them.
-  These search helpers require an SELinux development environment.
-  ``se-show-rpms`` reports selected SELinux RPMs.
 * ``bin/macOS/finder-show-hidden`` and ``finder-hide-hidden`` change Finder's
   hidden-file preference and restart Finder.
 * ``bin/macOS/macos-fix-iworks`` changes supported iWork application
@@ -2030,6 +2025,29 @@ macOS. Scripts in nested directories may require an explicit path.
   * ``f-numbers`` command alias lists all macOS Numbers files found in the directory
     tree.  This skips hidden files (such as files in ``.git`` directories) by
     default when ``fd`` is used.
+
+SELinux utilities
+~~~~~~~~~~~~~~~~~
+
+USRHOME provides Linux tools for SELinux policy development and
+troubleshooting. The scripts in ``bin/linux/selinux`` can search and
+display policy macro and interface definitions, build a policy package
+from a type-enforcement file, and report selected SELinux RPMs. To use
+the search scripts, set ``USRHOME_SELINUX_POLICY_LOCATION`` to a policy
+directory containing ``policy/modules`` or ``include``. Building a
+policy package requires ``checkmodule`` and ``semodule_package``.
+``tail-audit4avc`` follows and formats AVC and SYSCALL audit records.
+``ps-list -Z`` includes process security context labels when
+``getenforce`` is available. The scripts in ``bin/linux/selinux`` may
+require an explicit path because the directory is not automatically
+added to ``PATH``.
+
+* ``bin/linux/selinux/se-build-te`` builds SELinux policy files.
+  ``se-find-definition`` and ``se-find-interface`` locate policy definitions
+  or interfaces; ``se-show-definition`` and ``se-show-interface`` show them.
+  These search helpers require an SELinux development environment.
+  ``se-show-rpms`` reports selected SELinux RPMs.
+
 
 
 Internal and setup scripts
