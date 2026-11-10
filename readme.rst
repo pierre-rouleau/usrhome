@@ -24,6 +24,7 @@ USRHOME -- Reproducible Multi-Shell Configuration & Tools for Bash and Zsh
 
 :Author:  Pierre Rouleau
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
+:Install: `How to install USRHOME`_
 
 .. ---------------------------------------------------------------------------
 
@@ -2932,6 +2933,7 @@ Thanks!
 .. _lsdd:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/lsdd
 .. _AWK:                                               https://en.wikipedia.org/wiki/AWK
 .. _Cockpit:                                           https://cockpit-project.org/
+.. _How to install USRHOME:                            `Install USRHOME - How to Set it Up`_
 
 
 .. ---------------------------------------------------------------------------
