@@ -4,7 +4,7 @@
 // Purpose   : Print a list of directories.
 // Created   : Friday, April 24 2026.
 // Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-28 10:07:18 EDT, updated by Pierre Rouleau>
+// Time-stamp: <2026-11-11 09:11:37 EST, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Program Description
 // -------------------
@@ -36,6 +36,7 @@ void print_help(string prog_name) {
           " FILE: a list of files or directories, glob supported.\n" +
           "       Only directories or symlinks to directory\n" +
           "       found in this list are printed.\n" +
+          "       Directories are shown in blue, symlinks in magenta.\n" +
           "       Each can also specify a directory (absolute or relative)\n" +
           "       If none is specified, the current working directory is used.\n" +
           " Options:\n" +
@@ -43,7 +44,8 @@ void print_help(string prog_name) {
           "   -a            Do not ignore entries starting with .\n" +
           "   -l            Use a long listing format\n" +
           "   -t            Sort by modification time (newest first)\n" +
-          "   -r            Reverse the order of the sort\n\n" +
+          "   -r            Reverse the order of the sort\n" +
+          "   -m            Monochrome output: no color used\n\n" +
           " LIMITATION: Does not print broken symlinks to directories.\n" +
           "             When a symlink to a directory is broken, it\n" +
           "             does not print the symlink at all.\n", name, name);
@@ -136,6 +138,8 @@ int main(int argc, array(string) argv)
     bool show_all        = false;
     bool sort_time       = false;
     bool reverse_sort    = false;
+    bool colored         = true;
+
     array(string) inputs = ({});
 
     // Process command line options
@@ -153,6 +157,7 @@ int main(int argc, array(string) argv)
                     case "a": show_all     = true; break;
                     case "t": sort_time    = true; break;
                     case "r": reverse_sort = true; break;
+                    case "m": colored      = false; break;
                 default:
                     werror("lsdd: invalid option -- %s\n", flag);
                     return 1;
@@ -228,10 +233,16 @@ int main(int argc, array(string) argv)
             string target = info->islnk ? readlink(entry) : "";
             string color  = info->islnk ? COLOR_LNK : COLOR_DIR;
             write("%s %8d %s %s%s/",
-                  format_mode(info->mode, info->islnk), info->size,
-                ctime(info->mtime)[4..15], color, entry);
+                  format_mode(info->mode, info->islnk),
+                  info->size,
+                  ctime(info->mtime)[4..15],
+                  colored? color : "",
+                  entry);
             if (info->islnk)  write(" -> %s", target);
-            write("%s\n", COLOR_RESET);
+            if (colored) {
+                write("%s", COLOR_RESET);
+            }
+            write("\n");
         }
     } else {
         int max_len = 0;
@@ -251,8 +262,12 @@ int main(int argc, array(string) argv)
                 if (index < num_items) {
                     string entry = dirs[index];
                     Stdio.Stat info = file_stat(entry, 1);
-                    string color = info->islnk ? COLOR_LNK : COLOR_DIR;
-                    write(color + "%-" + col_width + "s" + COLOR_RESET, entry + "/");
+                    if (colored) {
+                        string color = info->islnk ? COLOR_LNK : COLOR_DIR;
+                        write(color + "%-" + col_width + "s" + COLOR_RESET, entry + "/");
+                    } else {
+                        write("%-" + col_width + "s", entry + "/");
+                    }
                 }
             }
             write("\n");
