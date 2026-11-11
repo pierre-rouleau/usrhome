@@ -641,11 +641,8 @@ The user would probably want to create some extra ones;  the
 ========================================== ========================================================
 ``$USRHOME/ibin`` File                     Purpose
 ========================================== ========================================================
-`do-add-to-path`_                          Implements the `add-to-path command`_.
 `do-cbr`_                                  Implements the `cbr command`_.
 `do-cd-to`_                                Implements the `cd-to command`_.
-`do-clrenv`_                               Implements the `clrenv command`_.
-`do-setenv`_                               Implements the `setenv command`_.
 `do-usrcfg`_                               Implements the `usrcfg command`_.
 `do-usrhome`_                              Implements the `usrhome command`_.
 ========================================== ========================================================
@@ -1419,17 +1416,20 @@ USRHOME Command Name               Description
 
 ``add-to-path --end DIRPATH``      Add DIRPATH to the end of the current shell PATH.
 
+                                   - This is an alias to ``_usrhome_add_to_path`` implemented in
+                                     the file `usrhome/ibin/setfor-alias`_
+
 ``clrenv VARNAME``                 Clear (remove) the environment variable specified by name from
                                    the environment of the *current* shell.
 
-                                   - This is an alias to `usrhome/ibin/do-clrenv`_
-
+                                   - This is an alias to ``_usrhome_clrenv`` implemented in
+                                     the file `usrhome/ibin/setfor-alias`_
 
 ``setenv VARNAME VALUE``           Set the environment variable named VARNAME to the specified
                                    VALUE and inject it inside the *current* shell.
 
-                                   - This is an alias to `usrhome/ibin/do-setenv`_
-
+                                   - This is an alias to ``_usrhome_setenv`` implemented in
+                                     the file `usrhome/ibin/setfor-alias`_
 
 ``use-usrhome``                    Add USRHOME binary directory and ``~/bin`` to PATH if present.
                                    This command is automatically executed for zsh shell started
@@ -2694,7 +2694,7 @@ usrcfg/do-user-zshrc.zsh file:
 
 .. code:: shell
 
-          alias use-curl-hb='source $USRHOME_DIR_USRCFG/envfor-curl-hb'
+          alias use-curl-hb='. $USRHOME_DIR_USRCFG/envfor-curl-hb'
 
 And we store the logic we need into the usrcfg/envfor-curl-hb file.
 In this specific case, there's not much.  Just this:
@@ -2762,7 +2762,7 @@ If you just want to add Rust support in selected shells, then create a
 
   .. code:: shell
 
-            alias use-rust='source $USRHOME_DIR_USRCFG/envfor-rust'
+            alias use-rust='. $USRHOME_DIR_USRCFG/envfor-rust'
 
 
 Now you can inject Rust support by executing the ``use-rust`` command:
