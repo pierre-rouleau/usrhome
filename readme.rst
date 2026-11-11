@@ -1657,13 +1657,14 @@ CBR -- Single commands to Check, Build or Run
 ---------------------------------------------
 
 USRHOME supports 3 single letter commands for checking, building and running
-code: ``c``, ``b`` and ``r``.  These are command aliases that are installed
-inside the shell by the ``use-cbr`` command (which is an alias itself to
-`usrhome/ibin/envfor-cbr`_).
+code: ``c``, ``b`` and ``r`` respectively.  These are command aliases that are
+installed inside the shell by the ``use-cbr`` command (which is an alias
+itself to `usrhome/ibin/envfor-cbr`_).
 
-The ``c``, ``b`` and ``r`` commands are aliases to the `usrhome/ibin/do-cbr`_
-sourced script that detect the mechanism required to perform the required action by
-inspecting the content of the current directory.
+The ``c``, ``b`` and ``r`` commands are aliases to the ``_usrhome_c``,
+``_usrhome_b`` and ``_usrhome_r`` functions. These functions are defined by
+`usrhome/ibin/envfor-cbr`_. They inspect the current directory to select
+the mechanism for the requested action.
 
 This currently supports the following construction methods:
 
@@ -1702,7 +1703,7 @@ returning with exit code of 1.
 **Using a local cbr executable file:**
 
 After executing ``use-cbr``, the  ``c``, ``b`` and ``r`` commands
-check if a local ``cbr`` executable file is located in the current directory.
+check if a local ``cbr`` or ``.cbr`` executable file is located in the current directory.
 If they find one they pass control to it, as described below. If there's none,
 then the command try to detect how to build the files in the directory with
 the construction methods described above.
@@ -1715,24 +1716,34 @@ This can do anything your project requires, like invoking a special build
 tool with the necessary arguments.  It can be useful when CBR currently does
 not support the construction method you need.
 
-Another use of the ``cbr`` executable is to changes the current directory to
-the directory where the build command must be issued and then re-issue the CBR
-command from that directory.
-
-For example, assuming you have a project where the build command is issued
-from the project root directory and that you also want to be able from a
-sub-directory.  To be able to issue the ``c``, ``b`` or ``r`` command from
-that sub-directory create a ``cbr`` or ``.cbr`` executable file inside the
-sub-directory that contains something like this:
+A local ``cbr`` or ``.cbr`` executable can forward a command to the
+project root. For example, create the following executable file in a
+direct subdirectory of the project root:
 
 .. code:: sh
 
           #!/bin/sh
-          cd ..
-          source "$USRHOME_DIR/ibin/do-cbr" $1
 
-With this the ``c``, ``b`` and ``r`` commands can be executed from the project
-root directory and from its sub-directory.
+          cd .. || exit 1
+
+          . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+          . "$USRHOME_DIR/ibin/envfor-cbr"
+
+          case "${1-}" in
+              c) shift; _usrhome_c "$@" ;;
+              b) shift; _usrhome_b "$@" ;;
+              r) shift; _usrhome_r "$@" ;;
+              *)
+                  printf '%s\n' 'Usage: cbr c|b|r [arguments...]' >&2
+                  exit 1
+                  ;;
+          esac
+
+Set and export ``USRHOME_DIR`` to the absolute path of the USRHOME
+installation before using this executable. The script changes to the
+parent directory and passes the remaining arguments to the selected
+CBR function. A local controller in that directory receives those
+arguments. The built-in controllers currently ignore them.
 
 
 Using Emacs as a man reader
@@ -3027,7 +3038,6 @@ Thanks!
 .. _usrhome-prompt-model-to:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-prompt-model-to
 .. _usrhome/ibin/setfor-alias:                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
 .. _usrhome/ibin/envfor-cbr:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
-.. _usrhome/ibin/do-cbr:                               https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
 .. _Emacs man support:                                 https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
 .. _create-gcc-as-gcc14.sh:                            https://github.com/pierre-rouleau/usrhome/blob/main/setup/macOS/create-gcc-as-gcc14.sh
 .. _usrhome/ibin/envfor-gcc14-on-macos:                https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gcc14-on-macos
