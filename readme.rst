@@ -1745,6 +1745,15 @@ parent directory and passes the remaining arguments to the selected
 CBR function. A local controller in that directory receives those
 arguments. The built-in controllers currently ignore them.
 
+USRHOME continue to support the now deprecated ``ibin/do-cbr``
+command.  It still allows using something like this instead:
+
+.. code:: sh
+
+          #!/bin/sh
+          cd .. || exit 1
+          . "$USRHOME_DIR/ibin/do-cbr"
+
 
 Using Emacs as a man reader
 ---------------------------
