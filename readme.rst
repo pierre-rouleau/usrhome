@@ -1557,22 +1557,28 @@ USRHOME Command Name               Description
 
                                    - 0 on success;
                                    - 1 for an invalid request or processing error;
-                                   - 2 if no directories remain after cleanup.  In this case,
+                                   - 2 if cleanup produces an empty value. In this case,
                                      the original value is unchanged.
 
                                    The sanitizer does not check that directories exist or are
                                    safe.  If sanitization fails, do not assume the original
                                    value is safe.
 
-                                   For MANPATH, one original empty entry is retained if it is
-                                   the only exception: a leading colon, a trailing colon, or an
-                                   internal double colon. Multiple empty entries or a
-                                   whitespace-only entry invalidate all exceptions. An internal
-                                   marker is removed if deduplication leaves no directory on
-                                   one side.
+                                   More values are valid for MANPATH and the sanitizer accepts
+                                   MANPATH values that consist of only one colon or have a single
+                                   colon at the beginning or the end of the string or has a single
+                                   instance of a double colon between two directories.
+                                   These special cases identify where the systems default search
+                                   path for man are inserted.
+
+                                   The sanitizer does not accept the single colon or extra leading
+                                   or trailing colon or any double colons or more inside the value
+                                   of any other environment variable and removes them.
 
                                    In an interactive shell, the command warns when it changes
                                    the value, unless TERM is ``dumb``.
+
+                                   The command is silent if the value is valid and has not been modified.
 ================================== ================================================================
 
 Dynamic Path Management
