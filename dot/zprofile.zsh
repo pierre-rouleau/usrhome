@@ -2,9 +2,9 @@
 #
 # Purpose   : Z Shell Profile Configuration - Customize important envvar once.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Copyright (C) 2024 by Pierre Rouleau
+# Copyright (C) 2024-2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-08-02 12:44:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 11:39:45 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -44,14 +44,15 @@ USRHOME__IN_LOGIN=1
 
 # Set User-specific Path
 # ----------------------
-source "$USRHOME_DIR/ibin/setfor-path"
+# shellcheck source=../ibin/setfor-path
+. "$USRHOME_DIR/ibin/setfor-path"
 
 # ----------------------------------------------------------------------------
 # Source User Extra zprofile if it exists
 # ------------------------------------
 user_zprofile="$USRHOME_DIR_USRCFG/do-user-zprofile.zsh"
 if [[ -f "$user_zprofile" ]]; then
-    source "$user_zprofile"
+    . "$user_zprofile"
 fi
 unset user_zprofile
 

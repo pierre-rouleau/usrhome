@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use the c, b and r commands.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 12:59:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 14:17:53 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -35,15 +35,28 @@ case "$-" in
         ;;
 esac
 
-
-alias c='source $USRHOME_DIR/ibin/do-cbr c'
-alias b='source $USRHOME_DIR/ibin/do-cbr b'
-alias r='source $USRHOME_DIR/ibin/do-cbr r'
+# [:todo 2026-11-11, by Pierre Rouleau: re-implement c, b and r as _usrhome_[cbr] functions
+#                    and an alias to them that does not need an argument.
+#                    This will require a rewriting of $USRHOME_DIR/ibin/do-cbr logic
+#                    moved into this file here.  Each of the 3 functions will have
+#                    to inspect the current directory to identify the build type
+#                    and then proceed.  The code will then be fully POSIX compliant.
+#                    At the moment it is not POSIX compliant because it depends on
+#                    Bash and Zsh to accept argument to .]
+alias c='. $USRHOME_DIR/ibin/do-cbr c'
+alias b='. $USRHOME_DIR/ibin/do-cbr b'
+alias r='. $USRHOME_DIR/ibin/do-cbr r'
 
 if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
     printf -- "\
 . CBR single letter commands installed in shell:
   c := check, b:= build, r:=run
+  Their behaviour depends on the content of the current directory.
+  These utilities look for the presence of build control files
+  such as Make, CMake files or the presence of C, C++ or Rust
+  files and perform the appropriate operation.
+  If nothing relevant is found the command does nothing
+  and prints an error.
 "
 fi
 

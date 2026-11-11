@@ -3,7 +3,7 @@
 # Purpose   : CBR: check, build or run files in current directory.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 17:58:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 14:18:02 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,13 +25,19 @@
 #
 # CAUTION: early version; need cleanup.  More types of build needed.
 #          Minimum testing done.
+#
+#
+# This is meant to be invoked via the aliases creates by $USRHOME_DIR/ibin/envfor-cbr
+# Which is invoked via the use-cbr alias defined in $USRHOME_DIR/ibin/setfor-alias
+#
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-#
-
+# Works in Bash and Zsh as it depends on . accepting arguments.
+# Also depends on the USRHOME shell being setup by an environment that defines
+# the check, build and run commands.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -60,10 +66,12 @@ case "$1" in
         return 1
 esac
 
+# --
 # Identify build controller
 bt=
 dname="$(basename "$(pwd)")"
 cbr_error=
+
 
 # If the current directory has a local executable cbr script or program
 # execute it passing all the arguments to it.
@@ -143,7 +151,8 @@ elif [ -f main.rs ]; then
 fi
 
 
-# Execute C, B or R
+# --
+# Execute c, b or r
 case $bt in
     with_cmake)
         # TODO: better support CMake
@@ -191,7 +200,11 @@ case $bt in
                 return $?
                 ;;
             run)
-                make "$dname" && ./"$dname"
+                if [ -x ./"$dname" ]; then
+                    ./"$dname"
+                else
+                    make "$dname" && ./"$dname"
+                fi
                 return $?
                 ;;
         esac
@@ -232,7 +245,8 @@ case $bt in
         ;;
 
     *)
-        usrhome_printf_error "No appropriate build type found: %s\n"  "$cbr_error"
+        usrhome_printf_error  'No appropriate build controller type found: %s\n'  "$cbr_error"
+        usrhome_printf_stderr '\tAdd logic to %s/ibin/do-cbr to add new support.\n' "$USRHOME_DIR"
         return 1
         ;;
 esac
