@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 11:36:21 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 10:50:52 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -124,6 +124,9 @@ fi
 showpath_valid_separators() (
     rest=$1
     variable=$2
+    if [ "$variable" = MANPATH ] && [ "$rest" = : ]; then
+        return 0
+    fi
     markers=0
     directories=0
     while :; do
@@ -154,6 +157,17 @@ show_path()
     # numbered: 'true' or 'false'
 
     eval path_value='$'$vname
+
+    if [ "$vname" = MANPATH ] && [ "$path_value" = : ]; then
+        # A single colon represents the default MANPATH.
+        if [ "$numbered" = "true" ]; then
+            printf '%s\n' '' | nl -b a -n ln
+        else
+            printf '%s\n' '- '
+        fi
+        return 0
+    fi
+
     if [ -z "$path_value" ]; then
         usrhome_printf_warning '%s is not defined!\n' "$vname"
         if [ "$vname" = "MANPATH" ]; then
@@ -179,7 +193,8 @@ show_path()
             printf -- "%s\n" "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
         fi
         if ! showpath_valid_separators "$path_value" "$vname"; then
-            usrhome_printf_error '%s has invalid empty entries!\n' "$vname" >&2
+            usrhome_printf_error '%s has invalid empty entries!\n' "$vname"
+            usrhome_printf_stderr 'The value is: %s\n' "$path_value"
             exit 3
         fi
     fi
