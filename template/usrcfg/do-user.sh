@@ -3,7 +3,7 @@
 # Purpose   : User Configuration Common to all supported shells.
 # Created   : Thursday, May  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 12:12:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 23:02:06 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -46,13 +46,13 @@ alias cdlog-installs='cd ~/my/logs/install-logs'
 cdbin()
 {
     # - Arg 1: optional sub-directory name
-    cd "$HOME/my/bin/$1"
+    cd -- "$HOME/my/bin/$1"
 }
 
 cddoc()
 {
     # - Arg 1: optional sub-directory name
-    cd "$HOME/Documents/$1"
+    cd -- "$HOME/Documents/$1"
 }
 
 # Topic: macOS Number

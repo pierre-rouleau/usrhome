@@ -3,7 +3,7 @@
 # Purpose   : USRHOME template for user's startup configuration of Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 16:36:32 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 23:07:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -100,6 +100,9 @@ unset os_type
 #
 # - Modify their values to suit your needs. You could also use logic to set
 # - the values according to what system runs this code.
+#
+# All directories MUST be under $HOME.  This prevents a clash
+# when USRHOME is used in a multi-user Unix system.
 
 export USRHOME_DIR_MY="$HOME/my"
 export USRHOME_DIR_CONTRACT="$HOME/my/dvc"
