@@ -250,6 +250,14 @@ trace and PATH values to that file. You can use
 current Bash or Zsh shell. Tracing output is suppressed in non-interactive
 shells and when ``TERM`` is ``dumb``.
 
+For Teams & Power Users
+-----------------------
+
+USRHOME features and positioning of all directories under the home directory
+make it an ideal system to use in a team setting: it imposes a specific
+structure while allowing each team member to maintain the user's private
+settings for all the computing environments the person uses.
+
 Technologies
 ------------
 

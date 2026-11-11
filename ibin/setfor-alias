@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 10:47:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-10 23:02:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -65,9 +65,9 @@ cduh()
 {
     # Optional argument: sub-directory
     if [ -n "$USRHOME_SHELL_HOME" ]; then
-        cd "$USRHOME_SHELL_HOME"/"$1" || return 1
+        cd -- "$USRHOME_SHELL_HOME"/"$1" || return 1
     else
-        cd "$HOME/$1" || return 1
+        cd -- "$HOME/$1" || return 1
     fi
 }
 
@@ -180,7 +180,7 @@ mdd()
     else
         mkdir "$1" || return 1
     fi
-    cd "$1" || return 1
+    cd -- "$1" || return 1
 }
 
 alias md='mkdir'
@@ -443,7 +443,7 @@ usrhome_cd()
     # - 3: optional: sub-directory name.
     if [ -n "$2" ]; then
         if [ -d "$2/$3" ]; then
-            cd "$2/$3" || return 1
+            cd -- "$2/$3" || return 1
         else
             printf "****ERROR: %s is not a directory!\n" "$2/$3"
         fi
@@ -516,7 +516,7 @@ cdtmp()
 
 __cd__()
 {
-    cd "../$1"  || return 1
+    cd  "../$1"  || return 1
 }
 
 __cd___()
@@ -734,7 +734,7 @@ __git__cln()
     if git ls-remote --heads "$1" 2> /dev/null | grep -E -e "/heads/$2\$"; then
         # -- Proceed
         if git clone "$1" "$2"; then
-            cd "$2" || return 1
+            cd -- "$2" || return 1
             git checkout "$2"
             printf -- "*** Success!\n"
         else
