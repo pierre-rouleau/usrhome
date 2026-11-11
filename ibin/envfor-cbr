@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use the c, b and r commands.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 17:25:48 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 18:09:19 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -141,7 +141,9 @@ _usrhome_cbr_no_controller()
 _usrhome_c() (
     _usrhome_cbr_detect || return 1
 
-    if [ "$#" -eq 1 ]; then
+    if [ "$#" -eq 1 ] &&
+       [ "$_usrhome_cbr_controller" != local_cbr ] &&
+       [ "$_usrhome_cbr_controller" != local_dot_cbr ]; then
         case "$1" in
             -h|--help) _usrhome_cbr_print_usage_c; return 0 ;;
         esac
@@ -165,7 +167,9 @@ _usrhome_c() (
 _usrhome_b() (
     _usrhome_cbr_detect || return 1
 
-    if [ "$#" -eq 1 ]; then
+    if [ "$#" -eq 1 ] &&
+       [ "$_usrhome_cbr_controller" != local_cbr ] &&
+       [ "$_usrhome_cbr_controller" != local_dot_cbr ]; then
         case "$1" in
             -h|--help) _usrhome_cbr_print_usage_b; return 0 ;;
         esac
@@ -186,7 +190,9 @@ _usrhome_b() (
 _usrhome_r() (
     _usrhome_cbr_detect || return 1
 
-    if [ "$#" -eq 1 ]; then
+    if [ "$#" -eq 1 ] &&
+       [ "$_usrhome_cbr_controller" != local_cbr ] &&
+       [ "$_usrhome_cbr_controller" != local_dot_cbr ]; then
         case "$1" in
             -h|--help) _usrhome_cbr_print_usage_r; return 0 ;;
         esac
