@@ -641,7 +641,6 @@ The user would probably want to create some extra ones;  the
 ========================================== ========================================================
 ``$USRHOME/ibin`` File                     Purpose
 ========================================== ========================================================
-`do-cbr`_                                  Implements the `cbr command`_.
 `do-cd-to`_                                Implements the `cd-to command`_.
 `do-usrcfg`_                               Implements the `usrcfg command`_.
 `do-usrhome`_                              Implements the `usrhome command`_.

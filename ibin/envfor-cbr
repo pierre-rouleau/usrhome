@@ -3,61 +3,227 @@
 # Purpose   : Set environment to use the c, b and r commands.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 14:17:53 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 17:25:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Install the CBR single letter commands in shell to check, build, and run
-# code written in the current directory.
-
-# ----------------------------------------------------------------------------
+# Install the CBR single-letter commands in the current shell.
+# They check, build, or run code in the current directory.
+#
+# A local executable named cbr or .cbr takes precedence over the
+# built-in controller detection. It receives c, b, or r as its first
+# argument, followed by the arguments supplied by the user.
+#
 # Dependencies
 # ------------
 #
-# This install the single letter commands that are implemented by USRHOME
-# usrhome/ibin/do-cbr sourced script.
+# The USRHOME shell environment must define usrhome_printf_error and
+# usrhome_printf_stderr. The detected build tools must be available.
 #
-
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
 #
-# 0 - Check if shell is interactive
-# ---------------------------------
 case "$-" in
-    *i*)
-        SHELL_IS_INTERACTIVE=true
-        ;;
-    *)
-        SHELL_IS_INTERACTIVE=false
-        ;;
+    *i*) SHELL_IS_INTERACTIVE=true ;;
+    *)   SHELL_IS_INTERACTIVE=false ;;
 esac
 
-# [:todo 2026-11-11, by Pierre Rouleau: re-implement c, b and r as _usrhome_[cbr] functions
-#                    and an alias to them that does not need an argument.
-#                    This will require a rewriting of $USRHOME_DIR/ibin/do-cbr logic
-#                    moved into this file here.  Each of the 3 functions will have
-#                    to inspect the current directory to identify the build type
-#                    and then proceed.  The code will then be fully POSIX compliant.
-#                    At the moment it is not POSIX compliant because it depends on
-#                    Bash and Zsh to accept argument to .]
-alias c='. $USRHOME_DIR/ibin/do-cbr c'
-alias b='. $USRHOME_DIR/ibin/do-cbr b'
-alias r='. $USRHOME_DIR/ibin/do-cbr r'
+_usrhome_cbr_print_usage_c()
+{
+    printf '%s\n' \
+        'Usage: c [-h|--help] [arguments...]' \
+        'Check the code in the current directory.' \
+        'Arguments are passed to a local cbr or .cbr executable.'
+}
+
+_usrhome_cbr_print_usage_b()
+{
+    printf '%s\n' \
+        'Usage: b [-h|--help] [arguments...]' \
+        'Build the code in the current directory.' \
+        'Arguments are passed to a local cbr or .cbr executable.'
+}
+
+_usrhome_cbr_print_usage_r()
+{
+    printf '%s\n' \
+        'Usage: r [-h|--help] [arguments...]' \
+        'Run the code in the current directory.' \
+        'Arguments are passed to a local cbr or .cbr executable.'
+}
+
+_usrhome_cbr_detect()
+{
+    # Set the controller and directory name for the calling command.
+    # The caller runs in a subshell, so these variables do not leak into
+    # the interactive shell.
+    _usrhome_cbr_controller=
+    _usrhome_cbr_error=
+    _usrhome_cbr_extension=
+    _usrhome_cbr_candidate=
+
+    _usrhome_cbr_pwd=$(pwd) || return 1
+    _usrhome_cbr_directory=$(basename "$_usrhome_cbr_pwd") || return 1
+
+    # If the current directory has a local executable cbr script or program
+    # execute it passing all the arguments to it.
+    if [ -x cbr ]; then
+        _usrhome_cbr_controller=local_cbr
+    elif [ -x .cbr ]; then
+        _usrhome_cbr_controller=local_dot_cbr
+
+    # For directories that have a CMakeLists.txt file
+    # build with cmake
+    elif [ -f CMakeLists.txt ]; then
+        _usrhome_cbr_controller=with_cmake
+
+    # For directories that have a make file, use make
+    # to build.
+    elif [ -f Makefile ] || [ -f makefile ]; then
+        _usrhome_cbr_controller=with_make
+
+
+    # For directories that have a single-file program
+    # written in or C++ use GNU Make builtin rule.
+    # use set -- to set the argument
+    elif [ -f "${_usrhome_cbr_directory}.c" ]; then
+        set -- ./*.c
+        _usrhome_cbr_extension=.c
+        _usrhome_cbr_candidate=with_make1
+    elif [ -f "${_usrhome_cbr_directory}.cpp" ]; then
+        set -- ./*.cpp
+        _usrhome_cbr_extension=.cpp
+        _usrhome_cbr_candidate=with_make1
+    elif [ -f "${_usrhome_cbr_directory}.CC" ]; then
+        set -- ./*.CC
+        _usrhome_cbr_extension=.CC
+        _usrhome_cbr_candidate=with_make1
+    elif [ -f "${_usrhome_cbr_directory}.cxx" ]; then
+        set -- ./*.cxx
+        _usrhome_cbr_extension=.cxx
+        _usrhome_cbr_candidate=with_make1
+
+    # Support for Rust with Cargo and without on single main.rs file
+    elif [ -f Cargo.toml ]; then
+        _usrhome_cbr_controller=with_rustc_cargo
+    elif [ -f main.rs ]; then
+        set -- ./*.rs
+        _usrhome_cbr_extension=.rs
+        _usrhome_cbr_candidate=with_rustc_main
+    fi
+
+    if [ -n "$_usrhome_cbr_extension" ]; then
+        # Preserve the original find-based count.
+        # use xargs to left-trim the file count string on macOS.
+        _usrhome_cbr_count=$(find "$@" | wc -l | xargs)
+        if [ "$_usrhome_cbr_count" = 1 ]; then
+            _usrhome_cbr_controller=$_usrhome_cbr_candidate
+        else
+            _usrhome_cbr_error="Too many $_usrhome_cbr_extension files: $_usrhome_cbr_count"
+        fi
+    fi
+}
+
+_usrhome_cbr_no_controller()
+{
+    usrhome_printf_error \
+        'No appropriate build controller type found: %s\n' \
+        "$_usrhome_cbr_error"
+    usrhome_printf_stderr \
+        '\tAdd logic to %s/ibin/envfor-cbr to add new support.\n' \
+        "$USRHOME_DIR"
+    return 1
+}
+
+_usrhome_c() (
+    _usrhome_cbr_detect || return 1
+
+    if [ "$#" -eq 1 ]; then
+        case "$1" in
+            -h|--help) _usrhome_cbr_print_usage_c; return 0 ;;
+        esac
+    fi
+
+    case "$_usrhome_cbr_controller" in
+        local_cbr)       ./cbr c "$@" ;;
+        local_dot_cbr)   ./.cbr c "$@" ;;
+        with_cmake)
+            usrhome_printf_error 'No check support for CMake build yet!\n'
+            return 1
+            ;;
+        with_make)        make ;;
+        with_make1)       make "$_usrhome_cbr_directory" ;;
+        with_rustc_main)  rustc main.rs ;;
+        with_rustc_cargo) cargo check ;;
+        *)                _usrhome_cbr_no_controller ;;
+    esac
+)
+
+_usrhome_b() (
+    _usrhome_cbr_detect || return 1
+
+    if [ "$#" -eq 1 ]; then
+        case "$1" in
+            -h|--help) _usrhome_cbr_print_usage_b; return 0 ;;
+        esac
+    fi
+
+    case "$_usrhome_cbr_controller" in
+        local_cbr)        ./cbr b "$@" ;;
+        local_dot_cbr)    ./.cbr b "$@" ;;
+        with_cmake)       cmake CMakeLists.txt ;;
+        with_make)        make clean && make ;;
+        with_make1)       make "$_usrhome_cbr_directory" ;;
+        with_rustc_main)  rustc main.rs ;;
+        with_rustc_cargo) cargo build ;;
+        *)                _usrhome_cbr_no_controller ;;
+    esac
+)
+
+_usrhome_r() (
+    _usrhome_cbr_detect || return 1
+
+    if [ "$#" -eq 1 ]; then
+        case "$1" in
+            -h|--help) _usrhome_cbr_print_usage_r; return 0 ;;
+        esac
+    fi
+
+    case "$_usrhome_cbr_controller" in
+        local_cbr)       ./cbr r "$@" ;;
+        local_dot_cbr)   ./.cbr r "$@" ;;
+        with_cmake)
+            usrhome_printf_error 'No run support for CMake build yet!\n'
+            return 1
+            ;;
+        with_make) make run ;;
+        with_make1)
+            if [ -x "./$_usrhome_cbr_directory" ]; then
+                "./$_usrhome_cbr_directory"
+            else
+                make "$_usrhome_cbr_directory" &&
+                    "./$_usrhome_cbr_directory"
+            fi
+            ;;
+        with_rustc_main) rustc main.rs && ./main ;;
+        with_rustc_cargo) cargo run ;;
+        *) _usrhome_cbr_no_controller ;;
+    esac
+)
+
+alias c='_usrhome_c'
+alias b='_usrhome_b'
+alias r='_usrhome_r'
 
 if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-    printf -- "\
-. CBR single letter commands installed in shell:
-  c := check, b:= build, r:=run
-  Their behaviour depends on the content of the current directory.
-  These utilities look for the presence of build control files
-  such as Make, CMake files or the presence of C, C++ or Rust
-  files and perform the appropriate operation.
-  If nothing relevant is found the command does nothing
-  and prints an error.
-"
+    printf '%s\n' \
+        '. CBR single letter commands installed in shell:' \
+        '  c := check, b := build, r := run' \
+        '  Their behaviour depends on the current directory.' \
+        '  Use c --help, b --help, or r --help for usage.'
 fi
 
 # ----------------------------------------------------------------------------
