@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 13:30:20 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 10:44:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -204,7 +204,7 @@ check_option()
             ;;
 
         -?*)
-            echo "ERROR: unsupported option: $1"
+            usrhome_printf_error 'cd-to: unsupported option: %s\n' "$1"
             print_usage
             cd_to__exit_code=1
     esac
@@ -213,7 +213,7 @@ check_option()
 # Validate input
 case "$#" in
     0)
-        echo "ERROR: specify a file name."
+        usrhome_print_error "cd-to: specify a file name."
         print_usage
         return 1
         ;;
@@ -284,7 +284,7 @@ case "$#" in
 
 
     *)
-        echo "ERROR: too many arguments ($#)."
+        usrhome_printf_error 'cd-to: %s is too many arguments.\n' "$#"
         print_usage
         return 1
 esac
@@ -325,19 +325,19 @@ if command -v fd > /dev/null 2>&1; then
 else
     # Use find
     if ! command -v find > /dev/null 2>&1; then
-        echo "ERROR: neither fd nor find is available." >&2
+        usrhome_print_error 'cd-to: neither fd nor find is available.'
         return 1
     fi
 
     case "$the_fname" in
         */*)
-            echo "ERROR: find fallback supports basename patterns only." >&2
+            usrhome_print_error 'cd-to: find fallback supports basename patterns only.'
             return 1
             ;;
     esac
 
     if [ "$search_ignored" != "true" ]; then
-        echo "WARNING: find cannot apply fd ignore rules; searching ignored entries." >&2
+        usrhome_print_warning 'cd-to: find cannot apply fd ignore rules; searching ignored entries.'
     fi
 
     cd_to_type=f
@@ -367,14 +367,14 @@ else
 
     if [ "$cd_to_find_status" -ne 0 ]; then
         unset cd_to_find_status
-        echo "ERROR: find failed." >&2
+        usrhome_print_error 'cd-to: find failed.'
         return 1
     fi
     unset cd_to_find_status
 fi
 
 if [ -z "$the_filepath" ]; then
-    echo "ERROR: no ${search_for1} found for: $the_fname" >&2
+    usrhome_printf_error 'cd-to: no %s found for: %s\n' "${search_for1}" "${the_fname}"
     return 1
 fi
 
@@ -384,9 +384,9 @@ file_count=$(printf "%s" "$the_filepath" | grep -c . )
 
 # Handle case of more than 1 location found.
 if [ "${file_count}" -gt  1 ]; then
-    echo "CAUTION: found ${file_count} ${search_for} in directory tree for: $1"
-    echo "The ${search_for} are:"
-    printf "%s\n" "$the_filepath" | nl
+    usrhome_printf_warning 'cd-to: found %s %s in directory tree for: %s\n'  "${file_count}" "${search_for}" "$1"
+    printf -- 'The %s are:\n' "${search_for}"
+    printf -- '%s\n' "$the_filepath" | nl
     if [ -n "$EDITOR" ] && [ -z "$INSIDE_EMACS" ]; then
         printf "\n"
         prompt_yn "Edit these ${search_for} with '$EDITOR'"
@@ -414,7 +414,7 @@ if [ "${file_count}" -gt  1 ]; then
                             unset the_fnames_arr
                             ;;
                         *)
-                            echo "Editing files not supported under '$USRHOME_SHELL' shell."
+                            usrhome_printf_warning 'Editing files not supported under %s shell.\n"' "$USRHOME_SHELL"
                             ;;
                     esac
                     unset the_fnames
@@ -450,7 +450,7 @@ if [ "$the_dirpath" = "." ]; then
                 eval "$EDITOR ${the_filepath}"
             fi
         else
-            echo "Error: No ${search_for1} found inside any sub-directory with the name: $the_fname"
+            usrhome_printf_error 'cd-to: No %s found inside any sub-directory with the name: %s\n' "${search_for1}" "$the_fname"
             has_error=true
         fi
     elif [ "$search_for1" = "directory" ]; then
@@ -463,7 +463,7 @@ if [ "$the_dirpath" = "." ]; then
             fi
         fi
     else
-        echo "Error: No ${search_for1} found inside any sub-directory with the name: $the_dirpath"
+        usrhome_printf_error 'cd-to: No %s found inside any sub-directory with the name: %s\n' "${search_for1}" "$the_dirpath"
         has_error=true
     fi
 else
