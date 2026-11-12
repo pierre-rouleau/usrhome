@@ -4,7 +4,7 @@
 # Purpose   : Adaptative diff program. Controlled by use-diff.  Defaults to diff.
 # Created   : Wednesday, May  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 14:49:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 09:45:01 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,14 +25,8 @@
 # ----
 #
 #
-print_error()
-{
-    >&2 printf "\
-***ERROR***
-%s
-***********
-" "$1"
-}
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
 case "$USRHOME_DIFF" in
     diff | "")
@@ -91,14 +85,13 @@ case "$USRHOME_DIFF" in
 
     *)
         # unknown
-        print_error "\
- The diff command is currently controlled by USRHOME use-diff.
- With it, the USRHOME_DIFF environment variable identifies the
- actual program to use.
- This is currently set to the unknown value of '$USRHOME_DIFF'.
+        usrhome_printf_error 'diff: invalid USRHOME_DIFF.
+ You are using USRHOME diff dispatching command as requested by
+ the previous execution of the use_diff command. The diff
+ command then uses USRHOME_DIFF to identify the program to use.
+ However the value of USRHOME_DIFF is not supported: %s
  Either execute use-diff again or do a clrenv USRHOME_DIFF
- to fall back to use the standard diff command.
-"
+ to fall back to use the standard diff command.\n' "$USRHOME_DIFF"
         exit 1
         ;;
 esac
