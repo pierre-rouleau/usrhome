@@ -3,7 +3,7 @@
 # Purpose   : Compatibility wrapper for CBR as it was implemented in the past.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 18:04:38 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 10:10:29 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -48,8 +48,7 @@
         b) shift; _usrhome_b "$@" ;;
         r) shift; _usrhome_r "$@" ;;
         *)
-            usrhome_printf_error \
-                'cbr: invalid arg: %s\nUsage: c|b|r\n' "${1-}"
+            usrhome_printf_error 'cbr: invalid arg: %s\nUsage: c|b|r\n' "${1-}"
             exit 1
             ;;
     esac

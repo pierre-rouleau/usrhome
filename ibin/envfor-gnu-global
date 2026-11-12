@@ -3,7 +3,7 @@
 # Purpose   : Add GNU Global support to the shell's environment.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 13:06:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 16:19:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -69,17 +69,17 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     return 0
 fi
 if [ -n "$1" ]; then
-    printf -- "*** use-gnu-global ERROR: Invalid argument '%s'\n" "$1"
-    printf -- "    Type 'use-gnu-global -h' to show usage.\n"
+    usrhome_printf_error 'use-gnu-global: Invalid argument '\''%s'\''
+\t Type '\''use-gnu-global -h'\'' to show usage.\n' "$1"
     return 1
 fi
 
 # --
 # Prevent multiple invocations
 if [ -n "${USRHOME__GNU_GLOBAL_VERSION:-}" ]; then
-    printf -- "*** use-gnu-global %s is already active.\n" "${USRHOME__GNU_GLOBAL_VERSION}"
-    printf -- "    Start a new shell if a new version was installed since this shell started.\n"
-    printf -- "    This shell started %s seconds ago.\n" "$SECONDS"
+    usrhome_printf_warning 'use-gnu-global %s is already active.
+\t Start a new shell if a new version was installed since this shell started.
+\t This shell started %s seconds ago.\n'  "${USRHOME__GNU_GLOBAL_VERSION}" "$SECONDS"
     return 1
 fi
 
@@ -87,15 +87,15 @@ fi
 # -- Validate environment
 #    - Check presence of USRHOME_DIR_GNU_GLOBAL
 if [ -z "${USRHOME_DIR_GNU_GLOBAL}" ]; then
-    printf "*** use-gnu-global ERROR: \$USRHOME_DIR_GNU_GLOBAL is not defined.\n" >&2
-    printf "    To fix this, define it inside your usrcfg/setfor-all-config.sh file.\n" >&2
-    printf "    Example: export USRHOME_DIR_GNU_GLOBAL=\"\$HOME/my/bin/gnu-global\"\n" >&2
+    usrhome_printf_error 'use-gnu-global: USRHOME_DIR_GNU_GLOBAL is not defined.
+\t To fix this, define it inside your usrcfg/setfor-all-config.sh file.
+\t Example: export USRHOME_DIR_GNU_GLOBAL="$HOME/my/bin/gnu-global"\n'
     return 1
 fi
 #    - Check validity of USRHOME_DIR_GNU_GLOBAL
 if [ ! -d "${USRHOME_DIR_GNU_GLOBAL}/bin" ]; then
-    printf "*** use-gnu-global ERROR: Directory does not exist at \"%s/bin\"\n" "${USRHOME_DIR_GNU_GLOBAL}" >&2
-    printf "    Please verify the path defined in your usrcfg/setfor-all-config.sh file.\n" >&2
+    usrhome_printf_error 'use-gnu-global: Directory does not exist at \"%s/bin\"
+\t Please verify the path defined in your usrcfg/setfor-all-config.sh file.\n' "${USRHOME_DIR_GNU_GLOBAL}"
     return 1
 fi
 
@@ -136,10 +136,12 @@ fi
 if [ -z "${USRHOME_DIR:-}" ] ||
    [ ! -f "${USRHOME_DIR}/ibin/xtra/sanitize-path-posix.sh" ] ||
    [ ! -r "${USRHOME_DIR}/ibin/xtra/sanitize-path-posix.sh" ]; then
-    printf '%s\n' 'ERROR: Sanitizer file is missing or unreadable.' >&2
+    usrhome_printf_error 'use-gnu-global: Path sanitizer file is missing or unreadable.
+\t Expected at: %s\n' "${USRHOME_DIR}/ibin/xtra/sanitize-path-posix.sh"
     return 1
 fi
 
+#shellcheck source=xtra/sanitize-path-posix.sh
 . "${USRHOME_DIR}/ibin/xtra/sanitize-path-posix.sh" || return $?
 _usrhome_sanitize_path PATH || return $?
 

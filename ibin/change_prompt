@@ -3,7 +3,7 @@
 # Purpose   : Internal helper file: change prompt.
 # Created   : Sunday, May  5 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 14:37:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 11:57:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,7 +25,6 @@
 # shellcheck source=./change_prompt
 .  "$USRHOME_DIR/ibin/which-shell"
 
-
 case $USRHOME_SHELL in
     "zsh")
         if [ -n "${USRHOME_PROMPT_MODEL_REQUIRES_RESTART-}" ] &&
@@ -39,8 +38,7 @@ case $USRHOME_SHELL in
                 # Don't allow re-starting zsh when there are running jobs
                 # inside the shell.  The exec zsh might kill them if they
                 # were not detached.  Warn the user and quit.
-                echo "***** WARNING! ** WARNING! *****"
-                echo "This shell has unfinished jobs running.  Terminate them first!"
+                usrhome_print_error 'This shell has unfinished jobs running.  Terminate them first!'
                 return 1
             fi
             usrhome-select-zsh-prompt

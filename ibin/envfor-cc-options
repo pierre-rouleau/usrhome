@@ -3,7 +3,7 @@
 # Purpose   : Force use of extra command line options for cc.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 16:58:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 10:45:44 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -59,8 +59,7 @@ envfor-cc-options -- Add extra compiler options to cc invocations.
 # validate arguments
 
 if [ -z "$1" ]; then
-    usrhome_printf "*** use-cc-options ERROR: missing arguments.\n"
-    print_usage
+    usrhome_print_error 'use-cc-options: missing arguments. Use -h to see usage.'
     return 1
 fi
 

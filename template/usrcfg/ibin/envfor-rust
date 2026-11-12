@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 10:09:26 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 16:17:24 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -78,14 +78,10 @@ else
             export RUST_SRC_PATH="$USRHOME_DIR_OTHER/rust/src"
             usrhome_printf "   Rust ver. %s source is available.\n" "$(cat "$usrhome_rustv_fpathname")"
         else
-            usrhome_printf "\
-**** CAUTION *****
-Rust source is NOT installed!
+            usrhome_printf_warning 'Rust source is NOT installed!
  Expecting: %s
  See %s/ibin/envfor-rust
- Get it with: cdpub ; git clone https://github.com/rust-lang/rust.git
-******************
-" "$usrhome_rustv_fpathname" "$USRHOME_DIR_USRCFG"
+ Get it with: cdpub ; git clone https://github.com/rust-lang/rust.git\n' "$usrhome_rustv_fpathname" "$USRHOME_DIR_USRCFG"
         fi
         # cleanup
         unset usrhome_rustv

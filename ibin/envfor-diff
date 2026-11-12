@@ -3,7 +3,7 @@
 # Purpose   : Set the diff program to use in the current shell.
 # Created   : Wednesday, May  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 13:12:08 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 10:41:42 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -64,22 +64,14 @@ Supported PROGRAM_NICKNAME:
 "
 }
 
-print_error()
-{
-    >&2 printf "\
-***ERROR***
- %s
-***********
-" "$1"
-}
-
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     return 0
 fi
 
 if [ -n "$2" ]; then
-    print_error "Too many arguments: $#. Only one is accepted."
+    usrhome_printf_error 'use-diff: Too many arguments: %s. Only one is accepted.\n' "$#"
+    return 1
 fi
 
 case "$1" in
@@ -94,8 +86,7 @@ case "$1" in
 
     *)
         # unknown
-        print_error "\
- Non supported diff program: $1"
+        usrhome_printf_error 'use-diff: Non supported diff program: %s\n' "$1"
         return 1
         ;;
 esac

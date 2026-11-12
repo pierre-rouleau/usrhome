@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 23:15:41 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 16:24:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -476,31 +476,38 @@ add-to-path -- Add a directory to the beginning or the end of PATH.
 
 _usrhome_add_to_path()
 {
-    # Arg 1: ONE directory to add to path
+    # Arg 1: directory to add to path
     # --
     # validate arguments
 
-    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    if [ "${1-}" = "-h" ] || [ "${1-}" = "--help" ]; then
         _usrhome_add_to_path_print_usage
-        # help requested explicitly: no error.
         return 0
     fi
 
-    if [ -z "$1" ]; then
+    if [ -z "${1-}" ]; then
         _usrhome_add_to_path_print_usage
         return 1
     fi
 
     if [ "$1" = "--end" ]; then
+        if [ "$#" -gt 2 ]; then
+            usrhome_print_error 'Only one DIRPATH allowed. Use -h to print usage.'
+            return 1
+        fi
         shift
         set -- true "$@"
     else
+        if [ "$#" -gt 1 ]; then
+            usrhome_print_error 'Only one DIRPATH allowed. Use -h to print usage.'
+            return 1
+        fi
         set -- false "$@"
     fi
 
     # Validate the complete list before changing PATH.
     if ! (
-        _usrhome_atp_remainder=${1-}
+        _usrhome_atp_remainder=${2-}
         while :; do
             _usrhome_atp_dir=${_usrhome_atp_remainder%%:*}
             if [ ! -d "$_usrhome_atp_dir" ]; then
@@ -517,9 +524,9 @@ _usrhome_add_to_path()
     fi
 
     if [ "$1" = "true" ]; then
-        append_to_path "$2"
+        append_to_path "$2" || return 1
     else
-        prepend_to_path "$2"
+        prepend_to_path "$2" || return 1
     fi
     export PATH
 }
