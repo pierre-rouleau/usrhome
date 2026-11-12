@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 23:15:41 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 23:30:17 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -476,7 +476,7 @@ add-to-path -- Add a directory to the beginning or the end of PATH.
 
 _usrhome_add_to_path()
 {
-    # Arg 1: ONE directory to add to path
+    # Arg 1: directory to add to path
     # --
     # validate arguments
 
@@ -500,7 +500,7 @@ _usrhome_add_to_path()
 
     # Validate the complete list before changing PATH.
     if ! (
-        _usrhome_atp_remainder=${1-}
+        _usrhome_atp_remainder=${2-}
         while :; do
             _usrhome_atp_dir=${_usrhome_atp_remainder%%:*}
             if [ ! -d "$_usrhome_atp_dir" ]; then
@@ -517,9 +517,9 @@ _usrhome_add_to_path()
     fi
 
     if [ "$1" = "true" ]; then
-        append_to_path "$2"
+        append_to_path "$2" || return 1
     else
-        prepend_to_path "$2"
+        prepend_to_path "$2" || return 1
     fi
     export PATH
 }
