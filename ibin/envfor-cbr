@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use the c, b and r commands.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 18:09:19 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 21:13:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -187,6 +187,8 @@ _usrhome_b() (
     esac
 )
 
+# --
+# Run
 _usrhome_r() (
     _usrhome_cbr_detect || return 1
 
@@ -207,11 +209,10 @@ _usrhome_r() (
             ;;
         with_make) make run ;;
         with_make1)
-            if [ -x "./$_usrhome_cbr_directory" ]; then
-                "./$_usrhome_cbr_directory"
-            else
-                make "$_usrhome_cbr_directory" &&
+            if make "$_usrhome_cbr_directory"; then
+                if [ -x "./$_usrhome_cbr_directory" ]; then
                     "./$_usrhome_cbr_directory"
+                fi
             fi
             ;;
         with_rustc_main) rustc main.rs && ./main ;;
