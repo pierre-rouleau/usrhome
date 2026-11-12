@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 14:00:56 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 23:15:41 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -411,11 +411,10 @@ _usrhome_setenv()
         usrhome_printf_stderr  'Usage: setenv VARNAME VALUE\n'
         return 1
     fi
+    # Use function positional parameters to get varname in first arg and value in second.
+    set -- "$1" "${2:-1}"
     # -- proceed
-    value=$2
-    if [ -z "$value" ]; then
-        value=1
-    fi
+
 
     case "$1" in
         *=*)
@@ -428,8 +427,8 @@ _usrhome_setenv()
             ;;
     esac
 
-    export "$1"="$value" || return 1
-    printf -- '%s=%s\n' "$1" "$value"
+    export "$1=$2" || return 1
+    printf -- '%s=%s\n' "$1" "$2"
 }
 alias setenv='_usrhome_setenv'
 
@@ -443,7 +442,10 @@ _usrhome_clrenv()
     fi
 
     if env | grep "^$1=" > /dev/null; then
-        unset "$1"
+        if ! builtin unset -v "$1" 2>/dev/null; then
+            usrhome_printf_error 'clrenv: could not remove %s from the environment.\n' "$1"
+            return 1
+        fi
         printf -- 'Removed %s from the environment\n' "$1"
     else
         usrhome_printf_error  'clrenv: the %s environment variable does not exist.\n' "$1"
@@ -474,7 +476,7 @@ add-to-path -- Add a directory to the beginning or the end of PATH.
 
 _usrhome_add_to_path()
 {
-    # Arg 1: directory to add to path
+    # Arg 1: ONE directory to add to path
     # --
     # validate arguments
 
@@ -489,22 +491,35 @@ _usrhome_add_to_path()
         return 1
     fi
 
-    at_end=false
     if [ "$1" = "--end" ]; then
-        at_end=true
         shift
+        set -- true "$@"
+    else
+        set -- false "$@"
     fi
 
-    if [ ! -d "$1" ]; then
-        usrhome_printf_error 'Directory does not exists: %s\n' "$1"
+    # Validate the complete list before changing PATH.
+    if ! (
+        _usrhome_atp_remainder=${1-}
+        while :; do
+            _usrhome_atp_dir=${_usrhome_atp_remainder%%:*}
+            if [ ! -d "$_usrhome_atp_dir" ]; then
+                usrhome_printf_error 'Directory does not exists: %s\n' "$_usrhome_atp_dir"
+                exit 2
+            fi
+            case "$_usrhome_atp_remainder" in
+                *:*) _usrhome_atp_remainder=${_usrhome_atp_remainder#*:} ;;
+                *) break ;;
+            esac
+        done
+    ); then
         return 2
     fi
 
-
-    if [ "$at_end" = "true" ]; then
-        append_to_path "$1"
+    if [ "$1" = "true" ]; then
+        append_to_path "$2"
     else
-        prepend_to_path "$1"
+        prepend_to_path "$2"
     fi
     export PATH
 }
