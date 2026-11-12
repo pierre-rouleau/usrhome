@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 10:50:52 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 21:42:17 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -65,33 +65,21 @@ showpath: show content of PATH-like environment variable.
 "
 }
 
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+# ---
+
 print_error()
 {
-    >&2 printf "\
-***ERROR***
- - showpath: %s
-***********
-" "$1"
-    print_usage
+    usrhome_printf_error 'showpath: %s\n' "$1"
+    usrhome_printf_stderr '\tUse showpath -h to see usage.\n'
     exit 1
 }
-
-
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     exit 0
 fi
-
-# ---
-# Define printing utilities:
-# - usrhome_printf_warning FORMAT ARGS...
-# - usrhome_printf_error   FORMAT ARGS...
-
-# shellcheck source=../ibin/xtra/print-utilities.sh
-. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
-# ---
-
 
 numbered='false'
 # Parse command line arguments
@@ -156,7 +144,16 @@ show_path()
     #                to show the value of USRHOME_ORIGINAL_PATH
     # numbered: 'true' or 'false'
 
-    eval path_value='$'$vname
+    case "$vname" in
+        ''|[!_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]*)
+            print_error 'Invalid environment variable name'
+            ;;
+        *[!_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]*)
+            print_error 'Invalid environment variable name'
+            ;;
+    esac
+
+    eval 'path_value=${'"$vname"'-}'
 
     if [ "$vname" = MANPATH ] && [ "$path_value" = : ]; then
         # A single colon represents the default MANPATH.
@@ -200,39 +197,25 @@ show_path()
     fi
 }
 
-
-# Parse further: check vname: only allow the valid ones
-# since their name will be passed to eval; don't allow
-# user input to be eval'ed; that would be a security risk.
-# Print the path using show_path function for the valid
-# variable names.
+# Map shortcut names to variable names. show_path validates each name
+# before the indirect expansion.
 case $vname in
-    'PATH')
-        vname="PATH"
-        show_path
-        ;;
-
     'INFO'|'INFOPATH')
         vname="INFOPATH"
-        show_path
         ;;
 
     'LIB'|'LIBPATH')
         vname="LIBPATH"
-        show_path
         ;;
 
     'MAN'|'MANPATH')
         vname="MANPATH"
-        show_path
         ;;
 
     'ORIGINAL' | 'ORIGINAL_PATH' | 'USRHOME_ORIGINAL_PATH')
         vname="USRHOME_ORIGINAL_PATH"
-        show_path
         ;;
-    *)
-        show_path
 esac
+show_path
 
 # ----------------------------------------------------------------------------
