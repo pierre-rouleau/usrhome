@@ -3,7 +3,7 @@
 # Purpose   : Sanitize PATH-like variable content.  POSIX- Compliant logic.
 # Created   : Sunday, November 08 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 23:27:29 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 10:14:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,10 +49,11 @@
 # - Remove leading, trailing and multiple colons, leaving only colons between
 #   directories.
 #
-# For MANPATH, keep exactly one original empty field if it is the only
-# exception: a leading colon, a trailing colon, or an internal double colon.
-# Multiple empty fields, or a whitespace-only field, invalidate all exceptions.
-# An internal marker must still have retained directories on both sides.
+# For MANPATH, accept a single colon, or keep exactly one original empty field
+# if it is the only exception: a leading colon, a trailing colon, or an
+# internal double colon.  Multiple empty fields, or a whitespace-only field,
+# invalidate all exceptions.  An internal marker must still have retained
+# directories on both sides.
 #
 # To clarify further by giving examples:
 #
@@ -154,6 +155,15 @@
 #   - _usrhome_sanitize_path_value()
 
 _usrhome_sanitize_path_value() (
+    # Arg 1: envvar name
+    # Arg 2: envvar value
+
+    # A single colon represents the default MANPATH without explicit directories.
+    if [ "$2" = MANPATH ] && [ "$1" = : ]; then
+        printf -- '%s' ':'
+        return $?
+    fi
+
     # All temporary variables are confined to this subshell.
     _usp_rest=$1
     _usp_kind=none

@@ -3,7 +3,7 @@
 # Purpose   : est ibin/xtra/sanitize-path-posix.sh.
 # Created   : Sunday, November 08 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 13:55:24 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 10:22:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #
 # Run from the repository root with the shell to test.
@@ -193,7 +193,8 @@ run_case 'preserve trailing space' CPATH '/abc :/abc' '/abc :/abc' 0 named
 run_case 'CDPATH' CDPATH ':/abc::/def:/abc' '/abc:/def' 0 named
 run_case 'FPATH' FPATH ':/abc::/def:/abc' '/abc:/def' 0 named
 
-# MANPATH: one original marker is allowed.
+# MANPATH: a single colon or one original marker is allowed.
+run_case 'MANPATH single colon' MANPATH ':' ':' 0 named
 run_case 'MANPATH unchanged' MANPATH '/abc:/def' '/abc:/def' 0 named
 run_case 'MANPATH leading marker' MANPATH ':/abc' ':/abc' 0 named
 run_case 'MANPATH trailing marker' MANPATH '/abc:' '/abc:' 0 named
@@ -216,8 +217,11 @@ run_case 'MANPATH duplicate after marker' MANPATH '/abc::/abc' '/abc' 0 named
 
 # An empty result returns 2 and leaves the original value unchanged.
 run_case 'empty PATH' PATH '' '' 2 named
+run_case 'single colon PATH' PATH ':' ':' 2 named
+run_case 'single colon CPATH' CPATH ':' ':' 2 named
 run_case 'empty CPATH result' CPATH '::' '::' 2 named
 run_case 'empty MANPATH result' MANPATH '::' '::' 2 named
+run_case 'MANPATH whitespace and colon' MANPATH ' :' ' :' 2 named
 run_case 'whitespace-only result' CPATH '   :  ' '   :  ' 2 named
 
 run_rejection unset
@@ -245,9 +249,25 @@ case $_test_child in
             printf '%s\n' 'FAIL: export CPATH' >&2
             _test_failed=$((_test_failed + 1))
         fi
+        if (
+            unset MANPATH
+            MANPATH=':'
+            if ! _usrhome_sanitize_path MANPATH; then
+                exit 1
+            fi
+            "$_test_child" -c '[ "${MANPATH-}" = ":" ]'
+        ); then
+            printf '%s\n' 'PASS: export single-colon MANPATH'
+            _test_passed=$((_test_passed + 1))
+        else
+            printf '%s\n' 'FAIL: export single-colon MANPATH' >&2
+            _test_failed=$((_test_failed + 1))
+        fi
         ;;
     *)
         printf '%s\n' 'SKIP: export CPATH; no absolute sh executable found'
+        _test_skipped=$((_test_skipped + 1))
+        printf '%s\n' 'SKIP: export single-colon MANPATH; no absolute sh executable found'
         _test_skipped=$((_test_skipped + 1))
         ;;
 esac

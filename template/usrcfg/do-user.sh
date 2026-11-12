@@ -3,7 +3,7 @@
 # Purpose   : User Configuration Common to all supported shells.
 # Created   : Thursday, May  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 23:02:06 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 11:51:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -27,11 +27,11 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user.sh"
 # provided as templates.
 
 # Topic: curl
-alias use-curl-hb='source $USRHOME_DIR_USRCFG/ibin/envfor-curl-hb'
+alias use-curl-hb='. $USRHOME_DIR_USRCFG/ibin/envfor-curl-hb'
 
 
 # Topic: Rust
-alias use-rust='source $USRHOME_DIR_USRCFG/ibin/envfor-rust'
+alias use-rust='. $USRHOME_DIR_USRCFG/ibin/envfor-rust'
 
 
 # ----------------------------------------------------------------------------

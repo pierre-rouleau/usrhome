@@ -3,7 +3,7 @@
 # Purpose   : Define usrhome printing functions.
 # Created   : Monday, November  9 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 12:24:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 10:02:07 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -66,10 +66,9 @@ usrhome_printf_warning()
     if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
         _usrhome_MAGENTA='\033[0;35m' # magenta
         _usrhome_NC='\033[0m' # No Color
-        printf -- '%b** WARNING ' "${_usrhome_MAGENTA}" >&2
+        printf -- '%b*** WARNING %b' "${_usrhome_MAGENTA}" "${_usrhome_NC}" >&2
         # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
         printf -- "$@" >&2
-        printf -- '%b' "${_usrhome_NC}" >&2
         unset _usrhome_MAGENTA _usrhome_NC
     fi
 }
@@ -83,10 +82,9 @@ usrhome_printf_error()
     if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
         _usrhome_RED='\033[1;31m' # Bold red
         _usrhome_NC='\033[0m' # No Color
-        printf -- '%b** ERROR ' "${_usrhome_RED}" >&2
+        printf -- '%b*** ERROR %b' "${_usrhome_RED}" "${_usrhome_NC}" >&2
         # shellcheck disable=SC2059 # use the argument as the format string for maximum control.
         printf -- "$@" >&2
-        printf -- '%b' "${_usrhome_NC}" >&2
         unset _usrhome_RED _usrhome_NC
     fi
 }

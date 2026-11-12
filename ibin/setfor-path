@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 19:03:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 23:11:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -38,6 +38,13 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-path"
 # - Does not export PATH.  Caller must do it.
 append_to_path()
 {
+    # Detect outside use of variables used here.
+    if [ "${_usrhome_remainder+x}" = x ] ||
+           [ "${_usrhome_dir+x}" = x ]; then
+        usrhome_printf_stderr '*** PANIC: append_to_path: a temporary variable is already set\n'
+        return 1
+    fi
+
     # Arg: 1  a :-separated list of directories
     _usrhome_remainder="$1"
 
@@ -57,7 +64,7 @@ append_to_path()
 
         # Skip if the directory does not exist
         if [ ! -d "$_usrhome_dir" ]; then
-            usrhome_print_error "Does not exists; skip appending: $_usrhome_dir"
+            usrhome_printf_error 'Does not exists; skip appending: %s\n' "$_usrhome_dir"
             continue
         fi
 
@@ -65,7 +72,7 @@ append_to_path()
         case ":$PATH:" in
             *:"$_usrhome_dir":*)
                 # skip if already present
-                userhome_print_error "Already in PATH; skip appending: $_usrhome_dir"
+                usrhome_printf_error 'Already in PATH; skip appending: %s\n' "$_usrhome_dir"
                 ;;
             *) PATH="${PATH:+$PATH:}$_usrhome_dir" ;; # Append to PATH
         esac
@@ -79,6 +86,14 @@ append_to_path()
 # - Does not export PATH.  Caller must do it.
 prepend_to_path()
 {
+    # Detect outside use of variables used here.
+    if [ "${_usrhome_remainder+x}" = x ] ||
+           [ "${_usrhome_dir+x}" = x ] ||
+           [ "${_usrhome_prefix+x}" = x ]; then
+        usrhome_printf_stderr '*** PANIC: prepend_to_path: a temporary variable is already set\n'
+        return 1
+    fi
+
     # Arg: 1  a :-separated list of directories
     _usrhome_remainder="$1"
     _usrhome_prefix=""
@@ -99,7 +114,7 @@ prepend_to_path()
 
         # Skip if the directory does not exist
         if [ ! -d "$_usrhome_dir" ]; then
-            usrhome_print_error "Does not exists; skip prepending: $_usrhome_dir"
+            usrhome_printf_error 'Does not exists; skip prepending: %s\n' "$_usrhome_dir"
             continue
         fi
 

@@ -2,9 +2,9 @@
 #
 # Purpose   : Z Shell Recource Configuration - Define alias, functions, prompt.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Copyright (C) 2024, 2026 by Pierre Rouleau
+# Copyright (C) 2024-2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2026-11-10 15:48:01 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 11:40:50 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -77,7 +77,7 @@ _usrhome_sanitize_path || :
 unalias help 2>/dev/null || :
 
 help() {
-    builtin source "$USRHOME_DIR/dot/xtra/zsh-help-init.sh" || return 1
+    builtin . "$USRHOME_DIR/dot/xtra/zsh-help-init.sh" || return 1
     \usrhome_help_init "$@"
 }
 

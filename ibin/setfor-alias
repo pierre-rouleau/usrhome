@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 23:02:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 23:15:41 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -193,9 +193,9 @@ alias p3='python3'
 # Topic: Alias: USRHOME Control
 # -----------------------------
 # Source environment control scripts
-alias usrhome-prompt-toggle-usr-host='source $USRHOME_DIR/ibin/setfor-prompt-toggle-usr-host'
-alias usrhome-shell-toggle-tracing='source $USRHOME_DIR/ibin/setfor-shell-toggle-tracing'
-alias usrhome-prompt-model-to='source $USRHOME_DIR/ibin/setfor-prompt-model-to'
+alias usrhome-prompt-toggle-usr-host='. $USRHOME_DIR/ibin/setfor-prompt-toggle-usr-host'
+alias usrhome-shell-toggle-tracing='. $USRHOME_DIR/ibin/setfor-shell-toggle-tracing'
+alias usrhome-prompt-model-to='. $USRHOME_DIR/ibin/setfor-prompt-model-to'
 
 # Topic: Alias: ls commands
 # -------------------------
@@ -394,10 +394,138 @@ fi
 # ----------------------------------------------------------------------------
 # Topic: Alias: Environment Variables
 # -----------------------------------
-# Manual environment variable manipulation
-alias setenv='source $USRHOME_DIR/ibin/do-setenv'
-alias clrenv='source $USRHOME_DIR/ibin/do-clrenv'
-alias add-to-path='source $USRHOME_DIR/ibin/do-add-to-path'
+# Manual environment variable manipulation.
+
+_usrhome_setenv()
+{
+    # Arg 1:  Name of the environment variable
+    # Arg 2:  Value
+
+    if [ -z "$1" ]; then
+        usrhome_printf_error   'setenv: missing environment variable name.\n'
+        usrhome_printf_stderr  'Usage: setenv VARNAME VALUE\n'
+        return 1
+    fi
+    if [ "$#" -gt 2 ]; then
+        usrhome_printf_error   'setenv: too many arguments: 2 allowed, %s provided.\n' "$#"
+        usrhome_printf_stderr  'Usage: setenv VARNAME VALUE\n'
+        return 1
+    fi
+    # Use function positional parameters to get varname in first arg and value in second.
+    set -- "$1" "${2:-1}"
+    # -- proceed
+
+
+    case "$1" in
+        *=*)
+            usrhome_printf_error 'setenv: do not use = between name and value.\n'
+            return 1
+            ;;
+        *[-/+\\\*]*)
+            usrhome_printf_error 'setenv: invalid variable name.  It has an invalid character.\n'
+            return 1
+            ;;
+    esac
+
+    export "$1=$2" || return 1
+    printf -- '%s=%s\n' "$1" "$2"
+}
+alias setenv='_usrhome_setenv'
+
+_usrhome_clrenv()
+{
+    # Arg 1:  Name of the environment variable
+    if [ -z "$1" ]; then
+        usrhome_printf_error   'clrenv: missing environment variable name.\n'
+        usrhome_printf_stderr  'Usage: clrenv VARNAME\n'
+        return 1
+    fi
+
+    if env | grep "^$1=" > /dev/null; then
+        if ! builtin unset -v "$1" 2>/dev/null; then
+            usrhome_printf_error 'clrenv: could not remove %s from the environment.\n' "$1"
+            return 1
+        fi
+        printf -- 'Removed %s from the environment\n' "$1"
+    else
+        usrhome_printf_error  'clrenv: the %s environment variable does not exist.\n' "$1"
+        return 1
+    fi
+}
+alias clrenv='_usrhome_clrenv'
+
+_usrhome_add_to_path_print_usage()
+{
+    printf -- "
+add-to-path -- Add a directory to the beginning or the end of PATH.
+               Modifies the PATH used in the current shell only.
+
+ Usage: add-to-path -h | --help
+
+        add-to-path DIRPATH
+        add-to-path --end DIRPATH
+
+      --end: add DIRPATH to the end of PATH.
+             If not specified DIRPATH is placed at the beginning of PATH.
+             In both cases DIRPATH can be one directory or a list of
+             colon-separated directories.
+
+     CAUTION: shells only expand ~ at the beginning of a string!
+"
+}
+
+_usrhome_add_to_path()
+{
+    # Arg 1: ONE directory to add to path
+    # --
+    # validate arguments
+
+    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+        _usrhome_add_to_path_print_usage
+        # help requested explicitly: no error.
+        return 0
+    fi
+
+    if [ -z "$1" ]; then
+        _usrhome_add_to_path_print_usage
+        return 1
+    fi
+
+    if [ "$1" = "--end" ]; then
+        shift
+        set -- true "$@"
+    else
+        set -- false "$@"
+    fi
+
+    # Validate the complete list before changing PATH.
+    if ! (
+        _usrhome_atp_remainder=${1-}
+        while :; do
+            _usrhome_atp_dir=${_usrhome_atp_remainder%%:*}
+            if [ ! -d "$_usrhome_atp_dir" ]; then
+                usrhome_printf_error 'Directory does not exists: %s\n' "$_usrhome_atp_dir"
+                exit 2
+            fi
+            case "$_usrhome_atp_remainder" in
+                *:*) _usrhome_atp_remainder=${_usrhome_atp_remainder#*:} ;;
+                *) break ;;
+            esac
+        done
+    ); then
+        return 2
+    fi
+
+    if [ "$1" = "true" ]; then
+        append_to_path "$2"
+    else
+        prepend_to_path "$2"
+    fi
+    export PATH
+}
+alias add-to-path='_usrhome_add_to_path'
+
+# ----------------------------------------------------------------------------
 
 # Set sanitize-path alias if possible, warn otherwise.
 _usrhome_sanitize_file="${USRHOME_DIR:-}/ibin/xtra/sanitize-path-posix.sh"
@@ -422,15 +550,15 @@ unset _usrhome_sanitize_file
 # --------------------------------------
 
 # File searching and navigation
-alias cd-to='source $USRHOME_DIR/ibin/do-cd-to'
+alias cd-to='. $USRHOME_DIR/ibin/do-cd-to'
 
 # Programming Environment Setup
 # These commands source scripts that setup the environment.
 # Some of them set the terminal's title (using set_title)
-alias pel='source $USRHOME_DIR/ibin/envfor-pel'
-alias usrhome='source $USRHOME_DIR/ibin/do-usrhome'
-alias usrcfg='source $USRHOME_DIR/ibin/do-usrcfg'
-alias use-sdkman='source $USRHOME_DIR/ibin/envfor-sdkman'
+alias pel='. $USRHOME_DIR/ibin/envfor-pel'
+alias usrhome='. $USRHOME_DIR/ibin/do-usrhome'
+alias usrcfg='. $USRHOME_DIR/ibin/do-usrcfg'
+alias use-sdkman='. $USRHOME_DIR/ibin/envfor-sdkman'
 
 # Set shortcut functions for Bash and the Z shell
 # -----------------------------------------------
@@ -751,36 +879,40 @@ alias git-cln=__git__cln
 # ----------------------------------------------------------------------------
 # Topic: Alias: Environment Setup Control
 # ---------------------------------------
-alias use-usrhome='source $USRHOME_DIR/ibin/envfor-usrhome'
-alias use-homebrew='source $USRHOME_DIR/ibin/envfor-homebrew'
-alias use-info='source $USRHOME_DIR/ibin/envfor-info'
-alias use-cbr='source $USRHOME_DIR/ibin/envfor-cbr'
-alias use-emacs-for-man='source $USRHOME_DIR/ibin/envfor-emacs-for-man'
-alias use-diff='source $USRHOME_DIR/ibin/envfor-diff'
+alias use-usrhome='. $USRHOME_DIR/ibin/envfor-usrhome'
+alias use-homebrew='. $USRHOME_DIR/ibin/envfor-homebrew'
+alias use-info='. $USRHOME_DIR/ibin/envfor-info'
+alias use-cbr='. $USRHOME_DIR/ibin/envfor-cbr'
+alias use-emacs-for-man='. $USRHOME_DIR/ibin/envfor-emacs-for-man'
+alias use-diff='. $USRHOME_DIR/ibin/envfor-diff'
+#
+# Note: `source` is required in the following alias.
+#       `.` does not work because under POSIX it does not accept an argument!
+#        So: Do NOT replace `source` by `.` in the following line!!
 alias manpath-extend='source $USRHOME_DIR/ibin/do-extend-manpath verbose'
 
 if [ "${os_name}" = "Darwin" ]; then
-    alias use-gcc14='source $USRHOME_DIR/ibin/envfor-gcc14-on-macos'
-    alias use-gcc15='source $USRHOME_DIR/ibin/envfor-gcc15-on-macos'
-    alias use-gnu-binutils='source $USRHOME_DIR/ibin/envfor-gnu-binutils-on-macos'
-    alias use-gnu-grep='source $USRHOME_DIR/ibin/envfor-gnubin-on-macos'
-    alias use-llvm='source $USRHOME_DIR/ibin/envfor-llvm'
+    alias use-gcc14='. $USRHOME_DIR/ibin/envfor-gcc14-on-macos'
+    alias use-gcc15='. $USRHOME_DIR/ibin/envfor-gcc15-on-macos'
+    alias use-gnu-binutils='. $USRHOME_DIR/ibin/envfor-gnu-binutils-on-macos'
+    alias use-gnu-grep='. $USRHOME_DIR/ibin/envfor-gnubin-on-macos'
+    alias use-llvm='. $USRHOME_DIR/ibin/envfor-llvm'
 fi
-alias use-cc-options='source $USRHOME_DIR/ibin/envfor-cc-options'
-alias use-mk-diffo='source $USRHOME_DIR/ibin/envfor-mk-diffo'
+alias use-cc-options='. $USRHOME_DIR/ibin/envfor-cc-options'
+alias use-mk-diffo='. $USRHOME_DIR/ibin/envfor-mk-diffo'
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Common Lisp
 # -------------------------
-alias use-lisp-with-clasp='source $USRHOME_DIR/ibin/envfor-lisp-with-clasp'
-alias use-lisp-with-clisp='source $USRHOME_DIR/ibin/envfor-lisp-with-clisp'
-alias use-lisp-with-sbcl='source $USRHOME_DIR/ibin/envfor-lisp-with-sbcl'
-alias use-lisp-with-roswell='source $USRHOME_DIR/ibin/envfor-lisp-with-roswell'
+alias use-lisp-with-clasp='. $USRHOME_DIR/ibin/envfor-lisp-with-clasp'
+alias use-lisp-with-clisp='. $USRHOME_DIR/ibin/envfor-lisp-with-clisp'
+alias use-lisp-with-sbcl='. $USRHOME_DIR/ibin/envfor-lisp-with-sbcl'
+alias use-lisp-with-roswell='. $USRHOME_DIR/ibin/envfor-lisp-with-roswell'
 
 # ----------------------------------------------------------------------------
 # Topic: GNU Global
 # -----------------
-alias use-gnu-global='source $USRHOME_DIR/ibin/envfor-gnu-global'
+alias use-gnu-global='. $USRHOME_DIR/ibin/envfor-gnu-global'
 
 # ----------------------------------------------------------------------------
 # Cleanup

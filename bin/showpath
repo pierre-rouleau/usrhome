@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 11:36:21 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 22:13:22 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -65,33 +65,23 @@ showpath: show content of PATH-like environment variable.
 "
 }
 
-print_error()
-{
-    >&2 printf "\
-***ERROR***
- - showpath: %s
-***********
-" "$1"
-    print_usage
-    exit 1
-}
-
-
-
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     exit 0
 fi
 
-# ---
-# Define printing utilities:
-# - usrhome_printf_warning FORMAT ARGS...
-# - usrhome_printf_error   FORMAT ARGS...
+# ----------------------------------------------------------------------------
 
 # shellcheck source=../ibin/xtra/print-utilities.sh
 . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 # ---
 
+print_error()
+{
+    usrhome_printf_error 'showpath: %s\n' "$1"
+    usrhome_printf_stderr '\tUse showpath -h to see usage.\n'
+    exit 1
+}
 
 numbered='false'
 # Parse command line arguments
@@ -124,6 +114,9 @@ fi
 showpath_valid_separators() (
     rest=$1
     variable=$2
+    if [ "$variable" = MANPATH ] && [ "$rest" = : ]; then
+        return 0
+    fi
     markers=0
     directories=0
     while :; do
@@ -153,7 +146,27 @@ show_path()
     #                to show the value of USRHOME_ORIGINAL_PATH
     # numbered: 'true' or 'false'
 
-    eval path_value='$'$vname
+    case "$vname" in
+        ''|[!_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]*)
+            print_error 'Invalid environment variable name'
+            ;;
+        *[!_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]*)
+            print_error 'Invalid environment variable name'
+            ;;
+    esac
+
+    eval 'path_value=${'"$vname"'-}'
+
+    if [ "$vname" = MANPATH ] && [ "$path_value" = : ]; then
+        # A single colon represents the default MANPATH.
+        if [ "$numbered" = "true" ]; then
+            printf '%s\n' '' | nl -b a -n ln
+        else
+            printf '%s\n' '- '
+        fi
+        return 0
+    fi
+
     if [ -z "$path_value" ]; then
         usrhome_printf_warning '%s is not defined!\n' "$vname"
         if [ "$vname" = "MANPATH" ]; then
@@ -179,45 +192,32 @@ show_path()
             printf -- "%s\n" "$path_value" | sed 's/:/:- /g' | tr ':' '\n'
         fi
         if ! showpath_valid_separators "$path_value" "$vname"; then
-            usrhome_printf_error '%s has invalid empty entries!\n' "$vname" >&2
+            usrhome_printf_error '%s has invalid empty entries!\n' "$vname"
+            usrhome_printf_stderr 'The value is: %s\n' "$path_value"
             exit 3
         fi
     fi
 }
 
-
-# Parse further: check vname: only allow the valid ones
-# since their name will be passed to eval; don't allow
-# user input to be eval'ed; that would be a security risk.
-# Print the path using show_path function for the valid
-# variable names.
+# Map shortcut names to variable names. show_path validates each name
+# before the indirect expansion.
 case $vname in
-    'PATH')
-        vname="PATH"
-        show_path
-        ;;
-
     'INFO'|'INFOPATH')
         vname="INFOPATH"
-        show_path
         ;;
 
     'LIB'|'LIBPATH')
         vname="LIBPATH"
-        show_path
         ;;
 
     'MAN'|'MANPATH')
         vname="MANPATH"
-        show_path
         ;;
 
     'ORIGINAL' | 'ORIGINAL_PATH' | 'USRHOME_ORIGINAL_PATH')
         vname="USRHOME_ORIGINAL_PATH"
-        show_path
         ;;
-    *)
-        show_path
 esac
+show_path
 
 # ----------------------------------------------------------------------------

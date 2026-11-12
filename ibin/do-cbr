@@ -1,248 +1,59 @@
 # Sourced script: do-cbr  -*- mode: sh; -*-
 #
-# Purpose   : CBR: check, build or run files in current directory.
+# Purpose   : Compatibility wrapper for CBR as it was implemented in the past.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-08 17:58:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-11 18:04:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Early, experimental, implementation of the CBR single letter c, b and r
-# commands used to check, build and run commands for the current directory.
+# Compatibility wrapper for callers of the former do-cbr script.
 #
-# CBR detects the mechanism required to perform the required action by
-# inspecting the content of the current directory.
+# The first argument must be c, b, or r. Any remaining arguments are
+# passed to the selected CBR function.
 #
-# It currently supports:
-#
-# - Building single-file C and C++ programs with GNU make, taking advantage of
-#   GNU Make built-in rule for building the single C and C++ programs.
-# - Building programs with the 'make' command when the directory holds a
-#   'Makefile' or 'makefile'.
-# - Build Rust single main.rs program.
-# - Build Rust program with Cargo.
-#
-# CAUTION: early version; need cleanup.  More types of build needed.
-#          Minimum testing done.
+# USRHOME_DIR must identify the USRHOME installation.
 
-# ----------------------------------------------------------------------------
-# Dependencies
-# ------------
-#
-#
-
-
-# ----------------------------------------------------------------------------
-# Code
-# ----
-#
-# Invocation:  do-cbr c|b|r
-# Alias     :  c := source do-cbr c
-# Alias     :  b := source do-cbr b
-# Alias     :  r := source do-cbr r
-
-# Identify required operation
-op=
-case "$1" in
-    c)
-        op=check
-        ;;
-    b)
-        op=build
-        ;;
-    r)
-        op=run
-        ;;
-    *)
-        usrhome_printf_error  "cbr: invalid arg: %s
-        Usage: c|b|r\n" "$1"
-        return 1
-esac
-
-# Identify build controller
-bt=
-dname="$(basename "$(pwd)")"
-cbr_error=
-
-# If the current directory has a local executable cbr script or program
-# execute it passing all the arguments to it.
-if [ -x cbr ]; then
-    ./cbr "$@"
-    return "$?"
-elif [ -x .cbr ]; then
-    ./.cbr "$@"
-    return "$?"
-
-    # For directories that have a CMakeLists.txt file
-    # build with cmake
-elif [ -f CMakeLists.txt ]; then
-    bt=with_cmake
-
-    # For directories that have a make file, use make
-    # to build.
-elif [ -f Makefile ]; then
-    bt=with_make
-elif [ -f makefile ]; then
-    bt=with_make
-
-    # For directories that have a single-file program
-    # written in or C++ use GNU Make builtin rule.
-    # use xargs to left-trim the file count string on macOS.
-elif [ -f "${dname}.c" ]; then
-    fc="$(find ./*.c | wc -l | xargs)"
-    if [ "$fc" = "1" ]; then
-        bt=with_make1
-    else
-        cbr_error="Too many .c files: ${fc}"
-    fi
-    unset fc
-
-elif [ -f "${dname}.cpp" ]; then
-    fc="$(find ./*.cpp | wc -l | xargs)"
-    if [ "$fc" = "1" ]; then
-        bt=with_make1
-    else
-        cbr_error="Too many .cpp files: ${fc}"
-    fi
-    unset fc
-
-elif [ -f "${dname}.CC" ]; then
-    fc="$(find ./*.CC | wc -l | xargs)"
-    if [ "$fc" = "1" ]; then
-        bt=with_make1
-    else
-        cbr_error="Too many .CC files: ${fc}"
-    fi
-    unset fc
-
-elif [ -f "${dname}.cxx" ]; then
-    fc="$(find ./*.cxx | wc -l | xargs)"
-    if [ "$fc" = "1" ]; then
-        bt=with_make1
-    else
-        cbr_error="Too many .cxx files: ${fc}"
-    fi
-    unset fc
-
-
-    # Support for Rust with Cargo and without on single main.rs file
-elif [ -f Cargo.toml ]; then
-    bt=with_rustc_cargo
-elif [ -f main.rs ]; then
-    fc="$(find ./*.rs | wc -l | xargs)"
-    if [ "$fc" = "1" ]; then
-        bt=with_rustc_main
-    else
-        cbr_error="Too many .rs files: ${fc}"
-    fi
-    unset fc
-
-# elif [ .zig ]; then
-
-fi
-
-
-# Execute C, B or R
-case $bt in
-    with_cmake)
-        # TODO: better support CMake
-        case $op in
-            check)
-                printf "No Check support for CMake build yet!\n"
-                return 1
-                ;;
-            build)
-                cmake CMakeLists.txt
-                return $?
-                ;;
-            run)
-                printf "No Run support for CMake build yet!\n"
-                return 1
+(
+    # Keep the loaded functions, aliases, and temporary variables out of
+    # the calling shell.
+    if [ -z "${USRHOME_DIR-}" ] ||
+       [ ! -r "$USRHOME_DIR/ibin/xtra/print-utilities.sh" ] ||
+       [ ! -r "$USRHOME_DIR/ibin/envfor-cbr" ]; then
+        # The shared print functions might not be available yet.
+        case "$-" in
+            *i*)
+                if [ "${TERM-}" != dumb ]; then
+                    printf '%s\n' \
+                        'do-cbr: USRHOME_DIR or a required file is missing.' >&2
+                fi
                 ;;
         esac
-        ;;
+        exit 1
+    fi
 
-    with_make)
-        case $op in
-            check)
-                make
-                return $?
-                ;;
-            build)
-                make clean && make
-                return $?
-                ;;
-            run)
-                make run
-                return $?
-                ;;
-        esac
-        ;;
+    # The print functions access TERM directly.
+    TERM=${TERM-}
 
-    with_make1)
-        case $op in
-            check)
-                make "$dname"
-                return $?
-                ;;
-            build)
-                make "$dname"
-                return $?
-                ;;
-            run)
-                make "$dname" && ./"$dname"
-                return $?
-                ;;
-        esac
-        ;;
+    # shellcheck source=xtra/print-utilities.sh
+    . "$USRHOME_DIR/ibin/xtra/print-utilities.sh" || exit 1
 
-    with_rustc_main)
-        case $op in
-            check)
-                rustc main.rs
-                return $?
-                ;;
-            build)
-                rustc main.rs
-                return $?
-                ;;
-            run)
-                rustc main.rs && ./main
-                return $?
-                ;;
-        esac
-        ;;
+    # Do not print the alias-installation message from the wrapper.
+    # shellcheck source=./envfor-cbr
+    . "$USRHOME_DIR/ibin/envfor-cbr" > /dev/null || exit 1
 
-    with_rustc_cargo)
-        case $op in
-            check)
-                cargo check
-                return $?
-                ;;
-            build)
-                cargo build
-                return $?
-                ;;
-            run)
-                cargo run
-                return $?
-                ;;
-        esac
-        ;;
-
-    *)
-        usrhome_printf_error "No appropriate build type found: %s\n"  "$cbr_error"
-        return 1
-        ;;
-esac
-
-
-# Cleanup
-unset op
-unset bt
-unset dname
-unset cbr_error
+    case "${1-}" in
+        c) shift; _usrhome_c "$@" ;;
+        b) shift; _usrhome_b "$@" ;;
+        r) shift; _usrhome_r "$@" ;;
+        *)
+            usrhome_printf_error \
+                'cbr: invalid arg: %s\nUsage: c|b|r\n' "${1-}"
+            exit 1
+            ;;
+    esac
+)
 # ----------------------------------------------------------------------------
 #  Local Variables:
 #  sh-shell: sh
