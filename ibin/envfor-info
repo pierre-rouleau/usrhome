@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 09:28:12 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 15:22:39 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -92,10 +92,8 @@ print_error()
     else
         errarg=""
     fi
-    usrhome_printf "\
-*** use-info ERROR - %s %s
-     Use use-info -h to print its command line usage.
-" "${errmsg}"  "${errarg}"
+    usrhome_printf_error 'use-info: %s %s
+\t Use use-info -h to print its command line usage.\n' "${errmsg}"  "${errarg}"
 }
 
 

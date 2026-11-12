@@ -3,7 +3,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 16:00:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 15:19:58 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -109,7 +109,7 @@ if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar|/usr/local/opt/)" > /
                 fi
                 export INFOPATH
             else
-                usrhome_printf "ERROR: Homebrew requested but not found in /usr/local/Cellar\n"
+                usrhome_print_error 'use-homebrew: Homebrew requested but not found in /usr/local/Cellar'
             fi
         ;;
 
@@ -151,12 +151,12 @@ if ! echo "$PATH" | grep -E "(/homebrew/|/usr/local/Cellar|/usr/local/opt/)" > /
                 fi
                 export INFOPATH
             else
-                usrhome_printf "ERROR: Homebrew requested but not found in /opt/homebrew\n"
+                usrhome_print_error 'use-homebrew: Homebrew requested but not found in /opt/homebrew'
             fi
             ;;
 
         *)
-            usrhome_printf "ERROR: Homebrew: unsupported architecture: %s\n" "$arch"
+            usrhome_printf_error 'use-homebrew: Homebrew - unsupported architecture: %s\n' "$arch"
             ;;
     esac
 

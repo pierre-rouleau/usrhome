@@ -3,7 +3,7 @@
 # Purpose   : Set shell to use sdkman.
 # Created   : Wednesday, October  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 08:04:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 15:57:52 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -44,8 +44,7 @@ if [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
 > Using:%s
 > With%s (sdkman:= the sdk command)\n" "$(java --version | xargs -I % echo '   %')" "$(sdk version | xargs -I % printf ' %')"
 else
-    printf -- "\
-*** ERROR: Missing startup file: %s\n" "$HOME/.sdkman/bin/sdkman-init.sh"
+    usrhome_printf_error 'use-sdkman: Missing startup file: %s\n' "$HOME/.sdkman/bin/sdkman-init.sh"
     return 1
 fi
 

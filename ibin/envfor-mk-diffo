@@ -3,7 +3,7 @@
 # Purpose   : Setup the shell to use mk-diffo: compare evolution of object code of a file.
 # Created   : Friday, June 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-04 10:12:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 15:57:02 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -133,16 +133,11 @@ fi
 # -
 # Process argument 1: DB_ROOT_DIR
 if [ -z "$1" ]; then
-    printf -- "\
-*** use-mk-diffo ERROR: Missing arguments.
-"
-    print_usage
+    usrhome_print_error 'use-mk-diffo: Missing arguments. Use -h to see usage.'
     return 1
 elif [ ! -d "$1" ]; then
-    printf -- "\
-*** use-mk-diffo ERROR: Invalid directory: %s
-    Print usage with -h
-" "$1"
+    usrhome_printf_error 'use-mk-diffo: Invalid directory: %s
+\t Print usage with -h\n' "$1"
     return 1
 else
     USRHOME_DIFFO_ROOT_DIR=$(realpath "$1")
@@ -152,19 +147,14 @@ shift
 # -
 # Process argument 2: PROJECT
 if [ -z "$1" ]; then
-    printf -- "\
-*** use-mk-diffo ERROR: Missing arguments.
-"
-    print_usage
+    usrhome_print_error 'use-mk-diffo: Missing arguments. Use -h to see usage.'
     return 1
 elif [ ! -d "${USRHOME_DIFFO_ROOT_DIR}/$1" ]; then
     if mkdir -p "${USRHOME_DIFFO_ROOT_DIR}/$1"; then
         USRHOME_DIFFO_PROJECT="$1"
     else
-        printf -- "\
-*** use-mk-diffo ERROR: Failed creating directory: %s
-    Print usage with -h
-" "${USRHOME_DIFFO_ROOT_DIR}/$1"
+        usrhome_printf_error 'use-mk-diffo: Failed creating directory: %s
+\t Print usage with -h\n' "${USRHOME_DIFFO_ROOT_DIR}/$1"
         return 1
     fi
 else
@@ -176,16 +166,12 @@ shift
 # -
 # Process argument 3: SRC_FNAME
 if [ -z "$1" ]; then
-    printf -- "\
-*** use-mk-diffo ERROR: Missing argument: no file name specified.
-"
-    print_usage
+    usrhome_printf_error 'use-mk-diffo: Missing argument: no file name specified.
+\t Print usage with -h\n'
     return 1
 elif [ ! -f "$1" ]; then
-    printf -- "\
-*** use-mk-diffo ERROR: Invalid file name: %s
-    Print usage with -h
-" "$1"
+    usrhome_printf_error 'use-mk-diffo: Invalid file name: %s
+\t Print usage with -h\n' "$1"
     return 1
 else
     USRHOME_DIFFO_FNAME="$1"
@@ -195,16 +181,12 @@ shift
 # -
 # Process argument 4: OBJ_DIR
 if [ -z "$1" ]; then
-    printf -- "\
-*** use-mk-diffo ERROR: Missing OBJ_DIR argument.
-"
-    print_usage
+    usrhome_printf_error 'use-mk-diffo: Missing OBJ_DIR argument.
+\t Print usage with -h\n'
     return 1
 elif [ ! -d "$1" ]; then
-    printf -- "\
-*** use-mk-diffo ERROR: Invalid OBJ_DIR directory: %s
-    Print usage with -h
-" "$1"
+    usrhome_printf_error 'use-mk-diffo: Invalid OBJ_DIR directory: %s
+\t Print usage with -h\n' "$1"
     return 1
 else
     USRHOME_DIFFO_OBJ_DIR=$(realpath "$1")
@@ -225,9 +207,8 @@ shift
 # -
 # Complain if there are any extra argument
 if [ -n "$1" ]; then
-    printf -- "\
-*** use-mk-diffo ERROR: Too many arguments.
-"
+    usrhome_printf_error 'use-mk-diffo: Too many arguments.
+\t Print usage with -h\n'
     return 1
 fi
 
