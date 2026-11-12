@@ -3,7 +3,7 @@
 # Purpose   : Helper functions for commands that replace the current shell.
 # Created   : Tuesday, November 10 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 10:06:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 11:30:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,12 +49,17 @@ usrhome_confirm_shell_restart()
     usrhome_print_warning 'Restarting the shell may lose unsaved shell history and other shell state.'
     printf '%s' 'Restart the shell? [y/N] ' >&2
 
+    # process user's reply without executing exit to prevent Zsh exit hook to execute
+    # and print information in the terminal.
     if (
-        IFS= read -r usrhome__answer || exit 1
-        case "$usrhome__answer" in
-            y | Y) exit 0 ;;
-            *) exit 1 ;;
-        esac
+        if IFS= read -r usrhome__answer; then
+            case "$usrhome__answer" in
+                y | Y) true ;;
+                *) false ;;
+            esac
+        else
+            false
+        fi
     ); then
         return 0
     fi
