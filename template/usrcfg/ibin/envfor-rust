@@ -3,7 +3,7 @@
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 15:59:51 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 16:17:24 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -81,7 +81,7 @@ else
             usrhome_printf_warning 'Rust source is NOT installed!
  Expecting: %s
  See %s/ibin/envfor-rust
- Get it with: cdpub ; git clone https://github.com/rust-lang/rust.git\n' "usrhome_rustv_fpathname" "$USRHOME_DIR_USRCFG"
+ Get it with: cdpub ; git clone https://github.com/rust-lang/rust.git\n' "$usrhome_rustv_fpathname" "$USRHOME_DIR_USRCFG"
         fi
         # cleanup
         unset usrhome_rustv

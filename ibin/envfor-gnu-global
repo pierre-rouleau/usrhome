@@ -3,7 +3,7 @@
 # Purpose   : Add GNU Global support to the shell's environment.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 15:11:26 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 16:19:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -89,12 +89,12 @@ fi
 if [ -z "${USRHOME_DIR_GNU_GLOBAL}" ]; then
     usrhome_printf_error 'use-gnu-global: USRHOME_DIR_GNU_GLOBAL is not defined.
 \t To fix this, define it inside your usrcfg/setfor-all-config.sh file.
-\t Example: export USRHOME_DIR_GNU_GLOBAL=\"\$HOME/my/bin/gnu-global\"\n'
+\t Example: export USRHOME_DIR_GNU_GLOBAL="$HOME/my/bin/gnu-global"\n'
     return 1
 fi
 #    - Check validity of USRHOME_DIR_GNU_GLOBAL
 if [ ! -d "${USRHOME_DIR_GNU_GLOBAL}/bin" ]; then
-    usrhome_printf_error 'use-gnu-global: Directory does not exist at \"%s/bin\"\n"
+    usrhome_printf_error 'use-gnu-global: Directory does not exist at \"%s/bin\"
 \t Please verify the path defined in your usrcfg/setfor-all-config.sh file.\n' "${USRHOME_DIR_GNU_GLOBAL}"
     return 1
 fi
