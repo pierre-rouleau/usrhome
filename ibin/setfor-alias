@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 23:30:17 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 09:29:13 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -492,9 +492,17 @@ _usrhome_add_to_path()
     fi
 
     if [ "$1" = "--end" ]; then
+        if [ -n "$3" ]; then
+            usrhome_print_error 'Only one DIRPATH allowed. Use -h to print usage.'
+            return 1
+        fi
         shift
         set -- true "$@"
     else
+        if [ -n "$2" ]; then
+            usrhome_print_error 'Only one DIRPATH allowed. Use -h to print usage.'
+            return 1
+        fi
         set -- false "$@"
     fi
 
