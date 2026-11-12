@@ -4,7 +4,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024-2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2026-11-11 11:40:50 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 12:46:08 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -188,7 +188,7 @@ usrhome-select-zsh-prompt()
                 #
                 # - If the user file "$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
                 #   defines a complex prompt that must be re-loaded with a
-                #   shell restart, the it must identify it by defining the
+                #   shell restart, then it must identify it by defining the
                 #   USRHOME_PROMPT_MODEL_REQUIRES_RESTART and set its value
                 #   to the shell model value; which is 0 in this case.
                 #   When this is the case no prompt definition logic is
@@ -198,6 +198,16 @@ usrhome-select-zsh-prompt()
                 # - If the user configuration file does not set the
                 #   USRHOME_PROMPT_MODEL_REQUIRES_RESTART envvar, then
                 #   this code sets a simple prompt for zsh.
+                #
+                # NOTE: USRHOME_PROMPT_MODEL_REQUIRES_RESTART represents
+                #       the prompt number that requires a shell restart.
+                #       It is either not defined or set to a value.
+                #       - When not defined or set to any value but 0, then prompt 0
+                #         is a simple assignment to the PROMPT variable.
+                #       - If it is set to 0 by "$USRHOME_DIR_USRCFG/do-user-zshrc.sh"
+                #         then it means that file defines the logic for the prompt
+                #         and the shell must be restarted to execute the code inside
+                #         "$USRHOME_DIR_USRCFG/do-user-zshrc.sh"
                 if [ -z "$USRHOME_PROMPT_MODEL_REQUIRES_RESTART" ] || [ ! "$USRHOME_PROMPT_MODEL_REQUIRES_RESTART" = "0" ]; then
                     export PROMPT='%n@%m %1~ :zsh%# '
                 fi
@@ -291,6 +301,8 @@ fi
 # functions defined by USRHOME logic.
 #
 # source #3 (shown in diagram: zsh-bash-startup-01.png)
+#           - Note: this will set the prompt if prompt model identified in
+#                   USRHOME_PROMPT_MODEL_REQUIRES_RESTART is set to 0.
 #
 user_zshrc="$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 if [ -e "$user_zshrc" ]; then

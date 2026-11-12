@@ -1041,10 +1041,28 @@ cancels the restart.
 The commands do not restart the shell while unfinished jobs are present.
 Terminate the jobs before retrying.
 
-If you want to force a shell restart, set
-the ``USRHOME_PROMPT_MODEL_REQUIRES_RESTART`` to 1 in your
-``usrcfg`` settings (such as ``usrcfg/do-user-zshrc.zsh``).  This will
-force a prompt in the above commands.
+Custom Zsh prompt
+~~~~~~~~~~~~~~~~~
+
+Zsh prompt model 0 supports a custom prompt defined in
+``$USRHOME_DIR_USRCFG/do-user-zshrc.zsh``. If the prompt setup must run
+at shell startup, set the restart model to 0 in that file::
+
+    export USRHOME_PROMPT_MODEL_REQUIRES_RESTART=0
+
+Keep this assignment outside any model-specific condition. Run the custom
+prompt setup only when the selected model is 0. The selected model is
+``USRHOME_PROMPT_MODEL_OVERRIDE`` when that variable is nonempty;
+otherwise, it is ``USRHOME_PROMPT_MODEL``.
+
+When you select model 0, USRHOME asks for confirmation before replacing
+the current Zsh shell. The new shell runs the startup configuration
+again. If you cancel, the prompt setting remains unchanged.
+
+The restart variable identifies a model number. The value 0 does not
+disable restarts. If the variable is unset or has another value, USRHOME
+selects its simple Zsh prompt for model 0.
+
 
 
 Shell Status Info
@@ -2840,8 +2858,8 @@ enabled, which the USRHOME default shell does not have yet.
 You can still use USRHOME on Kali Linux and take advantage of the USRHOME commands
 and philosophy of storing the USRHOME main code and the local shell
 customization inside the usrcfg directory.  That can also be stored inside a
-repository.  In this example, the usrcfg files are stored inside a Mercurial
-repository.  The logic in the various files support multiple target
+repository.  In this example, the usrcfg files are stored inside my **local**
+Mercurial repository.  The logic in the various files support multiple target
 environment, which they select by checking the host name and other values.
 
 This way, I can **centralize the shell setting of all computers or VMs** I use
