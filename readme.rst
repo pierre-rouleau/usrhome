@@ -1,6 +1,6 @@
-==========================================================================
-USRHOME -- Reproducible Multi-Shell Configuration & Tools for Bash and Zsh
-==========================================================================
+=========================================================================
+USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
+=========================================================================
 
 .. image:: https://img.shields.io/:License-gpl3-blue.svg
    :alt: License
