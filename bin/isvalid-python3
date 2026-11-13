@@ -4,7 +4,7 @@
 # Purpose   : Check if file is Python 3 compliant.
 # Created   : Tuesday, April 22 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 11:34:33 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 13:40:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -68,21 +68,20 @@ if [ "$1" = "-v" ] || [ "$1" = "--verbose" ]; then
     shift
 fi
 
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
 if [ -n "$1" ]; then
     if [ -e "$1" ]; then
         fname="$1"
     else
-        printf -- "\
-** ERROR: %s -- Specified file does not exists: %s
-" "$pgm_name" "$1"
+        usrhome_printf_error '%s -- Specified file does not exists: %s\n' "$pgm_name" "$1"
         exit 2
     fi
 else
-    printf -- "\
-** ERROR: %s -- No file specified.
-      For more information, type: %s --help
-" "$pgm_name" "$pgm_name"
+    usrhome_printf_error '%s -- No file specified.
+\t For more information, type: '\''%s --help'\''\n' "$pgm_name" "$pgm_name"
     exit 2
 fi
 
@@ -109,7 +108,7 @@ check_for_deprecated_function()
 # -- Use ~/tmp/valid-python3 or create it is missing
 if [ ! -d "$HOME/tmp/valid-python3" ]; then
     mkdir -p "$HOME/tmp/valid-python3"
-    echo "Created $HOME/tmp/valid-python3"
+    usrhome_printf_stderr "Created %s/tmp/valid-python3 for performing tests. This can be deleted.\n" "$HOME"
 fi
 
 
@@ -123,7 +122,7 @@ if cp "$fname" "${HOME}/tmp/valid-python3/tested.py"; then
        is_compatible="true"
     else
         if [ "$verbose" = "true" ]; then
-            printf -- "%s : AST incompatible with Python 3\n" "$fname"
+            usrhome_printf_warning '%s : AST incompatible with Python 3\n' "$fname"
         fi
     fi
     rm "${HOME}/tmp/valid-python3/tested.py"
@@ -143,7 +142,7 @@ check_for_deprecated_function
 if [ "$is_compatible" = "true" ]; then
     exit 0
 else
-    printf -- "%s : not compatible with Python 3\n" "$fname"
+    usrhome_printf_error '%s : not compatible with Python 3\n' "$fname"
     exit 1
 fi
 
