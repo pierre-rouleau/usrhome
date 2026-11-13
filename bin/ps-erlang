@@ -4,7 +4,7 @@
 # Purpose   :
 # Created   : Tuesday, September 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:31:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:53:04 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -129,7 +129,7 @@ else
     if [ -z "$1" ]; then
         print_erlang_processes
     else
-        print_erlang_processes | grep "$1"
+        print_erlang_processes | grep -- "$1"
     fi
 fi
 

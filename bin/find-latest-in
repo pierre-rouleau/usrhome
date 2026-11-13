@@ -4,7 +4,7 @@
 # Purpose   : Find and list all new and recently modified files.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2026-11-13 09:27:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 17:02:49 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -236,7 +236,7 @@ work=$(mktemp -d "${TMPDIR:-/tmp}/find-latest-in.XXXXXX") || exit 1
 trap 'rm -f "$work/stamp" "$work/results"; rmdir "$work"' 0
 trap 'exit 1' HUP INT TERM
 
-TZ=UTC0 touch -t "$cutoff" "$work/stamp" || exit 1
+TZ=UTC0 touch -t "$cutoff" -- "$work/stamp" || exit 1
 
 # Prevent find from interpreting a relative directory as an expression.
 case "$dirname" in
@@ -293,8 +293,8 @@ if ! find "$@" > "$work/results"; then
 fi
 
 case "$platform" in
-    Darwin) cat "$work/results" ;;
-    Linux) sort -nr "$work/results" | cut -d: -f2- ;;
+    Darwin) cat -- "$work/results" ;;
+    Linux) sort -nr -- "$work/results" | cut -d: -f2- ;;
 esac
 
 # ----------------------------------------------------------------------------

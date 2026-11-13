@@ -4,7 +4,7 @@
 # Purpose   : Convert a ISO-8859 encoded file to UTF-8.
 # Created   : Monday, September  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:08:39 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:45:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -98,7 +98,7 @@ fi
 # --
 # proceed
 target_file="$(basename "$1")"
-cp "$1" "$USRHOME_DIR_TMP/${target_file}" || exit 1
+cp -- "$1" "$USRHOME_DIR_TMP/${target_file}" || exit 1
 iconv -f iso-8859-1 -t utf-8 "$USRHOME_DIR_TMP/${target_file}" > "$1"
 
 # ----------------------------------------------------------------------------

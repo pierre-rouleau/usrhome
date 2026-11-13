@@ -4,7 +4,7 @@
 # Purpose   : Check if file is Python 3 compliant.
 # Created   : Tuesday, April 22 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 13:40:28 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:48:19 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -95,7 +95,7 @@ check_for_deprecated_function()
     # arg: fname : string : name of the file to check.
     # return: is_compatible
 
-    if grep "$deprecated_function" "$fname" > /dev/null; then
+    if grep -- "$deprecated_function" "$fname" > /dev/null; then
         if [ "$verbose" = "true" ]; then
             printf -- "%s : uses deprecated %s\n" "$fname" "$deprecated_function"
         fi
@@ -107,7 +107,7 @@ check_for_deprecated_function()
 
 # -- Use ~/tmp/valid-python3 or create it is missing
 if [ ! -d "$HOME/tmp/valid-python3" ]; then
-    mkdir -p "$HOME/tmp/valid-python3"
+    mkdir -p -- "$HOME/tmp/valid-python3"
     usrhome_printf_stderr "Created %s/tmp/valid-python3 for performing tests. This can be deleted.\n" "$HOME"
 fi
 
@@ -115,7 +115,7 @@ fi
 is_compatible="false"
 
 # - Check AST compatibility
-if cp "$fname" "${HOME}/tmp/valid-python3/tested.py"; then
+if cp -- "$fname" "${HOME}/tmp/valid-python3/tested.py"; then
     curwdir="$(pwd)"
     cd  -- "${HOME}/tmp/valid-python3" || exit 3
     if python3 -m compileall -q tested.py > /dev/null; then
@@ -125,9 +125,9 @@ if cp "$fname" "${HOME}/tmp/valid-python3/tested.py"; then
             usrhome_printf_warning '%s : AST incompatible with Python 3\n' "$fname"
         fi
     fi
-    rm "${HOME}/tmp/valid-python3/tested.py"
+    rm -- "${HOME}/tmp/valid-python3/tested.py"
     if [ -d "${HOME}/tmp/valid-python3/__pycache__" ]; then
-        rm -rf "${HOME}/tmp/valid-python3/__pycache__"
+        rm -rf -- "${HOME}/tmp/valid-python3/__pycache__"
     fi
     cd -- "$curwdir" || exit 3
 fi

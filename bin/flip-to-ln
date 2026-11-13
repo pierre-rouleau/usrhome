@@ -4,7 +4,7 @@
 # Purpose   : Move a file to a directory and create a symlink to it's new location.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 14:04:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:51:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -127,7 +127,7 @@ Doing:
   -  ln %s %s %s
 " "$2" "$1" "$base_fname"  "${lnopt}" "$target_fpath" "$2"
 
-mv "$2" "$1/${base_fname}"  || exit 2
-ln "${lnopt}" "${target_fpath}" "$2"
+mv -- "$2" "$1/${base_fname}"  || exit 2
+ln -- "${lnopt}" "${target_fpath}" "$2"
 
 # ----------------------------------------------------------------------------

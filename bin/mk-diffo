@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 14:32:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:58:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -330,11 +330,11 @@ fi
 # Check if the directory for the source file exists.
 # If it does not exists, create it, and set the reference number to 0.
 if [ ! -d "${db_root}/${project_name}/${fbasename}" ]; then
-    if ! mkdir -p "${db_root}/${project_name}/${fbasename}"; then
+    if ! mkdir -p -- "${db_root}/${project_name}/${fbasename}"; then
        usrhome_printf_error 'mk-diffo: Failed creating %s
 \t Print usage with -h\n' "${db_root}/${project_name}/${fbasename}"
        exit 1
-    elif mkdir -p "${db_root}/${project_name}/${fbasename}/000"; then
+    elif mkdir -p -- "${db_root}/${project_name}/${fbasename}/000"; then
         refno=0
     else
        usrhome_printf_error 'mk-diffo: Failed creating %s/000
@@ -359,8 +359,8 @@ mk-diffo - Creating a new entry: %s/%s/%s/000
 " "${db_root}" "${project_name}" "${fbasename}"
 
     trgt_dir=$(printf -- "%s/%s/%s/000" "${db_root}" "${project_name}" "${fbasename}")
-    cp "$fpathname" "$trgt_dir"     || exit 1
-    cp "$obj_filename" "$trgt_dir"  || exit 1
+    cp -- "$fpathname" "$trgt_dir"     || exit 1
+    cp -- "$obj_filename" "$trgt_dir"  || exit 1
     # use tail -n +3 to remove the name of the file printed on the second line
     dumpo ${with_source} "$obj_filename" | tail -n +3  > "${trgt_dir}/${filename_noext}.asm" || exit 1
     strings "$obj_filename" > "${trgt_dir}/${filename_noext}.txt" || exit 1
@@ -397,9 +397,9 @@ else
     trgt_dir=$(printf -- "%s/%03d" "$tdir" "${nextref}")
     printf -- "\
 mk-diffo - New version: %s\n" "${trgt_dir}"
-    mkdir -p "${trgt_dir}"
-    cp "$fpathname"    "$trgt_dir"  || exit 1
-    cp "$obj_filename" "$trgt_dir"  || exit 1
+    mkdir -p -- "${trgt_dir}"
+    cp -- "$fpathname"    "$trgt_dir"  || exit 1
+    cp -- "$obj_filename" "$trgt_dir"  || exit 1
 
     obj1="${orig_dir}/${obj_basename}"
     obj2="${trgt_dir}/${obj_basename}"

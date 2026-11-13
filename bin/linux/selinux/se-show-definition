@@ -4,7 +4,7 @@
 # Purpose   : Show SELinux Policy Macro Definition
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2026-11-13 11:33:51 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 17:03:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -97,7 +97,7 @@ cd -- "${usrhome_selinux_policy_module_dirpath}" || exit 1
 macroname="$1"
 printf -- "\n"
 for file in */*.if; do
-    grep -A 9999 "define(\`${macroname}'" "${file}" | grep -B 999 -m 1 "')";
+    grep -A 9999 -- "define(\`${macroname}'" "${file}" | grep -B 999 -m 1 "')";
 done
 printf -- "\n"
 
