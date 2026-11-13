@@ -4,7 +4,7 @@
 # Purpose   : Echo argument and grep using all arguments except the first one.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-05-05 15:07:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 08:31:31 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -45,7 +45,7 @@
 #
 
 if [ "$#" -gt 2 ]; then
-    echo "TOO many arguments passed to echo-grep.  Only 2 are supported!" 1>&2
+    printf "TOO many arguments passed to echo-grep.  Only 2 are supported!\n" 1>&2
     exit 1
 fi
 

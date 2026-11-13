@@ -4,7 +4,7 @@
 # Purpose   : Convert a ISO-8859 encoded file to UTF-8.
 # Created   : Monday, September  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-03 15:11:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 09:08:39 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -64,31 +64,34 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     # help requested explicitly: no error.
     exit 0
 fi
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
 if [ -z "$1" ] ; then
     print_usage
     exit 1
 elif [ -n "$2" ]; then
-    echo "ERROR: too many arguments."
+    usrhome_printf_error 'iconv-iso8859-utf8: too many arguments.\n'
     print_usage
     exit 1
 fi
 
 if [ -z "$USRHOME_DIR_TMP" ]; then
-    >&2 printf -- "*** iconv-iso8859-utf8 ERROR: USRHOME_DIR_TMP envvar missing.\n"
-    >&2 printf -- "        Use --help for more info.\n"
+    usrhome_printf_error 'iconv-iso8859-utf8: USRHOME_DIR_TMP envvar is not defined.
+\t Use --help for more info.\n'
     exit 1
 fi
 if [ ! -d "$USRHOME_DIR_TMP" ];  then
-    >&2 printf -- "*** iconv-iso8859-utf8 ERROR: USRHOME_DIR_TMP: not a directory.\n"
-    >&2 printf -- "        It's value is: %s\n" "$USRHOME_DIR_TMP"
-    >&2 printf -- "        Use --help for more info.\n"
+    usrhome_printf_error 'iconv-iso8859-utf8: USRHOME_DIR_TMP: not a directory.
+\t It'\''s value is: %s
+\t Use --help for more info.\n' "$USRHOME_DIR_TMP"
     exit 1
 fi
 if [ ! -e "$1" ]; then
-    >&2 printf -- "*** iconv-iso8859-utf8 ERROR: USRHOME_DIR_TMP: invalid file name.\n"
-    >&2 printf -- "      You specified: %s\n" "$1"
-    >&2 printf -- "      This file does not exist.  Use --help for more info.\n"
+    usrhome_printf_error 'iconv-iso8859-utf8: USRHOME_DIR_TMP: invalid file name.
+\t You specified: %s
+\t This file does not exist.  Use --help for more info.\n' "$1"
     exit 1
 fi
 

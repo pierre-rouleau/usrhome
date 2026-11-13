@@ -4,7 +4,7 @@
 # Purpose   : List Git Branches.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-01 08:28:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 08:56:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -47,6 +47,10 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     exit 0
 fi
 
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 commands='
 local
 local-non-tracking
@@ -66,8 +70,8 @@ done
 if [ "$is_valid_command" = "yes" ]; then
     shift
 else
-    printf -- "*** git-lbr: unknown command: %s\n" "$1"
-    print_usage
+    usrhome_printf_error 'git-lbr: unknown command: %s
+\t Use -h to print usage\n' "$1"
     exit 2
 fi
 

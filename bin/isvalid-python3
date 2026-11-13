@@ -4,7 +4,7 @@
 # Purpose   : Check if file is Python 3 compliant.
 # Created   : Tuesday, April 22 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 23:28:51 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 11:34:33 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -118,7 +118,7 @@ is_compatible="false"
 # - Check AST compatibility
 if cp "$fname" "${HOME}/tmp/valid-python3/tested.py"; then
     curwdir="$(pwd)"
-    cd  "${HOME}/tmp/valid-python3" || exit 3
+    cd  -- "${HOME}/tmp/valid-python3" || exit 3
     if python3 -m compileall -q tested.py > /dev/null; then
        is_compatible="true"
     else
@@ -130,7 +130,7 @@ if cp "$fname" "${HOME}/tmp/valid-python3/tested.py"; then
     if [ -d "${HOME}/tmp/valid-python3/__pycache__" ]; then
         rm -rf "${HOME}/tmp/valid-python3/__pycache__"
     fi
-    cd "$curwdir" || exit 3
+    cd -- "$curwdir" || exit 3
 fi
 
 # - Check if deprecated popen2 is used.

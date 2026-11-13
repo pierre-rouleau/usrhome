@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-04-23 08:04:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 09:28:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -64,6 +64,10 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     exit 0
 fi
 
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 search_other_directories=true
 search_perl_system_directories=false
 if [ -n "$1" ]; then
@@ -75,26 +79,25 @@ if [ -n "$1" ]; then
         search_other_directories=false
         shift
         if [ -n "$1" ]; then
-            printf -- "*** find-perl ERROR: no extra DIR with --only-system-perl.\n"
-            printf -- "    Use 'find-perl -h' to get more information.\n"
+            usrhome_printf_error 'find-perl: no extra DIR with --only-system-perl
+\t Use '\''find-perl -h'\'' to get more information.\n'
             exit 1
         fi
     else
         if [ ! -d "$1" ]; then
-            printf -- "*** find-perl ERROR: not a valid directory: %s\n" "$1"
-            printf -- "    Use 'find-perl -h' to get more information.\n"
+            usrhome_printf_error 'find-perl: not a valid directory: %s
+\t Use '\''find-perl -h'\'' to get more information.\n' "$1"
             exit 1
         fi
     fi
 fi
 
 # --
-# Identify the command to use.
 
-if [ -x "$(command -v fdfind)" ]; then
+if command -v fdfind > /dev/null 2>&1; then
     search_with='fd'
     fd_pgm=fdfind
-elif [ -x "$(command -v fd)" ]; then
+elif command -v fd > /dev/null 2>&1; then
     search_with='fd'
     fd_pgm=fd
 else
@@ -107,7 +110,7 @@ else
             find_path_option=
             ;;
         *)
-            printf -- "find-perl ** Error Operating System, %s, is not supported!\n" "$(uname)"
+            usrhome_printf_error 'find-perl: Operating System, %s, is not supported!\n' "$(uname)"
             exit 1
             ;;
     esac
@@ -159,7 +162,7 @@ fi
 #
 # - Exclude perltidy files, Emacs backup and buffers files.
 
-if [ -x "$(command -v rg)" ]; then
+if command -v rg > /dev/null 2>&1; then
     for dname in "${searched_directories[@]}"; do
         rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! ?.+/perl" "$(realpath "$dname")" 2>> "${error_log}"
     done
@@ -216,7 +219,7 @@ search()
             ;;
 
         *)
-            printf -- "etags-perl ** Error: cannot identify find program!\n"
+            usrhome_printf_error 'find-perl: cannot identify find program!\n'
             exit 1
             ;;
     esac

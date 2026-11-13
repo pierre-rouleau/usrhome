@@ -4,7 +4,7 @@
 # Purpose   : Convert all specified files in a directory tree from ISO-8859 to UTF-8.
 # Created   : Monday, September  8 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 13:26:14 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 09:26:51 EST, updated by Pierre Rouleau>
 
 # ----------------------------------------------------------------------------
 # Module Description
@@ -28,19 +28,21 @@
 #
 
 if [ "$#" -gt 1 ]; then
-    printf 'Usage: %s [basename-glob]\n' "$0" >&2
+    printf 'Usage: %s [basename-glob]\n' "${0##*/}"
     printf 'Convert all text files that are ISO-8859 or invalid ISO to UTF-8.\n'
     printf 'Use fd if available.  Otherwise uses find (which does NOT skip hidden files!)\n'
-
     exit 1
 fi
 
-if command -v fd > /dev/null; then
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
+if command -v fd > /dev/null 2>&1; then
     fd "$1" | xargs -I $ file $ | grep Non-ISO  | cut -f1 -d":" | xargs -I $ iconv-iso8859-utf8 $
     fd "$1" | xargs -I $ file $ | grep ISO-8859 | cut -f1 -d":" | xargs -I $ iconv-iso8859-utf8 $
     exit "$?"
 else
-    printf 'WARNING: fd not found; find cannot apply ignore rules, ignored files will be converted.\n' >&2
+    usrhome_printf_warning 'fd not found; find cannot apply ignore rules, ignored files will be converted.\n'
     pattern=${1:-'*'}
 
     find . ! -name . -name '.*' -prune -o \

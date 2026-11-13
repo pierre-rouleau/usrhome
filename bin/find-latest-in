@@ -4,7 +4,7 @@
 # Purpose   : Find and list all new and recently modified files.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2026-11-09 16:01:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 09:27:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -132,7 +132,7 @@ done
 # --
 # Build options and execute search.
 
-if command -v fd > /dev/null; then
+if command -v fd > /dev/null 2>&1; then
     # Use fd : https://github.com/sharkdp/fd
     # --------------------------------------
     # Build one positional parameter for each fd argument.
