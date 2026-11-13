@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-04-29 10:54:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 14:32:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -197,6 +197,10 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     exit 0
 fi
 
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 # Check for the presence of the USRHOME_DIFFO environment variables.
 # If they are not set tell the user to execute `use-mkdiffo', as the
 # user may not be aware of all the requirements.
@@ -205,11 +209,10 @@ if [ -z "$USRHOME_DIFFO_ROOT_DIR" ] ||    \
        [ -z "$USRHOME_DIFFO_FNAME" ] ||   \
        [ -z "$USRHOME_DIFFO_OBJ_DIR" ] || \
        [ -z "$USRHOME_DIFFO_OBJEXT" ]; then
-    printf -- "*** ERROR: mk-diffo: The USRHOME_DIFFO environment variables
-                    required for using mk-diffo are not set!
-                    Please first execute use-mk-info to set them up.
-                    Use mk-diffo -h for more information.
-"
+    usrhome_printf_error 'mk-diffo: The USRHOME_DIFFO environment variables
+\t   required for using mk-diffo are not set!
+\t   Please first execute use-mk-info to set them up.
+\t   Use mk-diffo -h for more information.\n'
     exit 2
     fi
 
@@ -237,15 +240,15 @@ if [ -n "$1" ]; then
     case "$1" in
         -*)
             # unexpected option?
-            printf -- "*** mk-info ERROR: %s is not a valid option!\n" "$1"
-            printf -- "    print usage with -h\n"
+            usrhome_printf_error 'mk-info: %s is not a valid option!
+\t Print usage with -h\n' "$1"
             exit 1
             ;;
 
         (*[!0123456789]*)
             # anything before or after a ASCII digit is not allowed
-            printf -- "*** mk-info ERROR: %s is not a valid integer!\n" "$1"
-            printf -- "    print usage with -h\n"
+            usrhome_printf_error 'mk-info: %s is not a valid integer!
+\t Print usage with -h\n' "$1"
             exit 1
             ;;
 
@@ -259,8 +262,8 @@ fi
 
 # Check if there are any extra argument.
 if [ -n "$2" ]; then
-    printf -- "*** mk-diffo ERROR: too many arguments.\n"
-    printf -- "    print usage with -h\n"
+    usrhome_printf_error 'mk-diffo: too many arguments.
+\t Print usage with -h\n'
     exit 1
 fi
 
@@ -274,18 +277,15 @@ fpathname="$USRHOME_DIFFO_FNAME"
 
 # First check if the name of the tested source code file is identified.
 if [ -z "$fpathname" ]; then
-    printf -- "\
-*** mk-diffo ERROR: tested file, USRHOME_DIFFO_FNAME, name not defined!\n"
-    printf -- "    print usage with -h\n"
+    usrhome_printf_error 'mk-diffo: the name of the tested file should be in USRHOME_DIFFO_FNAME, but it is not defined!
+\t Print usage with -h\n'
     exit 1
 fi
 if [ ! -f "$fpathname" ]; then
-    printf -- "\
-*** mk-diffo ERROR: tested source code file name,
-                    identified by USRHOME_DIFFO_FNAME, does not exists!
-                    USRHOME_DIFFO_FNAME: %s
-" "$fpathname"
-    printf -- "    print usage with -h\n"
+    usrhome_printf_error 'mk-diffo ERROR: tested source code file name,
+\t   identified by USRHOME_DIFFO_FNAME, does not exists!
+\t   USRHOME_DIFFO_FNAME: %s
+\t Print usage with -h\n' "$fpathname"
     exit 1
 fi
 
@@ -308,28 +308,22 @@ obj_basename="$(basename "$obj_filename")"
 
 # Now check the validity of the result directory tree named by the environment
 if [ -z "$db_root" ]; then
-    printf -- "\
-*** mk-diffo ERROR: USRHOME_DIFFO_ROOT_DIR is not defined!\n"
-    printf -- "    print usage with -h\n"
+    usrhome_printf_error 'mk-diffo: USRHOME_DIFFO_ROOT_DIR is not defined!
+\t Print usage with -h\n'
     exit 1
 elif [ ! -d "$db_root" ]; then
-    printf -- "\
-*** mk-diffo ERROR: USRHOME_DIFFO_ROOT_DIR is invalid: %s
-" "$db_root"
-    printf -- "    print usage with -h\n"
+    usrhome_printf_error 'mk-diffo: USRHOME_DIFFO_ROOT_DIR is invalid: %s
+\t Print usage with -h\n' "$db_root"
     exit 1
 fi
 if [ -z "$USRHOME_DIFFO_PROJECT" ]; then
-    printf -- "\
-*** mk-diffo ERROR: USRHOME_DIFFO_PROJECT is not defined!\n"
-    printf -- "    print usage with -h\n"
+    usrhome_printf_error 'mk-diffo: USRHOME_DIFFO_PROJECT is not defined!
+\t Print usage with -h\n'
     exit 1
 elif [ ! -d "${db_root}/${project_name}" ]; then
-    printf -- "\
-*** mk-diffo ERROR: USRHOME_DIFFO_PROJECT is invalid: %s
+    usrhome_printf_error 'mk-diffo: USRHOME_DIFFO_PROJECT is invalid: %s
      %s/%s : does not exist!
-" "$USRHOME_DIFFO_PROJECT" "$db_root" "$USRHOME_DIFFO_PROJECT"
-    printf -- "    print usage with -h\n"
+\t Print usage with -h\n' "$USRHOME_DIFFO_PROJECT" "$db_root" "$USRHOME_DIFFO_PROJECT"
     exit 1
 fi
 
@@ -337,18 +331,14 @@ fi
 # If it does not exists, create it, and set the reference number to 0.
 if [ ! -d "${db_root}/${project_name}/${fbasename}" ]; then
     if ! mkdir -p "${db_root}/${project_name}/${fbasename}"; then
-       printf -- "\
-*** mk-diffo ERROR: Failed creating %s
-" "${db_root}/${project_name}/${fbasename}"
-       printf -- "    print usage with -h\n"
+       usrhome_printf_error 'mk-diffo: Failed creating %s
+\t Print usage with -h\n' "${db_root}/${project_name}/${fbasename}"
        exit 1
     elif mkdir -p "${db_root}/${project_name}/${fbasename}/000"; then
         refno=0
     else
-       printf -- "\
-*** mk-diffo ERROR: Failed creating %s/000
-" "${db_root}/${project_name}/${fbasename}"
-       printf -- "    print usage with -h\n"
+       usrhome_printf_error 'mk-diffo: Failed creating %s/000
+\t Print usage with -h\n' "${db_root}/${project_name}/${fbasename}"
        exit 1
     fi
 fi
@@ -399,10 +389,8 @@ else
     if [ -z "$refno" ]; then
         refno=0
     elif [ "${refno}" -ge "${nextref}" ]; then
-        printf -- "\
-*** mk-diffo ERROR: specified REFNO (%s) is invalid: must be smaller than %s.
-" "$refno" "$nextref"
-        printf -- "    print usage with -h\n"
+        usrhome_printf_error 'mk-diffo: specified REFNO (%s) is invalid: must be smaller than %s.
+\t Print usage with -h\n' "$refno" "$nextref"
         exit 1
     fi
     orig_dir=$(printf -- "%s/%03d" "$tdir" "${refno}")
@@ -420,8 +408,7 @@ mk-diffo - New version: %s\n" "${trgt_dir}"
     # This allow comparison in the future.
     if [ "${with_strings}" = "" ]; then
         if ! strings "$obj_filename" > "${trgt_dir}/${filename_noext}.txt"; then
-            printf -- "\
-*** mk-diffo ERROR: failed extracting strings from object file.\n"
+            usrhome_print_error 'mk-diffo: failed extracting strings from object file.'
             exit 1
         fi
     fi
