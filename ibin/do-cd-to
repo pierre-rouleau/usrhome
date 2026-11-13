@@ -3,7 +3,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 10:44:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 22:18:46 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -45,7 +45,7 @@
 prompt_yn_return=
 prompt_yn()
 {
-    # Arg 1: string prompt
+    # Arg 1: prompt string
     while true; do
         printf "%s [yn]? " "$1"
         read -r yn
@@ -58,7 +58,7 @@ prompt_yn()
                 prompt_yn_return=n
                 break
                 ;;
-            * ) echo "Please answer yes or no.";;
+            * ) printf 'Please answer yes or no.\n' ;;
         esac
     done
 }
@@ -159,7 +159,8 @@ cd-to : Search for file in current directory tree.
     File editing is not allowed/proposed when executing inside
     an Emacs shell as identified by the INSIDE_EMACS environment variable.
 
-    LIMITATION: cannot search for file or directory name that starts with -
+    LIMITATION: cannot search for file or directory name that starts with
+                a dash character.
 "
 }
 
@@ -446,7 +447,7 @@ if [ "$the_dirpath" = "." ]; then
         if [ -f "$the_filepath" ]; then
             ls -l "$the_filepath"
             if [ "$edit_files" = "true" ]; then
-                echo "$EDITOR ${the_filepath}"
+                printf -- '%s %s\n' "$EDITOR" "${the_filepath}"
                 eval "$EDITOR ${the_filepath}"
             fi
         else
@@ -458,7 +459,7 @@ if [ "$the_dirpath" = "." ]; then
         if [ -d "$the_filepath" ]; then
             cd "$the_filepath" || return 1
             if [ "$edit_files" = "true" ]; then
-                echo "$EDITOR ."
+                printf -- '%s .\n' "$EDITOR"
                 eval "$EDITOR ."
             fi
         fi
@@ -471,7 +472,7 @@ else
         if cd "${the_dirpath}"; then
             ls -l "${the_fname}"
             if [ "$edit_files" = "true" ]; then
-                echo "$EDITOR ${the_fname}"
+                printf -- '%s %s\n' "$EDITOR" "${the_fname}"
                 eval "$EDITOR ${the_fname}"
             fi
         else
@@ -480,7 +481,7 @@ else
     elif [ "$search_for1" = "directory" ]; then
         if cd "${the_filepath}"; then
             if [ "$edit_files" = "true" ]; then
-                echo "$EDITOR ."
+                printf -- '%s .\n' "$EDITOR"
                 eval "$EDITOR ."
             fi
         else

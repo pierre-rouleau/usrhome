@@ -3,7 +3,7 @@
 # Purpose   : Activate GNU grep/egrep/fgrep in current shell.
 # Created   : Thursday, January  8 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-27 14:02:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 21:21:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -35,6 +35,6 @@
 prepend_to_path "/opt/homebrew/opt/grep/libexec/gnubin"
 export PATH
 
-echo ". Using GNU grep/egrep/fgrep."
+usrhome_printf '. Using GNU grep/egrep/fgrep.\n'
 
 # ----------------------------------------------------------------------------

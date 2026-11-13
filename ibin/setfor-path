@@ -3,7 +3,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 23:11:48 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 21:57:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -203,7 +203,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             export PATH="$USRHOME_ORIGINAL_PATH"
             export USRHOME_ORIGINAL_PATH="$oldp"
             if [ "$USRHOME_SHOW_PATH_ACTIVATION" = "1" ]; then
-                echo "- Switch PATH with USRHOME_ORIGINAL_PATH"
+                usrhome_printf '- Switching PATH with USRHOME_ORIGINAL_PATH\n'
             fi
             unset oldp
         }
