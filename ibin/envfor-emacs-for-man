@@ -3,7 +3,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 16:13:37 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 21:14:16 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -249,8 +249,8 @@ man()
                 # Check if the emacsclient is running, if not warn user
                 # and exit.
                 if ! lsof -c emacsclient > /dev/null; then
-                    echo "ERROR: Emacs client NOT running!"
-                    echo "Start emacsclient inside another window and try again."
+                    usrhome_printf_error 'use-emacs-for-man: Emacs client is NOT running!
+\t Please start emacsclient inside another window and try again.\n'
                     exit 1
                 else
                     case $man_mode in

@@ -3,7 +3,7 @@
 # Purpose   : Define usrhome printing functions.
 # Created   : Monday, November  9 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 09:26:13 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 21:26:41 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -13,7 +13,7 @@
 
 # All print functions refrain from printing on a dumb shell to reduce output
 # on shells used by Emacs Tramp.
-
+#
 # - usrhome_printf         FORMAT ARGS...
 # - usrhome_printf_stderr  FORMAT ARGS...
 # - usrhome_printf_warning FORMAT ARGS...
@@ -21,13 +21,29 @@
 # - usrhome_print_warning  TEXT
 # - usrhome_print_error    TEXT
 #
+#
+# NOTE:
+# All USRHOME code should use these functions to print information, status
+# warning or error messages. The only code that should use printf directly
+# is the code that prompts the user and the code that prints usage.
+#
+# The reason USRHOME uses the functions in this file to print is to ensure
+# that USRHOME controlled shells that are not interactive print minimally so
+# to help Emacs Tramp access these shells via SSH; a shell that prints too
+# much starts slower and Emacs Tramp may fail to connect to it.
+#
+# For logic that prints into a pipe or into a file, then printf should be
+# used.
+#
+# printf should always be preferred to echo: USRHOME should not use echo,
+# except perhaps for quick debug printing that are commented out when
+# committed.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
 #
-
 
 # ----------------------------------------------------------------------------
 # Code

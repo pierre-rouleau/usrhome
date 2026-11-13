@@ -3,7 +3,7 @@
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 21:23:03 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 21:27:20 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -33,7 +33,7 @@ esac
 # Add usrhome/bin at beginning of PATH if not already there.
 # Also add ~/bin to the beginning od PATH if that directory is present
 
-if ! echo "$PATH" | grep -q "$USRHOME_DIR"; then
+if ! printf -- '%s\n' "$PATH" | grep -q "$USRHOME_DIR"; then
     # If USRHOME has not already been installed (as seen in PATH),
     # then install it.  Otherwise skip.
 

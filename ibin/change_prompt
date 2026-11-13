@@ -3,7 +3,7 @@
 # Purpose   : Internal helper file: change prompt.
 # Created   : Sunday, May  5 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 11:57:28 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 21:03:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,7 +55,7 @@ case $USRHOME_SHELL in
         usrhome-select-bash-prompt
         ;;
     *)
-        echo "Dynamic prompt modification is not supported under '$USRHOME_SHELL' shell."
+        usrhome_printf_error 'Dynamic prompt modification is not supported under %s shell.\n' "$USRHOME_SHELL"
         ;;
 esac
 

@@ -3,7 +3,7 @@
 # Purpose   : Toggle showing host and user name in the prompt.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 14:39:28 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 22:09:45 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -31,9 +31,9 @@ else
 fi
 
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = 0 ]; then
-    echo "Prompt no longer shows host and user name."
+    usrhome_printf 'Prompt no longer shows host and user name.\n'
 else
-    echo "Prompt now shows host and user name."
+    usrhome_printf 'Prompt now shows host and user name.\n'
 fi
 
 # Proceed, using method required by shell

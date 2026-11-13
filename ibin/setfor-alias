@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 16:24:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 22:29:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -94,7 +94,7 @@ info_shell_special_var()
     _sa_last_arg_val_extracted=
     _sa_last_arg_by_pos=
     for _sa_word in "$@"; do
-        echo "--- At position ${_sa_pos}, arg is: $_sa_word"
+        printf -- '--- At position %s, arg is: %s\n' "${_sa_pos}" "$_sa_word"
         _sa_all_words="${_sa_all_words}${_sa_sep}\"${_sa_word}\""
         _sa_positionals="${_sa_positionals}${_sa_sep}\$${_sa_pos}='${_sa_word}'"
         _sa_sep=", "
@@ -150,9 +150,9 @@ shown within single quotes.
             printf "The %s shell is not supported yet.\n" "$USRHOME_SHELL"
             ;;
     esac
-    echo "Last argument extracted by loop    : $_sa_last_arg_val_extracted"
-    echo "Last argument extracted by position: $_sa_last_arg_by_pos"
-    echo "-----------------------------------"
+    printf -- 'Last argument extracted by loop    : %s\n' "$_sa_last_arg_val_extracted"
+    printf -- 'Last argument extracted by position: %s\n' "$_sa_last_arg_by_pos"
+    printf -- '-----------------------------------\n'
     # cleanup
     unset _sa_positionals _sa_sep _sa_pos _sa_all_words _sa_last_arg_numb _sa_last_arg_val_extracted _sa_last_arg_by_pos _sa_word
 }
@@ -253,17 +253,20 @@ __set__ls_options()
 }
 
 if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
-# List directories
+    # Shell implementation of lsd and lsda when Pike is not available.
+    # If you can use the Pike implementation: it is more reliable.
+
+    # List directories
     lsd()
     {
         __set__ls_options
         if [ -z "$1" ]; then
             ( ls -d ${_sa_usrhome_ls_color_flag} -- */ ) 2> /dev/null
         elif [ $# -gt 1 ]; then
-            echo "ERROR: lsd does not support glob, and more than 1 argument."
-            echo "  You provided $# argument."
-            echo " Usage: lsd [ARG]"
-            echo "  ARG: full or partial directory name."
+            usrhome_printf_error 'lsd does not support glob, and more than 1 argument.
+\t You provided %s arguments.
+\t Usage: lsd [ARG]
+\t        ARG: full or partial directory name.\n' "$#"
             return 1
         else
             # shellcheck disable=SC2086 # don't quote to allow expansion of globs
@@ -272,8 +275,9 @@ if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
         unset _sa_usrhome_ls_color_flag
     }
 
-    # Note lsda is not reliable.
-    #    I will eventually re-implement it in another language.
+    # lsda - list all directories (including the ones with name staring with a period)
+    # Note this implementation of lsda is not reliable.
+    #      If you can use the Pike implementation.
     lsda()
     {
         __set__ls_options
@@ -282,10 +286,10 @@ if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
             ( ls -d ${_sa_usrhome_ls_color_flag} -- */ .[^.]*/ ) 2> /dev/null
         elif [ $# -gt 1 ]; then
             # 2 arguments or more: not allowed.
-            echo "ERROR: lsda does not support glob, and more than 1 argument."
-            echo "  You provided $# argument"
-            echo " Usage: lsda [ARG]"
-            echo "  ARG: full or partial directory name."
+            usrhome_printf_error 'lsda does not support glob, and more than 1 argument.
+\t You provided %s arguments.
+\t Usage: lsda [ARG]"
+\t        ARG: full or partial directory name.\n' "$#"
             return 1
         else
             # one argument
@@ -301,10 +305,10 @@ if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
             fi
             if [ "$_sa_has_reg" = "1" ]; then
                 if [ "$_sa_has_hid" = "1" ]; then
-                    echo "has hidden and regular"
+                    # echo "has hidden and regular"
                     ( ls -d ${_sa_usrhome_ls_color_flag} -- ".$1" "$1" ) 2> /dev/null
                 else
-                    echo "has regular only"
+                    # echo "has regular only"
                     ( ls -d ${_sa_usrhome_ls_color_flag} -- "$1" ) 2> /dev/null
                 fi
             else
@@ -335,17 +339,17 @@ lsl()
             ;;
 
         --help | -h)
-            echo "lsl : list symbolic links in current directory"
-            echo " Usage: lsl [-l] ['NAME']"
-            echo "   -l : list symlinks using the ls -l format."
-            echo "  NAME: glob identifying the names to list."
-            echo "        It *must* be enclosed with single quotes."
+            printf -- "lsl : list symbolic links in current directory\n"
+            printf -- " Usage: lsl [-l] ['NAME']\n"
+            printf -- "   -l : list symlinks using the ls -l format.\n"
+            printf -- "  NAME: glob identifying the names to list.\n"
+            printf -- "        It *must* be enclosed with single quotes.\n"
             return 0
             ;;
         # prevent any other option:
         # note that it also precludes having symlink names that start with a '-'
         -?* )
-            echo "ERROR: lsl does not support the $1 option."
+            usrhome_printf_error 'lsl does not support the %s option.\n' "$1"
             return 1
             ;;
         #
@@ -360,12 +364,12 @@ lsl()
             find . -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
         fi
     elif [ "$#" -gt 1 ]; then
-        echo "ERROR: lsl does not support glob argument; it must be single quoted."
-        echo "  You provided $# arguments (the shell expands your glob)."
-        echo " Usage: lsl [-l] [NAME]"
-        echo "  -l : lst symlinks using ls -l format."
-        echo "  NAME: single quoted glob expression."
-        echo " Example to list all symlink that start with .bas: : lsl '.bas*' "
+        usrhome_printf_error 'lsl does not support glob argument; it must be single quoted.
+\t You provided %s arguments (the shell expands your glob).
+\t Usage: lsl [-l] [NAME]
+\t  -l : lst symlinks using ls -l format.
+\t  NAME: single quoted glob expression.
+\t Example to list all symlink that start with .bas: lsl '\''.bas*'\''\n' "$#"
         return 1
     else
         if [ "$long_ls" = "true" ]; then
@@ -580,10 +584,10 @@ usrhome_cd()
         if [ -d "$2/$3" ]; then
             cd -- "$2/$3" || return 1
         else
-            printf "****ERROR: %s is not a directory!\n" "$2/$3"
+            usrhome_printf_error '%s: %s is not a directory!\n' "$0"  "$2/$3"
         fi
     else
-        echo "****ERROR: $1 is not defined!"
+        usrhome_printf_error '%s: %s is not defined!\n' "$0" "$1"
     fi
 }
 

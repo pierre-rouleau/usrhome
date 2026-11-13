@@ -3,7 +3,7 @@
 # Purpose   : Toggle tracing of shell configuration file sourcing.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 14:18:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 22:12:49 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -51,9 +51,9 @@ else
 fi
 
 if [ "$USRHOME_TRACE_SHELL_CONFIG" = 0 ]; then
-    echo "No longer trace shell configuration sourcing."
+    usrhome_printf 'No longer trace shell configuration sourcing.\n'
 else
-    echo "Now trace shell configuration sourcing."
+    usrhome_printf 'Now trace shell configuration sourcing.\n'
 fi
 
 
@@ -72,7 +72,7 @@ case "$USRHOME_SHELL" in
         exec bash
         ;;
     *)
-        echo "USRHOME does not support tracing in '$USRHOME_SHELL' shell."
+        usrhome_printf_error 'USRHOME does not support tracing in %s shell.\n' "$USRHOME_SHELL"
         ;;
 esac
 

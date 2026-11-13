@@ -3,7 +3,7 @@
 # Purpose   : Change zsh prompt model in current shell.
 # Created   : Wednesday, April  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 14:23:48 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 22:30:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,12 +34,12 @@
 print_status()
 {
     if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
-        echo "  Using overridden prompt model number: $USRHOME_PROMPT_MODEL_OVERRIDE"
+        usrhome_printf '  Using overridden prompt model number: %s\n' "$USRHOME_PROMPT_MODEL_OVERRIDE"
     fi
     if [ -z "$USRHOME_PROMPT_MODEL" ]; then
-        echo "  The current prompt model number is undefined."
+        usrhome_print_warning '  The current prompt model number is undefined.'
     else
-        echo "  Shell configured prompt model number: $USRHOME_PROMPT_MODEL"
+        usrhome_printf '  Shell configured prompt model number: %s\n' "$USRHOME_PROMPT_MODEL"
     fi
 }
 
@@ -63,12 +63,8 @@ Usage:  usrhome-prompt-model-to -h|--help
 # Validate user input
 # ------------------
 if [ -z "$1" ]; then
-    >&2 printf "\
-***ERROR***
- - usrhome-prompt-model-to:  requires the prompt model number.
-***********
-"
-    print_usage
+    usrhome_printf_error 'usrhome-prompt-model-to:  requires the prompt model number.
+\t Use -h to print usage.\n'
     return 1
 fi
 
@@ -82,8 +78,8 @@ case "$1" in
     # prevent any other option:
     # note that it also precludes having symlink names that start with a '-'
     -?* )
-        echo "****ERROR: usrhome-prompt-model-to does not support the $1 option."
-        print_usage
+        usrhome_printf_error 'usrhome-prompt-model-to does not support the %s option.
+\t Use -h to print usage.\n' "$1"
         return 1
         ;;
 
@@ -95,21 +91,21 @@ case "$1" in
     reset)
         # stop overriding if that was already overridden
         if [ -z "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
-            echo "The prompt model is already the one selected by configuration: $USRHOME_PROMPT_MODEL"
-            echo "Nothing to do."
+            usrhome_printf 'The prompt model is already the one selected by configuration: %s
+\t Nothing to do.\n' "$USRHOME_PROMPT_MODEL"
             return 0
         else
             if [ "$USRHOME_PROMPT_MODEL_OVERRIDE" = "$USRHOME_PROMPT_MODEL" ]; then
-                echo "Overridden prompt model is the same as the one selected by configuration: $USRHOME_PROMPT_MODEL"
+                usrhome_printf 'Overridden prompt model is the same as the one selected by configuration: %s\n' "$USRHOME_PROMPT_MODEL"
                 unset USRHOME_PROMPT_MODEL_OVERRIDE
-                echo "Overriding cancelled, nothing else to do."
+                usrhome_printf 'Overriding cancelled, nothing else to do.\n'
                 return 0
             else
                 # shellcheck source=xtra/confirm-shell-restart.sh
                 . "$USRHOME_DIR/ibin/xtra/confirm-shell-restart.sh" || return 1
                 usrhome_prompt_restart_preflight "${USRHOME_PROMPT_MODEL-}" || return 1
 
-                echo "Restoring configuration requested prompt model: $USRHOME_PROMPT_MODEL"
+                usrhome_printf 'Restoring configuration requested prompt model: %s\n' "$USRHOME_PROMPT_MODEL"
                 unset USRHOME_PROMPT_MODEL_OVERRIDE
             fi
         fi
@@ -123,7 +119,7 @@ case "$1" in
         ;;
 
     *)
-    echo "ERROR: invalid prompt number: $1"
+    usrhome_printf_error 'invalid prompt number: %s\n' "$1"
     print_usage
     return 1
 esac
