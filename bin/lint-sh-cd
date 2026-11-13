@@ -4,7 +4,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 11:39:03 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 12:18:51 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -143,81 +143,177 @@ fi
 # --
 # Define the operations
 
-audit_file()
-{
+audit_file() {
     file=$1
 
     awk -v fname="$file" '
-    # Strip full-line comments
+    BEGIN {
+        found = 0
+        in_heredoc = 0
+        heredoc_delim = ""
+        in_squote = 0
+        in_dquote = 0
+    }
+
+    # 1. Handle active heredoc blocks (e.g., cat <<EOF ... EOF)
+    in_heredoc {
+        line = $0
+        # Allow leading tabs if <<- was used
+        if (heredoc_strip_tabs) {
+            sub(/^\t+/, "", line)
+        }
+        if (line == heredoc_delim) {
+            in_heredoc = 0
+            heredoc_delim = ""
+            heredoc_strip_tabs = 0
+        }
+        next
+    }
+
+    # 2. Check if this line starts a heredoc (only when not already inside quotes)
+    !in_squote && !in_dquote && /<<-?[[:space:]]*['\''"]?[a-zA-Z0-9_]+['\''"]?/ {
+        # Ignore here-strings (<<<)
+        if ($0 !~ /<<</) {
+            temp = $0
+            sub(/^.*<<-?[[:space:]]*/, "", temp)
+            heredoc_strip_tabs = ($0 ~ /<<-/) ? 1 : 0
+            # Extract the delimiter word and strip surrounding quotes
+            match(temp, /^['\''"]?[a-zA-Z0-9_]+['\''"]?/)
+            delim = substr(temp, RSTART, RLENGTH)
+            gsub(/['\''"]/, "", delim)
+            if (delim != "") {
+                in_heredoc = 1
+                heredoc_delim = delim
+            }
+        }
+    }
+
+    # 3. Track multi-line single and double quotes character-by-character
+    {
+        was_in_quote = (in_squote || in_dquote)
+        len = length($0)
+        for (i = 1; i <= len; i++) {
+            c = substr($0, i, 1)
+            prev = (i > 1) ? substr($0, i - 1, 1) : ""
+
+            # Ignore comments outside of quotes
+            if (!in_squote && !in_dquote && c == "#") {
+                break
+            }
+
+            # Toggle single quote (backslash does not escape inside single quotes)
+            if (c == "'"'"'" && !in_dquote) {
+                in_squote = !in_squote
+            }
+            # Toggle double quote (ignore escaped \")
+            else if (c == "\"" && !in_squote && prev != "\\") {
+                in_dquote = !in_dquote
+            }
+        }
+
+        # Skip auditing if this line started or ended inside a multi-line string
+        if (was_in_quote || in_squote || in_dquote) {
+            next
+        }
+    }
+
+    # 4. Skip full-line comments
     /^[[:space:]]*#/ { next }
 
-    # Match lines containing a standalone cd command
+
+    # 5. Match lines containing a standalone cd command
     /(^|[;&|[:space:]])cd([[:space:]]|$)/ {
         line = $0
-        # Strip inline comments for cleaner matching
         sub(/[[:space:]]+#.*$/, "", line)
 
-        # Skip lines where cd is only mentioned inside echo/printf strings
         if (line ~ /^[[:space:]]*(echo|printf)[[:space:]]/) next
 
-        # 1. Check for missing "--" delimiter (ignore bare "cd" or "cd -")
+        # Check for missing "--" delimiter
         if (line !~ /cd[[:space:]]+(-[LP][[:space:]]+)*--([[:space:]]|$)/ &&
             line !~ /cd[[:space:]]*([;&|)]|$)/ &&
             line !~ /cd[[:space:]]+-([[:space:]]*[;&|)]|$)/) {
             printf "%s:%d: [MISSING --] %s\n", fname, NR, $0
+            found = 1
         }
 
-        # 2. Check for potential CDPATH exposure (relative paths not starting with /, ., or ~)
+        # Check for potential CDPATH exposure
         if (line ~ /cd[[:space:]]+((-[LP]|--)[[:space:]]+)*[a-zA-Z0-9_]/ &&
             line !~ /CDPATH=/) {
             printf "%s:%d: [CDPATH RISK - bare relative path] %s\n", fname, NR, $0
+            found = 1
         }
 
-        # 3. Check for unguarded variable prefix (e.g., "$VAR/sub" without :?)
+        # Check for unguarded variable prefix
         if (line ~ /"\$[a-zA-Z_][a-zA-Z0-9_]*\//) {
             printf "%s:%d: [EMPTY VAR RISK - could expand to /sub] %s\n", fname, NR, $0
+            found = 1
         }
 
-        # 4. Check for missing error handling (|| exit, || return, if cd, &&)
+        # Check for missing error handling
         if (line !~ /(\|\||&&|^[[:space:]]*(if|while|!)[[:space:]]+cd)/) {
             printf "%s:%d: [UNCHECKED EXIT - no || or &&] %s\n", fname, NR, $0
+            found = 1
         }
+    }
+
+    END {
+        exit found
     }
     ' "$file"
 }
 
+
+
 # --
 # Proceed with identified, valid targets
 
+# Resolve the physical path of this script so it skips itself during directory scans
+self_dir=$(CDPATH='' cd -P -- "$(dirname -- "$0")" 2>/dev/null && pwd -P)
+self_path="$self_dir/$(basename -- "$0")"
+
+lint_error_found=''
 
 if [ -n "$target_file" ]; then
     # Audit the specified file
     #
     audit_file "$target_file"
+    echo "exit code: $?"
 
 elif [ -n "$target_dir" ]; then
     # Audit all shell script in specified directory.
     #
-    find "$target_dir" -type f ! -path '*/.git/*' | while IFS= read -r file; do
-        # Only inspect files with a shell extension or a shell shebang
-        case "$file" in
-            *.sh|*.bash|*.zsh) is_shell=1 ;;
-            *)
-                first_line=$(head -n 1 "$file" 2>/dev/null)
-                case "$first_line" in
-                    '#!'*/sh*|'#!'*/bash*|'#!'*/zsh*|'#!'*' env sh'*|'#!'*' env bash'*|'#!'*' env zsh'*)
-                        is_shell=1 ;;
+    if ! find "$target_dir" -type f ! -path '*/.git/*' | {
+            subshell_err=0
+            while IFS= read -r file; do
+                # Skip scanning the auditor script itself
+                file_dir=$(CDPATH='' cd -P -- "$(dirname -- "$file")" 2>/dev/null && pwd -P)
+                if [ "$file_dir/$(basename -- "$file")" = "$self_path" ]; then
+                    continue
+                fi
+                # Only inspect files with a shell extension or a shell shebang
+                case "$file" in
+                    *.sh|*.bash|*.zsh) is_shell=1 ;;
                     *)
-                        is_shell=0 ;;
+                        first_line=$(head -n 1 "$file" 2>/dev/null)
+                        case "$first_line" in
+                            '#!'*/sh*|'#!'*/bash*|'#!'*/zsh*|'#!'*' env sh'*|'#!'*' env bash'*|'#!'*' env zsh'*)
+                                is_shell=1 ;;
+                            *)
+                                is_shell=0 ;;
+                        esac
+                        ;;
                 esac
-                ;;
-        esac
-
-        if [ "$is_shell" -eq 1 ]; then
-            audit_file "$file"
-        fi
-
-    done
+                if [ "$is_shell" -eq 1 ]; then
+                    if ! audit_file "$file"; then
+                        subshell_err=1
+                    fi
+                fi
+            done
+            exit "$subshell_err"
+        }; then
+        lint_error_found=1
+    fi
+    exit $lint_error_found
 fi
 
 # ----------------------------------------------------------------------------
