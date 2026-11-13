@@ -3,7 +3,7 @@
 # Purpose   : Common zsh functions also used by configuration.
 # Created   : Friday, October  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 22:17:35 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 22:32:17 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,7 +62,7 @@ set_title()
                 ;;
 
             *)
-                usrhome_print_error 'set-title: The %s Operating System is not yet supported!
+                usrhome_printf_error 'set-title: The %s Operating System is not yet supported!
 \t Please report the error on GitHub USRHOME website.
 \t You may also provide a Pull Request.\n' "$os_type"
                 return 1

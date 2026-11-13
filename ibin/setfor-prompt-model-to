@@ -3,7 +3,7 @@
 # Purpose   : Change zsh prompt model in current shell.
 # Created   : Wednesday, April  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 22:08:04 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 22:30:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,7 +34,7 @@
 print_status()
 {
     if [ -n "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
-        usrhome_prinf '  Using overridden prompt model number: %s\n' "$USRHOME_PROMPT_MODEL_OVERRIDE"
+        usrhome_printf '  Using overridden prompt model number: %s\n' "$USRHOME_PROMPT_MODEL_OVERRIDE"
     fi
     if [ -z "$USRHOME_PROMPT_MODEL" ]; then
         usrhome_print_warning '  The current prompt model number is undefined.'

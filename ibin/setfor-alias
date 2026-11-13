@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 22:19:54 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-12 22:29:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -263,7 +263,7 @@ if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
         if [ -z "$1" ]; then
             ( ls -d ${_sa_usrhome_ls_color_flag} -- */ ) 2> /dev/null
         elif [ $# -gt 1 ]; then
-            usrhome_print_error 'lsd does not support glob, and more than 1 argument.
+            usrhome_printf_error 'lsd does not support glob, and more than 1 argument.
 \t You provided %s arguments.
 \t Usage: lsd [ARG]
 \t        ARG: full or partial directory name.\n' "$#"
