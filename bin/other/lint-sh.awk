@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 15:45:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:11:14 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,6 +27,7 @@ BEGIN {
     sq = sprintf("%c", 39)
     dq = sprintf("%c", 34)
     found = 0
+    unsupported_count = 0
     hd_head = 1
     hd_tail = 0
 
@@ -71,8 +72,14 @@ fname == "" {
 }
 
 function warn(message) {
-    printf "%s:%d: [%s] %s\n", fname, NR, message, $0
     found = 1
+
+    if (message ~ /^UNSUPPORTED([[:space:]]|$)/) {
+        unsupported_count++
+        if (hide_unsupported)
+            return
+    }
+    printf "%s:%d: [%s] %s\n", fname, NR, message, $0
 }
 
 # A word is stored without quote characters, but with the position of
@@ -322,6 +329,11 @@ END {
     if (hd_head <= hd_tail) {
         printf "%s:%d: [UNTERMINATED heredoc]\n", fname, NR
         found = 1
+    }
+
+    if (hide_unsupported && unsupported_count > 0) {
+        printf "%s: WARNING: %d unsupported diagnostics suppressed; audit incomplete\n",
+            fname, unsupported_count
     }
     exit found
 }

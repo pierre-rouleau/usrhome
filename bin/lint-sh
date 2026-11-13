@@ -4,7 +4,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 15:04:17 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:19:08 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -35,7 +35,7 @@ print_usage()
 
    Print this help information.
 
- • Usage: %s -f FILE | -d DIRECTORY
+ • Usage: %s [-v] -f FILE | -d DIRECTORY
 
    Scans a single shell script or all shell scripts (.sh, .bash, .zsh, or files
    with shell shebangs) inside a directory for missing \"--\" end-of-options
@@ -48,6 +48,9 @@ print_usage()
      - Unchecked exit statuses (missing ||, &&, or conditional guards)
 
    Arguments:
+    -v            Verbose: show all diagnostics that cannot be analyzed
+                  by the current lexer.  They are hidden by default but
+                  their count is always sown at the end.
     -f FILE       Audit a single shell script file
     -d DIRECTORY  Recursively audit all shell scripts inside DIRECTORY
 
@@ -81,6 +84,7 @@ fi
 
 target_file=''
 target_dir=''
+verbose=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -102,7 +106,10 @@ while [ $# -gt 0 ]; do
             target_dir=$2
             shift 2
             ;;
-
+        -v)
+            verbose=1
+            shift
+            ;;
         --)
             shift
             break
@@ -147,7 +154,11 @@ audit_file()
 {
     file=$1
 
-    awk -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$file"
+    if [ "$verbose" = "1" ]; then
+        awk -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$file"
+    else
+        awk -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$file"
+    fi
 }
 
 # --
