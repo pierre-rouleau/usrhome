@@ -4,7 +4,7 @@
 # Purpose   : Find all Python files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:28:20 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 19:39:41 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,7 +25,7 @@
 #
 #
 
-error_log="find-perl.log.txt"
+error_log="find-py.log.txt"
 pgm_name="${0##*/}"
 
 print_usage()
@@ -109,6 +109,7 @@ search()
 
         fd)
             ${fd_pgm} --absolute-path \
+                      --show-errors      \
                       --follow           \
                       --type f           \
                       --type l           \

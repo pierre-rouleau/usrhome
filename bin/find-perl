@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:28:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 19:39:04 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -202,6 +202,7 @@ search()
 
         fd)
             ${fd_pgm} --absolute-path \
+                      --show-errors      \
                       --follow           \
                       --type f           \
                       --type l           \
