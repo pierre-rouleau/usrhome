@@ -4,7 +4,7 @@
 # Purpose   : Prevent macOS to prompt for upgrading Number, Pages and Keynotes.
 # Created   : Friday, October  2 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 23:29:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:49:14 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -156,7 +156,7 @@ for app in $apps; do
                 if [ "$do_backup" -eq 1 ]; then
                     # Create custom backup directory if missing
                     if [ ! -d "$backup_dir" ]; then
-                        mkdir -p "$backup_dir"
+                        mkdir -p -- "$backup_dir"
                         printf -- "- Created backup directory at %s\n" "$backup_dir"
                     fi
 
@@ -165,7 +165,7 @@ for app in $apps; do
 
                     if [ -f "$src_plist" ]; then
                         if [ ! -f "$dest_plist" ]; then
-                            cp "$src_plist" "$dest_plist"
+                            cp -- "$src_plist" "$dest_plist"
                             printf -- "- Saved original config to %s\n" "$dest_plist"
                         else
                             printf -- "- Existing backup found. Skipping overwrite.\n"

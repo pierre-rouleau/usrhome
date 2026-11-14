@@ -4,7 +4,7 @@
 # Purpose   : Check a SELinux Type Enforcement file, generate a .mod and .pp file.
 # Created   : Monday, October 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 08:47:50 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:53:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -105,7 +105,7 @@ if checkmodule -M -m -o "${fbase}.mod" "${fname}"; then
     fi
     semodule_package -o "${fbase}.pp" -m "${fbase}.mod"
     if [ "$keep" = "false" ]; then
-        rm "${fbase}.mod"
+        rm -- "${fbase}.mod"
     fi
 else
     exit 1

@@ -4,7 +4,7 @@
 # Purpose   : Find all Python files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 23:27:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 19:39:41 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,6 +25,7 @@
 #
 #
 
+error_log="find-py.log.txt"
 pgm_name="${0##*/}"
 
 print_usage()
@@ -43,10 +44,11 @@ print_usage()
   • Search and print name of Python files found in specified directories.
     - If DIR is not specified, search in the current working directory.
 
-" "$pgm_name" "$pgm_name" "$pgm_name"
+ ERRORS: All detected errors are appended to the file %s
+         stored locally. The file is never deleted.  You must delete it
+         manually first if you want to detect new errors.
+" "$pgm_name" "$pgm_name" "$pgm_name" "${error_log}"
 }
-
-# [:todo 2024-10-08, by Pierre Rouleau: Add ability to pass find options such as -x]
 
 # --
 # Check validity of arguments
@@ -56,19 +58,34 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     exit 0
 fi
 
-case $(uname) in
-    Darwin)
-        find_path_option='-f'
-        ;;
-    Linux)
-        find_path_option=
-        ;;
-    *)
-        printf -- "%s ** Error Operating System, %s, is not supported!\n" "$pgm_name" "$(uname)"
-        exit 1
-        ;;
-esac
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
+# --
+# Identify the command to use.
+
+if command -v fdfind > /dev/null 2>&1; then
+    search_with='fd'
+    fd_pgm=fdfind
+elif command -v fd > /dev/null 2>&1; then
+    search_with='fd'
+    fd_pgm=fd
+else
+    search_with='find'
+    case $(uname) in
+        Darwin)
+            find_path_option='-f'
+            ;;
+        Linux)
+            find_path_option=
+            ;;
+        *)
+            usrhome_printf_error 'find-py: Operating System, %s, is not supported!\n' "$(uname)"
+            exit 1
+            ;;
+    esac
+fi
 
 # -----------------------------------------------------------------------------
 # Proceed:
@@ -80,12 +97,33 @@ esac
 search()
 {
     # Arg1: dirname : name of directory to search
-    find -L                               \
-         ${find_path_option} "$dirname"   \
-         \( -type f -or -type l \)        \
-         \(  -name "*.py"                 \
-         -or -name "*.pyw"                \
-         \) -print 2> /dev/null
+    case "$search_with" in
+        find)
+            find -L                               \
+                 "${find_path_option}" "$dirname"   \
+                 \( -type f -or -type l \)        \
+                 \(  -name "*.py"                 \
+                 -or -name "*.pyw"                \
+                 \) -print 2>> "${error_log}"
+            ;;
+
+        fd)
+            ${fd_pgm} --absolute-path \
+                      --show-errors      \
+                      --follow           \
+                      --type f           \
+                      --type l           \
+                      -e .py             \
+                      -e .pyw            \
+                      . "$dirname" 2>> "${error_log}"
+            ;;
+
+        *)
+            usrhome_printf_error 'find-py: cannot identify find program!\n'
+            exit 1
+            ;;
+
+        esac
 }
 
 if [ -z "$1" ]; then

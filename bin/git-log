@@ -4,7 +4,7 @@
 # Purpose   : Show pretty print log with branch info.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 17:19:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 09:28:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -81,6 +81,10 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     exit 0
 fi
 
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 commands='
 graph
 name
@@ -125,14 +129,14 @@ case "${command}" in
         ;;
 
     tree)
-        if ! command -v git-show-tree > /dev/null; then
-            echo "***ERROR: This requires git-extras which is not available."
+        if ! command -v git-show-tree > /dev/null 2>&1; then
+            usrhome_printf_error 'git-log: requires git-extras which is not available.\n'
             case "$(uname)" in
                 Darwin)
-                    echo " Install it with: 'brew install git_extras'"
+                    usrhome_printf_stderr '\t Install it with: '\''brew install git_extras'\''.\n'
                     ;;
                 Linux)
-                    echo " Install it with: 'sudo apt install git_extras'"
+                    usrhome_printf_stderr '\t Install it with: '\''sudo apt install git_extras'\''.\n'
                     ;;
                 *)
             esac

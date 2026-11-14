@@ -1,0 +1,221 @@
+#!/bin/sh
+# SH FILE: lint-sh-cd
+#
+# Purpose   : Lint shells scripts - check for issues with cd.
+# Created   : Friday, November 13 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-13 16:19:08 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#  Scans shell scripts for risky 'cd' usage that ShellCheck may miss.
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+pgm_name="${0##*/}"
+
+print_usage()
+{
+    printf -- "\
+%s -- Scans shell scripts for risky cd usage that ShellCheck may miss.
+
+ • Usage: %s -h|--help
+
+   Print this help information.
+
+ • Usage: %s [-v] -f FILE | -d DIRECTORY
+
+   Scans a single shell script or all shell scripts (.sh, .bash, .zsh, or files
+   with shell shebangs) inside a directory for missing \"--\" end-of-options
+   delimiters on POSIX utilities and risky \"cd\" patterns.
+
+   Checks performed:
+     - Missing \"--\" end-of-options delimiter
+     - Bare relative paths vulnerable to CDPATH side effects
+     - Unguarded variable prefixes (e.g., \"\$VAR/sub\" instead of \"\${VAR:?}/sub\")
+     - Unchecked exit statuses (missing ||, &&, or conditional guards)
+
+   Arguments:
+    -v            Verbose: show all diagnostics that cannot be analyzed
+                  by the current lexer.  They are hidden by default but
+                  their count is always sown at the end.
+    -f FILE       Audit a single shell script file
+    -d DIRECTORY  Recursively audit all shell scripts inside DIRECTORY
+
+   Options:
+     -h, --help  Display this help message and exit
+
+   Examples:
+    %s -f /path/to/usrhome/bin/script.sh
+    %s -d /path/to/usrhome
+" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# validate arguments
+
+# Print usage and exit if no arguments are supplied
+if [ $# -eq 0 ]; then
+    print_usage
+    exit 1
+fi
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
+target_file=''
+target_dir=''
+verbose=0
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -f|--file)
+            if [ $# -lt 2 ] || [ -z "$2" ]; then
+                printf 'ERROR: %s requires a file argument.\n\n' "$1" >&2
+                print_usage >&2
+                exit 1
+            fi
+            target_file=$2
+            shift 2
+            ;;
+        -d|--directory)
+            if [ $# -lt 2 ] || [ -z "$2" ]; then
+                printf 'ERROR: %s requires a directory argument.\n\n' "$1" >&2
+                print_usage >&2
+                exit 1
+            fi
+            target_dir=$2
+            shift 2
+            ;;
+        -v)
+            verbose=1
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            usrhome_printf_error '%s: Unknown option: %s
+\t Use the -h option to print usage.\n' "$pgm_name" "$1"
+            exit 1
+            ;;
+        *)
+            usrhome_printf_error '%s: Unexpected argument: %s
+\t Use the -h option to print usage.\n' "$pgm_name" "$1"
+            exit 1
+            ;;
+    esac
+done
+
+# Reject extra positional arguments or both -f and -d used together
+if [ -n "$target_file" ] && [ -n "$target_dir" ]; then
+    usrhome_printf_error '%s: Specify either -f FILE or -d DIRECTORY, not both.
+\t Use the -h option to print usage.\n' "$pgm_name" "$1"
+    exit 1
+fi
+
+# Reject invalid targets
+if [ -n "$target_file" ]; then
+    if [ ! -f "$target_file" ]; then
+        usrhome_printf_error '%s: File not found: %s\n' "$pgm_name" "$target_file"
+        exit 1
+    fi
+elif [ -n "$target_dir" ]; then
+    if [ ! -d "$target_dir" ]; then
+        usrhome_printf_error '%s: Directory not found: %s\n' "$pgm_name" "$target_dir"
+        exit 1
+    fi
+fi
+
+# --
+# Define the operations
+
+audit_file()
+{
+    file=$1
+
+    if [ "$verbose" = "1" ]; then
+        awk -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$file"
+    else
+        awk -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$file"
+    fi
+}
+
+# --
+# Proceed with identified, valid targets
+
+# Resolve the physical path of this script so it skips itself during directory scans
+self_dir=$(CDPATH='' cd -P -- "$(dirname -- "$0")" 2>/dev/null && pwd -P)
+self_path="$self_dir/$(basename -- "$0")"
+
+lint_error_found=0
+
+if [ -n "$target_file" ]; then
+    # Audit the specified file
+    #
+    if ! audit_file "$target_file"; then
+        lint_error_found=1
+    fi
+
+elif [ -n "$target_dir" ]; then
+    # Audit all shell script in specified directory.
+    #
+    if ! find "$target_dir" -type f ! -path '*/.git/*' | {
+            subshell_err=0
+            while IFS= read -r file; do
+                # Skip scanning the auditor script itself
+                file_dir=$(CDPATH='' cd -P -- "$(dirname -- "$file")" 2>/dev/null && pwd -P)
+                if [ "$file_dir/$(basename -- "$file")" = "$self_path" ]; then
+                    continue
+                fi
+                # Only inspect files with a shell extension or a shell shebang
+                case "$file" in
+                    *.sh|*.bash|*.zsh) is_shell=1 ;;
+                    *)
+                        first_line=$(head -n 1 "$file" 2>/dev/null)
+                        case "$first_line" in
+                            '#!'*/sh*|'#!'*/bash*|'#!'*/zsh*|'#!'*' env sh'*|'#!'*' env bash'*|'#!'*' env zsh'*)
+                                is_shell=1 ;;
+                            *)
+                                is_shell=0 ;;
+                        esac
+                        ;;
+                esac
+                if [ "$is_shell" -eq 1 ]; then
+                    if ! audit_file "$file"; then
+                        subshell_err=1
+                    fi
+                fi
+            done
+            exit "$subshell_err"
+        }; then
+        lint_error_found=1
+    fi
+fi
+
+exit "$lint_error_found"
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: zsh
+# End:

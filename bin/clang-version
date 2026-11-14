@@ -4,7 +4,7 @@
 # Purpose   : Print version of Clang compiler on stdout.
 # Created   : Tuesday, September  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 12:48:54 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 11:30:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -48,7 +48,7 @@ program="$USRHOME_DIR/bin/compiled/cpp/clang-version/clang-version"
 # check for presence of executable. If missing, build it.
 
 if [ ! -x "${program}" ]; then
-    cd "$(dirname "${program}")" || exit 1
+    cd -- "$(dirname "${program}")" || exit 1
     make clang-version || exit 1
 fi
 if [ ! -x "${program}" ]; then

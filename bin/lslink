@@ -4,13 +4,15 @@
 # Purpose   : List all symlinks in current directory tree.
 # Created   : Tuesday, August 26 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-26 12:20:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 14:17:50 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # ------------
 #
 #  Search for all symlink in the directory tree and display the full path
 #  of the link and the file/directory it links to.
+
+# Ref: https://stackoverflow.com/a/21438684
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -24,7 +26,9 @@
 # ----
 #
 #
-# Ref: https://stackoverflow.com/a/21438684
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
 case "$(uname)" in
     Darwin)
@@ -38,7 +42,7 @@ case "$(uname)" in
         ;;
 
     *)
-        printf -- "lslink ** Error: Sorry, the %s Operating System is not supported!\n" "$(uname)"
+        usrhome_printf_error 'lslink: Sorry, the %s Operating System is not supported!\n' "$(uname)"
         exit 1
         ;;
 esac

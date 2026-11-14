@@ -3,7 +3,7 @@
 # Purpose   : User Configuration Common to all supported shells.
 # Created   : Thursday, May  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 11:51:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 10:07:02 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -57,7 +57,7 @@ cddoc()
 
 # Topic: macOS Number
 if [ "$(uname)" = "Darwin" ]; then
-    if command -v fd > /dev/null; then
+    if command -v fd > /dev/null 2>&1; then
         alias f-numbers='fd ".numbers$"'
     else
         alias f-numbers='find . ! -name . -name ".*" -prune -o -iname "*.numbers" -print'

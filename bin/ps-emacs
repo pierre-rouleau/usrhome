@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-01 11:34:21 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 09:31:46 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -98,7 +98,7 @@ use_gawk=no
 
 case "$(uname)" in
     Darwin)
-        if command -v gawk > /dev/null; then
+        if command -v gawk > /dev/null 2>&1; then
             use_gawk=yes
         fi
         case_sensitive=no
@@ -110,7 +110,7 @@ case "$(uname)" in
         ;;
 
     Linux)
-        if command -v gawk > /dev/null; then
+        if command -v gawk > /dev/null 2>&1; then
             use_gawk=yes
         fi
         case_sensitive=yes

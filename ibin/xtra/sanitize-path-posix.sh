@@ -3,7 +3,7 @@
 # Purpose   : Sanitize PATH-like variable content.  POSIX- Compliant logic.
 # Created   : Sunday, November 08 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 10:14:23 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 15:59:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -306,7 +306,7 @@ _usrhome_sanitize_path() {
     fi
 
     # The assignment occurs in the calling shell.
-    if ! export "$1=$3"; then
+    if ! export -- "$1=$3"; then
         usrhome_printf_error 'sanitize-path: could not export %s\n' "$1"
         return 1
     fi
