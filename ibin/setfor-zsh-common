@@ -3,7 +3,7 @@
 # Purpose   : Common zsh functions also used by configuration.
 # Created   : Friday, October  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 22:32:17 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 10:54:59 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -68,7 +68,7 @@ set_title()
                 return 1
         esac
     fi
-    export USRHOME_TITLE=$title_text
+    export USRHOME_TITLE="$title_text"
 }
 
 

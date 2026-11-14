@@ -3,7 +3,7 @@
 # Purpose   : Change current directory to USRHOME root.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-04 21:49:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 11:26:26 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -15,16 +15,26 @@
 # Dependencies
 # ------------
 #
-# - Invoked via: usrhome, an alias set inside usrhome/ibin/setfor-zsh-alias
+# - Invoked via: usrhome, an alias set inside $USRHOME_DIR/ibin/setfor-alias
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
-#
+# Note: The precautions in this code to ensure that USRHOME_DIR is set
+#       exit mainly to silence the various shell script checkers.
+#       They are  not really required since this script is normally invoked
+#       through an alias that requires the proper value of USRHOME_DIR
+#       as described in the dependencies.  If USRHOME_DIR is not set properly
+#       most USRHOME utilities will fail anyway.
 
-cd $USRHOME_DIR/$1
-set_title USRHOME
+if [ -n "$USRHOME_DIR" ]; then
+    cd -- "${USRHOME_DIR:-$HOME:-usrhome-missing-error/$1}" || return 1
+    set_title USRHOME
+else
+    printf "ERROR: USRHOME_DIR is not set!!\n" >&2
+    return 1
+fi
 
 # ----------------------------------------------------------------------------
 #  Local Variables:

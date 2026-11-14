@@ -3,7 +3,7 @@
 # Purpose   : Sanitize PATH-like variable content.  POSIX- Compliant logic.
 # Created   : Sunday, November 08 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 15:59:54 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 10:53:44 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -314,8 +314,8 @@ _usrhome_sanitize_path() {
     if [ "$2" != "$3" ] &&
        [ "${SHELL_IS_INTERACTIVE:-}" = true ] &&
        [ "${TERM:-}" != dumb ]; then
-        usrhome_printf_warning 'USRHOME has sanitized your %s.
-         Use showpath to display the new value of that envvar.\n' "$1"
+        usrhome_printf_warning 'USRHOME has sanitized your %s.\n' "$1"
+        usrhome_printf_stderr  'Use showpath to display the new value of that envvar.\n'
     fi
     return 0
 }

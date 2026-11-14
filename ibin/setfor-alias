@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 22:29:47 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 17:01:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -67,7 +67,7 @@ cduh()
     if [ -n "$USRHOME_SHELL_HOME" ]; then
         cd -- "$USRHOME_SHELL_HOME"/"$1" || return 1
     else
-        cd -- "$HOME/$1" || return 1
+        cd -- "${HOME:-usrhome-missing-error/$1}" || return 1
     fi
 }
 
@@ -176,9 +176,9 @@ mdd()
     # mdd: mkdir and cd
     #      If path has / in it, mkdir -p is used.
     if printf "%s" "$1" | grep "/" > /dev/null; then
-        mkdir -pv "$1" || return 1
+        mkdir -pv -- "$1" || return 1
     else
-        mkdir "$1" || return 1
+        mkdir -- "$1" || return 1
     fi
     cd -- "$1" || return 1
 }
@@ -359,7 +359,7 @@ lsl()
     esac
     if [ -z "$1" ]; then
         if [ "$long_ls" = "true" ]; then
-            find . -maxdepth 1 -type l | xargs -I % ls -l %
+            find . ! -name . -prune -type l -exec ls -ld {} +
         else
             find . -maxdepth 1 -type l | sed -e 's|\./||g' | sort | column
         fi
@@ -373,7 +373,7 @@ lsl()
         return 1
     else
         if [ "$long_ls" = "true" ]; then
-            find . -maxdepth 1 -name "$1" -type l | xargs -I % ls -l %
+            find . ! -name . -prune -name "$1" -type l -exec ls -ld {} +
         else
             find . -maxdepth 1 -name "$1" -type l | sed -e 's|\./||g' | sort | column
         fi
@@ -431,7 +431,7 @@ _usrhome_setenv()
             ;;
     esac
 
-    export "$1=$2" || return 1
+    export -- "$1=$2" || return 1
     printf -- '%s=%s\n' "$1" "$2"
 }
 alias setenv='_usrhome_setenv'
@@ -817,7 +817,7 @@ alias info-desktop=info_desktop
 # Fix emacs-eat term behaviour under macOS/arm64
 # Without this zsh delete key does not work, zsh and bash prompt
 # also fail in various ways.
-if [ "${INSIDE_EMACS/*,/}" = "eat" ]; then
+if [ "${INSIDE_EMACS##*,}" = "eat" ]; then
     if [ "${os_name}" = "Darwin" ]; then
         if [ "$(arch)" = "arm64" ]; then
             TERM=xterm-256color

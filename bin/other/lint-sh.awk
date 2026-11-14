@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 16:56:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 16:33:12 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -98,9 +98,10 @@ function emit_word() {
         words[nt] = word
         dynamic[nt] = dyn
         unquoted[nt] = udyn
+        word_quoted[nt] = was_quoted
     }
     word = ""
-    dyn = udyn = 0
+    dyn = udyn = was_quoted = 0
     active = 0
 }
 
@@ -108,14 +109,20 @@ function add_dynamic() {
     if (!dyn) dyn = length(word) + 1
 }
 
-function audit_segment(    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
-                           c,argopt,rest,seg,has_cdpath,missing_reported) {
+function audit_segment(end_op, tail,    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
+                       c,argopt,rest,seg,has_cdpath,missing_reported,
+                       condition_kind,checked) {
     i = 1
-    while (i <= nt && words[i] ~ /^(if|elif|while|until|then|do|else|!)$/)
+    condition_kind = ""
+    while (i <= nt && words[i] ~ /^(if|elif|while|until|then|do|else|!)$/) {
+        if (words[i] ~ /^(if|elif|while|until)$/)
+            condition_kind = words[i]
         i++
+    }
     has_cdpath = 0
     while (i <= nt && words[i] ~ /^[a-zA-Z_][a-zA-Z0-9_]*=/) {
-        if (words[i] ~ /^CDPATH=/) has_cdpath = 1
+        if (words[i] ~ /^CDPATH=/)
+            has_cdpath = (words[i] == "CDPATH=" && !dynamic[i])
         i++
     }
     if (i > nt) return
@@ -201,7 +208,19 @@ function audit_segment(    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
 
         if (logical_line ~ /"\$[a-zA-Z_][a-zA-Z0-9_]*\//)
             warn("EMPTY VAR RISK - could expand to /sub")
-        if (logical_line !~ /(\|\||&&|^[[:space:]]*(if|elif|while|until|!)[[:space:]]+cd)/)
+        # A following && or || tests this command's status.
+        checked = (end_op == "&&" || end_op == "||")
+
+        # Recognize simple, same-line control conditions.  A preceding
+        # command in the condition is not sufficient to check this cd.
+        if (end_op == ";" &&
+            ((condition_kind ~ /^(if|elif)$/ &&
+              tail ~ /^[[:space:]]*then([[:space:];]|$)/) ||
+             (condition_kind ~ /^(while|until)$/ &&
+              tail ~ /^[[:space:]]*do([[:space:];]|$)/)))
+            checked = 1
+
+        if (!checked)
             warn("UNCHECKED EXIT on cd")
     }
 }
@@ -218,7 +237,7 @@ hd_head <= hd_tail && !pending_quote {
     if (!pending_quote) {
         nt = 0
         word = ""
-        dyn = udyn = active = redir = here = here_tabs = 0
+        dyn = udyn = was_quoted = active = redir = here = here_tabs = 0
         quote = ""
         logical_line = $0
     } else {
@@ -250,6 +269,7 @@ hd_head <= hd_tail && !pending_quote {
             }
 
             active = 1
+            was_quoted = 1
             word = word nextc
             p++
             continue
@@ -257,6 +277,7 @@ hd_head <= hd_tail && !pending_quote {
 
         if (c == dq) {
             active = 1
+            was_quoted = 1
             if (quote == dq)
                 quote = ""
             else {
@@ -267,6 +288,7 @@ hd_head <= hd_tail && !pending_quote {
         }
         if (quote == "" && c == sq) {
             active = 1
+            was_quoted = 1
             quote = sq
             quote_line = NR
             continue
@@ -317,7 +339,6 @@ hd_head <= hd_tail && !pending_quote {
             } else if (nextc == c || nextc == "&" || nextc == "|") {
                 p++
             }
-
             continue
         }
         if (c ~ /[;&|()]/) {
@@ -327,7 +348,12 @@ hd_head <= hd_tail && !pending_quote {
                 unsupported = 1
                 break
             }
-            audit_segment()
+            end_op = c
+            if ((c == "&" || c == "|") && nextc == c) {
+                end_op = c c
+                p++
+            }
+            audit_segment(end_op, substr($0, p + 1))
             nt = 0
             continue
         }
@@ -350,7 +376,7 @@ hd_head <= hd_tail && !pending_quote {
     pending_quote = 0
     emit_word()
     if (redir) warn("UNSUPPORTED redirection")
-    else audit_segment()
+    else audit_segment("", "")
 }
 
 END {

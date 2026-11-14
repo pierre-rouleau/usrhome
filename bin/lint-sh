@@ -4,7 +4,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 16:19:08 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 11:46:39 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -33,13 +33,14 @@ print_usage()
 
  • Usage: %s -h|--help
 
-   Print this help information.
+    Print this help information.
 
  • Usage: %s [-v] -f FILE | -d DIRECTORY
 
-   Scans a single shell script or all shell scripts (.sh, .bash, .zsh, or files
-   with shell shebangs) inside a directory for missing \"--\" end-of-options
-   delimiters on POSIX utilities and risky \"cd\" patterns.
+    Scans a single shell script or all shell scripts (.sh, .bash, .zsh, files
+    with shell shebangs, or files with sourced shell script markers) inside a
+    directory for missing \"--\" end-of-options delimiters on POSIX utilities
+    and risky \"cd\" patterns.
 
    Checks performed:
      - Missing \"--\" end-of-options delimiter
@@ -48,9 +49,9 @@ print_usage()
      - Unchecked exit statuses (missing ||, &&, or conditional guards)
 
    Arguments:
-    -v            Verbose: show all diagnostics that cannot be analyzed
-                  by the current lexer.  They are hidden by default but
-                  their count is always sown at the end.
+    -v            Verbose: show all warnings for diagnostics that cannot be
+                  analyzed by the current lexer instead of only showing
+                  the warning count detected on each file.
     -f FILE       Audit a single shell script file
     -d DIRECTORY  Recursively audit all shell scripts inside DIRECTORY
 
@@ -60,7 +61,15 @@ print_usage()
    Examples:
     %s -f /path/to/usrhome/bin/script.sh
     %s -d /path/to/usrhome
-" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
+
+   LIMITATIONS:
+     %s cannot analyze some code constructs and skips them issuing a warning
+     when the -v option is specified.  Each diagnostic line printed by %s
+     starts with 'WARNING: '.
+     If you want to only see the detected issues you can filter the warnings
+     by piping the output of %s into:  grep -v ': WARNING: '
+" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
+  "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
 # --
@@ -127,10 +136,17 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+# Reject no target
+if [ -z "$target_file" ] && [ -z "$target_dir" ]; then
+    usrhome_printf_error '%s: No FILE or DIRECTORY specified.
+\t Use the -h option to print usage.\n' "$pgm_name"
+    exit 1
+fi
+
 # Reject extra positional arguments or both -f and -d used together
 if [ -n "$target_file" ] && [ -n "$target_dir" ]; then
     usrhome_printf_error '%s: Specify either -f FILE or -d DIRECTORY, not both.
-\t Use the -h option to print usage.\n' "$pgm_name" "$1"
+\t Use the -h option to print usage.\n' "$pgm_name"
     exit 1
 fi
 
@@ -154,10 +170,19 @@ audit_file()
 {
     file=$1
 
+    # Keep the original filename for diagnostics.  Prefix relative input
+    # paths so AWK cannot mistake them for assignments or options.
+    # This is done to prevent AWK from mistaking a file named 'abc=def'
+    # as a flag assignment.
+    case "$file" in
+        /*) awk_file=$file ;;
+        *)  awk_file=./$file ;;
+    esac
+
     if [ "$verbose" = "1" ]; then
-        awk -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$file"
+        awk -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
     else
-        awk -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$file"
+        awk -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
     fi
 }
 
@@ -180,37 +205,62 @@ if [ -n "$target_file" ]; then
 elif [ -n "$target_dir" ]; then
     # Audit all shell script in specified directory.
     #
-    if ! find "$target_dir" -type f ! -path '*/.git/*' | {
-            subshell_err=0
-            while IFS= read -r file; do
-                # Skip scanning the auditor script itself
-                file_dir=$(CDPATH='' cd -P -- "$(dirname -- "$file")" 2>/dev/null && pwd -P)
-                if [ "$file_dir/$(basename -- "$file")" = "$self_path" ]; then
-                    continue
-                fi
-                # Only inspect files with a shell extension or a shell shebang
-                case "$file" in
-                    *.sh|*.bash|*.zsh) is_shell=1 ;;
-                    *)
-                        first_line=$(head -n 1 "$file" 2>/dev/null)
-                        case "$first_line" in
-                            '#!'*/sh*|'#!'*/bash*|'#!'*/zsh*|'#!'*' env sh'*|'#!'*' env bash'*|'#!'*' env zsh'*)
-                                is_shell=1 ;;
-                            *)
-                                is_shell=0 ;;
-                        esac
-                        ;;
-                esac
-                if [ "$is_shell" -eq 1 ]; then
-                    if ! audit_file "$file"; then
-                        subshell_err=1
-                    fi
-                fi
-            done
-            exit "$subshell_err"
-        }; then
+    # Save the file list so the find status is not hidden by a pipeline.
+    file_list=$(mktemp "${USRHOME_DIR_TMP:-TMPDIR:-/tmp}/lint-sh.XXXXXXXXXX") || {
+        printf '%s: cannot create temporary file list\n' "$pgm_name" >&2
+        exit 1
+    }
+    trap 'rm -f -- "$file_list"' 0
+    trap 'exit 1' HUP INT TERM
+
+    if ! find "$target_dir" -type f ! -path '*/.git/*' > "$file_list"; then
         lint_error_found=1
     fi
+    {
+        while IFS= read -r file; do
+            # Skip scanning the auditor script itself
+            file_dir=$(CDPATH='' cd -P -- "$(dirname -- "$file")" 2>/dev/null && pwd -P)
+            if [ "$file_dir/$(basename -- "$file")" = "$self_path" ]; then
+                continue
+            fi
+            # Only inspect files with a shell extension or a shell shebang
+            case "$file" in
+                *.sh|*.bash|*.zsh) is_shell=1 ;;
+                *)
+                    first_line=$(head -n 1 "$file" 2>/dev/null)
+                    case "$first_line" in
+                        # Match shell path in the shebang line
+                        '#!'*/sh*|'#!'*/bash*|'#!'*/zsh*|'#!'*' env sh'*|'#!'*' env bash'*|'#!'*' env zsh'*)
+                            is_shell=1 ;;
+                        *)
+                            # Match env followed by a shell name, with
+                            # optional -S and shell arguments.
+                            if printf '%s\n' "$first_line" |
+                                    grep -Eq \
+                                         '^#![[:blank:]]*/([^[:blank:]]*/)?env[[:blank:]]+(-S[[:blank:]]+)?(sh|bash|zsh)([[:blank:]]|$)'
+                            then
+                                is_shell=1
+                            else
+                                if printf '%s\n' "$first_line" |
+                                        grep -Eq \
+                                             '^[[:blank:]]*#[[:blank:]]*Sourced[[:blank:]]+script:.*-\*-[[:blank:]]*mode:[[:blank:]]*(sh|bash|zsh)[[:blank:]]*;[[:blank:]]*-\*-'
+                                then
+                                    is_shell=1
+                                else
+                                    is_shell=0
+                                fi
+                            fi
+                            ;;
+                    esac
+                    ;;
+            esac
+            if [ "$is_shell" -eq 1 ]; then
+                if ! audit_file "$file"; then
+                    list_error_found=1
+                fi
+            fi
+        done
+} < "$file_list"
 fi
 
 exit "$lint_error_found"
