@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 17:59:58 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 18:16:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -193,11 +193,14 @@ fi
 #
 # - Exclude perltidy files, Emacs backup and buffers files.
 
+# Keep the search status if the output filter succeeds.
+set -o pipefail
+{
 # Match direct Perl interpreters and env perl, including env -S perl.
 perl_shebang='^#![[:space:]]*([^[:space:]]*/perl|[^[:space:]]*/env[[:space:]]+(-S[[:space:]]+)?perl)([0-9]+([.][0-9]+)*)?([[:space:]]|$)'
 if command -v rg > /dev/null 2>&1; then
     for dname in "${searched_directories[@]}"; do
-        rg --hidden --no-ignore --follow -g !'*.tdy' -g !'*~' -g !'*#' -Nl "$perl_shebang" "$dname" 2>> "${error_log}"
+        rg --no-config --color=never --null --hidden --no-ignore --follow -g !'*.tdy' -g !'*~' -g !'*#' -Nl "$perl_shebang" "$dname" 2>> "${error_log}"
     done
 else
     # rg is not available; use recursive grep:
@@ -206,7 +209,7 @@ else
     # -E: extended regular expressions
     # As it might iterate over files that have restricted access: wipe error messages
     for dname in "${searched_directories[@]}"; do
-        grep -l --exclude '*.tdy' --exclude '*~' --exclude '*#' -R -E "$perl_shebang" "$dname" 2>> "${error_log}"
+        grep --color=never --null -l --exclude '*.tdy' --exclude '*~' --exclude '*#' -R -E "$perl_shebang" "$dname" 2>> "${error_log}"
     done
 fi
 
@@ -230,14 +233,15 @@ search()
                  -or -name "*.cgi"         \
                  -or -name "*.psg"         \
                  -or -name "*.psgi"        \
-                 \)  -print 2>> "${error_log}"
+                 \)  -print0 2>> "${error_log}"
             ;;
 
         fd)
             "${fd_pgm}" --absolute-path \
                       --hidden           \
                       --no-ignore        \
-                      --show-errors      \
+                      --color=never      \
+                      --print0           \
                       --follow           \
                       --type f           \
                       --type l           \
@@ -266,7 +270,11 @@ search()
 for dirname in "${searched_directories[@]}"; do
     search
 done
-
+} | perl -0ne '
+          BEGIN { binmode STDIN; binmode STDOUT }
+          chomp;
+          print "$_\n" unless $seen{$_}++;
+'
 # ----------------------------------------------------------------------------
 # Local Variables:
 # sh-shell: /bin/bash
