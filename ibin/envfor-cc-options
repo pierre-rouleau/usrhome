@@ -3,7 +3,7 @@
 # Purpose   : Force use of extra command line options for cc.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 12:41:58 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 15:25:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -50,18 +50,33 @@ envfor-cc-options -- Add extra compiler options to cc invocations.
 
   OPTION: cc command line option.  You can specify several.
 
- Note: ibin/envfor-cc-options is best invoked via its alias: use-cc-options
 
-"
+ Notes:
+  - ibin/envfor-cc-options is best invoked via its alias: use-cc-options
+  - This forces using the %s/bin/augmented/cc
+    to take the new options into account and remembers the absolute
+    path of the original cc into the USRHOME_CC_PGM environment variable.
+" "$USRHOME_DIR"
 }
 
 # --
 # validate arguments
 
 if [ "$#" -eq 0 ]; then
-    usrhome_print_error 'use-cc-options: missing arguments. Use -h to see usage.'
+    usrhome_printf_error 'use-cc-options: missing option argument.
+\t Use -h to see usage.\n'
     return 1
 fi
+case ${1-} in
+    *[![:space:]]*)
+    # The argument contains a non-whitespace character.
+    ;;
+    *)
+        usrhome_printf_error 'use-cc-options: option argument is empty or whitespace only.
+\t Use -h to see usage.\n'
+        return 1
+        ;;
+esac
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
@@ -69,11 +84,12 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     return 0
 fi
 
-
 if [ -z "$USRHOME_CC_OPTIONS" ]; then
     # On first invocation place the specialized cc in front of PATH
-    USRHOME_CC_PGM=$(command -v cc)
-    export USRHOME_CC_PGM
+    if [ -z "$USRHOME_CC_PGM" ]; then
+        USRHOME_CC_PGM=$(command -v cc)
+        export USRHOME_CC_PGM
+    fi
     PATH="$USRHOME_DIR/bin/augmented":"$PATH"
     usrhome_printf ". Activated %s in PATH for this shell!
 " "$USRHOME_DIR/bin/augmented"

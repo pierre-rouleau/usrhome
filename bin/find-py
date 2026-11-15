@@ -4,7 +4,7 @@
 # Purpose   : Find all Python files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 12:16:52 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 15:30:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -126,7 +126,7 @@ search()
         esac
 }
 
-if [ "$#" -eq 0 ]; then
+if [ "$#" -eq 0 ] || [ -z "$1" ]; then
     dirname="."
     search
 else

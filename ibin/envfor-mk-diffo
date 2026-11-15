@@ -3,7 +3,7 @@
 # Purpose   : Setup the shell to use mk-diffo: compare evolution of object code of a file.
 # Created   : Friday, June 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 12:42:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 15:27:31 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -146,7 +146,7 @@ shift
 
 # -
 # Process argument 2: PROJECT
-if [ "$#" -eq 0 ]; then
+if [ "$#" -eq 0 ] || [ -z "$1" ]; then
     usrhome_print_error 'use-mk-diffo: Missing arguments. Use -h to see usage.'
     return 1
 elif [ ! -d "${USRHOME_DIFFO_ROOT_DIR}/$1" ]; then
