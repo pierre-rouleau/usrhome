@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 15:29:37 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 16:08:31 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -38,7 +38,7 @@ find-perl: Find and print the name of every Perl file found in directory tree.
 
   • Print this help information.
 
- Usage: find-perl {[-p|--with-system-perl] |[-P|--only-system-perl] [DIR, ...]
+ Usage: find-perl {[-p|--with-system-perl] |[-P|--only-system-perl] DIR [DIR ...]
 
   • Search and print name of Perl files found in specified directories.
     - If DIR is not specified, search in the current working directory.
@@ -67,6 +67,23 @@ fi
 # ----------------------------------------------------------------------------
 # shellcheck source=../ibin/xtra/print-utilities.sh
 . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
+if [ -z "$1" ]; then
+    usrhome_printf_error 'find_perl: Directory name is missing, empty, or whitespace-only.
+\t Use -h to print usage.\n'
+    exit 1
+else
+    case ${1-} in
+        *[![:space:]]*)
+        # The argument contains a non-whitespace character.
+        ;;
+        *)
+            usrhome_printf_error 'find_perl: Directory name is missing, empty, or whitespace-only.
+\t Use -h to print usage.\n'
+            exit 1
+            ;;
+    esac
+fi
 
 search_other_directories=true
 search_perl_system_directories=false
@@ -234,7 +251,6 @@ else
         search
     done
 fi
-
 
 # ----------------------------------------------------------------------------
 # Local Variables:
