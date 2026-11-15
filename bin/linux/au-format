@@ -4,7 +4,7 @@
 # Purpose   : Import format audit log records.
 # Created   : Sunday, November  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 16:49:53 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 11:34:01 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -149,7 +149,7 @@ done
 use_ausearch="no"
 if [ "$(uname)" = "Linux" ]; then
     if [ "$allow_ausearch" = "yes" ]; then
-        if command -v ausearch > /dev/null; then
+        if command -v ausearch > /dev/null 2>&1; then
             use_ausearch="yes"
         fi
     fi
@@ -187,7 +187,7 @@ export AWKPATH
 # Note: setting AWKPATH does not seem to work for all systems,
 #       as a work-around change current directory to the location
 #       of the lookup file, the file that the awk script includes.
-cd "${lookup_dname}" || exit 1
+cd -- "${lookup_dname}" || exit 1
 
 if [ "$use_ausearch" = "yes" ]; then
     # use grep to remove the separator line; easier than with awk.

@@ -3,7 +3,7 @@
 # Purpose   : Define usrhome printing functions.
 # Created   : Monday, November  9 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 21:26:41 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 15:57:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -114,7 +114,7 @@ usrhome_print_error()
         # Print Arg text after **ERROR: prefix in red unless TERM=dumb
         _usrhome_RED='\033[1;31m' # Bold red
         _usrhome_NC='\033[0m' # No Color
-        printf "${_usrhome_RED}** ERROR: ${_usrhome_NC}%s\n" "$1" >&2
+        printf -- "${_usrhome_RED}** ERROR: ${_usrhome_NC}%s\n" "$1" >&2
         unset _usrhome_RED _usrhome_NC
     fi
 }
@@ -125,7 +125,7 @@ usrhome_print_warning()
     if [ "$SHELL_IS_INTERACTIVE" = "true" ] && [ ! "$TERM" = "dumb" ]; then
         _usrhome_MAGENTA='\033[0;35m' # magenta
         _usrhome_NC='\033[0m' # No Color
-        printf "${_usrhome_MAGENTA}** WARNING: ${_usrhome_NC}%s\n" "$1" >&2
+        printf -- "${_usrhome_MAGENTA}** WARNING: ${_usrhome_NC}%s\n" "$1" >&2
         unset _usrhome_MAGENTA _usrhome_NC
     fi
 }

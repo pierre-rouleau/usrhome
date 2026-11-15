@@ -3,7 +3,7 @@
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 21:27:20 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 11:32:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -33,7 +33,7 @@ esac
 # Add usrhome/bin at beginning of PATH if not already there.
 # Also add ~/bin to the beginning od PATH if that directory is present
 
-if ! printf -- '%s\n' "$PATH" | grep -q "$USRHOME_DIR"; then
+if ! printf -- '%s\n' "$PATH" | grep -q -- "$USRHOME_DIR"; then
     # If USRHOME has not already been installed (as seen in PATH),
     # then install it.  Otherwise skip.
 
@@ -58,7 +58,7 @@ if ! printf -- '%s\n' "$PATH" | grep -q "$USRHOME_DIR"; then
     # Several programs put something inside ~/.local/bin and other
     # ~/.local sub directories.
     if [ -d "$HOME/.local/bin" ]; then
-        if ! echo "$PATH" | grep "$HOME/.local/bin" > /dev/null; then
+        if ! echo "$PATH" | grep -- "$HOME/.local/bin" > /dev/null; then
             the_path="$HOME/.local/bin":$the_path
         fi
     fi
@@ -66,7 +66,7 @@ if ! printf -- '%s\n' "$PATH" | grep -q "$USRHOME_DIR"; then
     # Add user's ~/bin if it exists - put it in from of ~/.local/bin
     # to override what has been placed into ~/.local/bin
     if [ -d "$HOME/bin" ]; then
-        if ! echo "$PATH" | grep "$HOME/bin" > /dev/null; then
+        if ! echo "$PATH" | grep -- "$HOME/bin" > /dev/null; then
             the_path="$HOME/bin":$the_path
         fi
     fi

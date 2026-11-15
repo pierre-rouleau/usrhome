@@ -4,7 +4,7 @@
 # Purpose   : Move a file to a directory and create a symlink to it's new location.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 14:04:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 10:18:56 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -110,7 +110,11 @@ if [ ! -d "$1" ]; then
     exit 2
 fi
 
-base_fname="$(basename "$2")"
+base_fname=$(basename -- "$2") || {
+    usrhome_printf_error 'flip-to-ln: cannot get basename for: %s\n' "$2"
+    exit 2
+}
+
 target_fpath="$1/${base_fname}"
 case $(uname) in
     Darwin)
@@ -127,7 +131,8 @@ Doing:
   -  ln %s %s %s
 " "$2" "$1" "$base_fname"  "${lnopt}" "$target_fpath" "$2"
 
-mv "$2" "$1/${base_fname}"  || exit 2
-ln "${lnopt}" "${target_fpath}" "$2"
+mv -- "$2" "$1/${base_fname}"  || exit 2
+# shellcheck disable=SC2086
+ln ${lnopt} -- "${target_fpath}" "$2"
 
 # ----------------------------------------------------------------------------

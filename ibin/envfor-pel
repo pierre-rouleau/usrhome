@@ -3,7 +3,7 @@
 # Purpose   : Set shell for programming PEL.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-17 21:28:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 10:51:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -21,9 +21,21 @@
 # Code
 # ----
 #
-#
-cd "$USRHOME_DIR_PUBLIC/elisp/pel/$1" || return 1
-set_title PEL
+# Note: The precautions in this code to ensure that USRHOME_DIR_PUBLIC is set
+#       exit mainly to silence the various shell script checkers.  They are
+#       not really required since this script is normally invoked through an
+#       alias that requires the proper value of USRHOME_DIR_PUBLIC as
+#       described in the dependencies.  If USRHOME_DIR_PUBLIC is not set
+#       properly most USRHOME utilities will fail anyway.
+
+
+if [ -n "$USRHOME_DIR_PUBLIC" ]; then
+    cd -- "${USRHOME_DIR_PUBLIC:-${HOME:-/invalid--please-set-USRHOME_DIR_PUBLIC}}/elisp/pel/$1" || return 1
+    set_title PEL
+else
+    printf "ERROR: USRHOME_DIR_PUBLIC is not set!!\n" >&2
+    return 1
+fi
 
 # ----------------------------------------------------------------------------
 #  Local Variables:

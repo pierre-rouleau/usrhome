@@ -4,7 +4,7 @@
 # Purpose   : Adaptative diff program. Controlled by use-diff.  Defaults to diff.
 # Created   : Wednesday, May  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 09:45:01 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:29:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -70,7 +70,7 @@ case "$USRHOME_DIFF" in
 
     svndiff-diff)
         # Subversion-compatible diff using diff.
-        diff -u "$6" "$7"
+        diff -u -- "$6" "$7"
         ;;
 
     svndiff-bcomp)

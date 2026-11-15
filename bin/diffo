@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 12:36:04 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:28:04 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -158,12 +158,12 @@ fi
 diff_ec=0
 if [ "$with_source" = "" ]; then
     if ${objdumper} --disassemble --demangle "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
-        diff "$asmf_old" "$asmf_new" > /dev/null
+        diff -- "$asmf_old" "$asmf_new" > /dev/null
         diff_ec=$?
     fi
 else
     if ${objdumper} --disassemble --demangle --source "${objdump_no_address_opt}" "$objf_new" | tail -n +3 > "$asmf_new"; then
-        diff "$asmf_old" "$asmf_new" > /dev/null
+        diff -- "$asmf_old" "$asmf_new" > /dev/null
         diff_ec=$?
     fi
 fi
@@ -178,15 +178,15 @@ strings "$objf_new" > "$txtf_new"
 # Handle static string allocation first
 text_ec=0
 if [ "$with_strings" = "true" ]; then
-    if diff "$txtf_old" "$txtf_new" > /dev/null; then
+    if diff -- "$txtf_old" "$txtf_new" > /dev/null; then
         printf -- "diffo - NO change in text sections.\n"
     else
         text_ec=1
         printf -- "diffo - Difference in text sections:\n"
         if [ "$with_less" = "true" ]; then
-            diff "$txtf_old" "$txtf_new" | less
+            diff -- "$txtf_old" "$txtf_new" | less
         else
-            diff "$txtf_old" "$txtf_new"
+            diff -- "$txtf_old" "$txtf_new"
         fi
     fi
 fi
@@ -201,9 +201,9 @@ else
         printf -- "diffo - Differences in assembler intermixed with source:\n"
     fi
     if [ "$with_less" = "true" ]; then
-        diff "$asmf_old" "$asmf_new" | less
+        diff -- "$asmf_old" "$asmf_new" | less
     else
-        diff "$asmf_old" "$asmf_new"
+        diff -- "$asmf_old" "$asmf_new"
     fi
 fi
 

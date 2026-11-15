@@ -3,7 +3,7 @@
 # Purpose   : Setup the shell to use mk-diffo: compare evolution of object code of a file.
 # Created   : Friday, June 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 15:57:02 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 11:16:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -150,7 +150,7 @@ if [ -z "$1" ]; then
     usrhome_print_error 'use-mk-diffo: Missing arguments. Use -h to see usage.'
     return 1
 elif [ ! -d "${USRHOME_DIFFO_ROOT_DIR}/$1" ]; then
-    if mkdir -p "${USRHOME_DIFFO_ROOT_DIR}/$1"; then
+    if mkdir -p -- "${USRHOME_DIFFO_ROOT_DIR}/$1"; then
         USRHOME_DIFFO_PROJECT="$1"
     else
         usrhome_printf_error 'use-mk-diffo: Failed creating directory: %s

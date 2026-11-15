@@ -3,7 +3,7 @@
 # Purpose   : Change current directory to USRHOME's usrcfg root.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-04 21:49:30 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 10:01:24 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,15 +17,27 @@
 #
 # - The usrcfg must be a sibling of the usrhome directory; they must be inside
 #   the same parent directory.
-# - Invoked via: usrcfg, an alias set inside usrhome/ibin/setfor-zsh-alias
+# - Invoked via: usrcfg, an alias set inside $USRHOME/ibin/setfor-alias
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
 #
-cd $USRHOME_DIR/../usrcfg/$1
-set_title USRHOME:usrcfg
+# Note: The precautions in this code to ensure that USRHOME_DIR is set
+#       exit mainly to silence the various shell script checkers.
+#       They are  not really required since this script is normally invoked
+#       through an alias that requires the proper value of USRHOME_DIR
+#       as described in the dependencies.  If USRHOME_DIR is not set properly
+#       most USRHOME utilities will fail anyway.
+
+if [ -n "$USRHOME_DIR" ]; then
+    cd -- "${USRHOME_DIR:-${HOME:-/invalid-please-set_USRHOME_DIR}}/../usrcfg/$1" || return 1
+    set_title USRHOME:usrcfg
+else
+    printf "ERROR: USRHOME_DIR is not set!!\n" >&2
+    return 1
+fi
 
 # ----------------------------------------------------------------------------
 #  Local Variables:

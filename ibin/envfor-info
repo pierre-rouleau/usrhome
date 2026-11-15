@@ -3,7 +3,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 21:26:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 11:15:20 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -199,7 +199,7 @@ if [ -z "$USRHOME__INFO_IS_SET" ] || [ "$1" = "--refresh" ]; then
         usrhome_printf ". Scanning for info directories...\n"
         if [ -f "${config_filepath}" ]; then
             # delete existing config file
-            rm -f "${config_filepath}"
+            rm -f -- "${config_filepath}"
             INFOPATH=
         fi
 

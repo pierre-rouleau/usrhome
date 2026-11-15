@@ -4,7 +4,7 @@
 # Purpose   : Compress PNG file in place using pngquant.
 # Created   : Thursday, April  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-02 14:46:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 16:36:57 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -39,13 +39,15 @@ print_usage()
     echo "  - Requires pngquant. See https://pngquant.org/"
 }
 
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
 if [ -z "$1" ]; then
-    echo "ERROR: no specified file name."
+    usrhome_printf_error "pngquantf: no specified file name.\n"
     print_usage
     exit 1
 elif [ -n "$2" ]; then
-    echo "ERROR: too many arguments."
+    usrhome_printf_error "pngquantf: too many arguments.\n"
     print_usage
     exit 1
 else
@@ -75,22 +77,22 @@ else
             pngquant -o "$f_tmp_fname" "$f_fullname"
             pngquant_error=$?
             if [ "$pngquant_error" = "0" ]; then
-                rm "$f_fullname"
-                mv "$f_tmp_fname" "$f_fullname"
-                echo "Size reduction done.  New size:"
+                rm -- "$f_fullname"
+                mv -- "$f_tmp_fname" "$f_fullname"
+                printf "Size reduction done.  New size:\n"
                 ls -l "$f_fullname"
                 exit 0
             else
-                echo "ERROR: pngquant failed."
+                usrhome_print_error 'pngquant failed.'
                 exit $pngquant_error
             fi
         else
-            echo "ERROR: $f_fullname does not exist!"
+            usrhome_printf_error 'File does not exist: %s\n' "$f_fullname"
             exit 1
         fi
     else
-        echo "ERROR: pngquant is not available!"
-        echo " Please install pngquant.  It is used by pngquantf."
+        usrhome_printf_error 'pngquant: is not available!
+\t Please install pngquant.  It is used by pngquantf.\n'
         exit 1
     fi
 fi

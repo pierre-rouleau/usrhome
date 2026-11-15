@@ -4,7 +4,7 @@
 # Purpose   : Print information about current Operating System.
 # Created   : Tuesday, October  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 17:23:17 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-13 09:29:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,9 +32,9 @@ case "$(uname)" in
 
     Linux)
         uname -a
-        if command -v hostnamectl > /dev/null; then
+        if command -v hostnamectl > /dev/null 2>&1; then
             hostnamectl
-        elif command -v lsb_release > /dev/null; then
+        elif command -v lsb_release > /dev/null 2>&1; then
             lsb_release -a
         elif [ -f /etc/os-release ]; then
             cat /etc/os-release

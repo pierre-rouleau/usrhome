@@ -3,7 +3,7 @@
 # Purpose   : COmmon Bash functions also used by configuration.
 # Created   : Friday, October  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-04 23:44:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-14 11:14:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,7 +62,7 @@ set_title()
 
         # shellcheck disable=SC2090
         export PS1
-        export USRHOME_TITLE=$title_text
+        export USRHOME_TITLE="$title_text"
     fi
 }
 
