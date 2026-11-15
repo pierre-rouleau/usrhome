@@ -4,7 +4,7 @@
 # Purpose   : Convert the date of an audit log line to human readable format.
 # Created   : Saturday, November  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-02-24 08:19:04 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 16:54:35 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -36,7 +36,7 @@
 #
 printf -- "\
 *** OBSOLETE au-convert-date: use au-format instead!
-" 1>&2 "
+" 1>&2
 exit 1
 
 
