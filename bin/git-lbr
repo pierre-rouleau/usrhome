@@ -4,7 +4,7 @@
 # Purpose   : List Git Branches.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 08:56:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:18:51 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,7 +37,7 @@ git-lbr:  List Git branch information.
 "
 }
 
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     print_usage
     exit 1
 fi

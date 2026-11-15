@@ -3,7 +3,7 @@
 # Purpose   : Set shell for programming PEL.
 # Created   : Wednesday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 10:51:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:34:17 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,7 +30,7 @@
 
 
 if [ -n "$USRHOME_DIR_PUBLIC" ]; then
-    cd -- "${USRHOME_DIR_PUBLIC:-${HOME:-/invalid--please-set-USRHOME_DIR_PUBLIC}}/elisp/pel/$1" || return 1
+   cd -- "${USRHOME_DIR_PUBLIC:-${HOME:-/invalid--please-set-USRHOME_DIR_PUBLIC}}/elisp/pel/$1" || return 1
     set_title PEL
 else
     printf "ERROR: USRHOME_DIR_PUBLIC is not set!!\n" >&2

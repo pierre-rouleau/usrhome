@@ -4,7 +4,7 @@
 # Purpose   : Check a SELinux Type Enforcement file, generate a .mod and .pp file.
 # Created   : Monday, October 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 16:53:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:19:51 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -60,7 +60,7 @@ print_error_and_exit()
 
 # --
 # Validate command line.
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     print_usage
     exit 1
 fi

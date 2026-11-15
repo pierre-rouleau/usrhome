@@ -4,7 +4,7 @@
 # Purpose   : Convert a ISO-8859 encoded file to UTF-8.
 # Created   : Monday, September  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 16:45:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:02:51 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -47,11 +47,12 @@ iconv-iso8859-utf8 : Convert encoding of file from ISO-8859 to UTF-8.
 
   ➨ iconv-iso8859-utf8 FILE
         Convert the encoding of FILE from ISO-8859-1 to UTF-8.
+         Copy the original file inside USRHOME_DIR_TMP directory.
 
   ENVIRONMENT:
     - USRHOME_DIR_TMP  Required environment variable that must identify the
-                       absolute path of a directory where temporary files are
-                       stored.
+                       absolute path of USRHOME temporary directory.
+
   NOTE:  Use file FILE to print FILE's encoding.
 "
 }
@@ -68,17 +69,17 @@ fi
 # shellcheck source=../ibin/xtra/print-utilities.sh
 . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
-if [ -z "$1" ] ; then
+if [ "$#" -eq 0 ] ; then
     print_usage
     exit 1
-elif [ -n "$2" ]; then
+elif [ "$#" -gt 1 ]; then
     usrhome_printf_error 'iconv-iso8859-utf8: too many arguments.\n'
     print_usage
     exit 1
 fi
 
-if [ -z "$USRHOME_DIR_TMP" ]; then
-    usrhome_printf_error 'iconv-iso8859-utf8: USRHOME_DIR_TMP envvar is not defined.
+if [ -z "${USRHOME_DIR_TMP:-}" ]; then
+    usrhome_printf_error 'iconv-iso8859-utf8: USRHOME_DIR_TMP envvar is unset or empty.
 \t Use --help for more info.\n'
     exit 1
 fi
@@ -95,10 +96,17 @@ if [ ! -e "$1" ]; then
     exit 1
 fi
 
+if [ ! -f "$1" ]; then
+    usrhome_printf_error 'iconv-iso8859-utf8: not a regular file: %s\n' "$1"
+    exit 1
+fi
+
 # --
 # proceed
-target_file="$(basename "$1")"
-cp -- "$1" "$USRHOME_DIR_TMP/${target_file}" || exit 1
+
+target_file=${1##*/}
+
+cp -- "$1" "${USRHOME_DIR_TMP:-${TMPDIR:-/tmp}}/${target_file}" || exit 1
 iconv -f iso-8859-1 -t utf-8 "$USRHOME_DIR_TMP/${target_file}" > "$1"
 
 # ----------------------------------------------------------------------------

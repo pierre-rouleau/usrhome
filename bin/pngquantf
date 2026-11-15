@@ -4,7 +4,7 @@
 # Purpose   : Compress PNG file in place using pngquant.
 # Created   : Thursday, April  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 16:36:57 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:27:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,11 +42,11 @@ print_usage()
 # shellcheck source=../ibin/xtra/print-utilities.sh
 . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     usrhome_printf_error "pngquantf: no specified file name.\n"
     print_usage
     exit 1
-elif [ -n "$2" ]; then
+elif [ "$#" -gt 1 ]; then
     usrhome_printf_error "pngquantf: too many arguments.\n"
     print_usage
     exit 1

@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 19:39:04 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:16:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -129,7 +129,7 @@ fi
 declare -a searched_directories
 searched_directories=()
 if [ "$search_other_directories" = "true" ]; then
-    if [ -z "$1" ]; then
+    if [ "$#" -eq 0 ]; then
         searched_directories=( "$(pwd)" )
     else
         searched_directories=( "$@" )
@@ -226,7 +226,7 @@ search()
     esac
 }
 
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     dirname="."
     search
 else

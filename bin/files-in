@@ -4,7 +4,7 @@
 # Purpose   : List files in specified directory tree.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 12:26:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:15:06 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -59,7 +59,7 @@ if [ "$1" = "-l" ] || [ "$1" = --long ]; then
     shift
 fi
 
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     dirpath=.
 else
     dirpath="$1"
@@ -86,7 +86,7 @@ elif [ -n "$1" ]; then
 fi
 
 if [ ! -d "$dirpath" ]; then
-    usrhome_printf_error 'files-in: no such file or directory: %s\n' "$dirpath"
+    usrhome_printf_error 'files-in: no such file or directory: \"%s\"\n' "$dirpath"
     exit 1
 fi
 
