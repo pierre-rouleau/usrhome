@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 17:22:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 17:37:58 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -246,11 +246,11 @@ search()
     esac
 }
 
-if [ "$search_other_directories" = "true" ]; then
-    for dirname in "$@"; do
-        search
-    done
-fi
+
+# List Perl files searched in the previously identified directories
+for dirname in "${searched_directories[@]}"; do
+    search
+done
 
 # ----------------------------------------------------------------------------
 # Local Variables:
