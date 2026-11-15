@@ -3,7 +3,7 @@
 # Purpose   : Change current directory to USRHOME's usrcfg root.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 11:26:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 10:01:24 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,7 +32,7 @@
 #       most USRHOME utilities will fail anyway.
 
 if [ -n "$USRHOME_DIR" ]; then
-    cd -- "${USRHOME_DIR:-$HOME:-usrhome-missing-error/../usrcfg/$1}" || return 1
+    cd -- "${USRHOME_DIR:-${HOME:-/invalid-please-set_USRHOME_DIR}}/../usrcfg/$1" || return 1
     set_title USRHOME:usrcfg
 else
     printf "ERROR: USRHOME_DIR is not set!!\n" >&2

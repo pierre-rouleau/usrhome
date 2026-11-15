@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 16:33:12 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 11:11:56 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -72,14 +72,18 @@ fname == "" {
 }
 
 function warn(message) {
+    warn_at(message, NR, $0)
+}
+
+function warn_at(message, line_number, source_line) {
     found = 1
 
-    if (message ~ /^UNSUPPORTED([[:space:]]|$)/) {
+    if (message ~ /^WARNING: UNSUPPORTED([[:space:]]|$)/) {
         unsupported_count++
         if (hide_unsupported)
-            return
+        return
     }
-    printf "%s:%d: [%s] %s\n", fname, NR, message, $0
+    printf "%s:%d: [%s] %s\n", fname, line_number, message, source_line
 }
 
 # A word is stored without quote characters, but with the position of
@@ -124,6 +128,34 @@ function audit_segment(end_op, tail,    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
         if (words[i] ~ /^CDPATH=/)
             has_cdpath = (words[i] == "CDPATH=" && !dynamic[i])
         i++
+    }
+    # Unwrap command invocations before auditing the utility.  Options
+    # consumed here belong to command, not to the utility.
+    while (i <= nt && words[i] == "command" && !dynamic[i]) {
+        i++
+        while (i <= nt) {
+            w = words[i]
+            if (dynamic[i]) {
+                warn("UNSUPPORTED dynamic command wrapper")
+                return
+            }
+            if (w == "--") {
+                i++
+                break
+            }
+            if (w !~ /^-/ || w == "-") break
+            if (w !~ /^-[pvV]+$/) {
+                warn("UNSUPPORTED OPTION on command")
+                return
+            }
+            # -v and -V describe commands; they do not execute them.
+            if (w ~ /[vV]/) return
+            i++
+        }
+        if (i <= nt && dynamic[i]) {
+            warn("UNSUPPORTED dynamic command wrapper")
+            return
+        }
     }
     if (i > nt) return
     cmd = words[i]
@@ -175,7 +207,7 @@ function audit_segment(end_op, tail,    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
                 }
                 c = substr(w, k, 1)
                 if (!index(opts[cmd], c)) {
-                    warn("UNSUPPORTED OPTION on " cmd)
+                    warn("WARNING: UNSUPPORTED OPTION on " cmd)
                     break
                 }
                 if (index(args[cmd], c)) {
@@ -206,7 +238,7 @@ function audit_segment(end_op, tail,    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
             seg !~ /SAFE_PATH/ && !has_cdpath)
             warn("CDPATH RISK - bare relative path")
 
-        if (logical_line ~ /"\$[a-zA-Z_][a-zA-Z0-9_]*\//)
+        if (logical_line ~ /"\$(\{[a-zA-Z_][a-zA-Z0-9_]*\}|[a-zA-Z_][a-zA-Z0-9_]*)\//)
             warn("EMPTY VAR RISK - could expand to /sub")
         # A following && or || tests this command's status.
         checked = (end_op == "&&" || end_op == "||")
@@ -219,6 +251,17 @@ function audit_segment(end_op, tail,    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
              (condition_kind ~ /^(while|until)$/ &&
               tail ~ /^[[:space:]]*do([[:space:];]|$)/)))
             checked = 1
+
+        # Defer the decision when the condition can continue on the
+        # next line. Blank lines and comments may precede then or do.
+        if (!checked && condition_kind != "" &&
+            (end_op == "" ||
+             (end_op == ";" && tail ~ /^[[:space:]]*(#.*)?$/))) {
+            pending_guard = (condition_kind ~ /^(if|elif)$/) ? "then" : "do"
+            pending_guard_line = NR
+            pending_guard_text = $0
+            checked = 1
+        }
 
         if (!checked)
             warn("UNCHECKED EXIT on cd")
@@ -234,6 +277,19 @@ hd_head <= hd_tail && !pending_quote {
 }
 
 {
+    # The heredoc rule above has already skipped any heredoc body.
+    if (pending_guard != "" && $0 !~ /^[[:space:]]*(#|$)/) {
+        if ((pending_guard == "then" &&
+             $0 ~ /^[[:space:]]*then([[:space:];&|()]|$)/) ||
+            (pending_guard == "do" &&
+             $0 ~ /^[[:space:]]*do([[:space:];&|()]|$)/)) {
+            pending_guard = ""
+        } else {
+            warn_at("UNCHECKED EXIT on cd", pending_guard_line, pending_guard_text)
+            pending_guard = ""
+        }
+    }
+
     if (!pending_quote) {
         nt = 0
         word = ""
@@ -262,7 +318,7 @@ hd_head <= hd_tail && !pending_quote {
                     # In double quotes, backslash-newline is removed.
                     escaped_newline = 1
                 } else {
-                    warn("UNSUPPORTED line continuation")
+                    warn("WARNING: UNSUPPORTED line continuation")
                     unsupported = 1
                 }
                 break
@@ -294,12 +350,12 @@ hd_head <= hd_tail && !pending_quote {
             continue
         }
         if (c == "$" && nextc == "(") {
-            warn("UNSUPPORTED command substitution")
+            warn("WARNING: UNSUPPORTED command substitution")
             unsupported = 1
             break
         }
         if (c == "`") {
-            warn("UNSUPPORTED command substitution")
+            warn("WARNING: UNSUPPORTED command substitution")
             unsupported = 1
             break
         }
@@ -318,7 +374,7 @@ hd_head <= hd_tail && !pending_quote {
         if (c == "<" || c == ">") {
             emit_word()
             if (redir) {
-                warn("UNSUPPORTED redirection")
+                warn("WARNING: UNSUPPORTED redirection")
                 unsupported = 1
                 break
             }
@@ -326,7 +382,7 @@ hd_head <= hd_tail && !pending_quote {
             redir = 1
             if (c == "<" && nextc == "<") {
                 if (substr($0, p + 2, 1) == "<") {
-                    warn("UNSUPPORTED here-string")
+                    warn("WARNING: UNSUPPORTED here-string")
                     unsupported = 1
                     break
                 }
@@ -344,7 +400,7 @@ hd_head <= hd_tail && !pending_quote {
         if (c ~ /[;&|()]/) {
             emit_word()
             if (redir) {
-                warn("UNSUPPORTED redirection")
+                warn("WARNING: UNSUPPORTED redirection")
                 unsupported = 1
                 break
             }
@@ -375,11 +431,15 @@ hd_head <= hd_tail && !pending_quote {
 
     pending_quote = 0
     emit_word()
-    if (redir) warn("UNSUPPORTED redirection")
+    if (redir) warn("WARNING: UNSUPPORTED redirection")
     else audit_segment("", "")
 }
 
 END {
+    if (pending_guard != "")
+        warn_at("UNSUPPORTED incomplete conditional guard",
+                pending_guard_line, pending_guard_text)
+
     if (pending_quote) {
         printf "%s:%d: [UNTERMINATED quote]\n", fname, quote_line
         found = 1
@@ -391,7 +451,7 @@ END {
     }
 
     if (hide_unsupported && unsupported_count > 0) {
-        printf "%s: WARNING: %d unsupported diagnostics suppressed; audit incomplete\n",
+        printf "%s: [WARNING: %d unsupported diagnostics suppressed; audit incomplete]\n",
             fname, unsupported_count
     }
     exit found

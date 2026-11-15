@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 17:01:34 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 11:06:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -51,26 +51,6 @@ alias usrhome-env='"$USRHOME_DIR/bin/usrhome-env"'
 # No other aliases for USRHOME/bin files as these other commands
 # are not only showing values.
 
-
-# Topic: Info: Shell
-# ------------------
-
-#alias \?='printf "%s\n" $?'
-
-# CD to Shell's User Home (if set in USRHOME_SHELL_HOME)
-# You may want to set USRHOME_SHELL_HOME in tools such as macOS Terminal
-# Settings Commands to identify the 'main'/'workspace' directory for that
-# shell, separate from your home.
-cduh()
-{
-    # Optional argument: sub-directory
-    if [ -n "$USRHOME_SHELL_HOME" ]; then
-        cd -- "$USRHOME_SHELL_HOME"/"$1" || return 1
-    else
-        cd -- "${HOME:-usrhome-missing-error/$1}" || return 1
-    fi
-}
-
 # ----------------------------------------------------------------------------
 # Define printing utilities:
 # - usrhome_printf         FORMAT ARGS...
@@ -82,7 +62,40 @@ cduh()
 # shellcheck source=xtra/print-utilities.sh
 . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
+
 # ----------------------------------------------------------------------------
+# Topic: cd helpers
+# -----------------
+
+# CD to Shell's User Home (if set in USRHOME_SHELL_HOME)
+# You may want to set USRHOME_SHELL_HOME in tools such as macOS Terminal
+# Settings Commands to identify the 'main'/'workspace' directory for that
+# shell, separate from your home. It must be an absolute path.
+
+cduh()
+{
+    if [ -z "${USRHOME_SHELL_HOME:-}" ]; then
+        usrhome_printf_error '%s\n' 'USRHOME_SHELL_HOME is unset or empty'
+        return 1
+    fi
+
+    case ${USRHOME_SHELL_HOME-} in
+        /*) ;;
+        *)
+            usrhome_printf_error '%s\n' 'USRHOME_SHELL_HOME must be an absolute path'
+            return 1
+            ;;
+    esac
+
+    cd -- "${USRHOME_SHELL_HOME:-/invalid--please-set_USRHOME_SHELL_HOME}/${1-}" || return 1
+}
+
+# ----------------------------------------------------------------------------
+# Topic: Info: Shell
+# ------------------
+
+#alias \?='printf "%s\n" $?'
+
 
 info_shell_special_var()
 {

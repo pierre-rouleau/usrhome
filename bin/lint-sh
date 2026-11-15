@@ -4,7 +4,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 11:46:39 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 10:39:58 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -64,10 +64,10 @@ print_usage()
 
    LIMITATIONS:
      %s cannot analyze some code constructs and skips them issuing a warning
-     when the -v option is specified.  Each diagnostic line printed by %s
+     when the -v option is specified.  Each warning line printed by %s
      starts with 'WARNING: '.
      If you want to only see the detected issues you can filter the warnings
-     by piping the output of %s into:  grep -v ': WARNING: '
+     by piping the output of %s into:  grep -v \": \\[WARNING: \"
 " "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
   "$pgm_name" "$pgm_name" "$pgm_name"
 }
@@ -206,7 +206,7 @@ elif [ -n "$target_dir" ]; then
     # Audit all shell script in specified directory.
     #
     # Save the file list so the find status is not hidden by a pipeline.
-    file_list=$(mktemp "${USRHOME_DIR_TMP:-TMPDIR:-/tmp}/lint-sh.XXXXXXXXXX") || {
+    file_list=$(mktemp "${USRHOME_DIR_TMP:-${TMPDIR:-/tmp}}/lint-sh.XXXXXXXXXX") || {
         printf '%s: cannot create temporary file list\n' "$pgm_name" >&2
         exit 1
     }
@@ -256,7 +256,7 @@ elif [ -n "$target_dir" ]; then
             esac
             if [ "$is_shell" -eq 1 ]; then
                 if ! audit_file "$file"; then
-                    list_error_found=1
+                    lint_error_found=1
                 fi
             fi
         done
