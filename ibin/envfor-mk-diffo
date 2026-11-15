@@ -3,7 +3,7 @@
 # Purpose   : Setup the shell to use mk-diffo: compare evolution of object code of a file.
 # Created   : Friday, June 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 11:16:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:42:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -132,7 +132,7 @@ fi
 
 # -
 # Process argument 1: DB_ROOT_DIR
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     usrhome_print_error 'use-mk-diffo: Missing arguments. Use -h to see usage.'
     return 1
 elif [ ! -d "$1" ]; then
@@ -146,7 +146,7 @@ shift
 
 # -
 # Process argument 2: PROJECT
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     usrhome_print_error 'use-mk-diffo: Missing arguments. Use -h to see usage.'
     return 1
 elif [ ! -d "${USRHOME_DIFFO_ROOT_DIR}/$1" ]; then
@@ -165,7 +165,7 @@ shift
 
 # -
 # Process argument 3: SRC_FNAME
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     usrhome_printf_error 'use-mk-diffo: Missing argument: no file name specified.
 \t Print usage with -h\n'
     return 1
@@ -180,7 +180,7 @@ shift
 
 # -
 # Process argument 4: OBJ_DIR
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     usrhome_printf_error 'use-mk-diffo: Missing OBJ_DIR argument.
 \t Print usage with -h\n'
     return 1
@@ -195,7 +195,7 @@ shift
 
 # -
 # Process optional argument 5: OBJ-EXT
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     USRHOME_DIFFO_OBJEXT=".o"
 elif [ "$1" = " " ]; then
     USRHOME_DIFFO_OBJEXT=" "

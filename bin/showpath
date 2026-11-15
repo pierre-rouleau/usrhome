@@ -4,7 +4,7 @@
 # Purpose   : Print current PATH, one directory per line.
 # Created   : Monday, March  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 22:13:22 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:38:42 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -94,7 +94,7 @@ if [ -n "$2" ]; then
         print_error "Unsupported option for 2 arguments"
     fi
 else
-    if [ -z "$1" ]; then
+    if [ "$#" -eq 0 ]; then
         # No argument
         vname="PATH"
     else

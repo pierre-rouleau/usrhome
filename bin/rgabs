@@ -4,7 +4,7 @@
 # Purpose   : Ripgrep/Ripgrep-all with absolute path.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 18:01:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:37:01 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -40,7 +40,7 @@ rgabs - ripgrep search with absolute paths in results.
 "
 }
 
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     print_usage
     exit 1
 fi

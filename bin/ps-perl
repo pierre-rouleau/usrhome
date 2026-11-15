@@ -4,7 +4,7 @@
 # Purpose   :
 # Created   : Tuesday, September 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 16:46:12 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:36:31 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -124,7 +124,7 @@ if [ "$perl_running_process_count" = "0" ]; then
     # it's not guaranteed with the code below.
     exit 1
 else
-    if [ -z "$1" ]; then
+    if [ "$#" -eq 0 ]; then
         print_perl_processes
     else
         print_perl_processes | grep -- "$1"

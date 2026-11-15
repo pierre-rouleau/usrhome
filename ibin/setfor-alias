@@ -3,7 +3,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 11:06:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:43:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -273,7 +273,7 @@ if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
     lsd()
     {
         __set__ls_options
-        if [ -z "$1" ]; then
+        if [ "$#" -eq 0 ]; then
             ( ls -d ${_sa_usrhome_ls_color_flag} -- */ ) 2> /dev/null
         elif [ $# -gt 1 ]; then
             usrhome_printf_error 'lsd does not support glob, and more than 1 argument.
@@ -294,7 +294,7 @@ if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
     lsda()
     {
         __set__ls_options
-        if [ -z "$1" ]; then
+        if [ "$#" -eq 0 ]; then
             # No argument
             ( ls -d ${_sa_usrhome_ls_color_flag} -- */ .[^.]*/ ) 2> /dev/null
         elif [ $# -gt 1 ]; then
@@ -370,7 +370,7 @@ lsl()
             long_ls="false"
             ;;
     esac
-    if [ -z "$1" ]; then
+    if [ "$#" -eq 0 ]; then
         if [ "$long_ls" = "true" ]; then
             find . ! -name . -prune -type l -exec ls -ld {} +
         else
@@ -418,7 +418,7 @@ _usrhome_setenv()
     # Arg 1:  Name of the environment variable
     # Arg 2:  Value
 
-    if [ -z "$1" ]; then
+    if [ "$#" -eq 0 ]; then
         usrhome_printf_error   'setenv: missing environment variable name.\n'
         usrhome_printf_stderr  'Usage: setenv VARNAME VALUE\n'
         return 1
@@ -452,7 +452,7 @@ alias setenv='_usrhome_setenv'
 _usrhome_clrenv()
 {
     # Arg 1:  Name of the environment variable
-    if [ -z "$1" ]; then
+    if [ "$#" -eq 0 ]; then
         usrhome_printf_error   'clrenv: missing environment variable name.\n'
         usrhome_printf_stderr  'Usage: clrenv VARNAME\n'
         return 1
@@ -869,7 +869,7 @@ __git__cln()
     # 2 : Git repo branch
 
     # Check validity of arguments
-    if [ -z "$1" ]; then
+    if [ "$#" -eq 0 ]; then
         __git_cln_print_usage
         return 1
     fi

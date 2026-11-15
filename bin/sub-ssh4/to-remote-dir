@@ -4,7 +4,7 @@
 # Purpose   : Copy a complete directory to the remote computer.
 # Created   : Thursday, July 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 11:06:23 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:41:42 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -64,7 +64,7 @@
 envfor_cmd_arg1=to-remote-dir
 
 # Validate command line arguments
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     usrhome_printf_error '%s: missing directory name.
             Use the -h or --help option to print usage\n' "${pgm_name}"
     exit 1
