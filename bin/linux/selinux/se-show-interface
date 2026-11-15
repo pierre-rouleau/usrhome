@@ -4,7 +4,7 @@
 # Purpose   : Show SELinux Interface Definition.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2026-11-15 12:24:38 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 18:27:51 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -93,7 +93,7 @@ fi
 # shellcheck source=../../../ibin/xtra/print-utilities.sh
 . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
-if [ "$#" -eq 0 ]; then
+if [ "$#" -eq 0 ] || [ -z "$1" ]; then
     usrhome_printf_error 'se-show-interface: Missing REGXP argument.
 \t Use --help to print usage.\n'
     exit 1

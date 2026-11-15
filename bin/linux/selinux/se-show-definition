@@ -4,7 +4,7 @@
 # Purpose   : Show SELinux Policy Macro Definition
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2026-11-15 12:23:13 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 18:27:17 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -82,8 +82,8 @@ fi
 # shellcheck source=../../../ibin/xtra/print-utilities.sh
 . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
-if [ "$#" -eq 0 ]; then
-    usrhome_printf_error 'se-show-definitoin: Missing REGXP argument.
+if [ "$#" -eq 0 ] || [ -z "$1" ]; then
+    usrhome_printf_error 'se-show-definition: Missing REGXP argument.
 \t Use --help to print usage.\n'
     exit 1
 fi
