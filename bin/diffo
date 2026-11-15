@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 16:28:04 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:06:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -111,7 +111,7 @@ if [ "$#" -ge 3 ]; then
     exit 1
 fi
 
-if [ -z "$1" ] || [ -z "$2" ]; then
+if [ "$#" -ne 2 ]; then
     usrhome_printf_error 'diffo: missing arguments.\n'
     print_usage_short
     exit 1

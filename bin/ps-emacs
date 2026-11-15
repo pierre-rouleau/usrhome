@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:31:46 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:27:39 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -182,7 +182,7 @@ if [ -z "$emacs_processes" ]; then
     exit 1
 fi
 
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     printf '%s\n' "$emacs_processes"
 else
     printf '%s\n' "$emacs_processes" | grep -e "$1"

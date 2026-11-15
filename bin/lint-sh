@@ -4,7 +4,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 10:39:58 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 16:38:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -180,9 +180,9 @@ audit_file()
     esac
 
     if [ "$verbose" = "1" ]; then
-        awk -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+        LC_ALL=C awk -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
     else
-        awk -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+        LC_ALL=C awk -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
     fi
 }
 

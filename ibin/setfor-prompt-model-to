@@ -3,7 +3,7 @@
 # Purpose   : Change zsh prompt model in current shell.
 # Created   : Wednesday, April  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 22:30:47 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:43:46 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,7 +62,7 @@ Usage:  usrhome-prompt-model-to -h|--help
 
 # Validate user input
 # ------------------
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     usrhome_printf_error 'usrhome-prompt-model-to:  requires the prompt model number.
 \t Use -h to print usage.\n'
     return 1

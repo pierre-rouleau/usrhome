@@ -4,7 +4,7 @@
 # Purpose   : Find the specified SELinux Policy interface.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2026-11-13 11:33:09 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 15:31:17 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -90,7 +90,7 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     # help requested explicitly: no error.
     exit 0
 fi
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ] || [ -z "$1" ]; then
     printf -- "\
 *** ERROR - Missing REGXP argument.
             Use --help to print usage.

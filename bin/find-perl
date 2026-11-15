@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 19:39:04 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 18:16:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,14 +34,14 @@ find-perl: Find and print the name of every Perl file found in directory tree.
            Search for files with the following extensions:
           - .pl, .pm, .plx, .pls, .xs, .t, .pod, .cgi, .psg, .psgi
 
- Usage: find-perl -h|--help
+ • Usage: find-perl -h|--help
 
-  • Print this help information.
+    Print this help information.
 
- Usage: find-perl {[-p|--with-system-perl] |[-P|--only-system-perl] [DIR, ...]
+ • Usage: find-perl {[-p|--with-system-perl] DIR [DIR ...]
+ • Usage: find-perl [-P|--only-system-perl]
 
   • Search and print name of Perl files found in specified directories.
-    - If DIR is not specified, search in the current working directory.
   • If -p or --with-system-perl:  search the directories that Perl
     identifies in its @INC variable as well as the other directories.
   • if the -P or --only-system-perl option is identified then ONLY
@@ -70,27 +70,45 @@ fi
 
 search_other_directories=true
 search_perl_system_directories=false
-if [ -n "$1" ]; then
-    if [ "$1" = "-p" ] || [ "$1" = "--with-system-perl" ]; then
+case ${1-} in
+    -p|--with-system-perl)
         search_perl_system_directories=true
         shift
-    elif [ "$1" = "-P" ] || [ "$1" = "--only-system-perl" ]; then
+        ;;
+    -P|--only-system-perl)
         search_perl_system_directories=true
         search_other_directories=false
         shift
-        if [ -n "$1" ]; then
+        if [ "$#" -ne 0 ]; then
             usrhome_printf_error 'find-perl: no extra DIR with --only-system-perl
 \t Use '\''find-perl -h'\'' to get more information.\n'
             exit 1
         fi
-    else
-        if [ ! -d "$1" ]; then
-            usrhome_printf_error 'find-perl: not a valid directory: %s
-\t Use '\''find-perl -h'\'' to get more information.\n' "$1"
+        ;;
+esac
+
+if [ "$search_other_directories" = "true" ]; then
+    if [ "$#" -eq 0 ]; then
+        usrhome_printf_error 'find-perl: at least one directory is required.
+\t Use -h to print usage.\n'
+        exit 1
+    fi
+    for dname in "$@"; do
+        case $dname in
+            *[![:space:]]*) ;;
+            *)
+                usrhome_printf_error 'find_perl: directory name is empty or whitespace-only.
+\t Use -h to print usage.\n'
+                exit 1
+                ;;
+        esac
+        if [ ! -d "$dname" ]; then
+            usrhome_printf_error 'find-perl: not a valid directory: %s\n' "$dname"
             exit 1
         fi
-    fi
+    done
 fi
+
 
 # --
 
@@ -104,10 +122,10 @@ else
     search_with='find'
     case $(uname) in
         Darwin)
-            find_path_option='-f'
+            find_path_option=(-f)
             ;;
         Linux)
-            find_path_option=
+            find_path_option=()
             ;;
         *)
             usrhome_printf_error 'find-perl: Operating System, %s, is not supported!\n' "$(uname)"
@@ -128,33 +146,46 @@ fi
 
 declare -a searched_directories
 searched_directories=()
+
+# Canonicalize paths before checking directory boundaries.
+# The suffix preserves path-ending newlines in command substitution.
+canonical_directory()
+{
+    local path
+    path=$(CDPATH='' cd -P -- "$1" >/dev/null && printf '%s.' "$PWD") || return 1
+    REPLY=${path%.}
+}
+
 if [ "$search_other_directories" = "true" ]; then
-    if [ -z "$1" ]; then
-        searched_directories=( "$(pwd)" )
-    else
-        searched_directories=( "$@" )
-    fi
+    for dname in "$@"; do
+        if ! canonical_directory "$dname"; then
+            usrhome_printf_error 'find-perl: cannot resolve directory: %s\n' "$dname"
+            exit 1
+        fi
+        searched_directories+=("$REPLY")
+    done
 fi
 
 if [ "$search_perl_system_directories" = "true" ]; then
-    # Add any Perl system directory that exist and is not a child of another
-    for dname in $(perl -e 'print join("\n", @INC), "\n";' | sort | uniq); do
-        found=false
-        if [ -d "$dname" ] ; then
-            dpath="$(realpath "${dname}")"
-            for d in "${searched_directories[@]}"; do
-                #shellcheck disable=SC2076 ## match literally the expansion of $d
-                if [[ "$dname" =~ "$d" ]]; then
-                    found=true
-                    # printf -- "subdir: %s\n" $dname
-                    break
-                fi
-            done
-            if [ "$found" = "false" ]; then
-                searched_directories+=("$dpath")
-            fi
+    # NUL delimiters preserve spaces and newlines in @INC entries.
+    while IFS= read -r -d '' dname; do
+        [ -d "$dname" ] || continue
+        if ! canonical_directory "$dname"; then
+            usrhome_printf_error 'find-perl: cannot resolve directory: %s\n' "$dname"
+            exit 1
         fi
-    done
+        dpath=$REPLY
+        found=false
+        for d in "${searched_directories[@]}"; do
+            if [[ "$d" == / || "$dpath" == "$d" || "$dpath" == "$d/"* ]]; then
+                found=true
+                break
+            fi
+        done
+        if [ "$found" = "false" ]; then
+            searched_directories+=("$dpath")
+         fi
+    done < <(perl -e 'for (@INC) { print "$_\0" unless ref }')
 fi
 
 # --
@@ -162,9 +193,14 @@ fi
 #
 # - Exclude perltidy files, Emacs backup and buffers files.
 
+# Keep the search status if the output filter succeeds.
+set -o pipefail
+{
+# Match direct Perl interpreters and env perl, including env -S perl.
+perl_shebang='^#![[:space:]]*([^[:space:]]*/perl|[^[:space:]]*/env[[:space:]]+(-S[[:space:]]+)?perl)([0-9]+([.][0-9]+)*)?([[:space:]]|$)'
 if command -v rg > /dev/null 2>&1; then
     for dname in "${searched_directories[@]}"; do
-        rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! ?.+/perl" "$(realpath "$dname")" 2>> "${error_log}"
+        rg --no-config --color=never --null --hidden --no-ignore --follow -g !'*.tdy' -g !'*~' -g !'*#' -Nl "$perl_shebang" "$dname" 2>> "${error_log}"
     done
 else
     # rg is not available; use recursive grep:
@@ -173,7 +209,7 @@ else
     # -E: extended regular expressions
     # As it might iterate over files that have restricted access: wipe error messages
     for dname in "${searched_directories[@]}"; do
-        grep -l --exclude '*.tdy' --exclude '*~' --exclude '*#' -r -E "^#! ?.+/perl" "$(realpath "$dname")" 2>> "${error_log}"
+        grep --color=never --null -l --exclude '*.tdy' --exclude '*~' --exclude '*#' -R -E "$perl_shebang" "$dname" 2>> "${error_log}"
     done
 fi
 
@@ -188,7 +224,7 @@ search()
     case "$search_with" in
         find)
             find -L                        \
-                 "${find_path_option}" "$dirname"  \
+                 "${find_path_option[@]}" "$dirname"  \
                  \(  -name "*.p[lm]"       \
                  -or -name "*.pl[sx]"      \
                  -or -name "*.xs"          \
@@ -197,12 +233,15 @@ search()
                  -or -name "*.cgi"         \
                  -or -name "*.psg"         \
                  -or -name "*.psgi"        \
-                 \)  -print 2>> "${error_log}"
+                 \)  -print0 2>> "${error_log}"
             ;;
 
         fd)
-            ${fd_pgm} --absolute-path \
-                      --show-errors      \
+            "${fd_pgm}" --absolute-path \
+                      --hidden           \
+                      --no-ignore        \
+                      --color=never      \
+                      --print0           \
                       --follow           \
                       --type f           \
                       --type l           \
@@ -226,16 +265,16 @@ search()
     esac
 }
 
-if [ -z "$1" ]; then
-    dirname="."
+
+# List Perl files searched in the previously identified directories
+for dirname in "${searched_directories[@]}"; do
     search
-else
-    for dirname in "$@"; do
-        search
-    done
-fi
-
-
+done
+} | perl -0ne '
+          BEGIN { binmode STDIN; binmode STDOUT }
+          chomp;
+          print "$_\n" unless $seen{$_}++;
+'
 # ----------------------------------------------------------------------------
 # Local Variables:
 # sh-shell: /bin/bash

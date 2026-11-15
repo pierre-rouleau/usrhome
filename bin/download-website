@@ -4,7 +4,7 @@
 # Purpose   : Download complete web-site.
 # Created   : Tuesday, August 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-27 11:54:51 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:09:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,19 +42,19 @@ viewing.
 # --
 # Check validity of arguments
 
-if [ -z "$1" ]; then
-    print_usage
-    exit 1
-elif [ -n "$2" ]; then
+if [ "$#" -eq 0 ]; then
     print_usage
     exit 1
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
-    if [ "$#" = "1" ]; then
+    if [ "$#" -eq 1 ]; then
         exit 0
     else
         exit  1
     fi
+elif [ "$#" -ne 1 ]; then
+    print_usage
+    exit 1
 fi
 
 # --

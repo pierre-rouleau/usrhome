@@ -4,7 +4,7 @@
 # Purpose   : Switch Git branch : git checkout with branch name completion.
 # Created   : Monday, June 10 2024
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-10 12:16:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:19:29 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -58,12 +58,12 @@ Completion support:  use tab to complete the branch name.
 " "\$USRHOME_DIR/ibin/envfor-git-extra"
 }
 
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     print_usage
     exit 1
 fi
 
-if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     print_usage
     exit 0
 fi

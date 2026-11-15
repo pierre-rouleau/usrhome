@@ -4,7 +4,7 @@
 # Purpose   : Find directories in current directory tree.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 12:25:37 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 12:15:59 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -64,7 +64,7 @@ print_error_and_exit()
 }
 
 
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ]; then
     print_usage
     exit 1
 fi
