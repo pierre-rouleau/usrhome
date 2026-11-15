@@ -4,7 +4,7 @@
 # Purpose   : Find all Perl files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 16:08:31 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 17:04:17 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,7 +41,6 @@ find-perl: Find and print the name of every Perl file found in directory tree.
  Usage: find-perl {[-p|--with-system-perl] |[-P|--only-system-perl] DIR [DIR ...]
 
   • Search and print name of Perl files found in specified directories.
-    - If DIR is not specified, search in the current working directory.
   • If -p or --with-system-perl:  search the directories that Perl
     identifies in its @INC variable as well as the other directories.
   • if the -P or --only-system-perl option is identified then ONLY

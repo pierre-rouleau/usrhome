@@ -4,7 +4,7 @@
 # Purpose   : Find all Python files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 15:59:29 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 17:05:26 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,7 +42,6 @@ print_usage()
  Usage: %s  DIR [DIR ...]
 
   • Search and print name of Python files found in specified directories.
-    - If DIR is not specified, search in the current working directory.
 
  ERRORS: All detected errors are appended to the file %s
          stored locally. The file is never deleted.  You must delete it
@@ -143,14 +142,10 @@ search()
         esac
 }
 
-if [ "$#" -eq 0 ]; then
-    dirname="."
+
+for dirname in "$@"; do
     search
-else
-    for dirname in "$@"; do
-        search
-    done
-fi
+done
 
 # ----------------------------------------------------------------------------
 # Local Variables:
