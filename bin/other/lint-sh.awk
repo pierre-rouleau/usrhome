@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 11:11:56 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-15 16:46:42 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -349,13 +349,9 @@ hd_head <= hd_tail && !pending_quote {
             quote_line = NR
             continue
         }
-        if (c == "$" && nextc == "(") {
-            warn("WARNING: UNSUPPORTED command substitution")
-            unsupported = 1
-            break
-        }
-        if (c == "`") {
-            warn("WARNING: UNSUPPORTED command substitution")
+        if ((c == "$" && nextc == "(") || c == "`") {
+            warn("WARNING: UNSUPPORTED command substitution; audit stopped")
+            audit_stopped = 1
             unsupported = 1
             break
         }
@@ -420,6 +416,7 @@ hd_head <= hd_tail && !pending_quote {
         # Do not treat a quote left open by an early stop as multiline.
         pending_quote = 0
         quote = ""
+        if (audit_stopped) exit
         next
     }
     if (quote != "") {
@@ -436,16 +433,16 @@ hd_head <= hd_tail && !pending_quote {
 }
 
 END {
-    if (pending_guard != "")
+    if (!audit_stopped && pending_guard != "")
         warn_at("UNSUPPORTED incomplete conditional guard",
                 pending_guard_line, pending_guard_text)
 
-    if (pending_quote) {
+    if (!audit_stopped && pending_quote) {
         printf "%s:%d: [UNTERMINATED quote]\n", fname, quote_line
         found = 1
     }
 
-    if (hd_head <= hd_tail) {
+    if (!audit_stopped && hd_head <= hd_tail) {
         printf "%s:%d: [UNTERMINATED heredoc]\n", fname, NR
         found = 1
     }
