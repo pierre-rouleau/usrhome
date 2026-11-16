@@ -4,7 +4,7 @@
 # Purpose   : Search for specified language files.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 14:08:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-16 09:31:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -46,12 +46,17 @@ rgf - ripgrep search for specified file types.
         - c/cpp | C           C and C++
         - c/cpp/make | CM     C, C++, make, swig, config
         - d                   D
+        - dart                Dart
         - make | M            make, mk, amkae, cmake, m4
         - sh                  sh, bash, and zsh
+        - elx | elixir        Elixir
         - el | elisp          Emacs Lisp
         - erl | erlang        Erlang and C
+        - gl | gleam          Gleam
+        - lisp                Lisp
         - py | python         Python
         - go                  Go
+        - pro                 Prolog
         - rust                Rust, TOML, Cargo
         - zig                 Zig
         - doc                 Documentation: resTructuredText, org, markdow,
@@ -65,7 +70,7 @@ rgf - ripgrep search for specified file types.
 # --
 # Validate args
 
-if [ -z "$1" ]; then
+if [ "$#" -eq 0 ] || [ -z "$1" ]; then
     print_usage
     exit 1
 fi
@@ -101,19 +106,21 @@ else
     fi
 fi
 
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 # When the --type  is invalid, sub/rg_f exits with 2.
 # When the --type is missing, it exists with 3
 # On a failed search it exists with 1, on success 0
 case "$exit_code" in
     3)
-        printf -- "
-*** rgf ERROR: TYPE is not specified.
-"
-        print_usage
+        usrhome_printf_error 'rgf: TYPE is not specified.
+\t Use -h to print usage.\n'
         exit 3
         ;;
     2)
-        print_usage
+        # all error printing is done in rg-f
         exit 2
         ;;
     *)

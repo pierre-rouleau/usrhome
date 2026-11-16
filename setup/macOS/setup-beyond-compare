@@ -4,7 +4,7 @@
 # Purpose   : Setup Beyond Compare command lines.
 # Created   : Monday, April 15 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-15 15:33:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-16 09:33:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -86,7 +86,7 @@ prompt()
 create_symlink()
 {
     # Arg 1: string : "bcompare" or "bcomp"
-    ln -s "${dpath}/$1" "$HOME/bin/$1"
+    ln -s -- "${dpath}/$1" "$HOME/bin/$1"
 }
 
 exit_code=0
@@ -100,7 +100,7 @@ chk_bc()
             printf "The symlink %s exists but is invalid!\n" "$1"
             prompt "Replace the invalid symlink with a valid one"
             if [ "$proceed" = "y" ]; then
-                rm "$HOME/bin/$1"
+                rm -- "$HOME/bin/$1"
                 create_symlink "$1"
                 printf "Updated symlink for %s\n" "$1"
             else

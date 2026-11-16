@@ -3,7 +3,7 @@
 # Purpose   : User Configuration Common to all supported shells.
 # Created   : Thursday, May  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 10:07:02 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-16 09:37:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -46,13 +46,13 @@ alias cdlog-installs='cd ~/my/logs/install-logs'
 cdbin()
 {
     # - Arg 1: optional sub-directory name
-    cd -- "$HOME/my/bin/$1"
+    cd -- "${HOME:-invalid--please-set-HOME}/my/bin/$1" || return 1
 }
 
 cddoc()
 {
     # - Arg 1: optional sub-directory name
-    cd -- "$HOME/Documents/$1"
+    cd -- "${HOME:-invalid--please-set-HOME}/Documents/$1" || return 1
 }
 
 # Topic: macOS Number
@@ -70,8 +70,6 @@ fi
 #
 # Select the edit other programs will use.
 export EDITOR='emacs -nw'
-
-
 
 # ----------------------------------------------------------------------------
 # Topic: Automatic Environment Setting - MODIFY TO YOUR NEEDS

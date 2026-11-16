@@ -4,7 +4,7 @@
 # Purpose   : Ripgrep search for specific file type.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-11 13:48:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-16 09:29:06 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,12 +17,16 @@
 #
 #
 
+# ----------------------------------------------------------------------------
+# shellcheck source=../../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 # Validate args
 case "$1" in
     rg)  cmd=rg   ;;
     rga) cmd=rga  ;;
     *)
-        printf -- "*** INTERNAL ERROR in rg-f\n"
+        usrhome_printf_error -- "INTERNAL ERROR in rg-f: arg1 is: %s\n" "$1"
         exit 4
         ;;
 esac
@@ -58,12 +62,20 @@ case ${type} in
         ${cmd} -t d "$@"
         ;;
 
+    dart)
+        ${cmd} -t dart "$@"
+        ;;
+
     make | M)
         ${cmd} -t make -t m4 -t mk -t amake -t cmake "$@"
         ;;
 
     sh)
         ${cmd} -t sh -t zsh  "$@"
+        ;;
+
+    elx | elixir)
+        ${cmd} -t elixir "$@"
         ;;
 
     el | elisp)
@@ -74,8 +86,20 @@ case ${type} in
         ${cmd} -t erlang -t c "$@"
         ;;
 
+    gl | gleam)
+        ${cmd} -t gleam "$@"
+        ;;
+
     go)
         ${cmd} -t go "$@"
+        ;;
+
+    lisp)
+        ${cmd} -t lisp "$@"
+        ;;
+
+    pro | prolog)
+        ${cmd} -t prolog "$@"
         ;;
 
     py | python)
@@ -107,9 +131,11 @@ case ${type} in
         ;;
 
     *)
-        printf -- "
-*** rgf ERROR: unsupported TYPE: %s
-" "$type"
+        usrhome_printf_error 'rgf ERROR: unsupported TYPE: %s
+\t Check %s source:
+\t - use the rg --type-list command to identify required command
+\t   then add the new code inside the rg-f file.
+\t Use -h to print usage.\n' "$type" "$USRHOME_DIR/bin/sub/rg-f"
         exit 2
         ;;
 
