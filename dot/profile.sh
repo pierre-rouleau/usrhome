@@ -1,9 +1,10 @@
 # SH Configuration FILE: profile.sh
+# shellcheck shell=sh
 #
 # Purpose   : Bash ~/.profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-27 12:15:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 15:52:50 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -46,7 +47,7 @@ esac
 # If it has already been done, as indicated by the existence of the
 # USRHOME_DIR environment variable, then skip this part.
 #
-if [[ -z $USRHOME_DIR ]]; then
+if [ -z "${USRHOME_DIR-}" ]; then
     # - Identify the name of what bash executed (that should be the ~/.bashrc symlink)
     script=${BASH_SOURCE[0]}
     # - Then identify the real file pointed by that symlink: it should be
@@ -106,5 +107,5 @@ usrhome_trace_in "~/.profile   --> \$USRHOME_DIR/dot/profile.sh"
 usrhome_trace_out
 # ----------------------------------------------------------------------------
 # Local Variables:
-# sh-shell: bash
+# sh-shell: sh
 # End:
