@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 15:52:50 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 16:48:52 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -19,6 +19,10 @@
 # If you need something done by ~/.profile on your system, write your own
 # ~/.profile and do not symlink to here.
 
+# Dependencies
+# ------------
+#
+# - readlink
 
 # ----------------------------------------------------------------------------
 # USRHOME-Specific Code
@@ -47,17 +51,31 @@ esac
 # If it has already been done, as indicated by the existence of the
 # USRHOME_DIR environment variable, then skip this part.
 #
+# The setup script links ~/.profile directly to an absolute
+# usrhome/dot/profile.sh (this file!). usrcfg is a sibling of usrhome.
+#
+# Note:  readlink is specified by POSIX.1-2024, but not POSIX.1-2017
+#        If it is missing in your system please install it.
 if [ -z "${USRHOME_DIR-}" ]; then
-    # - Identify the name of what bash executed (that should be the ~/.bashrc symlink)
-    script=${BASH_SOURCE[0]}
-    # - Then identify the real file pointed by that symlink: it should be
-    #   this file,the usrhome/dot/bashrc.bash, with the complete path.
-    original_script="$(readlink "$script")"
-    # Then identify the parent directory of the file, that's the parent
-    # of the usrcfg directory too.
-    usrhome_parent="$(dirname "$(dirname "$(dirname "$original_script")")")"
-    export USRHOME_DIR="$usrhome_parent/usrhome"
-    export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
+    if ! command -v readlink >/dev/null 2>&1; then
+        printf '%s\n' 'USRHOME: readlink is required to resolve ~/.profile.' >&2
+        exit 1
+    fi
+    if ! usrhome_profile=$(readlink "$HOME/.profile"); then
+        printf '%s\n' 'USRHOME: cannot read the ~/.profile symlink.' >&2
+        exit 1
+    fi
+    case $usrhome_profile in
+        /*/dot/profile.sh) ;;
+        *)
+            printf '%s\n' 'USRHOME: ~/.profile must link to an absolute usrhome/dot/profile.sh path.' >&2
+            exit 1
+            ;;
+    esac
+    USRHOME_DIR=${usrhome_profile%/dot/profile.sh}
+    USRHOME_DIR_USRCFG=${USRHOME_DIR%/*}/usrcfg
+    export USRHOME_DIR USRHOME_DIR_USRCFG
+    unset usrhome_profile
 fi
 
 
