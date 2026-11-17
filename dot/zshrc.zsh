@@ -1,10 +1,11 @@
 # ZSH Configuration FILE: zshrc
+# shellcheck shell=sh
 #
 # Purpose   : Z Shell Recource Configuration - Define alias, functions, prompt.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024-2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2026-11-12 12:46:08 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 14:58:07 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -96,6 +97,7 @@ help() {
 
 preexec()
 {
+    # shellcheck disable=SC1083 # zsh syntax not supported by shellcheck
     timer=$(($(print -P %D{%s%6.})/1000))
 }
 
@@ -103,6 +105,7 @@ precmd()
 {
     if [ $timer ]; then
         # get time with millisecond resolution
+        # shellcheck disable=SC1083 # zsh syntax not supported by shellcheck
         now=$(($(print -P %D{%s%6.})/1000))
 
         # compute time elements
@@ -219,14 +222,17 @@ usrhome-select-zsh-prompt()
                 #          - user mode: green when last command succeeded,  bold red otherwise.
                 #          - root     : magenta when last command succeeded, bold red otherwise.
                 # Model 3: print zsh followed by % or # in bold
-                case "$model" in
-                    2)
-                        p3=%(?.%F{%(#.magenta.green)}zsh%#%F{reset}.%B%F{red}zsh%#%F{reset}%b)
-                        ;;
-                    3)
-                        p3=%Bzsh%#%b
-                        ;;
-                esac
+                # shellcheck disable=all # shellcheck does not support zsh syntax.
+                {
+                    case "$model" in
+                        2)
+                            p3=%(?.%F{%(#.magenta.green)}zsh%#%F{reset}.%B%F{red}zsh%#%F{reset}%b)
+                            ;;
+                        3)
+                            p3=%Bzsh%#%b
+                            ;;
+                    esac
+                }
                 autoload -Uz vcs_info
                 precmd_vcs_info() { vcs_info }
                 precmd_functions+=( precmd_vcs_info )

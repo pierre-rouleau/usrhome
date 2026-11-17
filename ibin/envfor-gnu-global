@@ -4,7 +4,7 @@
 # Purpose   : Add GNU Global support to the shell's environment.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:32:21 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 14:32:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -43,13 +43,6 @@
 # ----
 #
 
-if [ -n "${BASH_VERSION-}" ]; then
-    pgm_name="${BASH_SOURCE[0]}"
-elif [ -n "${ZSH_VERSION-}" ]; then
-    pgm_name="${(%):-%x}"
-else
-    pgm_name="$0"
-fi
 
 print_usage()
 {
@@ -58,9 +51,9 @@ use-gnu-global:  Activate GNU Global commands in current shell.
      - Add GNU Global bin directory to PATH
      - Add GNU Global man directory to MANPATH
 
-     - Note: This is sourcing %s
+     - Note: This is sourcing %s/ibin/envfor-gnu-global
 
-" "$pgm_name"
+" "$USRHOME_DIR"
 }
 
 # --
@@ -79,8 +72,7 @@ fi
 # Prevent multiple invocations
 if [ -n "${USRHOME__GNU_GLOBAL_VERSION:-}" ]; then
     usrhome_printf_warning 'use-gnu-global %s is already active.
-\t Start a new shell if a new version was installed since this shell started.
-\t This shell started %s seconds ago.\n'  "${USRHOME__GNU_GLOBAL_VERSION}" "$SECONDS"
+\t Start a new shell if a new version was installed since this shell started.\n' "${USRHOME__GNU_GLOBAL_VERSION}"
     return 1
 fi
 
@@ -88,9 +80,9 @@ fi
 # -- Validate environment
 #    - Check presence of USRHOME_DIR_GNU_GLOBAL
 if [ -z "${USRHOME_DIR_GNU_GLOBAL}" ]; then
-    usrhome_printf_error 'use-gnu-global: USRHOME_DIR_GNU_GLOBAL is not defined.
+    usrhome_printf_error "use-gnu-global: USRHOME_DIR_GNU_GLOBAL is not defined.
 \t To fix this, define it inside your usrcfg/setfor-all-config.sh file.
-\t Example: export USRHOME_DIR_GNU_GLOBAL="$HOME/my/bin/gnu-global"\n'
+\t Example: export USRHOME_DIR_GNU_GLOBAL=\"\$HOME/my/bin/gnu-global\"\n"
     return 1
 fi
 #    - Check validity of USRHOME_DIR_GNU_GLOBAL
@@ -104,6 +96,7 @@ fi
 # If the framework tracing functions are missing, hydrate them first
 if ! command -v usrhome_trace_in >/dev/null 2>&1; then
     if [ -f "${USRHOME_DIR}/ibin/shell-tracing.sh" ]; then
+        # shellcheck source=./shell-tracing.sh
         . "${USRHOME_DIR}/ibin/shell-tracing.sh"
     else
         # Safe fallback: create empty stubs if shell-tracing.sh isn't found
@@ -114,6 +107,7 @@ fi
 #    - Ensure path management infrastructure is sourced
 #      If the framework function isn't loaded yet, import it from setfor-path
 if ! command -v prepend_to_path >/dev/null 2>&1; then
+    # shellcheck source=./setfor-path
     . "${USRHOME_DIR}/ibin/setfor-path"
 fi
 
@@ -165,3 +159,6 @@ export USRHOME__GNU_GLOBAL_VERSION
 unset _gg_ver
 
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:

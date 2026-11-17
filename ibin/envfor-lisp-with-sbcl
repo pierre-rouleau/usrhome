@@ -4,7 +4,7 @@
 # Purpose   : Set SBCL for the Common Lisp command: 'lisp'.
 # Created   : Friday, April 16 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:32:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 13:42:55 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -12,7 +12,7 @@
 #  Usage:   use-lisp-with-sbcl
 #
 #    The command 'use-lisp-with-sbcl' is an alias for this file.
-#    You could also type: 'source envfor-lisp-with-sbcl'
+#    You could also type: '. "$USRHOME_DIR/ibin/envfor-lisp-with-sbcl"'
 #
 #  Impact:  Checks for presence of SBCL and sets the USRHOME_PGMFOR_LISP environment
 #           variable used by the $USRHOME_DIR/bin/lisp script, which starts the selected
@@ -36,14 +36,6 @@
 #  Code
 #  ----
 
-if [ -n "${BASH_VERSION-}" ]; then
-    pgm_name="${BASH_SOURCE[0]}"
-elif [ -n "${ZSH_VERSION-}" ]; then
-    pgm_name="${(%):-%x}"
-else
-    pgm_name="$0"
-fi
-
 print_usage()
 {
     printf -- "
@@ -52,22 +44,23 @@ use-lisp-with-sbcl:  Select SBCL for as Common Lisp executed by 'lisp'.
      - Cache is in ~/.cache/common-lisp/sbcl-X.Y.Z-OS-ARCH
 
      - Ref: https://www.sbcl.org/
-     - Note: This is sourcing %s
+     - Note: This is sourcing %s/ibin/envfor-lisp-with-sbcl
 
-" "$pgm_name"
+" "$USRHOME_DIR"
 }
 
 # Check validity of arguments
-if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+if [ "${1-}" = "--help" ] || [ "${1-}" = "-h" ]; then
     print_usage
     return 0
 fi
 
 # Proceed in setting it up.
 #
-if command -v sbcl >/dev/null 2>&1; then
-    export USRHOME_PGMFOR_LISP=`command -v sbcl`
-    printf -- ". Using Common Lisp - %s - from %s\n" "$(sbcl --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
+if usrhome_sbcl_path=$(command -v sbcl); then
+    USRHOME_PGMFOR_LISP=$usrhome_sbcl_path
+    export USRHOME_PGMFOR_LISP
+    printf ". Using Common Lisp - %s - from %s\n" "$(sbcl --version 2>/dev/null)" "$USRHOME_PGMFOR_LISP"
     if command -v rlwrap > /dev/null 2>&1; then
         printf -- "   With %s to enhance REPL line editing and history.\n" "$(rlwrap -v)"
     else

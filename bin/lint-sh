@@ -4,7 +4,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:18:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 15:20:33 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -36,7 +36,7 @@ print_usage()
 
     Print this help information.
 
- • Usage: %s [-s|-S] [-v] -f FILE | -d DIRECTORY
+ • Usage: %s [-s|-S] [-v] [-x] -f FILE | -d DIRECTORY
 
     Scans a single shell script or all shell scripts (.sh, .bash, .zsh, files
     with shell shebangs, or files with sourced shell script markers) inside a
@@ -61,6 +61,9 @@ print_usage()
     -v            Verbose: show all warnings for diagnostics that cannot be
                   analyzed by the current lexer instead of only showing
                   the warning count detected on each file.
+    -x            Exit fast from shellcheck detected errors: stop after reporting
+                  errors in one file, by default report errors in all files.
+                  This has no impact on detection of other checks.
 
    Examples:
     %s -f /path/to/usrhome/bin/script.sh
@@ -103,6 +106,7 @@ target_dir=''
 verbose=0
 with_shellcheck=0
 with_shellcheck_count=0
+exit_fast=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -143,6 +147,10 @@ while [ $# -gt 0 ]; do
             ;;
         -v)
             verbose=1
+            shift
+            ;;
+        -x)
+            exit_fast=1
             shift
             ;;
         --)
@@ -192,10 +200,10 @@ fi
 # --
 # Define the operations
 
+terminate_processing=0
 audit_file()
 {
     file=$1
-
 
     if [ "$with_shellcheck" = "1" ]; then
         # extract file basename and directory
@@ -213,11 +221,18 @@ audit_file()
                 error_count="$(shellcheck -x -S style --format=gcc  "$f_name" |  wc -l | tr -d ' ')"
                 if [ "$error_count" -gt 0 ]; then
                     printf '%s: SHELLCHECK %s diagnostics\n' "$file" "$error_count"
+                    if [ "$exit_fast" = "1" ]; then
+                        return 1
+                    fi
                 fi
             else
-                shellcheck -x -S style "$f_name"
+                if ! shellcheck -x -S style "$f_name"; then
+                    if [ "$exit_fast" = "1" ]; then
+                       return 1
+                   fi
+                fi
             fi
-        )
+        ) || terminate_processing=1
     fi
 
 
@@ -377,6 +392,9 @@ elif [ -n "$target_dir" ]; then
             esac
             if [ "$is_shell" -eq 1 ]; then
                 if ! audit_file "$file"; then
+                    if [ "$terminate_processing" = "1" ]; then
+                        exit 1
+                    fi
                     lint_error_found=1
                 fi
             fi
