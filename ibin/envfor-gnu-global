@@ -1,9 +1,10 @@
 # Sourced script: envfor-gnu-global  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Add GNU Global support to the shell's environment.
 # Created   : Friday, November  6 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 16:19:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:21 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

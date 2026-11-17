@@ -1,9 +1,10 @@
 # Sourced script: setfor-shell-toggle-tracing  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Toggle tracing of shell configuration file sourcing.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 22:12:49 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:33:19 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

@@ -1,9 +1,10 @@
 # Sourced script: setfor-bash-common  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : COmmon Bash functions also used by configuration.
 # Created   : Friday, October  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 11:14:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:33:13 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

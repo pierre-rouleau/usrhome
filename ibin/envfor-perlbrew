@@ -1,9 +1,10 @@
 # Sourced script: envfor-perlbrew  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Activate the use of perlbrew.
 # Created   : Thursday, October 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 11:48:07 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:51 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

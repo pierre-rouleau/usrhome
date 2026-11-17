@@ -1,9 +1,10 @@
 # Sourced script: envfor-lisp-with-roswell  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set environment to be able to run Roswell-luanched Lisp REPL via the 'lisp' command.
 # Created   : Saturday, February 14 2026
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:36:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------

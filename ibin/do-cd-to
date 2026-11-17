@@ -1,9 +1,10 @@
 # Sourced script: do-cd-to  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 10:31:03 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:30:21 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

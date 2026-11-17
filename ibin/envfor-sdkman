@@ -1,9 +1,10 @@
 # Sourced script: envfor-sdkman  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set shell to use sdkman.
 # Created   : Wednesday, October  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 15:57:52 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:53 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

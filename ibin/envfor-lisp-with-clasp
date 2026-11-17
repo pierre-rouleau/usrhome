@@ -1,9 +1,10 @@
 # Sourced script: envfor-lisp-with-clasp  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set environment to be able to run Clasp via the 'lisp' command.
 # Created   : Wednesday, February 11 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:34:02 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:35 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------

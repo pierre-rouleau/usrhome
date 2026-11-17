@@ -1,9 +1,10 @@
 # Sourced script: setfor-zsh-alias  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set Z shell alias.
 # Created   : Tuesday, March 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:58:35 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:33:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

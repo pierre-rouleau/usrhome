@@ -1,9 +1,10 @@
 # Sourced script: envfor-gnubin-on-macos  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Activate GNU grep/egrep/fgrep in current shell.
 # Created   : Thursday, January  8 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 21:21:09 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description

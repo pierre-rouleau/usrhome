@@ -1,9 +1,10 @@
 # Sourced script: do-usrhome  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Change current directory to USRHOME root.
 # Created   : Thursday, March 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 09:59:06 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:31:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

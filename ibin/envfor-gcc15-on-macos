@@ -1,9 +1,10 @@
 # Sourced script: envfor-gcc15-on-macos  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Activate GCC 15 tool-chain in the current macOS shell.
 # Created   : Wednesday, August 27 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 16:00:39 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:31:49 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

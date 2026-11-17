@@ -1,9 +1,10 @@
 # Sourced script: envfor-homebrew  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 15:19:58 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:31 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

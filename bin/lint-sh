@@ -1,15 +1,16 @@
 #!/bin/sh
-# SH FILE: lint-sh-cd
+# SH FILE: lint-sh
 #
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-16 11:56:32 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:18:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#  Scans shell scripts for risky 'cd' usage that ShellCheck may miss.
+#  Scans shell scripts for risky 'cd' usage and other issues
+#  that ShellCheck may miss.  Also execute ShellCheck on request.
 #
 
 # ----------------------------------------------------------------------------
@@ -35,7 +36,7 @@ print_usage()
 
     Print this help information.
 
- • Usage: %s [-v] -f FILE | -d DIRECTORY
+ • Usage: %s [-s|-S] [-v] -f FILE | -d DIRECTORY
 
     Scans a single shell script or all shell scripts (.sh, .bash, .zsh, files
     with shell shebangs, or files with sourced shell script markers) inside a
@@ -49,14 +50,17 @@ print_usage()
      - Unchecked exit statuses (missing ||, &&, or conditional guards)
 
    Arguments:
-    -v            Verbose: show all warnings for diagnostics that cannot be
-                  analyzed by the current lexer instead of only showing
-                  the warning count detected on each file.
     -f FILE       Audit a single shell script file
     -d DIRECTORY  Recursively audit all shell scripts inside DIRECTORY
 
    Options:
-     -h, --help  Display this help message and exit
+    -s            Execute a shellcheck style check on each file and print
+                  the number of detected issues.
+    -S            Execute a shellcheck style check on each file and print
+                  the detected issues.
+    -v            Verbose: show all warnings for diagnostics that cannot be
+                  analyzed by the current lexer instead of only showing
+                  the warning count detected on each file.
 
    Examples:
     %s -f /path/to/usrhome/bin/script.sh
@@ -66,10 +70,13 @@ print_usage()
      %s cannot analyze some code constructs and skips them issuing a warning
      when the -v option is specified.  Each warning line printed by %s
      starts with 'WARNING: '.
-     If you want to only see the detected issues you can filter the warnings
-     by piping the output of %s into:  grep -v \": \\[WARNING: \"
+     - If you want to only see the detected issues you can filter the warnings
+      by piping the output of %s into:  grep -v \": \\[WARNING: \"
+     - If you want to only see the ShellCheck error count for all files under
+       the current directory tree, you can use the following command:
+       \"%s -s -d . | grep SHELLCHECK\"
 " "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
-  "$pgm_name" "$pgm_name" "$pgm_name"
+  "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
 # --
@@ -94,6 +101,8 @@ fi
 target_file=''
 target_dir=''
 verbose=0
+with_shellcheck=0
+with_shellcheck_count=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -114,6 +123,23 @@ while [ $# -gt 0 ]; do
             fi
             target_dir=$2
             shift 2
+            ;;
+        -S)
+            if command -v shellcheck > /dev/null 2>&1; then
+                with_shellcheck=1
+            else
+                usrhome_printf_warning '%s: shellcheck requested but not available: not used!\n' "$pgm_name"
+            fi
+            shift
+            ;;
+        -s)
+            if command -v shellcheck > /dev/null 2>&1; then
+                with_shellcheck=1
+                with_shellcheck_count=1
+            else
+                usrhome_printf_warning '%s: shellcheck requested but not available: not used!\n' "$pgm_name"
+            fi
+            shift
             ;;
         -v)
             verbose=1
@@ -170,6 +196,31 @@ audit_file()
 {
     file=$1
 
+
+    if [ "$with_shellcheck" = "1" ]; then
+        # extract file basename and directory
+        f_name="${file##*/}"
+        case "$file" in
+            */*) d_name="${file%/*}" ;;
+            *)   d_name="." ;;
+        esac
+        # Execute shellcheck in a sub-shell inside the directory of the checked file
+        # this way shellcheck will be able to use the shellcheck source statements
+        # to identify the location of the source files like Emacs is able to do it.
+        (
+            cd -- "$d_name" || return 1
+            if [ "$with_shellcheck_count" = "1" ]; then
+                error_count="$(shellcheck -x -S style --format=gcc  "$f_name" |  wc -l | tr -d ' ')"
+                if [ "$error_count" -gt 0 ]; then
+                    printf '%s: SHELLCHECK %s diagnostics\n' "$file" "$error_count"
+                fi
+            else
+                shellcheck -x -S style "$f_name"
+            fi
+        )
+    fi
+
+
     # Keep the original filename for diagnostics.  Prefix relative input
     # paths so AWK cannot mistake them for assignments or options.
     # This is done to prevent AWK from mistaking a file named 'abc=def'
@@ -184,6 +235,7 @@ audit_file()
     else
         LC_ALL=C awk -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
     fi
+
 }
 
 # --

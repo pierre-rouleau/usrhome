@@ -1,9 +1,10 @@
 # Sourced script: setfor-usrhome-prompt-model-to  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Change zsh prompt model in current shell.
 # Created   : Wednesday, April  3 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 12:43:46 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:33:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

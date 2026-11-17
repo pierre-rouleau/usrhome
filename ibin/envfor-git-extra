@@ -1,9 +1,10 @@
 # Sourced script: envfor-git-extra  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Activate extra Git support.
 # Created   : Monday, June 10 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 08:43:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:31:59 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------

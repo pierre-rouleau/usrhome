@@ -1,9 +1,10 @@
 # Sourced script: envfor-diff  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set the diff program to use in the current shell.
 # Created   : Wednesday, May  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 10:41:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:31:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

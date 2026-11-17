@@ -1,9 +1,10 @@
 # Sourced script: envfor-cbr  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set environment to use the c, b and r commands.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 21:13:34 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:31:17 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

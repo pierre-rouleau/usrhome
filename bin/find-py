@@ -4,7 +4,7 @@
 # Purpose   : Find all Python files in specified directory tree.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 17:05:26 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:46:46 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -35,13 +35,13 @@ print_usage()
            Search for files with the following extensions:
           - .py, .pyw
 
- Usage: %s -h|--help
+ • Usage: %s -h|--help
 
-  • Print this help information.
+   Print this help information.
 
- Usage: %s  DIR [DIR ...]
+ • Usage: %s  DIR [DIR ...]
 
-  • Search and print name of Python files found in specified directories.
+   Search and print name of Python files found in specified directories.
 
  ERRORS: All detected errors are appended to the file %s
          stored locally. The file is never deleted.  You must delete it

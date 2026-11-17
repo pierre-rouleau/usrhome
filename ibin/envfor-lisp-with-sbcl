@@ -1,9 +1,10 @@
 # Sourced script:  envfor-lisp-with-sbcl  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set SBCL for the Common Lisp command: 'lisp'.
 # Created   : Friday, April 16 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:37:03 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:42 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------

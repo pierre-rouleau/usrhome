@@ -1,9 +1,10 @@
 # Sourced script: use-lisp-with-clisp  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set environment to be able to run GNU clisp via the 'lisp' command.
 # Created   : Tuesday, May 18 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:36:09 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
