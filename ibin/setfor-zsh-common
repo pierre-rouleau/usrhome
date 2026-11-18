@@ -4,7 +4,7 @@
 # Purpose   : Common zsh functions also used by configuration.
 # Created   : Friday, October  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 23:02:58 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 08:28:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -50,16 +50,21 @@ set_title()
 
             'Linux')
                 # [:todo 2024-05-04, by Pierre Rouleau: Complete this. Currently under testing. ]
-
+                # May be used by external Zsh title configuration.
+                # shellcheck disable=SC2034
                 DISABLE_AUTO_TITLE="true"
 
                 # Build the extra sequence that controls the title.
                 if [ -n "$SSHPASS" ]; then
+                    # SHLVL is provided by Zsh.
+                    # shellcheck disable=SC3028
                     title_shell_depth="L${SHLVL}+"
                 else
+                    # shellcheck disable=SC3028
                     title_shell_depth="L${SHLVL}"
                 fi
-                echo -n -e "\e]2;${title_text} (${USER}@$(hostname -s), ${title_shell_depth}, $(pwd))\a"
+                printf '\033]2;%s (%s@%s, %s, %s)\007' \
+                       "$title_text" "$USER" "$(hostname -s)" "$title_shell_depth" "$(pwd)"
                 ;;
 
             *)

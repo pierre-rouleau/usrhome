@@ -4,7 +4,7 @@
 # Purpose   : Set shell to use sdkman.
 # Created   : Wednesday, October  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 23:01:51 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 08:24:21 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -38,7 +38,8 @@
 
 export SDKMAN_DIR="$HOME/.sdkman"
 if [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
-    # shellcheck source=~/.sdkman/bin/sdkman-init.sh
+    # SDKMAN is installed outside the repository; ShellCheck cannot inspect it.
+    # shellcheck source=/dev/null
     . "$HOME/.sdkman/bin/sdkman-init.sh"
     # Use xargs to print all 3 lines of sdk version in 1 line, removing leading whitespaces.
     # the xargs use either echo (to print each line separately) or printf (to print on the same line)

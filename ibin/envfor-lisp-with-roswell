@@ -4,7 +4,7 @@
 # Purpose   : Set environment to be able to run Roswell-luanched Lisp REPL via the 'lisp' command.
 # Created   : Saturday, February 14 2026
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 22:59:29 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 08:21:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -68,7 +68,7 @@ fi
 # If arguments are specified pass them to 'ros run':
 #
 if [ -n "$1" ]; then
-    USRHOME_PGMFOR_LISP_ROSWELL="$@"
+    USRHOME_PGMFOR_LISP_ROSWELL="$*"
     export USRHOME_PGMFOR_LISP_ROSWELL
     ros use "$@"
 fi

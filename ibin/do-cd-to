@@ -4,7 +4,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 23:16:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 08:13:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -172,7 +172,7 @@ cd-to : Search for file in current directory tree.
 search_hidden=false
 search_ignored=false
 search_for=files
-search_for1=file
+search_for1='file'
 edit_files=false
 link_opt=
 unset cd_to__exit_code
@@ -397,31 +397,33 @@ if [ "${file_count}" -gt  1 ]; then
         if [ "$prompt_yn_return" = "y" ]; then
             case $EDITOR in
                 cd* | rm* | sudo* | disk* )
-                    urhome_printf_warning 'Unsafe EDITOR: %s
+                    usrhome_printf_warning 'Unsafe EDITOR: %s
             !Files are not edited! Change value of EDITOR\n' "$EDITOR"
                     ;;
 
                 *)
-                    the_fnames=$(printf "%s" "$the_filepath" | tr '\n' ' ')
-                    case $USRHOME_SHELL in
-                        "zsh")
-                            # The next line is OK in zsh!
-                            # Ignore the shellcheck error reported on sh mode.
-                            #  or silence it by using zsh mode (see bottom of file)
-                            read -A the_fnames_arr <<< "$the_fnames"
-                            eval "$EDITOR $the_fnames_arr"
-                            unset the_fnames_arr
-                            ;;
-                        "bash")
-                            IFS=' '  read -a the_fnames_arr <<< "$the_fnames"
-                            eval "$EDITOR ${the_fnames_arr[@]}"
-                            unset the_fnames_arr
-                            ;;
-                        *)
-                            usrhome_printf_warning 'Editing files not supported under %s shell.\n"' "$USRHOME_SHELL"
-                            ;;
-                    esac
-                    unset the_fnames
+                    # Keep each newline-delimited path as one argument.
+                    # The subshell preserves the caller's positional parameters.
+                    (
+                        set --
+                        while IFS= read -r cd_to_file; do
+                            set -- "$@" "$cd_to_file"
+                        done <<EOF
+$the_filepath
+EOF
+                        # Split EDITOR into a command and simple options in sh.
+                        sh -c '
+                              editor=$1
+                              shift
+                              case $editor in
+                                   *[![:space:]]*) ;;
+                                   *) printf "%s\n" "cd-to: EDITOR is empty." >&2; exit 1 ;;
+                              esac
+                              IFS=$(printf " \t")
+                              set -f
+                              exec $editor "$@"
+                        ' sh "$EDITOR" "$@"
+                    ) || return $?
                     ;;
             esac
             # Edited the files, return with 0.
