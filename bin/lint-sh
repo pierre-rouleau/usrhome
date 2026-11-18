@@ -4,7 +4,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 23:20:04 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 11:07:12 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,6 +26,7 @@
 #
 
 pgm_name="${0##*/}"
+user_cwd="$PWD"
 
 print_usage()
 {
@@ -36,7 +37,7 @@ print_usage()
 
     Print this help information.
 
- • Usage: %s [-s|-S] [-v] [-x] -f FILE | -d DIRECTORY
+ • Usage: %s [-s|-S] [-q|-v] [-x] -f FILE | -d DIRECTORY
 
     Scans a single shell script or all shell scripts (.sh, .bash, .zsh, files
     with shell shebangs, or files with sourced shell script markers) inside a
@@ -58,6 +59,8 @@ print_usage()
                   the number of detected issues.
     -S            Execute a shellcheck style check on each file and print
                   the detected issues.
+    -q            Quiet: ignore parsing limitation, do not report nor count
+                  them.
     -v            Verbose: show all warnings for diagnostics that cannot be
                   analyzed by the current lexer instead of only showing
                   the warning count detected on each file.
@@ -103,7 +106,11 @@ fi
 
 target_file=''
 target_dir=''
+
+report_limitations=1
 verbose=0
+q_v_seen=''
+
 with_shellcheck=0
 with_shellcheck_count=0
 exit_fast=0
@@ -112,8 +119,7 @@ while [ $# -gt 0 ]; do
     case "$1" in
         -f|--file)
             if [ $# -lt 2 ] || [ -z "$2" ]; then
-                printf 'ERROR: %s requires a file argument.\n\n' "$1" >&2
-                print_usage >&2
+                usrhome_printf_error '%s requires a file argument.\n' "$pgm_name"
                 exit 1
             fi
             target_file=$2
@@ -121,8 +127,7 @@ while [ $# -gt 0 ]; do
             ;;
         -d|--directory)
             if [ $# -lt 2 ] || [ -z "$2" ]; then
-                printf 'ERROR: %s requires a directory argument.\n\n' "$1" >&2
-                print_usage >&2
+                usrhome_printf_error '%s requires a directory argument.\n' "$pgm_name"
                 exit 1
             fi
             target_dir=$2
@@ -145,7 +150,21 @@ while [ $# -gt 0 ]; do
             fi
             shift
             ;;
+        -q)
+            if [ "$q_v_seen" = "v" ]; then
+                usrhome_printf_error '%s: Cannot use the -q and -v options together.\n' "$pgm_name"
+                exit 1
+            fi
+            q_v_seen="q"
+            report_limitations=0
+            shift
+            ;;
         -v)
+            if [ "$q_v_seen" = "v" ]; then
+                usrhome_printf_error '%s: Cannot use the -q and -v options together.\n' "$pgm_name"
+                exit 1
+            fi
+            q_v_seen="v"
             verbose=1
             shift
             ;;
@@ -198,6 +217,45 @@ elif [ -n "$target_dir" ]; then
 fi
 
 # --
+# Identify the complete path of the shellcheck, wc and tr utilities used
+# during auditing.  Prevent the auditing to change them.
+
+# Resolve executable paths before changing to any audited directory.
+resolve_executable()
+{
+    resolved_command=$(command -v "$1") || return 1
+    case $resolved_command in
+        /*) ;;
+        *)
+            # Preserve trailing newlines in the current directory name.
+            resolve_dir=$(pwd -P && printf '.') || return 1
+            resolve_dir=${resolve_dir%.}
+            resolve_dir=${resolve_dir%?}
+            resolved_command=${resolve_dir%/}/$resolved_command
+            ;;
+    esac
+    [ -f "$resolved_command" ] && [ -x "$resolved_command" ] || return 1
+    printf '%s\n' "$resolved_command"
+}
+
+if [ "$with_shellcheck" = "1" ]; then
+    if ! shellcheck_pgm=$(resolve_executable shellcheck); then
+        printf '%s: cannot resolve the shellcheck executable.\n' "$pgm_name" >&2
+        exit 1
+    fi
+    if [ "$with_shellcheck_count" = "1" ]; then
+        if ! wc_pgm=$(resolve_executable wc) ||
+                ! tr_pgm=$(resolve_executable tr); then
+            printf '%s: cannot resolve the wc or tr executable.\n' "$pgm_name" >&2
+            exit 1
+        fi
+    elif ! awk_pgm=$(resolve_executable awk); then
+        printf '%s: cannot resolve the awk executable.\n' "$pgm_name" >&2
+        exit 1
+    fi
+fi
+
+# --
 # Define the operations
 
 terminate_processing=0
@@ -216,9 +274,9 @@ audit_file()
         # this way shellcheck will be able to use the shellcheck source statements
         # to identify the location of the source files like Emacs is able to do it.
         (
-            cd -- "$d_name" || return 1
+            CDPATH='' cd -- "$d_name" || return 1
             if [ "$with_shellcheck_count" = "1" ]; then
-                error_count="$(shellcheck -x -S style --format=gcc  "$f_name" |  wc -l | tr -d ' ')"
+                error_count="$("$shellcheck_pgm" -x -S style --format=gcc  "$PWD/$f_name" |  "$wc_pgm" -l | "$tr_pgm" -d ' ')"
                 if [ "$error_count" -gt 0 ]; then
                     printf '%s: SHELLCHECK %s diagnostics\n' "$file" "$error_count"
                     if [ "$exit_fast" = "1" ]; then
@@ -226,7 +284,20 @@ audit_file()
                     fi
                 fi
             else
-                if ! shellcheck -x -S style --format=gcc "$f_name"; then
+                output="$("$shellcheck_pgm" -x -S style --format=gcc "$PWD/$f_name")"
+                status=$?
+                # remove the user's CWD path from the path of each file in the output message
+                if [ -n "$output" ]; then
+                    printf '%s\n' "$output" | "$awk_pgm" -v prefix="$user_cwd" '
+                        index($0, prefix) == 1 {
+                                print substr($0, length(prefix) + 1)
+                                next
+                        }
+                        {
+                           print
+                        }'
+                fi
+                if [ "$status" -ne 0 ]; then
                     if [ "$exit_fast" = "1" ]; then
                        return 1
                    fi
@@ -246,9 +317,9 @@ audit_file()
     esac
 
     if [ "$verbose" = "1" ]; then
-        LC_ALL=C awk -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+        LC_ALL=C "$awk_pgm" -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
     else
-        LC_ALL=C awk -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+        LC_ALL=C "$awk_pgm" -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
     fi
 
 }
@@ -266,7 +337,9 @@ if [ -n "$target_file" ]; then
     # Audit the specified file
     #
     if ! audit_file "$target_file"; then
-        lint_error_found=1
+        if [ "$report_limitations" = "1" ]; then
+            lint_error_found=1
+        fi
     fi
 
 elif [ -n "$target_dir" ]; then
@@ -281,7 +354,7 @@ elif [ -n "$target_dir" ]; then
     trap 'exit 1' HUP INT TERM
 
     if ! find "$target_dir" -type f ! -name '.DS_Store' ! -path '*/.git/*' > "$file_list"; then
-        lint_error_found=1
+        lint_error_found=2
     fi
     {
         while IFS= read -r file; do
@@ -303,7 +376,7 @@ elif [ -n "$target_dir" ]; then
 
                     if ! file_type=$(LC_ALL=C file -b "$probe_file" 2>/dev/null); then
                         printf '%s: cannot classify %s\n' "$pgm_name" "$file" >&2
-                        lint_error_found=1
+                        lint_error_found=3
                         continue
                     fi
 
@@ -314,7 +387,7 @@ elif [ -n "$target_dir" ]; then
                         'cannot open'*|'cannot read'*)
                             printf '%s: cannot classify %s: %s\n' \
                                    "$pgm_name" "$file" "$file_type" >&2
-                            lint_error_found=1
+                            lint_error_found=4
                             continue
                             ;;
                     esac
@@ -360,7 +433,7 @@ elif [ -n "$target_dir" ]; then
                             ;;
                         *)
                             printf '%s: [ERROR: could not inspect first line]\n' "$file" >&2
-                            lint_error_found=1
+                            lint_error_found=5
                             continue
                             ;;
                     esac
@@ -395,7 +468,9 @@ elif [ -n "$target_dir" ]; then
                     if [ "$terminate_processing" = "1" ]; then
                         exit 1
                     fi
-                    lint_error_found=1
+                    if [ "$report_limitations" = "1" ]; then
+                        lint_error_found=1
+                    fi
                 fi
             fi
         done
