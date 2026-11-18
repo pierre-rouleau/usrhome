@@ -4,7 +4,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 12:42:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:52:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -496,10 +496,22 @@ if [ "$the_dirpath" = "." ]; then
 else
     if [ "$search_for1" = "file" ]; then
         if cd -- "${the_dirpath}"; then
-            ls -l "${the_fname}"
+            # Use the selected file, not the search pattern.
+            # The ./ prefix prevents a leading dash from becoming an option.
+            the_filepath="./${the_filepath##*/}"
+            ls -l "$the_filepath" || has_error=true
             if [ "$edit_files" = "true" ]; then
-                printf -- '%s %s\n' "$EDITOR" "${the_fname}"
-                eval "$EDITOR ${the_fname}"
+                case ${EDITOR-} in
+                    *[![:space:]]*)
+                        printf -- '%s %s\n' "$EDITOR" "$the_filepath"
+                        # Expand the filename only after eval parses the command.
+                        eval "$EDITOR \"\$the_filepath\"" || has_error=true
+                        ;;
+                    *)
+                        usrhome_printf_error 'cd-to: EDITOR is empty.\n'
+                        has_error=true
+                        ;;
+                esac
             fi
         else
             has_error=true
