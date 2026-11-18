@@ -4,16 +4,28 @@
 # Purpose   : With  a header showing the file name, execute ls with arguments.
 # Created   : Thursday, October 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-17 09:44:06 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 23:06:22 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#  Print a header and then the output of the ls command.
-#  The arguments expect only one filename and it has to be the last argument.
+# Run ls after printing a header that identifies the last argument.
+# The script passes all arguments to ls unchanged.
 #
-#  This is meant to be used with the ``xargs -I $ withh-ls -l $`` or
-#  something like this with more options to ls.
+# Use this script to separate the output for individual files.
+# Pass one filename as the last argument.
+#
+# Example: list each .txt file under this directory.
+#
+#   find . -type f -name '*.txt' -exec withh-ls -l {} \;
+#
+# The same example using xargs:
+#
+#   find . -type f -name '*.txt' -print0 |
+#       xargs -0 -I '$' withh-ls -l '$'
+#
+# The script does not check whether the last argument is a filename.
+# If no arguments are supplied, it prints nothing and does not run ls.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -28,11 +40,15 @@
 #
 
 # Identify the filename - passed as the last argument.
-unset withh_filename
 if [ $# -gt 0 ]; then
-    eval withh_filename=\${$#}
-    printf -- "\n-----------: %s\n" "$withh_filename"
+    (
+        shift "$(($# - 1))"
+        printf -- "\n-----------: %s\n" "$1"
+    )
     ls "$@"
 fi
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

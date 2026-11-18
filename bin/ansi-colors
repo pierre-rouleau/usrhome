@@ -4,7 +4,7 @@
 # Purpose   : Print ANSI escape sequences and their colors.
 # Created   : Friday, April 24 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-28 10:11:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:17:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,26 +25,33 @@
 
 
 # Standard ANSI Colors (0-15)
-echo "--- Standard 16 Colors ---"
-for i in {0..15}; do
-    # \e[38;5;${i}m sets the foreground color to index i
-    # \e[0m resets all formatting
-    printf "\e[38;5;${i}m  %3d  \e[0m" "$i"
+printf -- '--- Standard 16 Colors ---\n'
+i=0
+while [ "$i" -le 15 ]; do
+    # \033[38;5;${i}m sets the foreground color to index i
+    # \033[0m resets all formatting
+    printf '\033[38;5;%sm  %3d  \033[0m' "$i" "$i"
     # Print 8 colors per line
-    if [ $((($i + 1) % 8)) -eq 0 ]; then echo; fi
+    if [ $(((i + 1) % 8)) -eq 0 ]; then printf "\n"; fi
+    i=$((i + 1))
 done
 
-echo -e "\n--- 256 Color Palette ---"
+printf -- '\n--- 256 Color Palette ---\n'
 # Extended 256-color set (16-255)
-for i in {16..255}; do
-    printf "\e[38;5;${i}m  %3d  \e[0m" "$i"
+i=16
+while [ "$i" -le 255 ]; do
+    printf '\033[38;5;%sm  %3d  \033[0m' "$i" "$i"
     # Break lines every 6 colors for the 6x6x6 cube (16-231)
     # and every 12 for the grayscale (232-255)
-    if [ $i -lt 232 ]; then
-        if [ $((($i - 15) % 6)) -eq 0 ]; then echo; fi
+    if [ "$i" -lt 232 ]; then
+        if [ $(((i - 15) % 6)) -eq 0 ]; then printf "\n"; fi
     else
-        if [ $((($i - 231) % 12)) -eq 0 ]; then echo; fi
+        if [ $(((i - 231) % 12)) -eq 0 ]; then printf "\n"; fi
     fi
+     i=$((i + 1))
 done
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

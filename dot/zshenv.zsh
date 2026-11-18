@@ -1,10 +1,11 @@
 # ZSH Configuration FILE: zshenv.zsh
+# shellcheck shell=sh
 #
 # Purpose   : ~/.zshenv Z Shell Environment Configuration - Always sourced.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Copyright (C) 2024 by Pierre Rouleau
+# Copyright (C) 2024-2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-12-02 15:58:41 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 17:06:20 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -47,15 +48,19 @@
 # If it has already been done, as indicated by the existence of the
 # USRHOME_DIR environment variable, then skip this part.
 #
-if [[ -z $USRHOME_DIR ]]; then
+if [ -z "${USRHOME_DIR-}" ]; then
     # - Identify the name of what zsh executed (that should be the ~/.zshenv symlink)
+    # shellcheck disable=SC2296 # shellcheck does not support zsh syntax
     script=${(%):-%x}
     # - Then identify the real file pointed by that symlink: it should be
     #   this file, the usrhome/dot/bashrc.bash, with the complete path.
-    original_script=`readlink $script`
+    original_script="$(readlink "$script")"
     # - Then identify the parent directory of the file, that's the parent
     #   of the usrcfg directory too.
-    usrhome_parent=$(dirname $(dirname $(dirname $original_script)))
+    usrhome_parent=${original_script%/}   # Remove any trailing slash first
+    usrhome_parent=${usrhome_parent%/*}   # 1st dirname
+    usrhome_parent=${usrhome_parent%/*}   # 2nd dirname
+    usrhome_parent=${usrhome_parent%/*}   # 3rd dirname
     export USRHOME_DIR="$usrhome_parent/usrhome"
     export USRHOME_DIR_USRCFG="$usrhome_parent/usrcfg"
 fi
@@ -65,7 +70,8 @@ fi
 # --------------------------------------
 #
 usrhome_config="$USRHOME_DIR_USRCFG/setfor-all-config.sh"
-if [ -e $usrhome_config ]; then
+if [ -e "$usrhome_config" ]; then
+    # shellcheck source=../../usrcfg/setfor-all-config.sh
     . "$usrhome_config"
 else
     printf -- "\
@@ -105,9 +111,11 @@ unset usrhome_config
 # This script needs to source user configuration scripts to
 # figure out whether tracing is allowed, it sourced other files
 # that reported nested tracing.  The level must be reset to 1.
-if [ -n $USRHOME_TRACE_LEVEL ]; then
+if [ -n "$USRHOME_TRACE_LEVEL" ]; then
     unset USRHOME_TRACE_LEVEL
 fi
+
+#shellcheck disable=SC2088 # The tilde does not need to be expanded
 usrhome_trace_in "~/.zshenv   --> \$USRHOME_DIR/dot/zshenv.zsh"
 
 # ----------------------------------------------------------------------------

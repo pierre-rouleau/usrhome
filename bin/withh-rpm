@@ -4,17 +4,30 @@
 # Purpose   : Execute rpm command after printing a separator header line.
 # Created   : Thursday, October 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-17 11:15:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:03:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
+# This script is meant to be used to Run rpm after printing a header that
+# identifies the last argument.  The script passes all arguments to rpm
+# unchanged.
 #
-#  Print a header and then the output of the rpm command.
-#  The arguments expect only one filename and it has to be the last argument.
+# Use this script to separate the output for individual RPM package files.
+# Pass one package filename as the last argument.
 #
-#  This is meant to be used with the ``xargs -I $ withh-rpm -l $`` or
-#  something like this with more options to rpm.
+# Example: list the contents of each RPM package file under this directory.
+#
+#   find . -type f -name '*.rpm' -exec withh-rpm -qpl {} \;
+#
+# The script does not check whether the last argument is a filename.
+# If no arguments are supplied, it prints nothing and does not run rpm.
+#
+# It's also possible to List the files in each RPM package file under this
+# directory like this:
+#
+#   find . -type f -name '*.rpm' -print0 |
+#       xargs -0 -I '$' withh-rpm -qp -l '$'
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -29,11 +42,15 @@
 #
 
 # Identify the filename - passed as the last argument.
-unset withh_filename
 if [ $# -gt 0 ]; then
-    eval withh_filename=\${$#}
-    printf -- "\n-----------: %s\n" "$withh_filename"
+    (
+        shift "$(($# - 1))"
+        printf -- "\n-----------: %s\n" "$1"
+    )
     rpm "$@"
 fi
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

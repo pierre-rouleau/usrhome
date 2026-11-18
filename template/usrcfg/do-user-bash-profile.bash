@@ -1,9 +1,10 @@
 # Sourced script: do-user-bash-profile.bash  -*- mode: bash; -*-
+# shellcheck shell=bash
 #
 # Purpose   : USRHOME template of User-specific login bash configuration.
 # Created   : Wednesday, April 24 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 08:28:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:51:57 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -60,3 +61,6 @@ unset node_fname
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: bash
+# End:

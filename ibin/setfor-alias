@@ -4,7 +4,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:33:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 23:04:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,6 +24,8 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-alias"
 # --------
 
 # Set USRHOME_SHELL to zsh, bash, ... or unknown
+
+# shellcheck source=./which-shell
 . "$USRHOME_DIR/ibin/which-shell"
 
 # Set variables that will be used later

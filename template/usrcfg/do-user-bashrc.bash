@@ -1,9 +1,10 @@
 # Sourced script: do-user-bashrc.bash  -*- mode: bash; -*-
+# shellcheck shell=bash
 #
 # Purpose   : USRHOME template for user-specific Bash configuration.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 08:12:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:51:29 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -69,3 +70,6 @@ unset node_fname
 # Cleanup
 usrhome_trace_out
 # -----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: bash
+# End:

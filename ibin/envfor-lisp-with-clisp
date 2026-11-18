@@ -4,7 +4,7 @@
 # Purpose   : Set environment to be able to run GNU clisp via the 'lisp' command.
 # Created   : Tuesday, May 18 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:32:38 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:56:16 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -31,13 +31,6 @@
 # ------
 #
 #
-if [ -n "${BASH_VERSION-}" ]; then
-    pgm_name="${BASH_SOURCE[0]}"
-elif [ -n "${ZSH_VERSION-}" ]; then
-    pgm_name="${(%):-%x}"
-else
-    pgm_name="$0"
-fi
 
 print_usage()
 {
@@ -45,9 +38,9 @@ print_usage()
 use-lisp-with-clisp:  Select GNU CLisp as Common Lisp executed by 'lisp'.
 
      - Ref: https://www.gnu.org/software/clisp/
-     - Note: This is sourcing %s
+     - Note: This is sourcing %s/ibin/envfor-lisp-with-clisp
 
-" "$pgm_name"
+" "$USRHOME_DIR"
 }
 
 # Check validity of arguments
@@ -66,5 +59,7 @@ else
     usrhome_print_error 'use-lisp-with-clisp: GNU CLisp is not in PATH!'
 fi
 
-
 # -----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

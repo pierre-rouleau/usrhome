@@ -3,7 +3,7 @@
 # Purpose   : USRHOME template for user's startup configuration of Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 23:07:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 23:06:11 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------

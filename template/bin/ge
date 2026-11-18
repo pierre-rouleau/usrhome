@@ -4,7 +4,7 @@
 # Purpose   : Launch Emacs in Graphics mode in the background.  Support PEL.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-04-17 15:49:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:48:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -47,9 +47,9 @@ os_type=$(uname)
 case $os_type in
     'Darwin' )
         if [ -d /Applications/Emacs.app ]; then
-            /Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
+            /Applications/Emacs.app/Contents/MacOS/Emacs --chdir="$(pwd)" "$@" 2>/dev/null &
         elif [ -d "$HOME/Applications/Emacs.app" ]; then
-            "$HOME/Applications/Emacs.app/Contents/MacOS/Emacs" --chdir=$(pwd) "$@" 2>/dev/null &
+            "$HOME/Applications/Emacs.app/Contents/MacOS/Emacs" --chdir="$(pwd)" "$@" 2>/dev/null &
         else
             printf "ERROR: cannot find Emacs.app in /Applications and %s/Applications\n" "$HOME"
             exit 1

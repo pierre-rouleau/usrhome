@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_login Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 17:17:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 17:08:11 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -32,6 +32,8 @@ case "$-" in
         SHELL_IS_INTERACTIVE=false
         ;;
 esac
+export SHELL_IS_INTERACTIVE
+
 
 #
 #

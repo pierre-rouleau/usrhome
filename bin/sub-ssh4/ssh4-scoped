@@ -3,7 +3,7 @@
 # Purpose   : Open a SSH session to a specific computer, identifying it in the shell.
 # Created   : Friday, July 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-03-21 11:08:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:46:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,6 +49,7 @@
 #   - ipv4addr
 
 envfor_cmd_arg1=ssh4-scoped
+# shellcheck source=./envfor-cmds
 . "${USRHOME_DIR}/bin/sub-ssh4/envfor-cmds"
 
 
@@ -74,7 +75,14 @@ fi
 # -- All OK; proceed.
 # Note: Arg 1 is optional .  If used it's the title for the terminal.
 
-echo "ssh $@ -l ${username} ${ipv4addr}"
+# --->  "ssh $@ -l ${username} ${ipv4addr}"
+
+printf 'ssh'
+if [ "$#" -gt 0 ]; then
+    printf ' %s' "$@"
+fi
+printf ' -l %s %s\n' "$username" "$ipv4addr"
+
 ssh "$@" -l "$username" "$ipv4addr"
 
 # ----------------------------------------------------------------------------

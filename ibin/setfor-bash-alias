@@ -1,9 +1,10 @@
 # Sourced script: setfor-bash-alias  -*- mode: sh; -*-
+# shellcheck shell=bash
 #
 # Purpose   : Set Bash shell alias.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-27 14:57:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:54:22 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,6 +29,7 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-bash-alias"
 # ----------------------------------------------------------------------------
 # Include aliases available in all USRHOME supported shells.
 
+# shellcheck source=./setfor-alias
 . "$USRHOME_DIR/ibin/setfor-alias"
 
 # ----------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 # Purpose   : est ibin/xtra/sanitize-path-posix.sh.
 # Created   : Sunday, November 08 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-11 10:22:48 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 17:13:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #
 # Run from the repository root with the shell to test.
@@ -31,6 +31,7 @@ LC_ALL=C
 SHELL_IS_INTERACTIVE=false
 export LC_ALL SHELL_IS_INTERACTIVE
 
+# shellcheck source=../ibin/xtra/sanitize-path-posix.sh
 if ! . "$_test_file"; then
     printf 'Cannot load sanitizer: %s\n' "$_test_file" >&2
     exit 2
@@ -47,6 +48,7 @@ _test_skipped=0
 # The call mode is "default" or "named".
 run_case() {
     if (
+        # shellcheck disable=SC2030 # this is a test; setting PATH for it in the sub-shell.
         case $2 in
             PATH)   PATH=$3 ;;
             MANPATH) MANPATH=$3 ;;
@@ -124,6 +126,7 @@ run_case() {
 run_rejection() {
     if (
         CPATH=/untouched
+        # shellcheck disable=SC2031 # this is a test; setting PATH for it in the sub-shell.
         _test_original_path=$PATH
         _test_kind=$1
 
@@ -152,6 +155,7 @@ run_rejection() {
             _test_status=$?
         fi
 
+        # shellcheck disable=SC2031 # this is a test; setting PATH for it in the sub-shell.
         if [ "$_test_status" -ne 1 ] ||
            [ "$CPATH" != /untouched ] ||
            [ "$PATH" != "$_test_original_path" ]; then
@@ -241,6 +245,7 @@ case $_test_child in
             if ! _usrhome_sanitize_path CPATH; then
                 exit 1
             fi
+            # shellcheck disable=SC2016 # no need for expansion
             "$_test_child" -c '[ "${CPATH-}" = "/abc:/def" ]'
         ); then
             printf '%s\n' 'PASS: export CPATH'
@@ -255,6 +260,7 @@ case $_test_child in
             if ! _usrhome_sanitize_path MANPATH; then
                 exit 1
             fi
+            # shellcheck disable=SC2016 # no need for expansion
             "$_test_child" -c '[ "${MANPATH-}" = ":" ]'
         ); then
             printf '%s\n' 'PASS: export single-colon MANPATH'
