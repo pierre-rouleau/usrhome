@@ -1,9 +1,10 @@
 # Sourced script: envfor-cmds  -*- mode: sh; -*-
+# shellcheck shell=sh
 # File      : $USRHOME_DIR/bin/sub-ssh4/envfor-cmds
 # Purpose   : Set the shell variables used by the scripts from the environment variables.
 # Created   : Friday, July 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 22:33:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 23:11:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

@@ -4,7 +4,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 23:05:37 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 23:16:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,7 +41,7 @@
 
 # Set USRHOME_SHELL to zsh, bash, ... or unknown
 
-# shellcheck source=./ which-shell
+# shellcheck source=./which-shell
 . "$USRHOME_DIR/ibin/which-shell"
 
 
