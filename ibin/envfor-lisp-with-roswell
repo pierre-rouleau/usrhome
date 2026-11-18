@@ -1,9 +1,10 @@
 # Sourced script: envfor-lisp-with-roswell  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set environment to be able to run Roswell-luanched Lisp REPL via the 'lisp' command.
 # Created   : Saturday, February 14 2026
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:36:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 08:21:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,13 +31,6 @@
 # ------
 #
 #
-if [ -n "${BASH_VERSION-}" ]; then
-    pgm_name="${BASH_SOURCE[0]}"
-elif [ -n "${ZSH_VERSION-}" ]; then
-    pgm_name="${(%):-%x}"
-else
-    pgm_name="$0"
-fi
 
 print_usage()
 {
@@ -52,7 +46,7 @@ use-lisp-with-roswell:  Select Roswell 'ros run' as command executed by 'lisp'.
 
      Get more information about Roswell via 'ros help use'.
      - Ref: https://github.com/roswell/roswell
-     - Note: This is sourcing %s
+     - Note: This is sourcing %s/ibin/envfor-lisp-with-roswell
 
  Usage:   use-lisp-with-roswell [ROS-USE-ARGS]
 
@@ -61,7 +55,7 @@ use-lisp-with-roswell:  Select Roswell 'ros run' as command executed by 'lisp'.
                     ROS-USE-ARGS is stored inside USRHOME_PGMFOR_LISP_ROSWELL
                     for later reference.
 
-" "$pgm_name"
+" "$USRHOME_DIR"
 }
 
 # Check validity of arguments.
@@ -74,7 +68,7 @@ fi
 # If arguments are specified pass them to 'ros run':
 #
 if [ -n "$1" ]; then
-    USRHOME_PGMFOR_LISP_ROSWELL="$@"
+    USRHOME_PGMFOR_LISP_ROSWELL="$*"
     export USRHOME_PGMFOR_LISP_ROSWELL
     ros use "$@"
 fi

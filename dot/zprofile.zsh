@@ -1,10 +1,11 @@
 # ZSH Configuration FILE: zprofile
+# shellcheck shell=sh
 #
 # Purpose   : Z Shell Profile Configuration - Customize important envvar once.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024-2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2026-11-11 11:39:45 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 15:25:58 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -28,6 +29,7 @@
 # ----------------------------------------------------------------------------
 # Code
 # ----
+# shellcheck disable=all # shellcheck does not support zsh syntax.
 
 # Trace Execution of Z Shell configuration files if required
 # ----------------------------------------------------------

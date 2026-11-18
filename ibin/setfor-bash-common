@@ -1,9 +1,10 @@
 # Sourced script: setfor-bash-common  -*- mode: sh; -*-
+# shellcheck shell=bash
 #
-# Purpose   : COmmon Bash functions also used by configuration.
+# Purpose   : Common Bash functions also used by configuration.
 # Created   : Friday, October  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 11:14:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 14:06:06 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -47,9 +48,13 @@ set_title()
             title_shell_depth="L${SHLVL}"
         fi
 
-        # If inside a GNU screen session, include the GNU screen session title if there' one
+        # If inside a GNU screen session, include the GNU screen session title if there's one
         if [ -n "$STY" ]; then
-            screen_title="$(echo "$STY" | sed 's/^\(ttys\)*[0-9]*\.//g')"
+            if [[ $STY =~ ^(ttys)*[0-9]*\. ]]; then
+                screen_title=${STY#"${BASH_REMATCH[0]}"}
+            else
+                screen_title=$STY
+            fi
         else
             screen_title=
         fi
@@ -94,3 +99,6 @@ ssh4__remote()
 }
 
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: bash
+#  End:

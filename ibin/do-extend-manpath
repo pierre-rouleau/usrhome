@@ -1,9 +1,10 @@
 # Sourced script: do-extend-manpath  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set/extend MANPATH from manpath output; safe to re-source.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-24 17:23:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:30:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description

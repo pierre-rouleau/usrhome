@@ -1,9 +1,10 @@
 # Sourced script: setfor-all-config.sh  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : USRHOME template for user's startup configuration of Bash and Z Shell.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 23:07:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 09:44:59 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -52,7 +53,8 @@ if [ -z "$USRHOME_TRACE_SHELL_CONFIG" ]; then
 fi
 
 # Get definitions of usrhome_trace_in() and usrhome_trace_out()
-# shellcheck source=../usrhome/ibin/shell-tracing.sh
+# MODIFY : Shell Check line below with:source=../usrhome/ibin/shell-tracing.sh
+# shellcheck source=/dev/null
 . "$USRHOME_DIR/ibin/shell-tracing.sh"
 
 # Trace if requested by user.
@@ -161,6 +163,8 @@ if [ -z "$USRHOME_PROMPT_MODEL_OVERRIDE" ]; then
             #
             # Set USRHOME_SHELL to zsh, bash or unknown
             #
+            # MODIFY : Shell Check line below with:source=../usrhome/ibin/which-shell
+            # shellcheck source=/dev/null
             . "$USRHOME_DIR/ibin/which-shell"
             case "$USRHOME_SHELL" in
                 bash)

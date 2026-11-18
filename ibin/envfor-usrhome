@@ -1,9 +1,10 @@
 # Sourced script: envfor-usrhome  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Add support for USRHOME commands by updating PATH.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 11:32:28 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:46:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -20,6 +21,10 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-usrhome"
 
 # 0 - Check if shell is interactive
 # ---------------------------------
+# Clear any inherited export attribute before setting the shell-local value.
+unset SHELL_IS_INTERACTIVE
+# Used by other sourced scripts.
+# shellcheck disable=SC2034  # SHELL_IS_INTERACTIVE is used.
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true

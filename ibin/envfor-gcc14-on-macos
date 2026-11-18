@@ -1,9 +1,10 @@
 # Sourced script: envfor-gcc14-on-macos  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Activate GCC 14 tool-chain in the current macOS shell.
 # Created   : Sunday, May 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 14:56:50 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:31:42 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

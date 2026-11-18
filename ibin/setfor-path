@@ -1,9 +1,10 @@
 # Sourced script: setfor-path  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 10:07:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 13:59:33 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -224,11 +225,13 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
         # be prepended before that; to take precedence over homebrew and over system.
 
         if [ "$USRHOME_USE_HOMEBREW" = "1" ]; then
+            # shellcheck source=./envfor-homebrew
             . "$USRHOME_DIR/ibin/envfor-homebrew"
         fi
 
         # Topic: Path: USRHOME
         # Add usrhome directories in PATH
+        # shellcheck source=./envfor-usrhome
         . "$USRHOME_DIR/ibin/envfor-usrhome"
 
         # Remember that PATH was set.  Prevent setting it again.

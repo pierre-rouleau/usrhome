@@ -1,9 +1,10 @@
 # Sourced script: envfor-gnu-binutils-on-macos  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Activate the GNU Binutils Utilities in the current macOS shell.
 # Created   : Tuesday, August 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 21:18:03 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:12 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

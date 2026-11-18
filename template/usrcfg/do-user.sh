@@ -1,9 +1,10 @@
-# Sourced script: do-user.zsh  -*- mode: sh; -*-
+# Sourced script: do-user.sh  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : User Configuration Common to all supported shells.
 # Created   : Thursday, May  2 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-16 09:37:36 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 23:02:50 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -91,3 +92,6 @@ export EDITOR='emacs -nw'
 ## Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

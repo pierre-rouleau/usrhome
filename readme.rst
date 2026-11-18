@@ -111,13 +111,46 @@ template files`_ that correspond to what I use in my *usrcfg* repository.
 This also corresponds to what is shown in the diagram included in the section
 titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 
+
 Shell support and portability
 -----------------------------
 
-USRHOME supports Bash and Zsh. Much of its shell code uses POSIX shell
-conventions, although some scripts use shell-specific features. The
-project is working to improve POSIX compatibility to make support for
-other shells possible. Other shells are not yet officially supported.
+USRHOME shell code includes Bash-specific code, Zsh-specific code, and
+POSIX-compliant code. Bash and Zsh are the supported shells. Other shells
+are not yet officially supported.
+
+USRHOME provides ``lint-sh`` to check executable and sourced shell scripts.
+It checks for risky ``cd`` usage and can also run ShellCheck. Use ``-S``
+to display ShellCheck diagnostics or ``-s`` to display their count.
+
+The project scans all USRHOME shell scripts. The scan reports no error,
+warning, or info diagnostics.
+
+A clean scan does not guarantee complete analysis but it can report what is
+not being analyzed. The ``lint-sh`` parser cannot analyze some
+constructs. ShellCheck does not support Zsh syntax, and some Zsh files disable
+its checks.
+
+With shellcheck installed, the following command., issued from the root
+of USRHOME repo, should not report any issue:
+
+.. code:: sh
+
+   lint-sh -S -q -d .
+
+To see the warnings identifying the number of areas that could not
+be scanned by lint-sh internal logic, use:
+
+.. code:: sh
+
+   lint-sh -S -d .
+
+To also see the location of code areas not analyzed by lint-sh internal logic,
+use:
+
+.. code:: sh
+
+   lint-sh -S -v -d .
 
 Session-specific tool environments
 ----------------------------------

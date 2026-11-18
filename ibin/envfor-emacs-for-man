@@ -1,9 +1,10 @@
 # Sourced script: envfor-emacs-for-man  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 21:14:16 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:58:12 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -53,18 +54,27 @@ print_man_usage()
     # arg 1: string: "use-emacs-for-man" | "man"
 
     usrhome_printf "\
- Usage: %s [-g | -G | -s |-S | -t | -T] TOPIC
-  -g : emacs started in graphics mode
-  -G : same as -g, but start emacs faster with less initialization (using -Q)
-  -s : using Emacs server: open man page in emacsclient
-  -S : same as -s, except meant for issuing the man command
-       in a shell running withing Emacs: does not delete any window.
-  -t : start emacs in terminal mode in the current shell.
-       This is the default if no option is specified.
-  -T : same as -t, but start emacs faster with less initialization (using -Q)
+use-emacs-for-man -- Setup man to use Emacs to render man pages.
+                     First invoke it to activate Emacs,
+                     then man uses Emacs in this shell.
 
-  You can also specify the same options to man() to
-  override the option passed to use-emacs-for-man.\n" "$1"
+  • Usage: %s [-g | -G | -s |-S | -t | -T]
+
+    Setup the shell to use Emacs for man:
+    -g : emacs started in graphics mode
+    -G : same as -g, but start emacs faster with less initialization (using -Q)
+    -s : using Emacs server: open man page in emacsclient
+    -S : same as -s, except meant for issuing the man command
+         in a shell running withing Emacs: does not delete any window.
+    -t : start emacs in terminal mode in the current shell.
+         This is the default if no option is specified.
+    -T : same as -t, but start emacs faster with less initialization (using -Q)
+
+  • Usage: man [-g | -G | -s |-S | -t | -T]
+
+    Invoke man via Emacs.
+    You can also specify the same options to man() to
+    override the option passed to use-emacs-for-man.\n" "$1"
 
     if [ "$1" = "man" ]; then
         usrhome_printf "\
@@ -88,15 +98,9 @@ print_man_usage()
     usrhome_printf "\n"
 }
 
-print_error()
-{
-    >&2 usrhome_printf "\
-***ERROR***
- %s
-***********
-" "$1"
-}
-
+# ----------------------------------------------------------------------------
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
 # Initialize USRHOME_MAN_MODE to unknown if it is not already set from previous
 # execution of the sourcing of the script.
@@ -161,7 +165,7 @@ if [ -n "$1" ]; then
             ;;
 
         *)
-            print_error "use-emacs-for-man invalid option: $1"
+            usrhome_printf_error 'use-emacs-for-man: invalid option: %s\n' " $1"
             unset prefix_msg
             return 2
     esac
@@ -198,14 +202,17 @@ man()
             topic="$2"
         fi
     fi
-    if [[ "$topic" =~ ^- ]]; then
+    # If the topic starts with an hyphen do further check
+    case "$topic" in
+    -*)
         if [ "$topic" = "-man" ]; then
             man_mode='-man'
         else
             print_man_usage "man"
             return 3
         fi
-    fi
+        ;;
+    esac
 
     #echo "man_mode:= $man_mode , topic:= $topic"
 
@@ -223,10 +230,11 @@ man()
             ;;
 
         *)
-            print_error "emacs-for-man invalid option: $1"
+            usrhome_printf_error 'emacs-for-man: invalid option: %s\n' "$1"
             print_man_usage "man"
             return 2
-            ;;    esac
+            ;;
+    esac
 
     #echo "man(): on use   : man_mode := $man_mode"
     case $man_mode in
@@ -294,5 +302,5 @@ man()
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
-#  sh-shell: bash
+#  sh-shell: sh
 #  End:

@@ -1,15 +1,17 @@
+
 #!/bin/sh
-# SH FILE: lint-sh-cd
+# SH FILE: lint-sh
 #
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-16 11:56:32 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 14:24:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#  Scans shell scripts for risky 'cd' usage that ShellCheck may miss.
+#  Scans shell scripts for risky 'cd' usage and other issues
+#  that ShellCheck may miss.  Also execute ShellCheck on request.
 #
 
 # ----------------------------------------------------------------------------
@@ -25,6 +27,7 @@
 #
 
 pgm_name="${0##*/}"
+user_cwd="$PWD"
 
 print_usage()
 {
@@ -35,7 +38,7 @@ print_usage()
 
     Print this help information.
 
- • Usage: %s [-v] -f FILE | -d DIRECTORY
+ • Usage: %s [-s|-S] [-q|-v] [-x] -f FILE | -d DIRECTORY
 
     Scans a single shell script or all shell scripts (.sh, .bash, .zsh, files
     with shell shebangs, or files with sourced shell script markers) inside a
@@ -49,27 +52,45 @@ print_usage()
      - Unchecked exit statuses (missing ||, &&, or conditional guards)
 
    Arguments:
-    -v            Verbose: show all warnings for diagnostics that cannot be
-                  analyzed by the current lexer instead of only showing
-                  the warning count detected on each file.
     -f FILE       Audit a single shell script file
     -d DIRECTORY  Recursively audit all shell scripts inside DIRECTORY
 
    Options:
-     -h, --help  Display this help message and exit
+    -s            Execute a shellcheck style check on each file and print
+                  the number of detected issues.
+    -S            Execute a shellcheck style check on each file and print
+                  the detected issues.
+    -q            Quiet: ignore parsing limitation, do not report nor count
+                  them.
+    -v            Verbose: show all warnings for diagnostics that cannot be
+                  analyzed by the current lexer instead of only showing
+                  the warning count detected on each file.
+    -x            Exit fast from shellcheck detected errors: stop after reporting
+                  errors in one file, by default report errors in all files.
+                  This has no impact on detection of other checks.
 
    Examples:
-    %s -f /path/to/usrhome/bin/script.sh
-    %s -d /path/to/usrhome
+    • %s -f /path/to/usrhome/bin/script.sh
+    • %s -d /path/to/usrhome
+
+    • To process all script files in the current directory tree, checking them
+      with shellcheck and showing the shellcheck message and check with the extra rules
+      imposed by %s without showing its limitations and stopping on the first file that
+      has an identifiable issue (either detected by shellcheck or %s own rules), and return
+      with an exit code 0 if no error found or 1 otherwise,  do this:
+
+      • %s -d . -S -q -x
+
 
    LIMITATIONS:
      %s cannot analyze some code constructs and skips them issuing a warning
      when the -v option is specified.  Each warning line printed by %s
      starts with 'WARNING: '.
-     If you want to only see the detected issues you can filter the warnings
-     by piping the output of %s into:  grep -v \": \\[WARNING: \"
+     - If you want to only see the ShellCheck error count for all files under
+       the current directory tree, you can use the following command:
+       \"%s -s -d . | grep SHELLCHECK\"
 " "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
-  "$pgm_name" "$pgm_name" "$pgm_name"
+  "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
 # --
@@ -93,14 +114,20 @@ fi
 
 target_file=''
 target_dir=''
+
+report_limitations=1
 verbose=0
+q_v_seen=''
+
+with_shellcheck=0
+with_shellcheck_count=0
+exit_fast=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
         -f|--file)
             if [ $# -lt 2 ] || [ -z "$2" ]; then
-                printf 'ERROR: %s requires a file argument.\n\n' "$1" >&2
-                print_usage >&2
+                usrhome_printf_error '%s requires a file argument.\n' "$pgm_name"
                 exit 1
             fi
             target_file=$2
@@ -108,15 +135,49 @@ while [ $# -gt 0 ]; do
             ;;
         -d|--directory)
             if [ $# -lt 2 ] || [ -z "$2" ]; then
-                printf 'ERROR: %s requires a directory argument.\n\n' "$1" >&2
-                print_usage >&2
+                usrhome_printf_error '%s requires a directory argument.\n' "$pgm_name"
                 exit 1
             fi
             target_dir=$2
             shift 2
             ;;
+        -S)
+            if command -v shellcheck > /dev/null 2>&1; then
+                with_shellcheck=1
+            else
+                usrhome_printf_warning '%s: shellcheck requested but not available: not used!\n' "$pgm_name"
+            fi
+            shift
+            ;;
+        -s)
+            if command -v shellcheck > /dev/null 2>&1; then
+                with_shellcheck=1
+                with_shellcheck_count=1
+            else
+                usrhome_printf_warning '%s: shellcheck requested but not available: not used!\n' "$pgm_name"
+            fi
+            shift
+            ;;
+        -q)
+            if [ "$q_v_seen" = "v" ]; then
+                usrhome_printf_error '%s: Cannot use the -q and -v options together.\n' "$pgm_name"
+                exit 1
+            fi
+            q_v_seen="q"
+            report_limitations=0
+            shift
+            ;;
         -v)
+            if [ "$q_v_seen" = "q" ]; then
+                usrhome_printf_error '%s: Cannot use the -q and -v options together.\n' "$pgm_name"
+                exit 1
+            fi
+            q_v_seen="v"
             verbose=1
+            shift
+            ;;
+        -x)
+            exit_fast=1
             shift
             ;;
         --)
@@ -164,11 +225,123 @@ elif [ -n "$target_dir" ]; then
 fi
 
 # --
+# Identify the complete path of the shellcheck, wc and tr utilities used
+# during auditing.  Prevent the auditing to change them.
+
+# Resolve executable paths before changing to any audited directory.
+resolve_executable()
+{
+    resolved_command=$(command -v "$1") || return 1
+    case $resolved_command in
+        /*) ;;
+        *)
+            # Preserve trailing newlines in the current directory name.
+            resolve_dir=$(pwd -P && printf '.') || return 1
+            resolve_dir=${resolve_dir%.}
+            resolve_dir=${resolve_dir%?}
+            resolved_command=${resolve_dir%/}/$resolved_command
+            ;;
+    esac
+    [ -f "$resolved_command" ] && [ -x "$resolved_command" ] || return 1
+    printf '%s\n' "$resolved_command"
+}
+
+if ! awk_pgm=$(resolve_executable awk); then
+    printf '%s: cannot resolve the awk executable.\n' "$pgm_name" >&2
+    exit 1
+fi
+if [ "$with_shellcheck" = "1" ]; then
+    if ! shellcheck_pgm=$(resolve_executable shellcheck); then
+        printf '%s: cannot resolve the shellcheck executable.\n' "$pgm_name" >&2
+        exit 1
+    fi
+    if [ "$with_shellcheck_count" = "1" ]; then
+        if ! wc_pgm=$(resolve_executable wc) ||
+                ! tr_pgm=$(resolve_executable tr); then
+            printf '%s: cannot resolve the wc or tr executable.\n' "$pgm_name" >&2
+            exit 1
+        fi
+    fi
+fi
+
+# --
 # Define the operations
 
+terminate_processing=0
 audit_file()
 {
     file=$1
+    shellcheck_failed=0
+
+    if [ "$with_shellcheck" = "1" ]; then
+        # extract file basename and directory
+        f_name="${file##*/}"
+        case "$file" in
+            */*) d_name="${file%/*}" ;;
+            *)   d_name="." ;;
+        esac
+        # Execute shellcheck in a sub-shell inside the directory of the checked file
+        # this way shellcheck will be able to use the shellcheck source statements
+        # to identify the location of the source files like Emacs is able to do it.
+        shellcheck_result=0
+        (
+            CDPATH='' cd -- "$d_name" || exit 2
+            if [ "$with_shellcheck_count" = "1" ]; then
+                # ----------------------------------------------------------------------------
+                shellcheck_status=0
+                shellcheck_output=$(shellcheck -x -S style --format=gcc "$f_name")
+                shellcheck_status=$?
+                case $shellcheck_status in
+                    0|1)
+                        if [ -n "$shellcheck_output" ]; then
+                            error_count=$(printf '%s\n' "$shellcheck_output" | wc -l | tr -d ' ')
+                            printf '%s: SHELLCHECK %s diagnostics\n' "$file" "$error_count"
+                        fi
+                        if [ "$exit_fast" = "1" ] &&
+                               { [ "$shellcheck_status" -eq 1 ] || [ -n "$shellcheck_output" ]; }; then
+                            exit 1
+                        fi
+                        ;;
+                    *)
+                        printf '%s: ShellCheck failed for %s (status %s)\n' \
+                               "$pgm_name" "$file" "$shellcheck_status" >&2
+                        exit 2
+                        ;;
+                esac
+            else
+                output="$("$shellcheck_pgm" -x -S style --format=gcc "$PWD/$f_name")"
+                status=$?
+                # remove the user's CWD path from the path of each file in the output message
+                if [ -n "$output" ]; then
+                    printf '%s\n' "$output" | "$awk_pgm" -v prefix="$user_cwd" '
+                        index($0, prefix) == 1 {
+                                print substr($0, length(prefix) + 1)
+                                next
+                        }
+                        {
+                           print
+                        }'
+                fi
+                if [ "$status" -ne 0 ]; then
+                    if [ "$exit_fast" = "1" ]; then
+                       exit 1
+                   fi
+                fi
+            fi
+        ) || shellcheck_result=$?
+
+        case $shellcheck_result in
+            0) ;;
+            1) terminate_processing=1 ;;
+            *)
+                shellcheck_failed=1
+                if [ "$exit_fast" = "1" ]; then
+                    terminate_processing=1
+                fi
+                ;;
+        esac
+    fi
+
 
     # Keep the original filename for diagnostics.  Prefix relative input
     # paths so AWK cannot mistake them for assignments or options.
@@ -179,11 +352,23 @@ audit_file()
         *)  awk_file=./$file ;;
     esac
 
+    awk_status=0
     if [ "$verbose" = "1" ]; then
-        LC_ALL=C awk -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+        LC_ALL=C "$awk_pgm" -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+         awk_status=$?
     else
-        LC_ALL=C awk -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+        if [ "$report_limitations" = "1" ]; then
+            LC_ALL=C "$awk_pgm" -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+            awk_status=$?
+        else
+            LC_ALL=C "$awk_pgm" -v fname="$file" -v hide_unsupported="2"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+            awk_status=$?
+        fi
     fi
+    if [ "$shellcheck_failed" = "1" ]; then
+        return 1
+    fi
+    return "$awk_status"
 }
 
 # --
@@ -201,6 +386,9 @@ if [ -n "$target_file" ]; then
     if ! audit_file "$target_file"; then
         lint_error_found=1
     fi
+    if [ "$terminate_processing" = "1" ]; then
+        lint_error_found=1
+    fi
 
 elif [ -n "$target_dir" ]; then
     # Audit all shell script in specified directory.
@@ -214,7 +402,7 @@ elif [ -n "$target_dir" ]; then
     trap 'exit 1' HUP INT TERM
 
     if ! find "$target_dir" -type f ! -name '.DS_Store' ! -path '*/.git/*' > "$file_list"; then
-        lint_error_found=1
+        lint_error_found=2
     fi
     {
         while IFS= read -r file; do
@@ -236,7 +424,7 @@ elif [ -n "$target_dir" ]; then
 
                     if ! file_type=$(LC_ALL=C file -b "$probe_file" 2>/dev/null); then
                         printf '%s: cannot classify %s\n' "$pgm_name" "$file" >&2
-                        lint_error_found=1
+                        lint_error_found=3
                         continue
                     fi
 
@@ -247,7 +435,7 @@ elif [ -n "$target_dir" ]; then
                         'cannot open'*|'cannot read'*)
                             printf '%s: cannot classify %s: %s\n' \
                                    "$pgm_name" "$file" "$file_type" >&2
-                            lint_error_found=1
+                            lint_error_found=4
                             continue
                             ;;
                     esac
@@ -257,7 +445,7 @@ elif [ -n "$target_dir" ]; then
                     first_line_result=$(
                         head -n 1 "$file" 2>/dev/null |
                             LC_ALL=C od -A n -t u1 -v |
-                            LC_ALL=C awk '
+                            LC_ALL=C "$awk_pgm" '
             BEGIN { status = "T"; offset = 0 }
             {
                 for (i = 1; i <= NF; i++) {
@@ -293,7 +481,7 @@ elif [ -n "$target_dir" ]; then
                             ;;
                         *)
                             printf '%s: [ERROR: could not inspect first line]\n' "$file" >&2
-                            lint_error_found=1
+                            lint_error_found=5
                             continue
                             ;;
                     esac
@@ -325,8 +513,13 @@ elif [ -n "$target_dir" ]; then
             esac
             if [ "$is_shell" -eq 1 ]; then
                 if ! audit_file "$file"; then
-                    lint_error_found=1
+                    if [ "$lint_error_found" -eq 0 ]; then
+                        lint_error_found=1
+                    fi
                 fi
+            fi
+            if [ "$terminate_processing" = "1" ]; then
+                exit 1
             fi
         done
 } < "$file_list"

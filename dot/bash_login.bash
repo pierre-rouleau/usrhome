@@ -3,7 +3,7 @@
 # Purpose   : Bash ~/.bash_login Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 17:17:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:29:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -24,6 +24,10 @@
 #
 # 0 - Check if shell is interactive
 # ---------------------------------
+# Clear any inherited export attribute before setting the shell-local value.
+unset SHELL_IS_INTERACTIVE
+# Used by other sourced scripts.
+# shellcheck disable=SC2034 # SHELL_IS_INTERACTIVE is used.
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
@@ -32,6 +36,8 @@ case "$-" in
         SHELL_IS_INTERACTIVE=false
         ;;
 esac
+
+
 
 #
 #

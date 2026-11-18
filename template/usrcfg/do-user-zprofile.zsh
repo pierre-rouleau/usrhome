@@ -1,9 +1,10 @@
 # Sourced script: do-user-zprofile.zsh  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : USRHOME template for user-specific Z Shell logic invoked by ~/.zprofile
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 08:25:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:52:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -41,3 +42,6 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-zprofile.zsh"
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: zsh
+# End:

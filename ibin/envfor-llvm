@@ -1,9 +1,10 @@
 # Sourced script: envfor-llvm  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Activate LLVM tools in the current shell.
 # Created   : Tuesday, December 23 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 16:00:41 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:44 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

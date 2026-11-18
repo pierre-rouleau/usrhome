@@ -1,10 +1,10 @@
 # Sourced script: fpath.sh  -*- mode: sh; -*-
-# SH FILE: fpath.sh
+# shellcheck shell=sh
 #
 # Purpose   : File path processing functions.
 # Created   : Friday, September 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>, based on https://github.com/Offirmo/offirmo-shell-lib
-# Time-stamp: <2024-09-27 16:12:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:58:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

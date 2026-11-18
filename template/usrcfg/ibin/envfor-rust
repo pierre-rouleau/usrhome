@@ -1,9 +1,10 @@
 # Sourced script: envfor-rust  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Setup Rust programming environment.
 # Created   : Monday, April  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 16:17:24 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 09:58:02 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -66,7 +67,8 @@ if command -v rustc > /dev/null 2>&1; then
     printf ".  rustc %s is already found in shell.\n" "$(rustc --version)"
 else
     # Activate Rust programming language support only once.
-    if [[ -a "$HOME/.cargo/env" ]]; then
+    if [ -e "$HOME/.cargo/env" ]; then
+        # shellcheck source=/dev/null # Shell Check cannot follow dynamic paths
         . "$HOME/.cargo/env"
         export CARGO_HOME="$HOME/.cargo"
         usrhome_rustv=$(rustc --version | awk '{print substr($0,7)}')
@@ -74,7 +76,7 @@ else
         # Check for presence of the Rust source files in
         # the public rust repo expected by USRHOME
         usrhome_rustv_fpathname="$USRHOME_DIR_OTHER/rust/src/version"
-        if [[ -f "$usrhome_rustv_fpathname" ]]; then
+        if [ -f "$usrhome_rustv_fpathname" ]; then
             export RUST_SRC_PATH="$USRHOME_DIR_OTHER/rust/src"
             usrhome_printf "   Rust ver. %s source is available.\n" "$(cat "$usrhome_rustv_fpathname")"
         else
@@ -104,3 +106,6 @@ if command -v rustup > /dev/null 2>&1; then
 fi
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

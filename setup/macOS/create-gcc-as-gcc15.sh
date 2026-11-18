@@ -4,7 +4,7 @@
 # Purpose   : Build the ~/bin/gcc-15 directory with symlinks to Homebrew gcc 15.
 # Created   : Wednesday, August 27 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-27 15:26:34 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:47:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -64,7 +64,7 @@ case "$(uname)" in
 esac
 
 if [ -d "$HOME/bin/gcc-15" ]; then
-    printf -- "*** ERROR : The $HOME/bin/gcc-15 directory already exists.\n"
+    printf -- "*** ERROR : The ~/bin/gcc-15 directory already exists.\n"
     printf -- "    As this already been installed?\n"
     printf -- "    To proceed rename or delete that gcc directory.\n"
     printf -- "*******************************************\n"

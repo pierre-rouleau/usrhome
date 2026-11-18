@@ -1,9 +1,10 @@
 # Bash Configuration FILE: bash_profile.bash
+# shellcheck shell=bash
 #
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-09-29 17:23:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 15:27:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -71,6 +72,7 @@ case "$-" in
         SHELL_IS_INTERACTIVE=false
         ;;
 esac
+export SHELL_IS_INTERACTIVE
 
 #
 # 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG

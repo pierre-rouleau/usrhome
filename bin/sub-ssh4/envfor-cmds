@@ -1,9 +1,10 @@
 # Sourced script: envfor-cmds  -*- mode: sh; -*-
+# shellcheck shell=sh
 # File      : $USRHOME_DIR/bin/sub-ssh4/envfor-cmds
 # Purpose   : Set the shell variables used by the scripts from the environment variables.
 # Created   : Friday, July 26 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-11 14:10:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 23:11:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,6 +50,7 @@
 # Validate environment
 if [ -z "$USRHOME_SSH4__PGM_NAME" ]; then
     # Note: do NOT accept an empty string as the value.
+    # shellcheck disable=SC2154 # this file is included
     printf -- "*** %s - ERROR: USRHOME_SSH4__PGM_NAME is not defined!\n" "${envfor_cmd_arg1}"
     exit 1
 fi
@@ -59,6 +61,7 @@ if [ -z "$USRHOME_SSH4__HOSTNAME" ]; then
     printf -- "*** %s - ERROR: USRHOME_SSH4__HOSTNAME is not defined!\n" "${pgm_name}"
     exit 1
 fi
+#shellcheck disable=SC2034 # It is used by the user script
 hostname="$USRHOME_SSH4__HOSTNAME"
 
 if [ -z "$USRHOME_SSH4__IPV4ADDR" ]; then
@@ -66,6 +69,7 @@ if [ -z "$USRHOME_SSH4__IPV4ADDR" ]; then
     printf -- "*** %s - ERROR: USRHOME_SSH4__IPV4ADDR is not defined!\n" "${pgm_name}"
     exit 1
 fi
+#shellcheck disable=SC2034 # It is used by the user script
 ipv4addr="$USRHOME_SSH4__IPV4ADDR"
 
 if [ -z "$USRHOME_SSH4__USERNAME" ]; then
@@ -73,6 +77,7 @@ if [ -z "$USRHOME_SSH4__USERNAME" ]; then
     printf -- "*** %s - ERROR: USRHOME_SSH4__USERNAME is not defined!\n" "${pgm_name}"
     exit 1
 fi
+#shellcheck disable=SC2034 # It is used by the user script
 username="$USRHOME_SSH4__USERNAME"
 
 if [ -z "${USRHOME_SSH4__HOMEROOT+1}" ]; then
@@ -80,6 +85,7 @@ if [ -z "${USRHOME_SSH4__HOMEROOT+1}" ]; then
     printf -- "*** %s - ERROR: USRHOME_SSH4__HOMEROOT is not defined!\n" "${pgm_name}"
     exit 1
 fi
+#shellcheck disable=SC2034 # It is used by the user script
 homeroot="$USRHOME_SSH4__HOMEROOT"
 
 # ----------------------------------------------------------------------------

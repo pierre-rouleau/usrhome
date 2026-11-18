@@ -1,9 +1,10 @@
 # Sourced script: do-cbr  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Compatibility wrapper for CBR as it was implemented in the past.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 10:10:29 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:14:06 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

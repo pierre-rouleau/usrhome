@@ -1,9 +1,10 @@
 # Sourced script: shell-tracing.sh  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Define shell tracing functions.
 # Created   : Saturday, April 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 16:42:44 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 14:11:12 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

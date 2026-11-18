@@ -1,9 +1,10 @@
 # Sourced script: do-usrcfg  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Change current directory to USRHOME's usrcfg root.
 # Created   : Friday, March 29 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 10:01:24 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:31:03 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

@@ -1,9 +1,10 @@
 # Bash Configuration FILE: bash_logout.bash
+# shellcheck shell=bash
 #
 # Purpose   : Bash ~/.bash_logout Configuration File - Sourced in interactive logout shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-04 21:48:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 15:26:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

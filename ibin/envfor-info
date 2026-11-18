@@ -1,9 +1,10 @@
 # Sourced script: envfor-info  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 11:15:20 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:33 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

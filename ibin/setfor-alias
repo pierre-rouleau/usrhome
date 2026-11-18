@@ -1,9 +1,10 @@
 # Sourced script: setfor-alias  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 12:43:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 08:31:17 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -23,6 +24,8 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/setfor-alias"
 # --------
 
 # Set USRHOME_SHELL to zsh, bash, ... or unknown
+
+# shellcheck source=./which-shell
 . "$USRHOME_DIR/ibin/which-shell"
 
 # Set variables that will be used later
@@ -124,6 +127,8 @@ info_shell_special_var()
             # Note: printf arguments MUST math number of formatting meta-characters
             #       otherwise multiple printf executions is done to consume all arguments!
             # This precludes pass in $@ to printf, so it was processed into the _sa_all_words variable.
+            # $_ is a Bash/Zsh extension, not a POSIX special parameter.
+            # shellcheck disable=SC3028
             printf -- "\
 The following shows the shell special shell parameters
 along with their values (except for positional parameters)
@@ -288,7 +293,7 @@ if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
         unset _sa_usrhome_ls_color_flag
     }
 
-    # lsda - list all directories (including the ones with name staring with a period)
+    # lsda - list all directories (including the ones with name starting with a period)
     # Note this implementation of lsda is not reliable.
     #      If you can use the Pike implementation.
     lsda()
@@ -296,7 +301,7 @@ if [ -z "$USRHOME_USE_PIKE" ] || [ "$USRHOME_USE_PIKE" = "0" ]; then
         __set__ls_options
         if [ "$#" -eq 0 ]; then
             # No argument
-            ( ls -d ${_sa_usrhome_ls_color_flag} -- */ .[^.]*/ ) 2> /dev/null
+            ( ls -d ${_sa_usrhome_ls_color_flag} -- */ .[!.]*/ ) 2> /dev/null
         elif [ $# -gt 1 ]; then
             # 2 arguments or more: not allowed.
             usrhome_printf_error 'lsda does not support glob, and more than 1 argument.

@@ -1,9 +1,10 @@
 # Sourced script: do-sanitize-path-posix.sh  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Sanitize PATH-like variable content.  POSIX- Compliant logic.
 # Created   : Sunday, November 08 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 10:53:44 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 23:00:29 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

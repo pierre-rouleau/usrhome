@@ -1,10 +1,11 @@
 # Bash Configuration FILE: bashrc.bash
+# shellcheck shell=bash
 #
 # Purpose   : ~/.bashrc Bash Configuration File - Always sourced.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2026-11-08 13:34:11 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:30:23 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -56,6 +57,8 @@ fi
 
 # Topic: Startup: 1.1 - Check if shell is interactive
 # -------------------------------------------------
+# Clear any inherited export attribute before setting the shell-local value.
+unset SHELL_IS_INTERACTIVE
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
@@ -396,6 +399,8 @@ PROMPT_COMMAND="usrhome_stop_timer"
 # of USRHOME_PROMPT_MODEL
 
 # PROMPT MODEL 1: No color, no bolding, exit code, shell level, jobs, date, time.
+# Prompt commands are intentionally expanded when Bash displays PS1.
+# shellcheck disable=SC2016,SC2089
 USRHOME_BASH_PROMPT1='$(\
 ec=${?}; \
 if [ "$USRHOME_PROMPT_SHOW_USR_HOST" = "1" ]; then \
@@ -407,7 +412,7 @@ fi; \
 
 # PROMPT MODEL 2: With color, bolding and logic.
 #                 This prompt reports last command execute time in seconds.
-# shellcheck disable=SC2016
+# shellcheck disable=SC2016,SC2089
 USRHOME_BASH_PROMPT2='$(\
 ec=${?}; \
 if [ ${ec} == 0 ]; then \
@@ -435,7 +440,7 @@ fi;\
 
 # PROMPT MODEL 3: With bolding and logic, but no color unless in root.
 #                 This prompt reports last command execute time in seconds.
-# shellcheck disable=SC2016
+# shellcheck disable=SC2016,SC2089
 USRHOME_BASH_PROMPT3='$(\
 ec=${?}; \
 printf "\[$(tput bold)\]>%2X\[$(tput sgr0)\]%s,L${SHLVL},\jj \[$(tput bold)\]" ${ec} ${elapsed}; \
@@ -490,6 +495,7 @@ usrhome-select-bash-prompt()
 
                 1)
                     PS1=${USRHOME_BASH_PROMPT1}
+                    # shellcheck disable=SC2090
                     export PS1
                     ;;
 
@@ -521,6 +527,7 @@ unset ec
 # Topic: Title
 # ------------
 # Define set_title() and ssh4__remote()
+# shellcheck source=../ibin/setfor-bash-common
 . "$USRHOME_DIR/ibin/setfor-bash-common"
 
 # Activate dynamic tracking title as soon as Bash takes over.

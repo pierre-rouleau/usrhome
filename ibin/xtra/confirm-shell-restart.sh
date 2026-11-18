@@ -1,9 +1,10 @@
 # Sourced script: confirm-shell-restart.sh  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Helper functions for commands that replace the current shell.
 # Created   : Tuesday, November 10 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-12 11:30:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 22:59:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

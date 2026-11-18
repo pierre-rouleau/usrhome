@@ -1,9 +1,10 @@
 # Sourced script: zsh-help-init.sh  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Help replacement for zsh.
 # Created   : Tuesday, November 10 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-10 15:46:32 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 15:25:03 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -23,6 +24,7 @@
 # ----
 #
 #
+# shellcheck disable=all # shellcheck does not support zsh syntax.
 
 usrhome_help_init() {
     emulate -L zsh

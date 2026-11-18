@@ -1,9 +1,10 @@
 # Sourced script: do-cd-to  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-14 10:31:03 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:52:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -39,6 +40,8 @@
 #
 
 # Set USRHOME_SHELL to zsh, bash, ... or unknown
+
+# shellcheck source=./which-shell
 . "$USRHOME_DIR/ibin/which-shell"
 
 
@@ -169,7 +172,7 @@ cd-to : Search for file in current directory tree.
 search_hidden=false
 search_ignored=false
 search_for=files
-search_for1=file
+search_for1='file'
 edit_files=false
 link_opt=
 unset cd_to__exit_code
@@ -394,31 +397,54 @@ if [ "${file_count}" -gt  1 ]; then
         if [ "$prompt_yn_return" = "y" ]; then
             case $EDITOR in
                 cd* | rm* | sudo* | disk* )
-                    urhome_printf_warning 'Unsafe EDITOR: %s
+                    usrhome_printf_warning 'Unsafe EDITOR: %s
             !Files are not edited! Change value of EDITOR\n' "$EDITOR"
                     ;;
 
                 *)
-                    the_fnames=$(printf "%s" "$the_filepath" | tr '\n' ' ')
-                    case $USRHOME_SHELL in
-                        "zsh")
-                            # The next line is OK in zsh!
-                            # Ignore the shellcheck error reported on sh mode.
-                            #  or silence it by using zsh mode (see bottom of file)
-                            read -A the_fnames_arr <<< "$the_fnames"
-                            eval "$EDITOR $the_fnames_arr"
-                            unset the_fnames_arr
-                            ;;
-                        "bash")
-                            IFS=' '  read -a the_fnames_arr <<< "$the_fnames"
-                            eval "$EDITOR ${the_fnames_arr[@]}"
-                            unset the_fnames_arr
-                            ;;
-                        *)
-                            usrhome_printf_warning 'Editing files not supported under %s shell.\n"' "$USRHOME_SHELL"
-                            ;;
-                    esac
-                    unset the_fnames
+                    # The subshell preserves the caller's positional parameters.
+                    (
+                        case $EDITOR in
+                            *[![:space:]]*) ;;
+                            *) printf '%s\n' 'cd-to: EDITOR is empty.' >&2; exit 1 ;;
+                        esac
+
+                        # Split EDITOR into a command and simple options.
+                        cd_to_ifs_set=${IFS+x}
+                        cd_to_saved_ifs=${IFS-}
+                        case $- in
+                            *f*) cd_to_noglob=1 ;;
+                            *)   cd_to_noglob=0 ;;
+                        esac
+                        IFS=$(printf ' \t')
+                        set -f
+                        if [ -n "${ZSH_VERSION-}" ]; then
+                            # Evaluate fixed code, not the contents of EDITOR.
+                            # shellcheck disable=SC2016
+                            eval 'set -- ${=EDITOR}'
+                        else
+                            # shellcheck disable=SC2086
+                            set -- $EDITOR
+                        fi
+                        if [ "$cd_to_ifs_set" = x ]; then
+                            IFS=$cd_to_saved_ifs
+                        else
+                            unset IFS
+                        fi
+                        if [ "$cd_to_noglob" -eq 0 ]; then
+                            set +f
+                        fi
+
+                        cd_to_editor="$1"
+                        shift
+                        # Keep each newline-delimited path as one argument.
+                        while IFS= read -r cd_to_file; do
+                            set -- "$@" "$cd_to_file"
+                        done <<EOF
+$the_filepath
+EOF
+                        "$cd_to_editor" "$@"
+                    ) || return $?
                     ;;
             esac
             # Edited the files, return with 0.
@@ -470,10 +496,22 @@ if [ "$the_dirpath" = "." ]; then
 else
     if [ "$search_for1" = "file" ]; then
         if cd -- "${the_dirpath}"; then
-            ls -l "${the_fname}"
+            # Use the selected file, not the search pattern.
+            # The ./ prefix prevents a leading dash from becoming an option.
+            the_filepath="./${the_filepath##*/}"
+            ls -l "$the_filepath" || has_error=true
             if [ "$edit_files" = "true" ]; then
-                printf -- '%s %s\n' "$EDITOR" "${the_fname}"
-                eval "$EDITOR ${the_fname}"
+                case ${EDITOR-} in
+                    *[![:space:]]*)
+                        printf -- '%s %s\n' "$EDITOR" "$the_filepath"
+                        # Expand the filename only after eval parses the command.
+                        eval "$EDITOR \"\$the_filepath\"" || has_error=true
+                        ;;
+                    *)
+                        usrhome_printf_error 'cd-to: EDITOR is empty.\n'
+                        has_error=true
+                        ;;
+                esac
             fi
         else
             has_error=true

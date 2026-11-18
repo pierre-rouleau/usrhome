@@ -1,9 +1,10 @@
 # Sourced script: print-utilities.sh  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Define usrhome printing functions.
 # Created   : Monday, November  9 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 15:57:38 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 23:00:08 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -131,3 +132,6 @@ usrhome_print_warning()
 }
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

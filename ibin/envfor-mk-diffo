@@ -1,9 +1,10 @@
 # Sourced script: envfor-mk-diffo  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Setup the shell to use mk-diffo: compare evolution of object code of a file.
 # Created   : Friday, June 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 16:02:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:32:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

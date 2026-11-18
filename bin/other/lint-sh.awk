@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 16:46:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 14:28:38 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -76,12 +76,16 @@ function warn(message) {
 }
 
 function warn_at(message, line_number, source_line) {
-    found = 1
-
     if (message ~ /^WARNING: UNSUPPORTED([[:space:]]|$)/) {
+        # Quiet mode ignores unsupported constructs for the exit status.
+        if (hide_unsupported == 2)
+            return
         unsupported_count++
+        found = 1
         if (hide_unsupported)
-        return
+            return
+    } else {
+        found = 1
     }
     printf "%s:%d: [%s] %s\n", fname, line_number, message, source_line
 }
@@ -136,7 +140,7 @@ function audit_segment(end_op, tail,    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
         while (i <= nt) {
             w = words[i]
             if (dynamic[i]) {
-                warn("UNSUPPORTED dynamic command wrapper")
+                warn("WARNING: UNSUPPORTED dynamic command wrapper")
                 return
             }
             if (w == "--") {
@@ -145,7 +149,7 @@ function audit_segment(end_op, tail,    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
             }
             if (w !~ /^-/ || w == "-") break
             if (w !~ /^-[pvV]+$/) {
-                warn("UNSUPPORTED OPTION on command")
+                warn("WARNING: UNSUPPORTED OPTION on command")
                 return
             }
             # -v and -V describe commands; they do not execute them.
@@ -153,7 +157,7 @@ function audit_segment(end_op, tail,    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
             i++
         }
         if (i <= nt && dynamic[i]) {
-            warn("UNSUPPORTED dynamic command wrapper")
+            warn("WARNING: UNSUPPORTED dynamic command wrapper")
             return
         }
     }
@@ -434,7 +438,7 @@ hd_head <= hd_tail && !pending_quote {
 
 END {
     if (!audit_stopped && pending_guard != "")
-        warn_at("UNSUPPORTED incomplete conditional guard",
+        warn_at("WARNING: UNSUPPORTED incomplete conditional guard",
                 pending_guard_line, pending_guard_text)
 
     if (!audit_stopped && pending_quote) {
@@ -448,8 +452,11 @@ END {
     }
 
     if (hide_unsupported && unsupported_count > 0) {
-        printf "%s: [WARNING: %d unsupported diagnostics suppressed; audit incomplete]\n",
-            fname, unsupported_count
+        # when hide-unsupported is 2, print nothing
+        if (hide_unsupported == 1) {
+            printf "%s: [WARNING: %d unsupported diagnostics suppressed; audit incomplete]\n",
+                fname, unsupported_count
+        }
     }
     exit found
 }

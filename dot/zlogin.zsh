@@ -1,10 +1,11 @@
 # ZSH Configuration FILE: zlogin
+# shellcheck shell=sh
 #
 # Purpose   : Z Shell Login Configuration - Sourced at login
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Copyright (C) 2024 by Pierre Rouleau
+# Copyright (C) 2024-2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2024-08-02 12:43:40 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 17:07:22 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -23,6 +24,7 @@
 # The zlogin is always sourced after the zprofile, so the USRHOME
 # environment variables are always defined; no need to check.
 
+#shellcheck disable=SC2088 # The tilde does not need to be expanded
 usrhome_trace_in "~/.zlogin   --> \$USRHOME_DIR/dot/zlogin.zsh"
 
 # ----------------------------------------------------------------------------

@@ -1,9 +1,10 @@
 # Sourced script: which-shell  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : Identify active shell sourcing this file.  Store result in usrhome__running_shell
 # Created   : Thursday, April 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-22 11:10:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-17 11:33:55 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
