@@ -5,7 +5,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 14:24:23 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 15:04:44 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -313,7 +313,7 @@ audit_file()
                 status=$?
                 # remove the user's CWD path from the path of each file in the output message
                 if [ -n "$output" ]; then
-                    printf '%s\n' "$output" | "$awk_pgm" -v prefix="$user_cwd" '
+                    printf '%s\n' "$output" | "$awk_pgm" -v prefix="$user_cwd/" '
                         index($0, prefix) == 1 {
                                 print substr($0, length(prefix) + 1)
                                 next
