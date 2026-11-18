@@ -4,7 +4,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 08:13:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:42:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -402,27 +402,48 @@ if [ "${file_count}" -gt  1 ]; then
                     ;;
 
                 *)
-                    # Keep each newline-delimited path as one argument.
                     # The subshell preserves the caller's positional parameters.
                     (
-                        set --
+                        case $EDITOR in
+                            *[![:space:]]*) ;;
+                            *) printf '%s\n' 'cd-to: EDITOR is empty.' >&2; exit 1 ;;
+                        esac
+
+                        # Split EDITOR into a command and simple options.
+                        cd_to_ifs_set=${IFS+x}
+                        cd_to_saved_ifs=${IFS-}
+                        case $- in
+                            *f*) cd_to_noglob=1 ;;
+                            *)   cd_to_noglob=0 ;;
+                        esac
+                        IFS=$(printf ' \t')
+                        set -f
+                        if [ -n "${ZSH_VERSION-}" ]; then
+                            # Evaluate fixed code, not the contents of EDITOR.
+                            # shellcheck disable=SC2016
+                            eval 'set -- ${=EDITOR}'
+                        else
+                            # shellcheck disable=SC2086
+                            set -- $EDITOR
+                        fi
+                        if [ "$cd_to_ifs_set" = x ]; then
+                            IFS=$cd_to_saved_ifs
+                        else
+                            unset IFS
+                        fi
+                        if [ "$cd_to_noglob" -eq 0 ]; then
+                            set +f
+                        fi
+
+                        cd_to_editor="$1"
+                        shift
+                        # Keep each newline-delimited path as one argument.
                         while IFS= read -r cd_to_file; do
                             set -- "$@" "$cd_to_file"
                         done <<EOF
 $the_filepath
 EOF
-                        # Split EDITOR into a command and simple options in sh.
-                        sh -c '
-                              editor=$1
-                              shift
-                              case $editor in
-                                   *[![:space:]]*) ;;
-                                   *) printf "%s\n" "cd-to: EDITOR is empty." >&2; exit 1 ;;
-                              esac
-                              IFS=$(printf " \t")
-                              set -f
-                              exec $editor "$@"
-                        ' sh "$EDITOR" "$@"
+                        "$cd_to_editor" "$@"
                     ) || return $?
                     ;;
             esac
