@@ -4,7 +4,7 @@
 # Purpose   : Activate use of Homebrew's installed utilities.
 # Created   : Saturday, April  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:32:31 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:32:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,14 +55,17 @@ usrhome_trace_in "\$USRHOME_DIR/ibin/envfor-homebrew"
 # Check if shell is interactive and export a SHELL_IS_INTERACTIVE variable
 # set to true or false.  Other scripts can use this to determine how they must operate.
 #
+# Keep this value in the current shell. Child shells must determine
+# their own interactivity.
+unset SHELL_IS_INTERACTIVE
+# Used by other sourced scripts.
+# shellcheck disable=SC2034 # SHELL_IS_INTERACTIVE is used.
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
-        export SHELL_IS_INTERACTIVE
         ;;
     *)
         SHELL_IS_INTERACTIVE=false
-        export SHELL_IS_INTERACTIVE
         ;;
 esac
 

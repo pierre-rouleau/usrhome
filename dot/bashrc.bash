@@ -5,7 +5,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2026-11-17 15:47:24 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:30:23 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -57,6 +57,8 @@ fi
 
 # Topic: Startup: 1.1 - Check if shell is interactive
 # -------------------------------------------------
+# Clear any inherited export attribute before setting the shell-local value.
+unset SHELL_IS_INTERACTIVE
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
