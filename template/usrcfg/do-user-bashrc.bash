@@ -4,7 +4,7 @@
 # Purpose   : USRHOME template for user-specific Bash configuration.
 # Created   : Monday, April 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 22:51:29 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 09:15:39 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -61,6 +61,8 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-bashrc.bash"
 node="$(hostname -s)"
 node_fname="$USRHOME_DIR_USRCFG/node/do-${node}-bashrc.bash"
 if [ -e "$node_fname" ]; then
+    # ShellCheck is not able to follow a dynamically constructed path.
+    # shellcheck source=/dev/null
     . "$node_fname"
 fi
 unset node

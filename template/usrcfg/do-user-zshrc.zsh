@@ -1,9 +1,10 @@
 # Sourced script: do-user-zshrc.zsh  -*- mode: sh; -*-
+# shellcheck shell=sh
 #
 # Purpose   : USRHOME template to user's zsh specific configuration.
 # Created   : Sunday, March 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-04 08:25:36 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 09:57:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -60,6 +61,7 @@ usrhome_trace_in "\$USRHOME_DIR_USRCFG/do-user-zshrc.zsh"
 node="$(hostname -s)"
 node_fname="$USRHOME_DIR_USRCFG/node/do-${node}-zshrc.zsh"
 if [ -e "$node_fname" ]; then
+    # shellcheck source=/dev/null # Shell Check cannot follow dynamic paths
     . "$node_fname"
 fi
 unset node
@@ -69,3 +71,6 @@ unset node_fname
 # Cleanup
 usrhome_trace_out
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: zsh
+# End:
