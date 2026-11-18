@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 16:46:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 11:57:55 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -448,8 +448,11 @@ END {
     }
 
     if (hide_unsupported && unsupported_count > 0) {
-        printf "%s: [WARNING: %d unsupported diagnostics suppressed; audit incomplete]\n",
-            fname, unsupported_count
+        # when hide-unsupported is 2, print nothing
+        if (hide_unsupported == 1) {
+            printf "%s: [WARNING: %d unsupported diagnostics suppressed; audit incomplete]\n",
+                fname, unsupported_count
+        }
     }
     exit found
 }

@@ -4,7 +4,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 12:07:08 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:21:39 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -167,7 +167,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         -v)
-            if [ "$q_v_seen" = "v" ]; then
+            if [ "$q_v_seen" = "q" ]; then
                 usrhome_printf_error '%s: Cannot use the -q and -v options together.\n' "$pgm_name"
                 exit 1
             fi
@@ -245,6 +245,10 @@ resolve_executable()
     printf '%s\n' "$resolved_command"
 }
 
+if ! awk_pgm=$(resolve_executable awk); then
+    printf '%s: cannot resolve the awk executable.\n' "$pgm_name" >&2
+    exit 1
+fi
 if [ "$with_shellcheck" = "1" ]; then
     if ! shellcheck_pgm=$(resolve_executable shellcheck); then
         printf '%s: cannot resolve the shellcheck executable.\n' "$pgm_name" >&2
@@ -256,9 +260,6 @@ if [ "$with_shellcheck" = "1" ]; then
             printf '%s: cannot resolve the wc or tr executable.\n' "$pgm_name" >&2
             exit 1
         fi
-    elif ! awk_pgm=$(resolve_executable awk); then
-        printf '%s: cannot resolve the awk executable.\n' "$pgm_name" >&2
-        exit 1
     fi
 fi
 
@@ -447,7 +448,7 @@ elif [ -n "$target_dir" ]; then
                     first_line_result=$(
                         head -n 1 "$file" 2>/dev/null |
                             LC_ALL=C od -A n -t u1 -v |
-                            LC_ALL=C awk '
+                            LC_ALL=C "$awk_pgm" '
             BEGIN { status = "T"; offset = 0 }
             {
                 for (i = 1; i <= NF; i++) {
