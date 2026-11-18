@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 16:48:52 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 10:56:31 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -59,17 +59,17 @@ esac
 if [ -z "${USRHOME_DIR-}" ]; then
     if ! command -v readlink >/dev/null 2>&1; then
         printf '%s\n' 'USRHOME: readlink is required to resolve ~/.profile.' >&2
-        exit 1
+        return 1
     fi
     if ! usrhome_profile=$(readlink "$HOME/.profile"); then
         printf '%s\n' 'USRHOME: cannot read the ~/.profile symlink.' >&2
-        exit 1
+        return 1
     fi
     case $usrhome_profile in
         /*/dot/profile.sh) ;;
         *)
             printf '%s\n' 'USRHOME: ~/.profile must link to an absolute usrhome/dot/profile.sh path.' >&2
-            exit 1
+            return 1
             ;;
     esac
     USRHOME_DIR=${usrhome_profile%/dot/profile.sh}
