@@ -4,7 +4,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 11:25:33 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 12:07:08 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -69,20 +69,27 @@ print_usage()
                   This has no impact on detection of other checks.
 
    Examples:
-    %s -f /path/to/usrhome/bin/script.sh
-    %s -d /path/to/usrhome
+    • %s -f /path/to/usrhome/bin/script.sh
+    • %s -d /path/to/usrhome
+
+    • To process all script files in the current directory tree, checking them
+      with shellcheck and showing the shellcheck message and check with the extra rules
+      imposed by %s without showing its limitations and stopping on the first file that
+      has an identifiable issue (either detected by shellcheck or %s own rules), and return
+      with an exit code 0 if no error found or 1 otherwise,  do this:
+
+      • %s -d . -S -q -x
+
 
    LIMITATIONS:
      %s cannot analyze some code constructs and skips them issuing a warning
      when the -v option is specified.  Each warning line printed by %s
      starts with 'WARNING: '.
-     - If you want to only see the detected issues you can filter the warnings
-      by piping the output of %s into:  grep -v \": \\[WARNING: \"
      - If you want to only see the ShellCheck error count for all files under
        the current directory tree, you can use the following command:
        \"%s -s -d . | grep SHELLCHECK\"
 " "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
-  "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
+  "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
 # --
@@ -348,8 +355,13 @@ audit_file()
         LC_ALL=C "$awk_pgm" -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
          awk_status=$?
     else
-        LC_ALL=C "$awk_pgm" -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
-        awk_status=$?
+        if [ "$report_limitations" = "1" ]; then
+            LC_ALL=C "$awk_pgm" -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+            awk_status=$?
+        else
+            LC_ALL=C "$awk_pgm" -v fname="$file" -v hide_unsupported="2"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+            awk_status=$?
+        fi
     fi
     if [ "$shellcheck_failed" = "1" ]; then
         return 1
