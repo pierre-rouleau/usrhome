@@ -1,10 +1,11 @@
+
 #!/bin/sh
 # SH FILE: lint-sh
 #
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 12:21:39 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 14:24:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -383,14 +384,10 @@ if [ -n "$target_file" ]; then
     # Audit the specified file
     #
     if ! audit_file "$target_file"; then
-        if [ "$report_limitations" = "1" ]; then
-            lint_error_found=1
-        fi
-        if [ "$terminate_processing" = "1" ]; then
-            if [ "$report_limitations" = "1" ]; then
-                lint_error_found=1
-            fi
-        fi
+        lint_error_found=1
+    fi
+    if [ "$terminate_processing" = "1" ]; then
+        lint_error_found=1
     fi
 
 elif [ -n "$target_dir" ]; then
@@ -516,14 +513,13 @@ elif [ -n "$target_dir" ]; then
             esac
             if [ "$is_shell" -eq 1 ]; then
                 if ! audit_file "$file"; then
-                    if [ "$report_limitations" = "1" ]; then
+                    if [ "$lint_error_found" -eq 0 ]; then
                         lint_error_found=1
                     fi
-                    if [ "$terminate_processing" = "1" ]; then
-                        exit 1
-                    fi
-
                 fi
+            fi
+            if [ "$terminate_processing" = "1" ]; then
+                exit 1
             fi
         done
 } < "$file_list"
