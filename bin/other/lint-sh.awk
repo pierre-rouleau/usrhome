@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 21:58:06 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-19 16:40:59 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -383,15 +383,15 @@ hd_head <= hd_tail && !pending_quote {
             redir = 1
             if (c == "<" && nextc == "<") {
                 if (substr($0, p + 2, 1) == "<") {
-                    warn("WARNING: UNSUPPORTED here-string")
-                    unsupported = 1
-                    break
-                }
-                here = 1
-                p++
-                if (substr($0, p + 1, 1) == "-") {
-                    here_tabs = 1
-                    p++
+                    # Here-string: the next word is a redirection operand,
+                    # not a heredoc delimiter.
+                    p += 2
+                } else {
+                    here = 1
+                    if (substr($0, p + 1, 1) == "-") {
+                        here_tabs = 1
+                        p++
+                    }
                 }
             } else if (nextc == c || nextc == "&" || nextc == "|") {
                 p++
