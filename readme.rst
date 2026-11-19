@@ -115,23 +115,26 @@ titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 Shell support and portability
 -----------------------------
 
-USRHOME shell code includes Bash-specific code, Zsh-specific code, and
-POSIX-compliant code. Bash and Zsh are the supported shells. Other shells
-are not yet officially supported.
+USRHOME provides ``lint-sh`` to audit a single shell file or recursively
+scan a directory tree. It recognizes shell files by their extension,
+shebang, or sourced-script marker. These include executable scripts and
+sourced shell files.
 
-USRHOME provides ``lint-sh`` to check executable and sourced shell scripts.
-It checks for risky ``cd`` usage and can also run ShellCheck. Use ``-S``
-to display ShellCheck diagnostics or ``-s`` to display their count.
+For each selected file, ``lint-sh`` performs extra checks for risky ``cd``
+usage and missing ``--`` delimiters on supported POSIX utilities.
 
-The project scans all USRHOME shell scripts. The scan reports no error,
-warning, or info diagnostics.
+If ShellCheck is installed, use ``-S`` to run it on each selected file and
+display its diagnostics in GCC format. Use ``-s`` to display diagnostic
+counts instead.
 
+Directory scans exclude certain paths and filename patterns. The internal
+parser cannot analyze every shell construct.
 A clean scan does not guarantee complete analysis but it can report what is
 not being analyzed. The ``lint-sh`` parser cannot analyze some
 constructs. ShellCheck does not support Zsh syntax, and some Zsh files disable
 its checks.
 
-With shellcheck installed, the following command., issued from the root
+With ShellCheck installed, the following command, issued from the root
 of USRHOME repo, should not report any issue:
 
 .. code:: sh
