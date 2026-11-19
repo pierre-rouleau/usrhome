@@ -5,7 +5,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 21:59:29 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-19 12:15:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -75,13 +75,35 @@ print_usage()
     • %s -d /path/to/usrhome
 
     • To process all script files in the current directory tree, checking them
-      with shellcheck and showing the shellcheck message and check with the extra rules
-      imposed by %s without showing its limitations and stopping on the first file that
-      has an identifiable issue (either detected by shellcheck or %s own rules), and return
-      with an exit code 0 if no error found or 1 otherwise,  do this:
+      with shellcheck and showing the shellcheck message and check with the
+      extra rules imposed by %s without showing its limitations and stopping
+      on the first file that has an identifiable issue (either detected by
+      shellcheck or %s own rules), and return with an exit code 0 if no error
+      found or 1 otherwise, do this:
 
       • %s -d . -S -q -x
 
+   SKIPPED:
+    The following files and directories are skipped when the execution is
+    done for a directory tree as requested by the -d option:
+    - Emacs backup and temporary files.
+    - Text, reStructuredText, Markdown, Org files.
+    - C, C++, C3, Common Lisp, D, Elixir, Emacs Lip, Erlang, Gleam , Go,
+    - Haskell, Java, Javascript, Julia, LFE, Lua, M4, Modula, Mojo,
+    - NetREXX, Nim, OCaml, ObjectiveC, Odin, PHP, Pascal, Perl, Pony,
+    - Prolog, Purescript, Python, R, Racket, ReasonML, REXX, Rebol, Red, Rocq,
+    - Ruby, Rust, Scheme, Seed7, Shen, Swift, Tcl, Typescript, Vala,
+    - Zig programming languages.
+    - DVCS directory trees for: Git (.git), Jujutsu (.jj), Mercurial (.hg),
+      GNU Bazar (.bzr), Darcs (_darcs), Game of Trees (.got), Pijul (.pijul),
+      Unity VCS (.plastic).
+    - man/man[0-9] directories.
+    The operation requested for a -f option always perform the audit of the
+    identified file.
+    Note that even when a file is not explicitly skipped, the scan checks if
+    it is a real shell script before auditing it, non shell script files are
+    not audited.  The explicit skipping of files and directories is only done
+    to speed up overall processing of large directory trees.
 
    LIMITATIONS:
      %s cannot analyze some code constructs and skips them issuing a warning
@@ -429,22 +451,104 @@ elif [ -n "$target_dir" ]; then
 
     # Store a list of files to process into a temporary file
     printf "# Identifying files to audit...\n"
-    if ! find "$target_dir" -type f ! -name '.DS_Store' ! -path '*/.git/*' \
-      -exec sh -c '
-        LC_ALL=C file "$@" | LC_ALL=C awk '\''
-          {
-            # Strip everything up to the first ": " (file output format: "path: description")
-            idx = index($0, ": ")
-            if (idx > 0) {
-              path = substr($0, 1, idx - 1)
-              desc = tolower(substr($0, idx + 2))
-              if (index(desc, "text") > 0) {
-                print path
-              }
-            }
-          }
-        '\''
-      ' sh {} + > "$file_list"; then
+    # Skip macOS .DS_Store files,
+    # Skip DVCS repos: Git, Got (Game of Trees), Mercurial, Jujutsu, Pijul, Unity DVCS (Plastic)
+    # Skip Emacs backup and tmp files
+    if ! find "$target_dir" -type f ! -name '.DS_Store' \
+            ! -path '*/.bzr/*' \
+            ! -path '*/_darcs/*' \
+            ! -path '*/.git/*' \
+            ! -path '*/.got/*' \
+            ! -path '*/.hg/*' \
+            ! -path '*/.jj/*' \
+            ! -path '*/.pijul/*' \
+            ! -path '*/.plastic/*' \
+            ! -name '*~' ! -name '.#*' \
+            ! -name '*#' ! -name '#*' \
+            ! -name '*.html' ! -name '*.asn' \
+            ! -name '*.c' ! -name '*.h' ! -name '*.C' ! -name '*.H' \
+            ! -name '*.cc' ! -name '*.cpp' ! -name '*.cxx' ! -name '*.c++' \
+            ! -name '*.hh' ! -name '*.hpp' ! -name '*.hxx' ! -name '*.h++' \
+            ! -name '*.ipp' ! -name '*.tpp' ! -name '*.inl' \
+            ! -name '*.ixx' ! -name '*.cppm' \
+            ! -name '*.erl' ! -name '*.hrl' ! -name '*.ex' ! -name '*.exs' ! -name '*.eix' \
+            ! -name '*.d' ! -name '*.di' ! -name '*.go' \
+            ! -name '*.py' ! -name '*.pyw' ! -name '*.pyi' \
+            ! -name '*.rb' ! -name '*.rbw' ! -name '*.rake' ! -name '*.gemspec' ! -name '*.ru' \
+            ! -name '*.el' ! -name '*.elc' \
+            ! -name '*.lisp' ! -name '*.lsp' ! -name '*.cl' ! -name '*.asd' \
+            ! -name '*.scm' ! -name '*.ss' ! -name '*.sld' ! -name '*.sls' ! -name '*.sps' ! -name '*.sch' \
+            ! -name '*.gleam' ! -name '*.dart' ! -name '*.c3' ! -name '*.c3i' ! -name '*.c3t' ! -name '*.zig' \
+            ! -name '*.java' \
+            ! -name '*.js' ! -name '*.mjs' ! -name '*.cjs' ! -name '*.jsx' \
+            ! -name '*.jl' \
+            ! -name '*.hs' ! -name '*.lhs' ! -name '*.hsc' \
+            ! -name '*.lfe' \
+            ! -name '*.lua' \
+            ! -name '*.m4' \
+            ! -name '*.mod' ! -name '*.def' ! -name '*.m2' \
+            ! -name '*.m3' ! -name '*.i3' ! -name '*.mg' ! -name '*.ig' \
+            ! -name '*.mojo' \
+            ! -name '*.nrx' \
+            ! -name '*.nim' ! -name '*.nims' ! -name '*.nimble' \
+            ! -name '*.m' ! -name '*.mm' \
+            ! -name '*.ml' ! -name '*.mli' ! -name '*.mll' ! -name '*.mly' \
+            ! -name '*.odin' \
+            ! -name '*.pas' ! -name '*.pp' ! -name '*.p' \
+            ! -name '*.pl' ! -name '*.pm' ! -name '*.pod' \
+            ! -name '*.php' ! -name '*.phtml' ! -name '*.php3' \
+            ! -name '*.php4' ! -name '*.php5' ! -name '*.phps' \
+            ! -name '*.pony' \
+            ! -name '*.pro' ! -name '*.prolog' \
+            ! -name '*.purs' \
+            ! -name '*.R' ! -name '*.r' \
+            ! -name '*.rkt' \
+            ! -name '*.re' ! -name '*.rei' \
+            ! -name '*.reb' ! -name '*.r3' \
+            ! -name '*.red' ! -name '*.reds' \
+            ! -name '*.rex' ! -name '*.rexx' ! -name '*.rx' \
+            ! -name '*.v' \
+            ! -name '*.rs' \
+            ! -name '*.shen' \
+            ! -name '*.sd7' ! -name '*.s7i' \
+            ! -name '*.swift' \
+            ! -name '*.tcl' ! -name '*.tk' ! -name '*.tm' \
+            ! -name '*.ts' ! -name '*.tsx' ! -name '*.mts' ! -name '*.cts' \
+            ! -name '*.vala' ! -name '*.vapi' \
+            ! -name '*.rst.txt' ! -name '*.md' ! -name '*.txt' ! -name '*.org' \
+            ! -path '*/man/man[0-9]/*' ! -path 'man/man[0-9]/*' \
+            -exec sh -c '
+       status=0
+       for candidate do
+          # The file list uses newlines as separators.
+          case "$candidate" in
+            *"
+"*)
+              printf "%s: pathname contains a newline: %s\n" "$0" "$candidate" >&2
+              status=1
+              continue
+              ;;
+          esac
+
+          # Prefix relative paths so file cannot interpret them as options.
+          case "$candidate" in
+            /*) probe_file=$candidate ;;
+            *)  probe_file=./$candidate ;;
+          esac
+          if ! description=$(LC_ALL=C file -b "$probe_file"); then
+            printf "%s: cannot classify %s\n" "$0" "$candidate" >&2
+            status=1
+            continue
+          fi
+
+          case "$description" in
+            *[Tt][Ee][Xx][Tt]*)
+              printf "%s\n" "$candidate" || exit 1
+              ;;
+          esac
+        done
+        exit "$status"
+      ' "$pgm_name" {} + > "$file_list"; then
         lint_error_found=2
     fi
     # Then process the files.
