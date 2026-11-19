@@ -5,7 +5,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-19 12:15:47 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-19 14:51:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -294,6 +294,7 @@ file_list=''
 trap 'rm -f -- "$stats_file"; if [ -n "$file_list" ]; then rm -f -- "$file_list"; fi' 0
 trap 'exit 1' HUP INT TERM
 
+files_to_audit=0
 files_audited=0
 internal_diagnostics=0
 shellcheck_diagnostics=0
@@ -306,8 +307,15 @@ unsupported_diagnostics=0
 terminate_processing=0
 audit_file()
 {
+    # Return value:
+    #  - 0 audit succeeds
+    #  - 1 Shellcheck and awk audit done.  At least 1 shellcheck diag found.
+    #  - 2 Shellcheck attempted and failed.
+    #  - 3 Shellcheck done, but no awk based scan done.
+    #  - 4 Shellcheck done, but awk based scan attempted and failed.
+
     file=$1
-    shellcheck_found=0
+    shellcheck_diags_found=0
 
     if [ "$with_shellcheck" = "1" ]; then
         # Run in the file's directory so ShellCheck can resolve sources.
@@ -325,7 +333,7 @@ audit_file()
         case $shellcheck_status in
             0|1)
                 if [ "$shellcheck_status" -eq 1 ]; then
-                    shellcheck_found=1
+                    shellcheck_diags_found=1
                     if [ "$exit_fast" = "1" ]; then
                         terminate_processing=1
                     fi
@@ -380,7 +388,7 @@ audit_file()
     if ! rm -f -- "$stats_file"; then
         printf '%s: cannot remove old lint-sh statistics file: %s\n' \
                "$pgm_name" "$stats_file" >&2
-        return 2
+        return 3
     fi
 
     LINT_SH_STATS_FILE="$stats_file" LC_ALL=C "$awk_pgm" \
@@ -392,7 +400,7 @@ audit_file()
            ! IFS=' ' read -r file_errors file_unsupported extra < "$stats_file"
     then
         printf '%s: AWK failed for %s\n' "$pgm_name" "$file" >&2
-        return 2
+        return 4
     fi
     case $file_errors in
         ''|*[!0-9]*) printf '%s: invalid AWK statistics for %s\n' "$pgm_name" "$file" >&2; return 2 ;;
@@ -402,7 +410,7 @@ audit_file()
     esac
     if [ -n "$extra" ]; then
         printf '%s: invalid AWK statistics for %s\n' "$pgm_name" "$file" >&2
-        return 2
+        return 4
     fi
 
     internal_diagnostics=$((internal_diagnostics + file_errors))
@@ -414,7 +422,7 @@ audit_file()
     if [ "$shellcheck_failed" = "1" ]; then
         return 2
     fi
-    if [ "$shellcheck_found" = "1" ]; then
+    if [ "$shellcheck_diags_found" = "1" ]; then
         return 1
     fi
     return "$awk_status"
@@ -432,7 +440,7 @@ lint_error_found=0
 if [ -n "$target_file" ]; then
     # Audit the specified file
     #
-    files_audited=$((files_audited + 1))
+    files_to_audit=$((files_to_audit + 1))
     audit_file "$target_file"
     audit_status=$?
     case $audit_status in
@@ -440,6 +448,9 @@ if [ -n "$target_file" ]; then
         1) lint_error_found=1 ;;
         *) lint_error_found=2 ;;
     esac
+    if [ ! "$lint_error_found" -gt 1 ]; then
+        files_audited=$((files_audited + 1))
+    fi
 elif [ -n "$target_dir" ]; then
     # Audit all shell script in specified directory.
     #
@@ -454,7 +465,27 @@ elif [ -n "$target_dir" ]; then
     # Skip macOS .DS_Store files,
     # Skip DVCS repos: Git, Got (Game of Trees), Mercurial, Jujutsu, Pijul, Unity DVCS (Plastic)
     # Skip Emacs backup and tmp files
-    if ! find "$target_dir" -type f ! -name '.DS_Store' \
+    # Do not enter an excluded tree when the scan starts inside it.
+    skip_excluded_tree=0
+    if ! search_dir=$(CDPATH='' cd -P -- "$target_dir" && pwd -P); then
+        printf '%s: cannot access directory: %s\n' "$pgm_name" "$target_dir" >&2
+        lint_error_found=2
+        skip_excluded_tree=1
+    else
+        case "$search_dir/" in
+            */.bzr/*|*/_darcs/*|*/.git/*|*/.got/*|*/.hg/*|*/.jj/*|*/.pijul/*|*/.plastic/*|*/man/man[0-9]/*)
+                skip_excluded_tree=1
+                ;;
+        esac
+    fi
+
+    if [ "$skip_excluded_tree" -eq 0 ] &&
+        ! find "$target_dir" \
+            \( -type d \( -name '.bzr' -o -name '_darcs' \
+                -o -name '.git' -o -name '.got' -o -name '.hg' \
+                -o -name '.jj' -o -name '.pijul' -o -name '.plastic' \
+                -o -path '*/man/man[0-9]' -o -path 'man/man[0-9]' \) -prune \) -o \
+            \( -type f ! -name '.DS_Store' \
             ! -path '*/.bzr/*' \
             ! -path '*/_darcs/*' \
             ! -path '*/.git/*' \
@@ -548,7 +579,7 @@ elif [ -n "$target_dir" ]; then
           esac
         done
         exit "$status"
-      ' "$pgm_name" {} + > "$file_list"; then
+      ' "$pgm_name" {} + \) > "$file_list"; then
         lint_error_found=2
     fi
     # Then process the files.
@@ -662,7 +693,7 @@ elif [ -n "$target_dir" ]; then
                     ;;
             esac
             if [ "$is_shell" -eq 1 ]; then
-                files_audited=$((files_audited + 1))
+                files_to_audit=$((files_to_audit + 1))
                 audit_file "$file"
                 audit_status=$?
                 case $audit_status in
@@ -674,6 +705,9 @@ elif [ -n "$target_dir" ]; then
                         ;;
                     *) lint_error_found=2 ;;
                 esac
+                if [ ! "$lint_error_found" -gt 1 ]; then
+                    files_audited=$((files_audited + 1))
+                fi
             fi
             if [ "$terminate_processing" = "1" ]; then
                 break
@@ -683,7 +717,7 @@ elif [ -n "$target_dir" ]; then
 fi
 
 printf "# ------------------------------------------\n"
-printf '# %s: audited %s files.\n' "$pgm_name" "$files_audited"
+printf '# %s: audited %s of %s candidate files.\n' "$pgm_name" "$files_audited" "$files_to_audit"
 printf '# Internal diagnostics: %s.\n' "$internal_diagnostics"
 if [ "$with_shellcheck" = "1" ]; then
     printf '# ShellCheck diagnostics: %s.\n' "$shellcheck_diagnostics"
