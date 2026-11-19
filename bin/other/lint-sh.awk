@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-19 17:00:13 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-19 17:06:31 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -35,7 +35,7 @@ BEGIN {
     # Configure POSIX commands that support "--" (POSIX Guideline 10)
     # Short options with required arguments are listed separately.
     opts["cd"]="LP"
-    opts["cp"]="fHiLPRr"
+    opts["cp"]="fHiLPRpr"
     opts["mv"]="fi"
     opts["rm"]="fiRr"
     opts["mkdir"]="mp"
