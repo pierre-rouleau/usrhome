@@ -5,7 +5,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-19 14:51:34 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-19 15:41:39 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -705,7 +705,7 @@ elif [ -n "$target_dir" ]; then
                         ;;
                     *) lint_error_found=2 ;;
                 esac
-                if [ ! "$lint_error_found" -gt 1 ]; then
+                if [ "$audit_status" -le 1 ]; then
                     files_audited=$((files_audited + 1))
                 fi
             fi
