@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-19 16:40:59 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-19 16:50:45 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -373,7 +373,15 @@ hd_head <= hd_tail && !pending_quote {
             continue
         }
         if (c == "<" || c == ">") {
-            emit_word()
+            if (active && !redir && !was_quoted && !dyn &&
+                word ~ /^[0-9]+$/) {
+                # An adjacent unquoted number is a file descriptor,
+                # not a command argument.
+                word = ""
+                dyn = udyn = was_quoted = active = 0
+            } else {
+                emit_word()
+            }
             if (redir) {
                 warn("WARNING: UNSUPPORTED redirection")
                 unsupported = 1
@@ -388,6 +396,7 @@ hd_head <= hd_tail && !pending_quote {
                     p += 2
                 } else {
                     here = 1
+                    p++
                     if (substr($0, p + 1, 1) == "-") {
                         here_tabs = 1
                         p++
