@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 15:27:54 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-19 16:22:02 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -63,7 +63,10 @@
 # 0 - Check if shell is interactive
 # ---------------------------------
 # Note: it is used inside usrhome_printf()
-
+# Clear any inherited export attribute before setting the shell-local value.
+unset SHELL_IS_INTERACTIVE
+# Used by other sourced scripts.
+# shellcheck disable=SC2034 # SHELL_IS_INTERACTIVE is used.
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
@@ -72,7 +75,6 @@ case "$-" in
         SHELL_IS_INTERACTIVE=false
         ;;
 esac
-export SHELL_IS_INTERACTIVE
 
 #
 # 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
