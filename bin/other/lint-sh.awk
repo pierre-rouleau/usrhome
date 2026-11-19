@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-19 16:50:45 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-19 17:00:13 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -402,7 +402,8 @@ hd_head <= hd_tail && !pending_quote {
                         p++
                     }
                 }
-            } else if (nextc == c || nextc == "&" || nextc == "|") {
+            } else if ((c == "<" && nextc == ">") ||
+                       nextc == c || nextc == "&" || nextc == "|") {
                 p++
             }
             continue
