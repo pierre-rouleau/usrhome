@@ -5,7 +5,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 20:50:25 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 21:59:29 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -60,8 +60,9 @@ print_usage()
                   the number of detected issues.
     -S            Execute a shellcheck style check on each file and print
                   the detected issues.
-    -q            Quiet: ignore parsing limitation, do not report nor count
-                  them.
+    -q            Quiet: suppress individual parsing limitation reports.
+                  Include their counts in the final summary, but ignore them
+                  for the exit status.
     -v            Verbose: show all warnings for diagnostics that cannot be
                   analyzed by the current lexer instead of only showing
                   the warning count detected on each file.
@@ -255,14 +256,27 @@ if [ "$with_shellcheck" = "1" ]; then
         printf '%s: cannot resolve the shellcheck executable.\n' "$pgm_name" >&2
         exit 1
     fi
-    if [ "$with_shellcheck_count" = "1" ]; then
-        if ! wc_pgm=$(resolve_executable wc) ||
-                ! tr_pgm=$(resolve_executable tr); then
-            printf '%s: cannot resolve the wc or tr executable.\n' "$pgm_name" >&2
-            exit 1
-        fi
+    if ! wc_pgm=$(resolve_executable wc) ||
+            ! tr_pgm=$(resolve_executable tr); then
+        printf '%s: cannot resolve the wc or tr executable.\n' "$pgm_name" >&2
+        exit 1
     fi
 fi
+
+# The statistics file is shared by sequential AWK invocations.
+stats_file=$(mktemp "${USRHOME_DIR_TMP:-${TMPDIR:-/tmp}}/lint-sh-stats.XXXXXXXXXX") || {
+    printf '%s: cannot create temporary statistics file\n' "$pgm_name" >&2
+    exit 1
+}
+file_list=''
+trap 'rm -f -- "$stats_file"; if [ -n "$file_list" ]; then rm -f -- "$file_list"; fi' 0
+trap 'exit 1' HUP INT TERM
+
+files_audited=0
+internal_diagnostics=0
+shellcheck_diagnostics=0
+unsupported_files=0
+unsupported_diagnostics=0
 
 # --
 # Define the operations
@@ -271,69 +285,51 @@ terminate_processing=0
 audit_file()
 {
     file=$1
-    shellcheck_failed=0
+    shellcheck_found=0
 
     if [ "$with_shellcheck" = "1" ]; then
-        # extract file basename and directory
+        # Run in the file's directory so ShellCheck can resolve sources.
         f_name="${file##*/}"
         case "$file" in
             */*) d_name="${file%/*}" ;;
             *)   d_name="." ;;
         esac
-        # Execute shellcheck in a sub-shell inside the directory of the checked file
-        # this way shellcheck will be able to use the shellcheck source statements
-        # to identify the location of the source files like Emacs is able to do it.
-        shellcheck_result=0
-        (
+        shellcheck_output=$(
             CDPATH='' cd -- "$d_name" || exit 2
-            if [ "$with_shellcheck_count" = "1" ]; then
-                # ----------------------------------------------------------------------------
-                shellcheck_status=0
-                shellcheck_output=$(shellcheck -x -S style --format=gcc "$f_name")
-                shellcheck_status=$?
-                case $shellcheck_status in
-                    0|1)
-                        if [ -n "$shellcheck_output" ]; then
-                            error_count=$(printf '%s\n' "$shellcheck_output" | wc -l | tr -d ' ')
-                            printf '%s: SHELLCHECK %s diagnostics\n' "$file" "$error_count"
-                        fi
-                        if [ "$exit_fast" = "1" ] &&
-                               { [ "$shellcheck_status" -eq 1 ] || [ -n "$shellcheck_output" ]; }; then
-                            exit 1
-                        fi
-                        ;;
-                    *)
-                        printf '%s: ShellCheck failed for %s (status %s)\n' \
-                               "$pgm_name" "$file" "$shellcheck_status" >&2
-                        exit 2
-                        ;;
-                esac
-            else
-                output="$("$shellcheck_pgm" -x -S style --format=gcc "$PWD/$f_name")"
-                status=$?
-                # remove the user's CWD path from the path of each file in the output message
-                if [ -n "$output" ]; then
-                    printf '%s\n' "$output" | "$awk_pgm" -v prefix="$user_cwd/" '
-                        index($0, prefix) == 1 {
-                                print substr($0, length(prefix) + 1)
-                                next
-                        }
-                        {
-                           print
-                        }'
-                fi
-                if [ "$status" -ne 0 ]; then
-                    if [ "$exit_fast" = "1" ]; then
-                       exit 1
-                   fi
-                fi
-            fi
-        ) || shellcheck_result=$?
+            "$shellcheck_pgm" -x -S style --format=gcc "$PWD/$f_name"
+                         )
+        shellcheck_status=$?
 
-        case $shellcheck_result in
-            0) ;;
-            1) terminate_processing=1 ;;
+        case $shellcheck_status in
+            0|1)
+                if [ "$shellcheck_status" -eq 1 ]; then
+                    shellcheck_found=1
+                    if [ "$exit_fast" = "1" ]; then
+                        terminate_processing=1
+                    fi
+                fi
+                if [ -n "$shellcheck_output" ]; then
+                    file_shellcheck_count=$(
+                        printf '%s\n' "$shellcheck_output" |
+                            "$wc_pgm" -l | "$tr_pgm" -d ' '
+                                         )
+                    shellcheck_diagnostics=$((shellcheck_diagnostics + file_shellcheck_count))
+                    if [ "$with_shellcheck_count" = "1" ]; then
+                        printf '%s: SHELLCHECK %s diagnostics\n' "$file" "$file_shellcheck_count"
+                    else
+                        # Remove the user's CWD prefix from diagnostic paths.
+                        printf '%s\n' "$shellcheck_output" | "$awk_pgm" -v prefix="$user_cwd/" '
+                                         index($0, prefix) == 1 {
+                                             print substr($0, length(prefix) + 1)
+                                             next
+                                         }
+                                         { print }'
+                    fi
+                fi
+                ;;
             *)
+                printf '%s: ShellCheck failed for %s (status %s)\n' \
+                 "$pgm_name" "$file" "$shellcheck_status" >&2
                 shellcheck_failed=1
                 if [ "$exit_fast" = "1" ]; then
                     terminate_processing=1
@@ -341,7 +337,6 @@ audit_file()
                 ;;
         esac
     fi
-
 
     # Keep the original filename for diagnostics.  Prefix relative input
     # paths so AWK cannot mistake them for assignments or options.
@@ -352,20 +347,52 @@ audit_file()
         *)  awk_file=./$file ;;
     esac
 
-    awk_status=0
     if [ "$verbose" = "1" ]; then
-        LC_ALL=C "$awk_pgm" -v fname="$file" -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
-         awk_status=$?
+        hide_unsupported=0
+    elif [ "$report_limitations" = "1" ]; then
+        hide_unsupported=1
     else
-        if [ "$report_limitations" = "1" ]; then
-            LC_ALL=C "$awk_pgm" -v fname="$file" -v hide_unsupported="1"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
-            awk_status=$?
-        else
-            LC_ALL=C "$awk_pgm" -v fname="$file" -v hide_unsupported="2"  -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
-            awk_status=$?
-        fi
+        hide_unsupported=2
     fi
+
+    if ! rm -f -- "$stats_file"; then
+        printf '%s: cannot remove old lint-sh statistics file: %s\n' \
+               "$pgm_name" "$stats_file" >&2
+        return 2
+    fi
+
+    LINT_SH_STATS_FILE="$stats_file" LC_ALL=C "$awk_pgm" \
+        -v fname="$file" -v hide_unsupported="$hide_unsupported" \
+        -f "$USRHOME_DIR/bin/other/lint-sh.awk" "$awk_file"
+    awk_status=$?
+
+    if [ "$awk_status" -gt 1 ] ||
+           ! IFS=' ' read -r file_errors file_unsupported extra < "$stats_file"
+    then
+        printf '%s: AWK failed for %s\n' "$pgm_name" "$file" >&2
+        return 2
+    fi
+    case $file_errors in
+        ''|*[!0-9]*) printf '%s: invalid AWK statistics for %s\n' "$pgm_name" "$file" >&2; return 2 ;;
+    esac
+    case $file_unsupported in
+        ''|*[!0-9]*) printf '%s: invalid AWK statistics for %s\n' "$pgm_name" "$file" >&2; return 2 ;;
+    esac
+    if [ -n "$extra" ]; then
+        printf '%s: invalid AWK statistics for %s\n' "$pgm_name" "$file" >&2
+        return 2
+    fi
+
+    internal_diagnostics=$((internal_diagnostics + file_errors))
+    unsupported_diagnostics=$((unsupported_diagnostics + file_unsupported))
+    if [ "$file_unsupported" -gt 0 ]; then
+        unsupported_files=$((unsupported_files + 1))
+    fi
+
     if [ "$shellcheck_failed" = "1" ]; then
+        return 2
+    fi
+    if [ "$shellcheck_found" = "1" ]; then
         return 1
     fi
     return "$awk_status"
@@ -383,13 +410,14 @@ lint_error_found=0
 if [ -n "$target_file" ]; then
     # Audit the specified file
     #
-    if ! audit_file "$target_file"; then
-        lint_error_found=1
-    fi
-    if [ "$terminate_processing" = "1" ]; then
-        lint_error_found=1
-    fi
-
+    files_audited=$((files_audited + 1))
+    audit_file "$target_file"
+    audit_status=$?
+    case $audit_status in
+        0) ;;
+        1) lint_error_found=1 ;;
+        *) lint_error_found=2 ;;
+    esac
 elif [ -n "$target_dir" ]; then
     # Audit all shell script in specified directory.
     #
@@ -398,8 +426,6 @@ elif [ -n "$target_dir" ]; then
         printf '%s: cannot create temporary file list\n' "$pgm_name" >&2
         exit 1
     }
-    trap 'rm -f -- "$file_list"' 0
-    trap 'exit 1' HUP INT TERM
 
     # Store a list of files to process into a temporary file
     printf "# Identifying files to audit...\n"
@@ -532,21 +558,35 @@ elif [ -n "$target_dir" ]; then
                     ;;
             esac
             if [ "$is_shell" -eq 1 ]; then
-                if ! audit_file "$file"; then
-                    if [ "$lint_error_found" -eq 0 ]; then
-                        lint_error_found=1
-                    fi
-                fi
+                files_audited=$((files_audited + 1))
+                audit_file "$file"
+                audit_status=$?
+                case $audit_status in
+                    0) ;;
+                    1)
+                        if [ "$lint_error_found" -eq 0 ]; then
+                            lint_error_found=1
+                        fi
+                        ;;
+                    *) lint_error_found=2 ;;
+                esac
             fi
             if [ "$terminate_processing" = "1" ]; then
-                exit 1
+                break
             fi
         done
 } < "$file_list"
 fi
 
 printf "# ------------------------------------------\n"
-printf "# %s: processed %s files.  Found %s errors.\n" "$pgm_name" "$(wc -l < "$file_list")" "$lint_error_found"
+printf '# %s: audited %s files.\n' "$pgm_name" "$files_audited"
+printf '# Internal diagnostics: %s.\n' "$internal_diagnostics"
+if [ "$with_shellcheck" = "1" ]; then
+    printf '# ShellCheck diagnostics: %s.\n' "$shellcheck_diagnostics"
+fi
+printf '# Unsupported diagnostics: %s in %s files.\n' \
+       "$unsupported_diagnostics" "$unsupported_files"
+
 exit "$lint_error_found"
 
 # ----------------------------------------------------------------------------

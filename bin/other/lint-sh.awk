@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 14:28:38 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 21:58:06 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,6 +27,7 @@ BEGIN {
     sq = sprintf("%c", 39)
     dq = sprintf("%c", 34)
     found = 0
+    error_count = 0
     unsupported_count = 0
     hd_head = 1
     hd_tail = 0
@@ -77,14 +78,14 @@ function warn(message) {
 
 function warn_at(message, line_number, source_line) {
     if (message ~ /^WARNING: UNSUPPORTED([[:space:]]|$)/) {
-        # Quiet mode ignores unsupported constructs for the exit status.
-        if (hide_unsupported == 2)
-            return
         unsupported_count++
-        found = 1
+        # Quiet mode ignores unsupported constructs for the exit status.
+        if (hide_unsupported != 2)
+            found = 1
         if (hide_unsupported)
             return
     } else {
+        error_count++
         found = 1
     }
     printf "%s:%d: [%s] %s\n", fname, line_number, message, source_line
@@ -443,11 +444,13 @@ END {
 
     if (!audit_stopped && pending_quote) {
         printf "%s:%d: [UNTERMINATED quote]\n", fname, quote_line
+        error_count++
         found = 1
     }
 
     if (!audit_stopped && hd_head <= hd_tail) {
         printf "%s:%d: [UNTERMINATED heredoc]\n", fname, NR
+        error_count++
         found = 1
     }
 
@@ -457,6 +460,12 @@ END {
             printf "%s: [WARNING: %d unsupported diagnostics suppressed; audit incomplete]\n",
                 fname, unsupported_count
         }
+    }
+    if ("LINT_SH_STATS_FILE" in ENVIRON) {
+        stats_path = ENVIRON["LINT_SH_STATS_FILE"]
+        printf "%.0f %.0f\n", error_count, unsupported_count > stats_path
+        if (close(stats_path) != 0)
+            exit 2
     }
     exit found
 }
