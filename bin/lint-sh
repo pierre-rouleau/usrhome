@@ -5,7 +5,7 @@
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 15:18:57 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-18 20:50:25 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -401,9 +401,29 @@ elif [ -n "$target_dir" ]; then
     trap 'rm -f -- "$file_list"' 0
     trap 'exit 1' HUP INT TERM
 
-    if ! find "$target_dir" -type f ! -name '.DS_Store' ! -path '*/.git/*' > "$file_list"; then
+    # Store a list of files to process into a temporary file
+    printf "# Identifying files to audit...\n"
+    if ! find "$target_dir" -type f ! -name '.DS_Store' ! -path '*/.git/*' \
+      -exec sh -c '
+        LC_ALL=C file "$@" | LC_ALL=C awk '\''
+          {
+            # Strip everything up to the first ": " (file output format: "path: description")
+            idx = index($0, ": ")
+            if (idx > 0) {
+              path = substr($0, 1, idx - 1)
+              desc = tolower(substr($0, idx + 2))
+              if (index(desc, "text") > 0) {
+                print path
+              }
+            }
+          }
+        '\''
+      ' sh {} + > "$file_list"; then
         lint_error_found=2
     fi
+    # Then process the files.
+    printf "# Auditing files...\n"
+    printf "# ------------------------------------------\n"
     {
         while IFS= read -r file; do
             # Skip scanning the auditor script itself
@@ -525,6 +545,8 @@ elif [ -n "$target_dir" ]; then
 } < "$file_list"
 fi
 
+printf "# ------------------------------------------\n"
+printf "# %s: processed %s files.  Found %s errors.\n" "$pgm_name" "$(wc -l < "$file_list")" "$lint_error_found"
 exit "$lint_error_found"
 
 # ----------------------------------------------------------------------------
