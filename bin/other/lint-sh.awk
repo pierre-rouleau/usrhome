@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-19 17:06:31 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-19 17:09:39 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,37 +34,37 @@ BEGIN {
 
     # Configure POSIX commands that support "--" (POSIX Guideline 10)
     # Short options with required arguments are listed separately.
-    opts["cd"]="LP"
-    opts["cp"]="fHiLPRpr"
-    opts["mv"]="fi"
-    opts["rm"]="fiRr"
-    opts["mkdir"]="mp"
-    opts["rmdir"]="p"
-    opts["touch"]="acmrt"
-    opts["chmod"]="R"
-    opts["chown"]="HLPR"
-    opts["ln"]="fs"
-    opts["grep"]="EFGcefilnqsvx"
-    opts["cat"]="u"
-    opts["head"]="n"
-    opts["tail"]="fcn"
-    opts["wc"]="clmw"
-    opts["sort"]="bcdfikmnortu"
-    opts["cut"]="bcdfns"
-    opts["diff"]="bcefinru"
-    opts["unset"]="fv"
-    opts["readonly"]="p"
-    opts["export"]="p"
-    opts["alias"]=""
-    opts["set"]="abCefhmnouvx"
-    args["mkdir"]="m"
-    args["touch"]="rt"
+    args["cut"]="bcdf"
     args["grep"]="ef"
     args["head"]="n"
-    args["tail"]="cn"
-    args["sort"]="kot"
-    args["cut"]="bcdf"
+    args["mkdir"]="m"
     args["set"]="o"
+    args["sort"]="kot"
+    args["tail"]="cn"
+    args["touch"]="rt"
+    opts["alias"]=""
+    opts["cat"]="u"
+    opts["cd"]="LP"
+    opts["chmod"]="R"
+    opts["chown"]="HLPR"
+    opts["cp"]="fHiLPRpr"
+    opts["cut"]="bcdfns"
+    opts["diff"]="bcefinru"
+    opts["export"]="p"
+    opts["grep"]="EFGcefilnqsvx"
+    opts["head"]="n"
+    opts["ln"]="fLPs"
+    opts["mkdir"]="mp"
+    opts["mv"]="fi"
+    opts["readonly"]="p"
+    opts["rm"]="fiRr"
+    opts["rmdir"]="p"
+    opts["set"]="abCefhmnouvx"
+    opts["sort"]="bcdfikmnortu"
+    opts["tail"]="fcn"
+    opts["touch"]="acmrt"
+    opts["unset"]="fv"
+    opts["wc"]="clmw"
 }
 
 # Fallback to FILENAME if -v fname="..." was not passed on the command line
