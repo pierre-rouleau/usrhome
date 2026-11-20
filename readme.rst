@@ -1037,17 +1037,18 @@ For example, both commands can print when run from a permitted interactive sessi
           usrhome-test-print
           sh -c 'usrhome-test-print'
 
-In both cases, the TERM and output-stream rules below also apply. The script’s
+In both cases, the ``TERM`` and output-stream rules below also apply. The script’s
 shebang and the interactivity of an intermediate shell do not, by themselves,
 determine whether printing is permitted.
 
 The print functions suppress output during unattended shell startup and
-scheduled jobs. This includes requested results and help that use these
-functions. A non-interactive shell started by an interactive session is not
-necessarily unattended.
+scheduled jobs when ``USRHOME_PRINT_ENABLED`` is unset or is not ``1``.
+A non-interactive shell started by an interactive session can inherit
+``USRHOME_PRINT_ENABLED=1`` and permit printing. The scheduled-job boundary
+below explains how to prevent a scheduled job from inheriting that permission.
 
-If TERM is unset, empty, or dumb, all print functions suppress output. This
-rule also applies when USRHOME_STDERR_PRINT_TO_PIPE=1.
+If ``TERM`` is unset, empty, or dumb, all print functions suppress output. This
+rule also applies when ``USRHOME_STDERR_PRINT_TO_PIPE=1``.
 
 **Output streams**
 
@@ -1093,19 +1094,44 @@ check could report explicit violations within USRHOME scripts.
 
 **Scheduled-job boundary**
 
-An interactive session may pass its print policy to child processes. A
-scheduled job may inherit that policy from the environment that submitted
-it. If it does, the scheduled-job launcher must clear or disable the policy
-before running the job.
+USRHOME uses ``USRHOME_PRINT_ENABLED`` as the session print-policy variable.
+The startup files that initialize it set and export it to ``1`` when the shell
+is interactive and at least one of stdin, stdout, or stderr is a terminal.
+Otherwise, those files leave any inherited value unchanged.
 
-The session-policy variable and its implementation are not yet finalized. An
-inherited variable alone cannot determine whether a user is watching.
+Child processes can inherit ``USRHOME_PRINT_ENABLED=1``. This allows scripts
+started directly or indirectly from the interactive session to print, subject
+to the TERM and output-stream rules. The variable does not determine whether
+a user is watching.
+
+A scheduled-job launcher must unset ``USRHOME_PRINT_ENABLED`` or set it to
+``0`` before starting the job. For example:
+
+.. code:: sh
+
+   unset USRHOME_PRINT_ENABLED
+   exec /path/to/scheduled-script
+
+A later interactive startup with a terminal can set the variable to ``1``
+again.
 
 **Scope**
 
 This policy applies to the USRHOME print functions. It does not suppress
 direct printf calls or output from other commands.
 
+**Printing Strategy**
+
+USRHOME separates requested results and help from diagnostics and progress.
+USRHOME prints requested results on stdout.  It uses stderr for diagnostics
+and progress where they must not contaminate results.  The code respect
+explicit user redirection; it does not suppress all output merely because a
+stream is not a terminal.
+
+This is separate from the ``TERM=dumb`` and unattended-session policy. In
+particular, changing a result to direct printf would bypass the current
+helper’s suppression policy so using the USRHOME print and printf functions is
+recommended.
 
 
 .. ---------------------------------------------------------------------------
@@ -2286,8 +2312,9 @@ Internal and setup scripts
 * ``ibin/setfor-bash-common`` and ``ibin/setfor-zsh-common`` define
   shell-specific functions used during configuration.
 * ``ibin/xtra/print-utilities.sh`` defines shared print, warning, and error
-  functions. They suppress output unless ``SHELL_IS_INTERACTIVE`` is
-  ``true`` and ``TERM`` is not ``dumb``.
+  functions. They suppress output unless ``USRHOME_PRINT_ENABLED`` is ``1``
+  and ``TERM`` is set, nonempty, and not ``dumb``. The stderr functions
+  also apply the stderr destination rule described in the print policy.
 * ``ibin/envfor-cc-options`` configures extra options for the augmented
   ``cc`` command. ``ibin/envfor-mk-diffo`` configures ``mk-diffo``.
 * ``ibin/envfor-git-extra`` sets up extra Git completion where supported.
