@@ -4,7 +4,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:58:12 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:05:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -121,10 +121,10 @@ if [ -n "$1" ]; then
             # modify it to fit the user's needs better.
             # later.  Activate the mode only if the user accepts.
             if ! command -v ge > /dev/null 2>&1; then
-                usrhome_printf "ATTENTION! The 'ge' script is not in your PATH!\n"
-                usrhome_printf " USRHOME will use %s/template/bin/ge\n" "$USRHOME_DIR"
-                usrhome_printf " You may want to copy it in a directory in your PATH\n"
-                usrhome_printf " and possibly modify it to better suit you.\n\n"
+                usrhome_printf_warning "The 'ge' script is not in your PATH!\n"
+                usrhome_printf_stderr "\t USRHOME will use %s/template/bin/ge\n" "$USRHOME_DIR"
+                usrhome_printf_stderr "\t You may want to copy it in a directory in your PATH\n"
+                usrhome_printf_stderr "\t and possibly modify it to better suit you.\n\n"
             fi
             USRHOME_MAN_MODE="$1"
             if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then

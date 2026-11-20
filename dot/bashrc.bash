@@ -5,7 +5,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2026-11-20 14:45:17 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:18:22 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -288,8 +288,8 @@ else
         elif [ "$timer_fct" = "date" ]; then
             current_time="$(date +%s%3N)"
         else
-            usrhome_printf "BUG detected in time management in %s\n" "$USRHOME_DIR/dot/bashrc.bash"
-            usrhome_printf " Please report it in USRHOME Github project.\n"
+            usrhome_printf_error "BUG detected in time management in %s\n" "$USRHOME_DIR/dot/bashrc.bash"
+            usrhome_printf_stderr "\t Please report it in USRHOME Github project.\n"
         fi
     }
 

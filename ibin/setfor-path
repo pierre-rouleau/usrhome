@@ -4,7 +4,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 13:59:33 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:03:35 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -159,7 +159,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
                 usrhome_printf_warning "SECURITY ISSUE DETECTED By USRHOME:\n%s\n" \
                                "   - Compromised version ${xz_ver} of xz installed!"
             fi
-            usrhome_printf " - in: %s\n    See: https://repology.org/project/xz/cves\n" "${xz_path}"
+            usrhome_printf_stderr " - in: %s\n    See: https://repology.org/project/xz/cves\n" "${xz_path}"
         }
 
         usrhome_security_check()
@@ -171,17 +171,17 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             case $xz_ver in
                 '5.6.0' | '5.6.1' )
                     usrhome_xz_vulnerability
-                    usrhome_printf "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor_incident\n\n"
+                    usrhome_printf_stderr "     - https://en.wikipedia.org/wiki/XZ_Utils#Backdoor_incident\n\n"
                     case "$(uname)" in
                         'Darwin')
-                            usrhome_printf "Run: 'brew update; brew upgrade' AS SOON AS POSSIBLE to downgrade xz!\n\n"
+                            usrhome_printf_stderr "Run: 'brew update; brew upgrade' AS SOON AS POSSIBLE to downgrade xz!\n\n"
                             ;;
                     esac
                     ;;
 
                 '5.2.5' )
                     usrhome_xz_vulnerability "disputed"
-                    usrhome_printf "     - https://nvd.nist.gov/vuln/detail/CVE-2020-22916\n"
+                    usrhome_printf_stderr "     - https://nvd.nist.gov/vuln/detail/CVE-2020-22916\n"
                     ;;
 
             esac
