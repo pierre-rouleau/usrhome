@@ -1,11 +1,10 @@
-
 #!/bin/sh
 # SH FILE: lint-sh
 #
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-19 15:41:39 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 09:39:13 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -718,7 +717,7 @@ fi
 
 printf "# ------------------------------------------\n"
 printf '# %s: audited %s of %s candidate files.\n' "$pgm_name" "$files_audited" "$files_to_audit"
-printf '# Internal diagnostics: %s.\n' "$internal_diagnostics"
+printf '# Internal diagnostics  : %s.\n' "$internal_diagnostics"
 if [ "$with_shellcheck" = "1" ]; then
     printf '# ShellCheck diagnostics: %s.\n' "$shellcheck_diagnostics"
 fi
@@ -729,5 +728,5 @@ exit "$lint_error_found"
 
 # ----------------------------------------------------------------------------
 # Local Variables:
-# sh-shell: zsh
+# sh-shell: sh
 # End:
