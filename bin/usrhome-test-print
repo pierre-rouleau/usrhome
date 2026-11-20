@@ -1,0 +1,40 @@
+#!/bin/sh
+# SH FILE: usrhome-test-print
+#
+# Purpose   : Test USRHOME printing.
+# Created   : Friday, November 20 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-20 13:16:55 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#  A test utility to check if USRHOME printing works as expected.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
+printf "Testing usrhome_printf...\n"
+usrhome_printf_warning "by usrhome_printf_warning\n"
+usrhome_printf_error   "by usrhome_printf_error\n"
+#
+usrhome_print_warning "by usrhome_print_warning"
+usrhome_print_error   "by usrhome_print_error"
+printf -- "-----\n"
+
+# ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
