@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 10:56:31 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 14:12:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -38,6 +38,17 @@ case "$-" in
         ;;
     *)
         SHELL_IS_INTERACTIVE=false
+        ;;
+esac
+
+# Enable printing for a visible interactive session.
+# Non-interactive descendants retain any inherited policy.
+case $- in
+    *i*)
+        if [ -t 0 ] || [ -t 1 ] || [ -t 2 ]; then
+            USRHOME_PRINT_ENABLED=1
+            export USRHOME_PRINT_ENABLED
+        fi
         ;;
 esac
 
