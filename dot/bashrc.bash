@@ -5,7 +5,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2026-11-18 12:30:23 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 14:45:17 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -47,6 +47,16 @@ if [ "$TERM" = "dumb" ] && [ -z "$INSIDE_EMACS" ] ; then
     return
 fi
 
+# Enable printing for a visible interactive session.
+# Non-interactive descendants retain any inherited policy.
+case $- in
+    *i*)
+        if [ -t 0 ] || [ -t 1 ] || [ -t 2 ]; then
+            USRHOME_PRINT_ENABLED=1
+            export USRHOME_PRINT_ENABLED
+        fi
+        ;;
+esac
 
 
 # Topic: Startup: 1.0 - Source Global Definitions
