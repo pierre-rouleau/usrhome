@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 14:11:16 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:33:50 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -120,13 +120,12 @@ if [ -e "$usrhome_config" ]; then
     # shellcheck disable=SC1090
     . "$usrhome_config"
 else
-    usrhome_printf "\
-***USRHOME ERROR!!*********************************************
-Cannot find the user's configuration file!
- Expected file: %s
- Please write it, use the template example as basis.
- The template is: %s
-***************************************************************
+    # shellcheck source=../ibin/xtra/print-utilities.sh
+    . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+    usrhome_printf_error "Cannot find the user's configuration file!
+\t Expected file: %s
+\t Please write it, use the template example as basis.
+\t The template is: %s
 " "$usrhome_config" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
 fi
 unset usrhome_config

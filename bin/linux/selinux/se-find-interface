@@ -4,7 +4,7 @@
 # Purpose   : Find the specified SELinux Policy interface.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com> -- Based on SELinux cookbook tools.
-# Time-stamp: <2026-11-15 15:31:17 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 16:18:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -91,10 +91,10 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     exit 0
 fi
 if [ "$#" -eq 0 ] || [ -z "$1" ]; then
-    printf -- "\
-*** ERROR - Missing REGXP argument.
-            Use --help to print usage.
-"
+    # shellcheck source=../../../ibin/xtra/print-utilities.sh
+    . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+    usrhome_printf_error "se-find-interface: Missing REGXP argument.
+\t Use --help to print usage.\n"
     exit 1
 fi
 

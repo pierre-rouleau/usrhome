@@ -4,7 +4,7 @@
 # Purpose   : Prevent macOS to prompt for upgrading Number, Pages and Keynotes.
 # Created   : Friday, October  2 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 16:49:14 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 16:24:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -36,7 +36,7 @@ apps="Numbers Pages Keynote"
 print_usage ()
 {
     printf -- "
-%s -- Fix iWorks suite: stop upgrade nagging
+%s -- Fix iWorks suite: stop it from nagging for upgrade
       on version 14.5 through 14.9, and 15.0.
 
  Usage: %s -h | --help
@@ -137,6 +137,9 @@ fi
 # ----------------------------------------------------------------------------
 # - Proceed
 
+# shellcheck source=../../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 for app in $apps; do
     app_path="/Applications/${app}.app"
     plist_id="com.apple.iWork.${app}"
@@ -183,16 +186,16 @@ for app in $apps; do
                 if [ "$verification" = "1" ]; then
                     printf -- "SUCCESS: Prompts permanently disabled for %s.\n" "$app"
                 else
-                    printf -- "**ERROR: Failed to write setting for %s.\n" "$app"
+                    usrhome_printf_error "macos-fix-iworks: Failed to write setting for %s.\n" "$app"
                     exit_code=2
                 fi
                 ;;
             *)
-                printf -- "   --> This version (%s) does not require the prompt fix.\n" "$version"
+                usrhome_printf_warning "macos-fix-iworks: This version (%s) does not require the prompt fix.\n" "$version"
                 ;;
         esac
     else
-        printf -- "Not Found: %s is not installed in /Applications.\n" "$app"
+        usrhome_printf_error "macos-fix-iworks: not found: %s is not installed in /Applications.\n" "$app"
         exit_code=2
     fi
 done

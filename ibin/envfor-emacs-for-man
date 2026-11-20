@@ -4,7 +4,7 @@
 # Purpose   : Set environment to use Emacs as the man reader.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 15:05:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 16:31:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -142,7 +142,7 @@ if [ -n "$1" ]; then
             # Requesting to use Emacs client/server mechanism.
             # Check if the Emacs daemon is running.  If it is not, start it.
             if ! emacsclient -a false -e 't' > /dev/null 2>&1; then
-                usrhome_printf "ATTENTION: Emacs Daemon was not running, starting it!\n"
+                usrhome_printf_warning "Emacs Daemon was not running, starting it!\n"
                 emacs --daemon
             fi
             USRHOME_MAN_MODE="$1"
@@ -226,7 +226,7 @@ man()
             ;;
 
         -man)
-            usrhome_printf "Using man executable\n"
+            usrhome_printf_stderr "Using man executable.\n"
             ;;
 
         *)
@@ -277,7 +277,7 @@ man()
                             ;;
                     esac
                     if [ "$found" = "nil" ]; then
-                        usrhome_printf "ERROR: No man page found for %s\n" "$topic" >&2
+                        usrhome_printf_error "No man page found for %s\n" "$topic"
                         exit 4
                     fi
                 fi

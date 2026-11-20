@@ -4,7 +4,7 @@
 # Purpose   : Compute and print size of all files in the current directory tree.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 08:30:32 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:51:49 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -80,7 +80,9 @@ if [ "1" -gt "$dir_count" ]; then
     print_size
 else
     if ! du -sh "${dirpath}"; then
-        printf "du -sh failed.  Computing it the long way...\n"
+        # shellcheck source=../ibin/xtra/print-utilities.sh
+        . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+        usrhome_printf_warning "du -sh failed.  Computing it the long way...\n"
         print_size
     fi
 fi

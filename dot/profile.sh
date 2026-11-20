@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 14:12:09 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:37:39 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -99,14 +99,13 @@ if [ -e "$usrhome_config" ]; then
     . "$usrhome_config"
 else
     if [ "$SHELL_IS_INTERACTIVE" = "true" ]; then
-        printf "***USRHOME ERROR!!*********************************************\n"
-        printf "Cannot find the user's configuration file!\n"
-        printf " Expected file: %s\n" "$usrhome_config"
-        printf " Please write it, use the template example as basis.\n"
-        printf " The template is: %s\n" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
-        printf "***************************************************************\n"
+        # shellcheck source=../ibin/xtra/print-utilities.sh
+        . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+        usrhome_printf_error "Cannot find the user's configuration file!
+\t Expected file: %s
+\t Please write it, use the template example as basis.
+\t The template is: %s\n" "$usrhome_config" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
     fi
-
 fi
 unset usrhome_config
 

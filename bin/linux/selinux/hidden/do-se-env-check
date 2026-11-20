@@ -4,7 +4,7 @@
 # Purpose   : Validate the SELinux Policy Development Environment.
 # Created   : Monday, October 21 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 22:27:05 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 16:12:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,12 +24,13 @@
 # ----
 #
 #
+# shellcheck source=../../../../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 # Validate Environment
 if [ -z "$USRHOME_SELINUX_POLICY_LOCATION" ]; then
-    printf -- "\
-*** ERROR - SELinux Policy Management Environment is invalid:
-            USRHOME_SELINUX_POLICY_LOCATION is not set.
-"
+    usrhome_printf_error "SELinux Policy Management Environment is invalid:
+\t USRHOME_SELINUX_POLICY_LOCATION environment variable is not set.\n"
     exit 1
 fi
 
@@ -42,12 +43,10 @@ elif [ -d "${USRHOME_SELINUX_POLICY_LOCATION}/include" ]; then
     usrhome_selinux_policy_module_dirpath="${USRHOME_SELINUX_POLICY_LOCATION}/include"
 fi
 if [ "$usrhome_selinux_policy_module_dirpath" = "" ]; then
-    printf -- "\
-*** ERROR - SELinux Policy Management Environment is invalid:
-            USRHOME_SELINUX_POLICY_LOCATION does not identify a
-            valid SELinux Reference Policy directory tree.
-          - USRHOME_SELINUX_POLICY_LOCATION = %s
-" "$USRHOME_SELINUX_POLICY_LOCATION"
+    usrhome_printf_error "SELinux Policy Management Environment is invalid:
+\t - USRHOME_SELINUX_POLICY_LOCATION does not identify a
+\t   valid SELinux Reference Policy directory tree.
+\t   - USRHOME_SELINUX_POLICY_LOCATION = %s\n" "$USRHOME_SELINUX_POLICY_LOCATION"
     exit 1
 fi
 

@@ -4,7 +4,7 @@
 # Purpose   : Tail the /var/audit/log with some reformatting.
 # Created   : Wednesday, October 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-05 14:26:37 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 16:00:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -59,9 +59,10 @@ if [ -n "$1" ]; then
             ;;
 
         *)
-            printf -- "\
-*** ERROR: tail-audit4avc: invalid option: %s
-           Use: 'tail-audit4avc -h' to print usage.\n" "$1"
+            # shellcheck source=../../ibin/xtra/print-utilities.sh
+            . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+            usrhome_printf_error "tail-audit4avc: invalid option: %s
+\t Use: 'tail-audit4avc -h' to print usage.\n" "$1"
             exit 1
             ;;
     esac
