@@ -4,7 +4,7 @@
 # Purpose   : Compatibility wrapper for CBR as it was implemented in the past.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 16:59:57 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 17:13:04 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,9 +26,7 @@
         case "$-" in
             *i*)
                 if [ "${TERM-}" != dumb ]; then
-                    # shellcheck source=xtra/print-utilities.sh
-                    . "$USRHOME_DIR/ibin/xtra/print-utilities.sh" || exit 1
-                    usrhome_print_error 'do-cbr: USRHOME_DIR or a required file is missing.'
+                    printf "*** ERROR: do-cbr: USRHOME_DIR or a required file is missing.\n" >&2
                 fi
                 ;;
         esac
