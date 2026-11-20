@@ -4,7 +4,7 @@
 # Purpose   : Check a SELinux Type Enforcement file, generate a .mod and .pp file.
 # Created   : Monday, October 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 16:15:37 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 16:57:06 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -74,7 +74,7 @@ done
 if [ ! -f "$1" ]; then
     # shellcheck source=../../../ibin/xtra/print-utilities.sh
     . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
-    usrhome_print_error "se-build-te: File does not exist: %s\n" "$1"
+    usrhome_printf_error "se-build-te: File does not exist: %s\n" "$1"
     exit 2
 fi
 

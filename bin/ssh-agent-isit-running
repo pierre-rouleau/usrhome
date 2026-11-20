@@ -4,7 +4,7 @@
 # Purpose   : Check if the ssh-agent is running.
 # Created   : Monday, July  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 15:56:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 17:04:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -53,10 +53,12 @@ check_ssh()
 }
 
 
+# Check SSH, always print the result on STDOUT: that's the purpose of this command.
+
 check_ssh
 case "$lines" in
     0)
-        usrhome_printf_error "The ssh-agent does not seem to be running!\n"
+        printf "The ssh-agent does not seem to be running!\n"
         exit 1
         ;;
 
@@ -67,8 +69,8 @@ case "$lines" in
         ;;
 
     *)
-        usrhome_printf_warning "There seems to be several ssh-agent running!\n"
-        usrhome_printf_stderr  "You may want to stop all but one of them.\n"
+        printf "There seems to be several ssh-agent running!\n"
+        printf "You may want to stop all but one of them.\n"
         # shellcheck disable=SC2009
         ps aux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep ssh-agent
         exit 2
