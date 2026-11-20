@@ -4,7 +4,7 @@
 # Purpose   : Compatibility wrapper for CBR as it was implemented in the past.
 # Created   : Sunday, April 14 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:14:06 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 16:46:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,6 +17,9 @@
 # USRHOME_DIR must identify the USRHOME installation.
 
 (
+    # shellcheck source=xtra/print-utilities.sh
+    . "$USRHOME_DIR/ibin/xtra/print-utilities.sh" || exit 1
+
     # Keep the loaded functions, aliases, and temporary variables out of
     # the calling shell.
     if [ -z "${USRHOME_DIR-}" ] ||
@@ -26,8 +29,7 @@
         case "$-" in
             *i*)
                 if [ "${TERM-}" != dumb ]; then
-                    printf '%s\n' \
-                        'do-cbr: USRHOME_DIR or a required file is missing.' >&2
+                    usrhome_print_error 'do-cbr: USRHOME_DIR or a required file is missing.'
                 fi
                 ;;
         esac
@@ -36,9 +38,6 @@
 
     # The print functions access TERM directly.
     TERM=${TERM-}
-
-    # shellcheck source=xtra/print-utilities.sh
-    . "$USRHOME_DIR/ibin/xtra/print-utilities.sh" || exit 1
 
     # Do not print the alias-installation message from the wrapper.
     # shellcheck source=./envfor-cbr
