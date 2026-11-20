@@ -115,7 +115,7 @@ titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 Shell support and portability
 -----------------------------
 
-USRHOME provides ``lint-sh`` to audit a single shell file or recursively
+USRHOME provides `lint-sh`_ to audit a single shell file or recursively
 scan a directory tree. It recognizes shell files by their extension,
 shebang, or sourced-script marker. These include executable scripts and
 sourced shell files.
@@ -2040,6 +2040,14 @@ The following scripts supplement the commands described above. Scripts in
 ``bin`` are available when the USRHOME command directory is on ``PATH``.
 Platform-specific directories and internal helpers are identified separately.
 
+Development Tools
+~~~~~~~~~~~~~~~~~
+
+* `lint-sh`_ analyzes one shell script file or all shell script files
+  in a directory tree, executing ShellCheck on them and performing other
+  validation checks.  All USRHOME executable and source shell files are
+  analyzed by this tool.
+
 Files and searches
 ~~~~~~~~~~~~~~~~~~
 
@@ -2490,7 +2498,69 @@ setfor-\ *SHELL-SETUP*   Sourced file that is part of the shell setup logic that
                          - `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 ======================== =======================================================================
 
+File Format Convention
+----------------------
 
+Most of the shell executable and sourced files are using the sh shell with
+POSIX compliant code.  Some files use the Bash shell explicitly and some use
+the Zsh shell explicitly.
+
+ShellCheck supports sh and Bash, but does not support Zsh.
+For the files that are using Zsh explicitly the file set the Emacs mode to
+``sh`` and the ```sh-shell`` to zsh but tells ShellCheck to parse the file as
+a sh file.  When a Zsh expression is not recognized by ShellCheck causing it
+to emit a diagnostic the diagnostic is silenced via a ShellCheck control
+comment.  Then most of the file uses POSIX-compliant sh code except for the
+code that requires Zsh features.
+
+
+Executable Shell Script Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- The file has the executable bit set.
+- It starts with a shebang line and a line showing the file name like the
+  following:
+
+  .. code:: sh
+
+            #!/bin/sh
+            # SH FILE: lint-sh
+
+- The end of the file holds another Emacs file-local variable control, which
+  sets the value of the ``sh-shell`` variable to the shell language used by
+  the file.  It looks like the following:
+
+  .. code:: sh
+
+            # ----------------------------------------------------------------------------
+            #  Local Variables:
+            #  sh-shell: sh
+            #  End:
+
+
+Sourced Shell Files Format
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- The sourced shell files do not have the file executable bit set.
+- The file does not start with a shebang line.
+- The first line is something like: ``# Sourced script: do-cbr  -*- mode: sh; -*-``
+
+  - It's a comment that starts with ``Sourced script:``, the file name and an
+    Emacs mode line that sets the Emacs major mode to ``sh``.
+
+- The second line is a ShellCheck specific control comment, something like
+  ``# shellcheck shell=sh``.  That tells an external ShellCheck process, like
+  one launched by the `lint-sh`_ command, which shell language is being used.
+- The end of the file holds another Emacs file-local variable control, which
+  sets the value of the ``sh-shell`` variable to the shell language used by
+  the file.  It looks like the following:
+
+  .. code:: sh
+
+            # ----------------------------------------------------------------------------
+            #  Local Variables:
+            #  sh-shell: sh
+            #  End:
 
 The Z Shell Startup, Dot Files and User Configuration
 -----------------------------------------------------
@@ -3087,6 +3157,7 @@ Thanks!
 .. _zlogout.zsh:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogout.zsh
 .. _diff:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/diff
 .. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
+.. _lint-sh:                                           https://github.com/pierre-rouleau/usrhome/blob/main/bin/lint-sh
 .. _use-diff command:                                  `Miscellaneous Commands`_
 .. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
 .. _example template file for do-user.sh:              https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user.sh#L72
