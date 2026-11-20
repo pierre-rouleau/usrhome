@@ -1015,6 +1015,102 @@ More information about these in the section `Cd to Conceptual Directories`_.
 USRHOME Commands and Scripts
 ============================
 
+USRHOME print policy
+--------------------
+
+he USRHOME print functions provide output for users in interactive
+sessions. They suppress output during unattended execution and in Emacs Tramp
+sessions.
+
+
+**When the functions print:**
+
+The print functions can produce output:
+
+- During interactive shell startup that the user sees.
+- In scripts sourced or executed directly or indirectly from an interactive session.
+
+For example, both commands can print when run from a permitted interactive session:
+
+.. code:: sh
+
+          usrhome-test-print
+          sh -c 'usrhome-test-print'
+
+In both cases, the TERM and output-stream rules below also apply. The script’s
+shebang and the interactivity of an intermediate shell do not, by themselves,
+determine whether printing is permitted.
+
+The print functions suppress output during unattended shell startup and
+scheduled jobs. This includes requested results and help that use these
+functions. A non-interactive shell started by an interactive session is not
+necessarily unattended.
+
+If TERM is unset, empty, or dumb, all print functions suppress output. This
+rule also applies when USRHOME_STDERR_PRINT_TO_PIPE=1.
+
+**Output streams**
+
+USRHOME scripts send warning and error information, including related details,
+to standard error (stderr). They send requested results and help to standard
+output (stdout).
+
+When printing is permitted, usrhome_printf can write to stdout even when
+stdout is redirected to a pipe or file.
+
+The stderr functions are:
+
+- usrhome_printf_stderr
+- usrhome_printf_warning
+- usrhome_printf_error
+- usrhome_print_warning
+- usrhome_print_error
+
+By default, these functions print only when stderr is connected to a
+terminal. A normal stdout pipe does not redirect stderr:
+
+.. code:: sh
+
+   command | consumer
+
+If the caller redirects stderr, setting ``USRHOME_STDERR_PRINT_TO_PIPE=1`` permits
+the stderr functions to write to that destination:
+
+.. code:: sh
+
+          USRHOME_STDERR_PRINT_TO_PIPE=1 usrhome-test 2>errors.log
+          USRHOME_STDERR_PRINT_TO_PIPE=1 usrhome-test 2>&1 | consumer
+
+The override applies to non-terminal stderr destinations, including files as
+well as pipes. It does not override the TERM or unattended-execution rules.
+
+When redirected the USRHOME printing functions never print color escape
+sequences, it makes processing of the printed easier.
+
+USRHOME scripts must not explicitly redirect individual calls to the stderr
+print functions. A caller may redirect a script’s stderr. A future lint-sh
+check could report explicit violations within USRHOME scripts.
+
+**Scheduled-job boundary**
+
+An interactive session may pass its print policy to child processes. A
+scheduled job may inherit that policy from the environment that submitted
+it. If it does, the scheduled-job launcher must clear or disable the policy
+before running the job.
+
+The session-policy variable and its implementation are not yet finalized. An
+inherited variable alone cannot determine whether a user is watching.
+
+**Scope**
+
+This policy applies to the USRHOME print functions. It does not suppress
+direct printf calls or output from other commands.
+
+
+
+.. ---------------------------------------------------------------------------
+
+
 Shell Behavior Control
 ----------------------
 
@@ -2044,8 +2140,9 @@ Development Tools
 ~~~~~~~~~~~~~~~~~
 
 * `lint-sh`_ analyzes one shell script file or all shell script files
-  in a directory tree, executing ShellCheck on them and performing other
-  validation checks.  All USRHOME executable and source shell files are
+  in a directory tree, performing validation checks that ShellCheck does not do.
+  With the ``-s`` or ``-S`` option it also executes ShellCheck.
+  All USRHOME executable and source shell files are
   analyzed by this tool.
 
 Files and searches
