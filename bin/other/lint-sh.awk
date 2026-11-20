@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-19 21:24:47 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 09:12:49 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -48,7 +48,7 @@ BEGIN {
     opts["cd"]="LP"
     opts["chmod"]="R"
     opts["chown"]="HLPRh"
-    opts["cp"]="fHiLPRpr"
+    opts["cp"]="fHiLPRp"
     opts["cut"]="bcdfns"
     opts["diff"]="CUbcefinru"
     opts["export"]="p"
