@@ -4,7 +4,7 @@
 # Purpose   : Print age of shell.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:33:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:16:22 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -26,19 +26,21 @@
 # Code
 # ----
 #
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 #
 if [ -z "$USRHOME_SHELL_OPEN_DATE" ]; then
-    echo "***ERROR****"
-    echo "To use this command, you shell startup script must first"
-    echo "initialize USRHOME_SHELL_OPEN_DATE and USRHOME_SHELL_OPEN_TIME environment variables."
-    echo "Add the following lines to that file:"
-    echo "# "
-    echo "USRHOME_SHELL_OPEN_DATE=\$(date)"
-    echo "USRHOME_SHELL_OPEN_TIME=\$(date +%s)"
-    echo "export USRHOME_SHELL_OPEN_DATE"
-    echo "export USRHOME_SHELL_OPEN_TIME"
-    echo "# "
-    exit 1
+    usrhome_printf_error "To use this command, you shell startup script must first
+\t initialize USRHOME_SHELL_OPEN_DATE and USRHOME_SHELL_OPEN_TIME environment variables.
+\t Add the following lines to that file:
+\t  #
+\t  USRHOME_SHELL_OPEN_DATE=\$(date)
+\t  USRHOME_SHELL_OPEN_TIME=\$(date +%s)
+\t  export USRHOME_SHELL_OPEN_DATE
+\t  export USRHOME_SHELL_OPEN_TIME
+\t  #
+\t  exit 1\n"
 fi
 
 
@@ -55,9 +57,7 @@ case "$(uname)" in
            fi
         fi
         if [ -z "$end_time" ]; then
-            printf -- "
-*** shell-age ERROR: on macOS, gdate must be available; it is not.
-"
+            usrhome_print_error 'shell-age ERROR: on macOS, gdate must be available; it is not.'
             exit 2
         fi
         ;;

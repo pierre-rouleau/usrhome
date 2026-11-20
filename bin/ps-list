@@ -4,7 +4,7 @@
 # Purpose   : List running Processes.
 # Created   : Saturday, March  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:32:03 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:53:18 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -99,7 +99,9 @@ if [ "$1" = "-Z" ]; then
         ps_options='-Z'
         shift
     else
-        printf -- "*** Error %s: SELinux is not available!\n" "$pgm_name"
+        # shellcheck source=../ibin/xtra/print-utilities.sh
+        . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+        usrhome_printf_error "%s: SELinux is not available!\n" "$pgm_name"
         exit 1
     fi
 fi

@@ -1,11 +1,10 @@
-
 #!/bin/sh
 # SH FILE: lint-sh
 #
 # Purpose   : Lint shells scripts - check for issues with cd.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-19 15:41:39 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 10:09:53 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -348,6 +347,7 @@ audit_file()
                         printf '%s: SHELLCHECK %s diagnostics\n' "$file" "$file_shellcheck_count"
                     else
                         # Remove the user's CWD prefix from diagnostic paths.
+                        # shellcheck disable=SC2016 # Using single quote for AWK code is simpler.
                         printf '%s\n' "$shellcheck_output" | "$awk_pgm" -v prefix="$user_cwd/" '
                                          index($0, prefix) == 1 {
                                              print substr($0, length(prefix) + 1)
@@ -430,10 +430,6 @@ audit_file()
 
 # --
 # Proceed with identified, valid targets
-
-# Resolve the physical path of this script so it skips itself during directory scans
-self_dir=$(CDPATH='' cd -P -- "$(dirname -- "$0")" 2>/dev/null && pwd -P)
-self_path="$self_dir/$(basename -- "$0")"
 
 lint_error_found=0
 
@@ -587,11 +583,6 @@ elif [ -n "$target_dir" ]; then
     printf "# ------------------------------------------\n"
     {
         while IFS= read -r file; do
-            # Skip scanning the auditor script itself
-            file_dir=$(CDPATH='' cd -P -- "$(dirname -- "$file")" 2>/dev/null && pwd -P)
-            if [ "$file_dir/$(basename -- "$file")" = "$self_path" ]; then
-                continue
-            fi
             # Only inspect files with a shell extension or a shell shebang
             case "$file" in
                 *.sh|*.bash|*.zsh) is_shell=1 ;;
@@ -623,6 +614,7 @@ elif [ -n "$target_dir" ]; then
 
                     # Prefix the result with T for text or N for a NUL-byte offset.
                     # Convert through od so no NUL reaches command substitution.
+                    # shellcheck disable=SC2016 # use single quote to write AWK code
                     first_line_result=$(
                         head -n 1 "$file" 2>/dev/null |
                             LC_ALL=C od -A n -t u1 -v |
@@ -718,7 +710,7 @@ fi
 
 printf "# ------------------------------------------\n"
 printf '# %s: audited %s of %s candidate files.\n' "$pgm_name" "$files_audited" "$files_to_audit"
-printf '# Internal diagnostics: %s.\n' "$internal_diagnostics"
+printf '# Internal diagnostics  : %s.\n' "$internal_diagnostics"
 if [ "$with_shellcheck" = "1" ]; then
     printf '# ShellCheck diagnostics: %s.\n' "$shellcheck_diagnostics"
 fi
@@ -729,5 +721,5 @@ exit "$lint_error_found"
 
 # ----------------------------------------------------------------------------
 # Local Variables:
-# sh-shell: zsh
+# sh-shell: sh
 # End:

@@ -4,7 +4,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 08:31:17 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:07:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -895,11 +895,11 @@ __git__cln()
             git checkout "$2"
             printf -- "*** Success!\n"
         else
-            printf -- "*** ERROR: git clone failed!\n"
+            usrhome_printf_error "git clone failed!\n"
             return 1
         fi
     else
-        printf -- "*** ERROR: branch '%s' does not exist in Git repo '%s'\n" "$2" "$1"
+        usrhome_printf_error "branch '%s' does not exist in Git repo '%s'\n" "$2" "$1"
         return 2
     fi
 }

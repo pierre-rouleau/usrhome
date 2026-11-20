@@ -4,7 +4,7 @@
 # Purpose   : Extend the INFOPATH to all directories that contain some.
 # Created   : Friday, May 31 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:32:33 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:04:09 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -182,7 +182,7 @@ append_to_infopath()
             fi
             unset file_count
         else
-            usrhome_printf "Skipping invalid dname: %s\n" "${dname}"
+            usrhome_printf_stderr "Skipping invalid dname: %s\n" "${dname}"
         fi
 
     done

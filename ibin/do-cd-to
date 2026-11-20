@@ -4,7 +4,7 @@
 # Purpose   : Search for file in directory tree, if founcd ccd to its directory.
 # Created   : Thursday, March 27 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 12:52:18 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 16:29:24 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -388,7 +388,7 @@ file_count=$(printf "%s" "$the_filepath" | grep -c . )
 
 # Handle case of more than 1 location found.
 if [ "${file_count}" -gt  1 ]; then
-    usrhome_printf_warning 'cd-to: found %s %s in directory tree for: %s\n'  "${file_count}" "${search_for}" "$1"
+    printf -- 'cd-to: found %s %s in directory tree for: %s\n'  "${file_count}" "${search_for}" "$1"
     printf -- 'The %s are:\n' "${search_for}"
     printf -- '%s\n' "$the_filepath" | nl
     if [ -n "$EDITOR" ] && [ -z "$INSIDE_EMACS" ]; then

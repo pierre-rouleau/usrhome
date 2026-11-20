@@ -4,7 +4,7 @@
 # Purpose   : Bash ~/.bash_profile Configuration File - Sourced in interactive login shell.
 # Created   : Sunday, April  7 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 15:27:54 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:33:50 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -62,8 +62,10 @@
 #
 # 0 - Check if shell is interactive
 # ---------------------------------
-# Note: it is used inside usrhome_printf()
-
+# Clear any inherited export attribute before setting the shell-local value.
+unset SHELL_IS_INTERACTIVE
+# Used by other sourced scripts.
+# shellcheck disable=SC2034 # SHELL_IS_INTERACTIVE is used.
 case "$-" in
     *i*)
         SHELL_IS_INTERACTIVE=true
@@ -72,7 +74,18 @@ case "$-" in
         SHELL_IS_INTERACTIVE=false
         ;;
 esac
-export SHELL_IS_INTERACTIVE
+
+# Enable printing for a visible interactive session.
+# Non-interactive descendants retain any inherited policy.
+case $- in
+    *i*)
+        if [ -t 0 ] || [ -t 1 ] || [ -t 2 ]; then
+            USRHOME_PRINT_ENABLED=1
+            export USRHOME_PRINT_ENABLED
+        fi
+        ;;
+esac
+
 
 #
 # 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
@@ -107,13 +120,12 @@ if [ -e "$usrhome_config" ]; then
     # shellcheck disable=SC1090
     . "$usrhome_config"
 else
-    usrhome_printf "\
-***USRHOME ERROR!!*********************************************
-Cannot find the user's configuration file!
- Expected file: %s
- Please write it, use the template example as basis.
- The template is: %s
-***************************************************************
+    # shellcheck source=../ibin/xtra/print-utilities.sh
+    . "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+    usrhome_printf_error "Cannot find the user's configuration file!
+\t Expected file: %s
+\t Please write it, use the template example as basis.
+\t The template is: %s
 " "$usrhome_config" "$USRHOME_DIR/template/usrcfg/setfor-all-config.sh"
 fi
 unset usrhome_config

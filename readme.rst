@@ -115,23 +115,26 @@ titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 Shell support and portability
 -----------------------------
 
-USRHOME shell code includes Bash-specific code, Zsh-specific code, and
-POSIX-compliant code. Bash and Zsh are the supported shells. Other shells
-are not yet officially supported.
+USRHOME provides `lint-sh`_ to audit a single shell file or recursively
+scan a directory tree. It recognizes shell files by their extension,
+shebang, or sourced-script marker. These include executable scripts and
+sourced shell files.
 
-USRHOME provides ``lint-sh`` to check executable and sourced shell scripts.
-It checks for risky ``cd`` usage and can also run ShellCheck. Use ``-S``
-to display ShellCheck diagnostics or ``-s`` to display their count.
+For each selected file, ``lint-sh`` performs extra checks for risky ``cd``
+usage and missing ``--`` delimiters on supported POSIX utilities.
 
-The project scans all USRHOME shell scripts. The scan reports no error,
-warning, or info diagnostics.
+If ShellCheck is installed, use ``-S`` to run it on each selected file and
+display its diagnostics in GCC format. Use ``-s`` to display diagnostic
+counts instead.
 
+Directory scans exclude certain paths and filename patterns. The internal
+parser cannot analyze every shell construct.
 A clean scan does not guarantee complete analysis but it can report what is
 not being analyzed. The ``lint-sh`` parser cannot analyze some
 constructs. ShellCheck does not support Zsh syntax, and some Zsh files disable
 its checks.
 
-With shellcheck installed, the following command., issued from the root
+With ShellCheck installed, the following command, issued from the root
 of USRHOME repo, should not report any issue:
 
 .. code:: sh
@@ -1011,6 +1014,128 @@ More information about these in the section `Cd to Conceptual Directories`_.
 
 USRHOME Commands and Scripts
 ============================
+
+USRHOME print policy
+--------------------
+
+he USRHOME print functions provide output for users in interactive
+sessions. They suppress output during unattended execution and in Emacs Tramp
+sessions.
+
+
+**When the functions print:**
+
+The print functions can produce output:
+
+- During interactive shell startup that the user sees.
+- In scripts sourced or executed directly or indirectly from an interactive session.
+
+For example, both commands can print when run from a permitted interactive session:
+
+.. code:: sh
+
+          usrhome-test-print
+          sh -c 'usrhome-test-print'
+
+In both cases, the ``TERM`` and output-stream rules below also apply. The script’s
+shebang and the interactivity of an intermediate shell do not, by themselves,
+determine whether printing is permitted.
+
+The print functions suppress output during unattended shell startup and
+scheduled jobs when ``USRHOME_PRINT_ENABLED`` is unset or is not ``1``.
+A non-interactive shell started by an interactive session can inherit
+``USRHOME_PRINT_ENABLED=1`` and permit printing. The scheduled-job boundary
+below explains how to prevent a scheduled job from inheriting that permission.
+
+If ``TERM`` is unset, empty, or dumb, all print functions suppress output. This
+rule also applies when ``USRHOME_STDERR_PRINT_TO_PIPE=1``.
+
+**Output streams**
+
+USRHOME scripts send warning and error information, including related details,
+to standard error (stderr). They send requested results and help to standard
+output (stdout).
+
+When printing is permitted, usrhome_printf can write to stdout even when
+stdout is redirected to a pipe or file.
+
+The stderr functions are:
+
+- usrhome_printf_stderr
+- usrhome_printf_warning
+- usrhome_printf_error
+- usrhome_print_warning
+- usrhome_print_error
+
+By default, these functions print only when stderr is connected to a
+terminal. A normal stdout pipe does not redirect stderr:
+
+.. code:: sh
+
+   command | consumer
+
+If the caller redirects stderr, setting ``USRHOME_STDERR_PRINT_TO_PIPE=1`` permits
+the stderr functions to write to that destination:
+
+.. code:: sh
+
+          USRHOME_STDERR_PRINT_TO_PIPE=1 usrhome-test 2>errors.log
+          USRHOME_STDERR_PRINT_TO_PIPE=1 usrhome-test 2>&1 | consumer
+
+The override applies to non-terminal stderr destinations, including files as
+well as pipes. It does not override the TERM or unattended-execution rules.
+
+When redirected the USRHOME printing functions never print color escape
+sequences, it makes processing of the printed easier.
+
+USRHOME scripts must not explicitly redirect individual calls to the stderr
+print functions. A caller may redirect a script’s stderr. A future lint-sh
+check could report explicit violations within USRHOME scripts.
+
+**Scheduled-job boundary**
+
+USRHOME uses ``USRHOME_PRINT_ENABLED`` as the session print-policy variable.
+The startup files that initialize it set and export it to ``1`` when the shell
+is interactive and at least one of stdin, stdout, or stderr is a terminal.
+Otherwise, those files leave any inherited value unchanged.
+
+Child processes can inherit ``USRHOME_PRINT_ENABLED=1``. This allows scripts
+started directly or indirectly from the interactive session to print, subject
+to the TERM and output-stream rules. The variable does not determine whether
+a user is watching.
+
+A scheduled-job launcher must unset ``USRHOME_PRINT_ENABLED`` or set it to
+``0`` before starting the job. For example:
+
+.. code:: sh
+
+   unset USRHOME_PRINT_ENABLED
+   exec /path/to/scheduled-script
+
+A later interactive startup with a terminal can set the variable to ``1``
+again.
+
+**Scope**
+
+This policy applies to the USRHOME print functions. It does not suppress
+direct printf calls or output from other commands.
+
+**Printing Strategy**
+
+USRHOME separates requested results and help from diagnostics and progress.
+USRHOME prints requested results on stdout.  It uses stderr for diagnostics
+and progress where they must not contaminate results.  The code respect
+explicit user redirection; it does not suppress all output merely because a
+stream is not a terminal.
+
+This is separate from the ``TERM=dumb`` and unattended-session policy. In
+particular, changing a result to direct printf would bypass the current
+helper’s suppression policy so using the USRHOME print and printf functions is
+recommended.
+
+
+.. ---------------------------------------------------------------------------
+
 
 Shell Behavior Control
 ----------------------
@@ -2037,6 +2162,15 @@ The following scripts supplement the commands described above. Scripts in
 ``bin`` are available when the USRHOME command directory is on ``PATH``.
 Platform-specific directories and internal helpers are identified separately.
 
+Development Tools
+~~~~~~~~~~~~~~~~~
+
+* `lint-sh`_ analyzes one shell script file or all shell script files
+  in a directory tree, performing validation checks that ShellCheck does not do.
+  With the ``-s`` or ``-S`` option it also executes ShellCheck.
+  All USRHOME executable and source shell files are
+  analyzed by this tool.
+
 Files and searches
 ~~~~~~~~~~~~~~~~~~
 
@@ -2178,8 +2312,9 @@ Internal and setup scripts
 * ``ibin/setfor-bash-common`` and ``ibin/setfor-zsh-common`` define
   shell-specific functions used during configuration.
 * ``ibin/xtra/print-utilities.sh`` defines shared print, warning, and error
-  functions. They suppress output unless ``SHELL_IS_INTERACTIVE`` is
-  ``true`` and ``TERM`` is not ``dumb``.
+  functions. They suppress output unless ``USRHOME_PRINT_ENABLED`` is ``1``
+  and ``TERM`` is set, nonempty, and not ``dumb``. The stderr functions
+  also apply the stderr destination rule described in the print policy.
 * ``ibin/envfor-cc-options`` configures extra options for the augmented
   ``cc`` command. ``ibin/envfor-mk-diffo`` configures ``mk-diffo``.
 * ``ibin/envfor-git-extra`` sets up extra Git completion where supported.
@@ -2487,7 +2622,69 @@ setfor-\ *SHELL-SETUP*   Sourced file that is part of the shell setup logic that
                          - `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
 ======================== =======================================================================
 
+File Format Convention
+----------------------
 
+Most of the shell executable and sourced files are using the sh shell with
+POSIX compliant code.  Some files use the Bash shell explicitly and some use
+the Zsh shell explicitly.
+
+ShellCheck supports sh and Bash, but does not support Zsh.
+For the files that are using Zsh explicitly the file set the Emacs mode to
+``sh`` and the ```sh-shell`` to zsh but tells ShellCheck to parse the file as
+a sh file.  When a Zsh expression is not recognized by ShellCheck causing it
+to emit a diagnostic the diagnostic is silenced via a ShellCheck control
+comment.  Then most of the file uses POSIX-compliant sh code except for the
+code that requires Zsh features.
+
+
+Executable Shell Script Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- The file has the executable bit set.
+- It starts with a shebang line and a line showing the file name like the
+  following:
+
+  .. code:: sh
+
+            #!/bin/sh
+            # SH FILE: lint-sh
+
+- The end of the file holds another Emacs file-local variable control, which
+  sets the value of the ``sh-shell`` variable to the shell language used by
+  the file.  It looks like the following:
+
+  .. code:: sh
+
+            # ----------------------------------------------------------------------------
+            #  Local Variables:
+            #  sh-shell: sh
+            #  End:
+
+
+Sourced Shell Files Format
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- The sourced shell files do not have the file executable bit set.
+- The file does not start with a shebang line.
+- The first line is something like: ``# Sourced script: do-cbr  -*- mode: sh; -*-``
+
+  - It's a comment that starts with ``Sourced script:``, the file name and an
+    Emacs mode line that sets the Emacs major mode to ``sh``.
+
+- The second line is a ShellCheck specific control comment, something like
+  ``# shellcheck shell=sh``.  That tells an external ShellCheck process, like
+  one launched by the `lint-sh`_ command, which shell language is being used.
+- The end of the file holds another Emacs file-local variable control, which
+  sets the value of the ``sh-shell`` variable to the shell language used by
+  the file.  It looks like the following:
+
+  .. code:: sh
+
+            # ----------------------------------------------------------------------------
+            #  Local Variables:
+            #  sh-shell: sh
+            #  End:
 
 The Z Shell Startup, Dot Files and User Configuration
 -----------------------------------------------------
@@ -3084,6 +3281,7 @@ Thanks!
 .. _zlogout.zsh:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogout.zsh
 .. _diff:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/diff
 .. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
+.. _lint-sh:                                           https://github.com/pierre-rouleau/usrhome/blob/main/bin/lint-sh
 .. _use-diff command:                                  `Miscellaneous Commands`_
 .. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
 .. _example template file for do-user.sh:              https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user.sh#L72

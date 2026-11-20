@@ -3,7 +3,7 @@
 # Purpose   : Copy directory from the specified remote computer to the current local directory.
 # Created   : Thursday, July 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 12:40:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:58:31 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -65,8 +65,8 @@ envfor_cmd_arg1=from-remote-dir
 
 # Validate command line arguments
 if [ "$#" -eq 0 ]; then
-    printf -- "*** %s ERROR: missing remote directory name.\n" "${pgm_name}"
-    printf -- "    Use the -h or --help option to print usage.\n"
+    usrhome_printf_error "%s: missing remote directory name.\n" "${pgm_name}"
+    usrhome_printf_stderr "\t Use the -h or --help option to print usage.\n"
     exit 1
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     printf -- "\

@@ -4,7 +4,7 @@
 # Purpose   : Check if the ssh-agent is running.
 # Created   : Monday, July  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-09-18 16:31:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 17:04:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -27,6 +27,8 @@
 # ----
 #
 #
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
 
 lines=
 check_ssh()
@@ -43,18 +45,20 @@ check_ssh()
             lines="$(ps -ux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep -c ssh-agent | xargs)"
             ;;
         *)
-            printf -- "*** ERROR: ssh-agent-isit-running does not support %s\n" "$(uname)"
-            printf -- "           Please report a bug in the project\n"
+            usrhome_printf_error "ssh-agent-isit-running does not support %s\n" "$(uname)"
+            usrhome_printf_stderr "\t Please report a bug in the project\n"
             exit 3
             ;;
     esac
 }
 
 
+# Check SSH, always print the result on STDOUT: that's the purpose of this command.
+
 check_ssh
 case "$lines" in
     0)
-        printf -- "The ssh-agent does not seem to be running!\n"
+        printf "The ssh-agent does not seem to be running!\n"
         exit 1
         ;;
 
@@ -65,8 +69,8 @@ case "$lines" in
         ;;
 
     *)
-        printf -- "There seems to be several ssh-agent running!\n"
-        printf -- "You may want to stop all but one of them.\n"
+        printf "There seems to be several ssh-agent running!\n"
+        printf "You may want to stop all but one of them.\n"
         # shellcheck disable=SC2009
         ps aux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep ssh-agent
         exit 2

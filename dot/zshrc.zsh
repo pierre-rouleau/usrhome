@@ -5,7 +5,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024-2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2026-11-17 14:58:07 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:46:37 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -43,9 +43,9 @@ fi
 # Check Environment Consistency and Support Tracing
 # -------------------------------------------------
 #
-if [[ -z "$USRHOME_DIR" ]]; then
-    echo "USRHOME ERROR: environment variables not available!"
-    echo "               Check your usrcfg  files!"
+if [ -z "$USRHOME_DIR" ]; then
+    printf "USRHOME_DIR environment variables not available!\n" >&2
+    printf "\t Check your usrcfg files!\n"                      >&2
 fi
 
 usrhome_trace_in "~/.zshrc    --> \$USRHOME_DIR/dot/zshrc.zsh"

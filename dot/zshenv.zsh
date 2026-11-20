@@ -5,7 +5,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024-2026 by Pierre Rouleau
 # Created   : Monday, March 18 2024.
-# Time-stamp: <2026-11-18 11:48:19 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 14:13:42 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -38,6 +38,20 @@
 # Code
 # ----
 #
+# 0 - Set printing capability
+# ---------------------------
+
+# Enable printing for a visible interactive session.
+# Non-interactive descendants retain any inherited policy.
+case $- in
+    *i*)
+        if [ -t 0 ] || [ -t 1 ] || [ -t 2 ]; then
+            USRHOME_PRINT_ENABLED=1
+            export USRHOME_PRINT_ENABLED
+        fi
+        ;;
+esac
+
 # 1 - Set USRHOME_DIR and USRHOME_DIR_USRCFG
 # ------------------------------------------
 #

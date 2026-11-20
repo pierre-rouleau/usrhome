@@ -4,7 +4,7 @@
 # Purpose   : Print the current working directory of specified process ID.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 15:06:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 16:40:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -70,10 +70,14 @@ fi
 #  as the CWD. Therefore it reject NAME values containing the readlink
 #  diagnostic before printing them, and return an error instead.
 
+# shellcheck source=../ibin/xtra/print-utilities.sh
+. "$USRHOME_DIR/ibin/xtra/print-utilities.sh"
+
 if cwd_info=$(lsof -a -d cwd -p "$1" -n -Fn 2>/dev/null); then
     case "$cwd_info" in
         *"Permission denied"*|*" (readlink:"*)
-            printf -- "*** Error pidcwd: cannot read CWD for PID %s\n" "$1" >&2
+
+            usrhome_printf_error "pidcwd: cannot read CWD for PID %s\n" "$1"
             exit 1
             ;;
         *)
@@ -81,7 +85,7 @@ if cwd_info=$(lsof -a -d cwd -p "$1" -n -Fn 2>/dev/null); then
             ;;
     esac
 else
-    printf -- "*** Error pidcwd: cannot read CWD for PID %s\n" "$1" >&2
+    usrhome_printf_error "pidcwd: cannot read CWD for PID %s\n" "$1"
     exit 1
 fi
 

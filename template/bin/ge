@@ -4,7 +4,7 @@
 # Purpose   : Launch Emacs in Graphics mode in the background.  Support PEL.
 # Created   : Wednesday, April 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 22:48:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 15:13:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -51,7 +51,7 @@ case $os_type in
         elif [ -d "$HOME/Applications/Emacs.app" ]; then
             "$HOME/Applications/Emacs.app/Contents/MacOS/Emacs" --chdir="$(pwd)" "$@" 2>/dev/null &
         else
-            printf "ERROR: cannot find Emacs.app in /Applications and %s/Applications\n" "$HOME"
+            usrhome_printf_error "ge: cannot find Emacs.app in /Applications and %s/Applications\n" "$HOME"
             exit 1
         fi
         ;;

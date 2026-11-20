@@ -3,7 +3,7 @@
 # Purpose   : Lint shell scripts for lack of -- separators.
 # Created   : Friday, November 13 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 21:58:06 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-20 09:12:49 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,37 +34,38 @@ BEGIN {
 
     # Configure POSIX commands that support "--" (POSIX Guideline 10)
     # Short options with required arguments are listed separately.
-    opts["cd"]="LP"
-    opts["cp"]="fHiLPRr"
-    opts["mv"]="fi"
-    opts["rm"]="fiRr"
-    opts["mkdir"]="mp"
-    opts["rmdir"]="p"
-    opts["touch"]="acmrt"
-    opts["chmod"]="R"
-    opts["chown"]="HLPR"
-    opts["ln"]="fs"
-    opts["grep"]="EFGcefilnqsvx"
-    opts["cat"]="u"
-    opts["head"]="n"
-    opts["tail"]="fcn"
-    opts["wc"]="clmw"
-    opts["sort"]="bcdfikmnortu"
-    opts["cut"]="bcdfns"
-    opts["diff"]="bcefinru"
-    opts["unset"]="fv"
-    opts["readonly"]="p"
-    opts["export"]="p"
-    opts["alias"]=""
-    opts["set"]="abCefhmnouvx"
-    args["mkdir"]="m"
-    args["touch"]="rt"
+    args["cut"]="bcdf"
+    args["diff"]="CU"
     args["grep"]="ef"
     args["head"]="n"
-    args["tail"]="cn"
-    args["sort"]="kot"
-    args["cut"]="bcdf"
+    args["mkdir"]="m"
     args["set"]="o"
+    args["sort"]="kot"
+    args["tail"]="cn"
+    args["touch"]="drt"
+    opts["alias"]=""
+    opts["cat"]="u"
+    opts["cd"]="LP"
+    opts["chmod"]="R"
+    opts["chown"]="HLPRh"
+    opts["cp"]="fHiLPRp"
+    opts["cut"]="bcdfns"
+    opts["diff"]="CUbcefinru"
+    opts["export"]="p"
+    opts["grep"]="EFGcefilnqsvx"
+    opts["head"]="n"
+    opts["ln"]="fLPs"
+    opts["mkdir"]="mp"
+    opts["mv"]="fi"
+    opts["readonly"]="p"
+    opts["rm"]="fiRr"
+    opts["rmdir"]="p"
+    opts["set"]="abCefhmnouvx"
+    opts["sort"]="Cbcdfikmnortu"
+    opts["tail"]="fcn"
+    opts["touch"]="acdmrt"
+    opts["unset"]="fv"
+    opts["wc"]="clmw"
 }
 
 # Fallback to FILENAME if -v fname="..." was not passed on the command line
@@ -73,7 +74,7 @@ fname == "" {
 }
 
 function warn(message) {
-    warn_at(message, NR, $0)
+    warn_at(message, scan_line, scan_text)
 }
 
 function warn_at(message, line_number, source_line) {
@@ -263,7 +264,7 @@ function audit_segment(end_op, tail,    i,j,k,cmd,w,d,stopped,need,pattern,fmt,
             (end_op == "" ||
              (end_op == ";" && tail ~ /^[[:space:]]*(#.*)?$/))) {
             pending_guard = (condition_kind ~ /^(if|elif)$/) ? "then" : "do"
-            pending_guard_line = NR
+            pending_guard_line = scan_line
             pending_guard_text = $0
             checked = 1
         }
@@ -282,6 +283,25 @@ hd_head <= hd_tail && !pending_quote {
 }
 
 {
+    scan_line = NR
+
+    # Join one unquoted backslash-newline before tokenization. Restrict
+    # the prefix so that its quote and comment state is unambiguous.
+    if (!pending_quote && substr($0, length($0), 1) == "\\") {
+        prefix = substr($0, 1, length($0) - 1)
+        if (prefix !~ /[\\$`#]/ &&
+            index(prefix, sq) == 0 && index(prefix, dq) == 0) {
+            read_status = (getline continuation)
+            if (read_status < 0) {
+                scanner_input_error = 1
+                exit
+            }
+            if (read_status > 0)
+                $0 = prefix continuation
+        }
+    }
+    scan_text = $0
+
     # The heredoc rule above has already skipped any heredoc body.
     if (pending_guard != "" && $0 !~ /^[[:space:]]*(#|$)/) {
         if ((pending_guard == "then" &&
@@ -343,7 +363,7 @@ hd_head <= hd_tail && !pending_quote {
                 quote = ""
             else {
                 quote = dq
-                quote_line = NR
+                quote_line = scan_line
             }
             continue
         }
@@ -351,7 +371,7 @@ hd_head <= hd_tail && !pending_quote {
             active = 1
             was_quoted = 1
             quote = sq
-            quote_line = NR
+            quote_line = scan_line
             continue
         }
         if ((c == "$" && nextc == "(") || c == "`") {
@@ -373,7 +393,15 @@ hd_head <= hd_tail && !pending_quote {
             continue
         }
         if (c == "<" || c == ">") {
-            emit_word()
+            if (active && !redir && !was_quoted && !dyn &&
+                word ~ /^[0-9]+$/) {
+                # An adjacent unquoted number is a file descriptor,
+                # not a command argument.
+                word = ""
+                dyn = udyn = was_quoted = active = 0
+            } else {
+                emit_word()
+            }
             if (redir) {
                 warn("WARNING: UNSUPPORTED redirection")
                 unsupported = 1
@@ -383,17 +411,19 @@ hd_head <= hd_tail && !pending_quote {
             redir = 1
             if (c == "<" && nextc == "<") {
                 if (substr($0, p + 2, 1) == "<") {
-                    warn("WARNING: UNSUPPORTED here-string")
-                    unsupported = 1
-                    break
-                }
-                here = 1
-                p++
-                if (substr($0, p + 1, 1) == "-") {
-                    here_tabs = 1
+                    # Here-string: the next word is a redirection operand,
+                    # not a heredoc delimiter.
+                    p += 2
+                } else {
+                    here = 1
                     p++
+                    if (substr($0, p + 1, 1) == "-") {
+                        here_tabs = 1
+                        p++
+                    }
                 }
-            } else if (nextc == c || nextc == "&" || nextc == "|") {
+            } else if ((c == "<" && nextc == ">") ||
+                       nextc == c || nextc == "&" || nextc == "|") {
                 p++
             }
             continue
@@ -438,6 +468,9 @@ hd_head <= hd_tail && !pending_quote {
 }
 
 END {
+    if (scanner_input_error)
+        exit 2
+
     if (!audit_stopped && pending_guard != "")
         warn_at("WARNING: UNSUPPORTED incomplete conditional guard",
                 pending_guard_line, pending_guard_text)
