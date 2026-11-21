@@ -39,6 +39,9 @@ and Linux systems.
 - **Switch shells as needed:** Use the login shell imposed by your OS.
   Then start Bash from Zsh or Zsh from Bash without changing your login
   shell. Exit the nested shell to return to the previous one.
+- **Use pre-configured prompts:**  Use one of the `pre-configured shell prompts`_
+  for Bash and Zsh.  Each prompt shows useful information in different ways
+  with or without coloring.  Change your prompt dynamically.
 - **Reuse your configuration:** Share shell settings across computers while
   allowing host-specific customization.
 - **Keep personal settings separate:** Store your configuration in a private
@@ -63,7 +66,7 @@ and Linux systems.
 - **Battery-included workspace:** USRHOME provides an opinionated command-line
   environment with commands and scripts from its `bin/`_ and `ibin/`_
   directories.  It provides some tools implemented in AWK and Pike (`lsdd`_)
-  [#pike_note].
+  [#pike_note]_ .
 
 .. ---------------------------------------------------------------------------
 
@@ -2391,7 +2394,7 @@ USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use
                                      bash
 
                                    Or you can set it inside your usrcfg/setfor-all-config.sh by
-                                   including the following lines:
+                                   including the following lines::
 
                                      USRHOME_SLOW_TIMER=1
                                      export USRHOME_SLOW_TIMER
@@ -3317,6 +3320,7 @@ Thanks!
 .. _template/usrcfg/do-user.sh:                        template/usrcfg/do-user.sh
 .. _ibin/:                                             ibin/
 .. _bin/:                                              bin/
+.. _pre-configured shell prompts:                      `USRHOME Prompt`_
 
 
 .. ---------------------------------------------------------------------------
