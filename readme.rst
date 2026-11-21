@@ -3568,10 +3568,10 @@ Thanks!
 .. _show-perl-inc: bin/show-perl-inc
 .. _ssh-agent-isit-running: bin/ssh-agent-isit-running
 .. _cls: ibin/setfor-alias
-.. _md: ibin/setfor-alias
-.. _rd: ibin/setfor-alias
-.. _mdd: ibin/setfor-alias
-.. _p3: ibin/setfor-alias
+.. _md: ibin/setfor-alias#L204
+.. _rd: ibin/setfor-alias#L205
+.. _mdd: ibin/setfor-alias#L192
+.. _p3: ibin/setfor-alias#L209
 .. _pngquantf: bin/pngquantf
 .. _au-longest-typename: bin/au-longest-typename
 .. _`au-format (Linux)`: bin/linux/au-format
