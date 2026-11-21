@@ -2161,184 +2161,361 @@ find-dir_                          Find and print directories DIR inside directo
 Additional Scripts
 ------------------
 
-The following scripts supplement the commands described above. Scripts in
-``bin`` are available when the USRHOME command directory is on ``PATH``.
-Platform-specific directories and internal helpers are identified separately.
+The tables below describe executable scripts, sourced scripts, and shell
+commands. Command names link to their executable or sourced script. Other
+shell aliases and functions link to the file that defines them.
+Scripts in ``bin`` are available when the USRHOME command directory is
+on ``PATH``. Platform-specific directories and internal helpers are
+identified separately.
 
-Development Tools
-~~~~~~~~~~~~~~~~~
-
-* `lint-sh`_ analyzes one shell script file or all shell script files
-  in a directory tree, performing validation checks that ShellCheck does not do.
-  With the ``-s`` or ``-S`` option it also executes ShellCheck.
-  All USRHOME executable and source shell files are
-  analyzed by this tool.
-
-Files and searches
-~~~~~~~~~~~~~~~~~~
-
-* ``files-in`` lists entries in a directory tree, including symbolic links.
-  ``-l`` requests a long listing.
-* ``find-executable`` searches a directory tree for executable files.
-  ``-H`` includes hidden directories and ``-L`` includes links to files.
-* ``find-latest-in`` lists recently modified files. Use ``-d`` for the
-  directory, ``-t`` for the time window, and ``-f`` for a filename pattern.
-  ``-H`` includes hidden entries and ``-I`` disables ignore rules. If ``fd``
-  is unavailable, the ``find`` fallback requires ``-I`` and uses extended
-  regular expressions. Its matching and timestamp precision can differ.
-* ``find-perl`` finds Perl files and scripts. It can also search Perl's
-  ``@INC`` directories. ``find-py`` finds Python files.
-* ``find-since`` lists files newer than a marker file.
-* ``lslink`` lists symbolic links under the current directory on Linux and
-  macOS. ``lslink-broken`` lists broken symbolic links.
-* ``echo-grep`` prints a filename header and searches that file with
-  ``grep``. It accepts a pattern and a filename.
-* ``rg-all`` runs ``rg -L`` to follow symbolic links. ``rgabs`` searches
-  with absolute paths and can use ``rga``. ``rgf`` searches selected file
-  types with ``rg`` or ``rga``; ``bin/sub/rg-f`` implements its type dispatch.
-* ``print-if-exists`` reads paths from standard input and prints the
-  normalized paths that exist.
-* ``withh-ls`` and ``withh-rpm`` print a header for the last argument before
-  invoking ``ls`` or ``rpm``.
 
 Development and conversion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ``clang-version`` prints the Clang version. If its C++ executable is
-  missing, the wrapper attempts to build it with ``make``.
-* ``diffo`` compares object files by their disassembled code. ``dumpo``
-  prints an object's disassembly. ``mk-diffo`` records and compares object
-  code across versions; it requires the ``USRHOME_DIFFO_*`` environment.
-* ``isvalid-python3`` checks a file with Python 3's ``compileall`` module.
-* ``git-lbr`` lists selected local or remote Git branches. ``git-log``
-  formats Git history. ``git-status`` adds HEAD information to Git status.
-  ``git-sw`` checks out a branch and can use shell completion.
-* ``iconv-iso8859-utf8`` converts a file from ISO-8859-1 to UTF-8. It copies
-  the original to ``USRHOME_DIR_TMP`` and overwrites the input file.
-  ``iconv-iso8859-utf8-all`` uses ``fd`` (or ``find``) and ``file`` to select files for
-  the same conversion. Review the selection and keep backups before use.
-* ``download-website`` uses ``wget`` to download a URL tree into the
-  current directory and adjusts links for local viewing.
-* ``lisp`` launches the Common Lisp implementation selected by a
-  ``use-lisp-with-*`` environment script.
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
+`lint-sh <bin/lint-sh>`_                               Analyze one shell script file or all shell script files in a directory
+                                                       tree, performing validation checks that ShellCheck does not do. With ``-s``
+                                                       or ``-S``, also execute ShellCheck. All USRHOME executable and source shell
+                                                       files are analyzed by this tool.
+
+`diff <bin/diff>`_                                     Shell-based dispatcher. By default it uses ``/usr/bin/diff``. The `use-diff
+                                                       command`_ selects other programs for the current shell.
+
+`use-diff <ibin/envfor-diff>`_                         Select the program invoked by USRHOME's ``diff`` dispatcher in the current
+                                                       shell.
+
+`clang-version <bin/clang-version>`_                   Print the Clang version. If its C++ executable is missing, attempt to build
+                                                       it with ``make``.
+
+`diffo <bin/diffo>`_                                   Compare object files by their disassembled code.
+
+`dumpo <bin/dumpo>`_                                   Print an object's disassembly.
+
+`mk-diffo <bin/mk-diffo>`_                             Record and compare object code across versions. Requires the
+                                                       ``USRHOME_DIFFO_*`` environment.
+
+`isvalid-python3 <bin/isvalid-python3>`_               Check a file with Python 3's ``compileall`` module.
+
+`git-lbr <bin/git-lbr>`_                               List selected local or remote Git branches.
+
+`git-log <bin/git-log>`_                               Format Git history.
+
+`git-status <bin/git-status>`_                         Add HEAD information to Git status.
+
+`git-sw <bin/git-sw>`_                                 Check out a branch. Can use shell completion.
+
+`iconv-iso8859-utf8 <bin/iconv-iso8859-utf8>`_         Convert a file from ISO-8859-1 to UTF-8. Copy the original to
+                                                       ``USRHOME_DIR_TMP`` and overwrite the input file.
+
+`iconv-iso8859-utf8-all <bin/iconv-iso8859-utf8-all>`_ Use ``fd`` (or ``find``) and ``file`` to select files for the same
+                                                       conversion. Review the selection and keep backups before use.
+
+`download-website <bin/download-website>`_             Use ``wget`` to download a URL tree into the current directory and adjust
+                                                       links for local viewing.
+
+`lisp <bin/lisp>`_                                     Launch the Common Lisp implementation selected by a ``use-lisp-with-*``
+                                                       environment script.
+====================================================== ===========================================================================
+
+
+Files and searches
+~~~~~~~~~~~~~~~~~~
+
+======================================== ===========================================================================
+Command or file                          Description
+======================================== ===========================================================================
+`dsize <bin/dsize>`_                     Compute and print the size of files in a directory tree. DPATH defaults to
+                                         the current directory. Without subdirectories, count bytes in each file.
+                                         Otherwise, use ``du`` and print units of 1024 bytes.
+
+`find-dir <bin/find-dir>`_               Find directories named DIR inside ROOT. ROOT defaults to the current
+                                         directory. Hidden directories are excluded unless ``--inc-hidden`` or
+                                         ``-H`` is specified.
+
+                                         Usage::
+
+                                           find-dir [--inc-hidden|-H] DIR [ROOT]
+                                           find-dir [-h|--help]
+
+                                         Exit codes: 0 if at least one directory is found, 1 if none is found, and 2
+                                         for invalid arguments.
+
+`flip-to-ln <bin/flip-to-ln>`_           Move file FNAME into directory DPATH and create a symbolic link at FNAME.
+                                         On Linux with GNU coreutils ``ln`` >= 8.16, create relative links when
+                                         possible. On macOS, use relative FNAME and DPATH arguments to create a
+                                         relative link.
+
+`files-in <bin/files-in>`_               List entries in a directory tree, including symbolic links. ``-l`` requests
+                                         a long listing.
+
+`find-executable <bin/find-executable>`_ Search a directory tree for executable files. ``-H`` includes hidden
+                                         directories and ``-L`` includes links to files.
+
+`find-latest-in <bin/find-latest-in>`_   List recently modified files. Use ``-d`` for the directory, ``-t`` for the
+                                         time window, and ``-f`` for a filename pattern. ``-H`` includes hidden
+                                         entries and ``-I`` disables ignore rules. If ``fd`` is unavailable, the
+                                         ``find`` fallback requires ``-I`` and uses extended regular expressions.
+                                         Matching and timestamp precision can differ.
+
+`find-perl <bin/find-perl>`_             Find Perl files and scripts. Can also search Perl's ``@INC`` directories.
+
+`find-py <bin/find-py>`_                 Find Python files.
+
+`find-since <bin/find-since>`_           List files newer than a marker file.
+
+`lslink <bin/lslink>`_                   List symbolic links under the current directory on Linux and macOS.
+
+`lslink-broken <bin/lslink-broken>`_     List broken symbolic links.
+
+`echo-grep <bin/echo-grep>`_             Print a filename header and search that file with ``grep``. Accept a
+                                         pattern and a filename.
+
+`rg-all <bin/rg-all>`_                   Run ``rg -L`` to follow symbolic links.
+
+`rgabs <bin/rgabs>`_                     Search with absolute paths. Can use ``rga``.
+
+`rgf <bin/rgf>`_                         Search selected file types with ``rg`` or ``rga``. ``bin/sub/rg-f``
+                                         implements its type dispatch.
+
+`print-if-exists <bin/print-if-exists>`_ Read paths from standard input and print the normalized paths that exist.
+
+`withh-ls <bin/withh-ls>`_               Print a header for the last argument before invoking ``ls``.
+
+`withh-rpm <bin/withh-rpm>`_             Print a header for the last argument before invoking ``rpm``.
+======================================== ===========================================================================
+
 
 System and process information
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ``ansi-colors`` and ``ansi-named-colors`` are intended to display ANSI color codes.
-* ``info-gcc`` reports GCC tool information. ``info-gcc-c-include`` and
-  ``info-gcc-c++-include`` list existing GCC header search directories.
-* ``info-java`` reports Java environment information. ``info-lisp`` reports
-  the selected Lisp implementation. ``info-versions`` reports available
-  language tool versions.
-* ``info-os`` prints operating-system information. ``info-screen`` reports
-  whether the shell is in a GNU screen session.
-* ``pidcwd`` reports a process's working directory. It uses ``pwdx`` when
-  available, otherwise ``lsof`` and ``awk``.
-* ``ps-list`` lists process information. ``ps-emacs`` lists Emacs processes;
-  ``ps-erlang``, ``ps-perl``, and ``ps-python`` list their respective
-  processes running in terminals.
-* ``shell-age`` reports when the shell opened and its age.
-* ``show-binutils`` lists the availability of GNU binutils commands.
-  ``show-perl-inc`` prints Perl's ``@INC`` search directories.
-* ``ssh-agent-isit-running`` checks for running SSH agents and reports
-  multiple agents.
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
+`ansi-colors <bin/ansi-colors>`_                       Display ANSI color codes.
+
+`ansi-named-colors <bin/ansi-named-colors>`_           Display ANSI named color codes.
+
+`info-gcc <bin/info-gcc>`_                             Report GCC tool information.
+
+`info-gcc-c-include <bin/info-gcc-c-include>`_         List existing GCC C header search directories.
+
+`info-gcc-c++-include <bin/info-gcc-c++-include>`_     List existing GCC C++ header search directories.
+
+`info-java <bin/info-java>`_                           Report Java environment information.
+
+`info-lisp <bin/info-lisp>`_                           Report the selected Lisp implementation.
+
+`info-versions <bin/info-versions>`_                   Report available language tool versions.
+
+`info-os <bin/info-os>`_                               Print operating-system information.
+
+`info-screen <bin/info-screen>`_                       Report whether the shell is in a GNU screen session.
+
+`pidcwd <bin/pidcwd>`_                                 Report a process's working directory. Use ``pwdx`` when available,
+                                                       otherwise ``lsof`` and ``awk``.
+
+`ps-list <bin/ps-list>`_                               List process information.
+
+`ps-emacs <bin/ps-emacs>`_                             List Emacs processes.
+
+`ps-erlang <bin/ps-erlang>`_                           List Erlang processes running in terminals.
+
+`ps-perl <bin/ps-perl>`_                               List Perl processes running in terminals.
+
+`ps-python <bin/ps-python>`_                           List Python processes running in terminals.
+
+`pstree-for <bin/pstree-for>`_                         Print the process tree for PID. If PID is not specified, use the process ID
+                                                       of the current process.
+
+`shell-age <bin/shell-age>`_                           Report when the shell opened and its age.
+
+`show-binutils <bin/show-binutils>`_                   List the availability of GNU binutils commands.
+
+`show-perl-inc <bin/show-perl-inc>`_                   Print Perl's ``@INC`` search directories.
+
+`ssh-agent-isit-running <bin/ssh-agent-isit-running>`_ Check for running SSH agents and report multiple agents.
+====================================================== ===========================================================================
+
+Other commands
+~~~~~~~~~~~~~~
+
+================================== ===========================================================================
+Command or file                    Description
+================================== ===========================================================================
+`cls <ibin/setfor-alias>`_         Shortcut for ``clear``; clear the content of the shell window.
+
+`md <ibin/setfor-alias>`_          Shortcut for ``mkdir``.
+
+`rd <ibin/setfor-alias>`_          Shortcut for ``rmdir``.
+
+`mdd <ibin/setfor-alias>`_         Run ``mkdir`` followed by ``cd``. If DIRPATH has '/', create intermediate
+                                   directories as required and print them on stdout.
+
+`p3 <ibin/setfor-alias>`_          Shortcut for ``python3``.
+
+`pngquantf <bin/pngquantf>`_       Compress the PNG file identified by FNAME, with or without the ``.png``
+                                   extension. Uses pngquant_.
+================================== ===========================================================================
+
 
 Platform-specific scripts
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``bin/linux`` is added to ``PATH`` on Linux; ``bin/macOS`` is added on
-macOS. Scripts in nested directories may require an explicit path.
+======================================================== ===========================================================================
+Command or file                                          Description
+======================================================== ===========================================================================
+`au-longest-typename <bin/au-longest-typename>`_         Report the maximum audit record type length.
 
-* ``bin/au-longest-typename`` reports the maximum audit record type length.
-* ``bin/linux/au-format`` and ``bin/macOS/au-format`` format audit log
-  records from standard input. The implementations have different dependencies.
-* ``bin/linux/au-convert-date`` is marked obsolete; use ``au-format``.
-  ``bin/macOS/au-convert-date`` is an older audit timestamp filter.
-* ``bin/linux/au-gensyscall-lookup`` generates an AWK system-call lookup
-  table using ``ausyscall``.
-* ``bin/linux/tail-audit4avc`` follows the audit log and formats AVC and
-  SYSCALL records. ``bin/linux/gnopen`` opens a directory with ``gnome-open``.
-* ``bin/macOS/finder-show-hidden`` and ``finder-hide-hidden`` change Finder's
-  hidden-file preference and restart Finder.
-* ``bin/macOS/macos-fix-iworks`` changes supported iWork application
-  preferences to suppress upgrade prompts. It can back up preferences first.
-* Some commands are defined inside templates for macOS and need to be
-  installed locally.  See the `template/usrcfg/do-user.sh`_ for:
+`au-format (Linux) <bin/linux/au-format>`_               Format audit log records from standard input. The Linux and macOS
+                                                         implementations have different dependencies.
 
-  * ``f-numbers`` command alias lists all macOS Numbers files found in the directory
-    tree.  This skips hidden files (such as files in ``.git`` directories) by
-    default when ``fd`` is used.
+`au-format (macOS) <bin/macOS/au-format>`_               Format audit log records from standard input. The Linux and macOS
+                                                         implementations have different dependencies.
+
+`au-convert-date (Linux) <bin/linux/au-convert-date>`_   Marked obsolete; use ``au-format``.
+
+`au-convert-date (macOS) <bin/macOS/au-convert-date>`_   Older audit timestamp filter.
+
+`au-gensyscall-lookup <bin/linux/au-gensyscall-lookup>`_ Generate an AWK system-call lookup table using ``ausyscall``.
+
+`tail-audit4avc <bin/linux/tail-audit4avc>`_             Follow the audit log and format AVC and SYSCALL records.
+
+`gnopen <bin/linux/gnopen>`_                             Open a directory with ``gnome-open``.
+
+`finder-show-hidden <bin/macOS/finder-show-hidden>`_     Change Finder's hidden-file preference and restart Finder.
+
+`finder-hide-hidden <bin/macOS/finder-hide-hidden>`_     Change Finder's hidden-file preference and restart Finder.
+
+`macos-fix-iworks <bin/macOS/macos-fix-iworks>`_         Change supported iWork application preferences to suppress upgrade prompts.
+                                                         Can back up preferences first.
+
+`f-numbers <template/usrcfg/do-user.sh>`_                Template alias for macOS Numbers files. It must be installed locally. List
+                                                         files in the directory tree; skip hidden files by default when ``fd`` is
+                                                         used.
+======================================================== ===========================================================================
 
 SELinux utilities
 ~~~~~~~~~~~~~~~~~
 
 USRHOME provides Linux tools for SELinux policy development and
-troubleshooting. The scripts in ``bin/linux/selinux`` can search and
-display policy macro and interface definitions, build a policy package
-from a type-enforcement file, and report selected SELinux RPMs. To use
-the search scripts, set ``USRHOME_SELINUX_POLICY_LOCATION`` to a policy
-directory containing ``policy/modules`` or ``include``. Building a
-policy package requires ``checkmodule`` and ``semodule_package``.
-``tail-audit4avc`` follows and formats AVC and SYSCALL audit records.
-``ps-list -Z`` includes process security context labels when
-``getenforce`` is available. The scripts in ``bin/linux/selinux`` may
-require an explicit path because the directory is not automatically
-added to ``PATH``.
+troubleshooting. For the search scripts, set
+``USRHOME_SELINUX_POLICY_LOCATION`` to a policy directory containing
+``policy/modules`` or ``include``. Building a policy package requires
+``checkmodule`` and ``semodule_package``. ``tail-audit4avc`` follows and
+formats AVC and SYSCALL audit records. ``ps-list -Z`` includes process
+security context labels when ``getenforce`` is available. The scripts in
+``bin/linux/selinux`` may require an explicit path because the directory
+is not automatically added to ``PATH``.
 
-* ``bin/linux/selinux/se-build-te`` builds SELinux policy files.
-  ``se-find-definition`` and ``se-find-interface`` locate policy definitions
-  or interfaces; ``se-show-definition`` and ``se-show-interface`` show them.
-  These search helpers require an SELinux development environment.
-  ``se-show-rpms`` reports selected SELinux RPMs.
+============================================================ ===========================================================================
+Command or file                                              Description
+============================================================ ===========================================================================
+`se-build-te <bin/linux/selinux/se-build-te>`_               Build SELinux policy files.
+
+`se-find-definition <bin/linux/selinux/se-find-definition>`_ Locate policy definitions.
+
+`se-find-interface <bin/linux/selinux/se-find-interface>`_   Locate policy interfaces.
+
+`se-show-definition <bin/linux/selinux/se-show-definition>`_ Show policy definitions.
+
+`se-show-interface <bin/linux/selinux/se-show-interface>`_   Show policy interfaces.
+
+`se-show-rpms <bin/linux/selinux/se-show-rpms>`_             Report selected SELinux RPMs.
+============================================================ ===========================================================================
+
 
 
 
 Internal and setup scripts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ``bin/sub-ssh4/envfor-cmds`` reads SSH target settings.
-  ``from-remote`` and ``from-remote-dir`` implement remote-to-local copies;
-  ``to-remote`` and ``to-remote-dir`` implement local-to-remote copies.
-  ``ssh4-scoped`` implements an SSH connection. These are base scripts for
-  target-specific commands; see `SSH helper documentation
-  <bin/sub-ssh4/readme.rst>`_.
-* ``bin/linux/selinux/hidden/do-se-env-check`` validates the SELinux policy
-  development environment for the SELinux helpers.
-* The ``bin/other/au-extra-format*.awk``, ``au-log-lineup*.awk``, and
-  ``au-log-syscall2name.awk`` files are audit-formatting filters.
-  ``bin/other/ps-emacs.awk`` filters Emacs process records; the
-  ``ps-*-format.awk`` files format process records for the process commands.
-* ``ibin/change_prompt`` applies prompt changes.
-  ``ibin/do-extend-manpath`` prepares ``MANPATH`` for extension.
-  ``ibin/inc/fpath.sh`` defines path-relationship functions.
-* ``ibin/setfor-bash-common`` and ``ibin/setfor-zsh-common`` define
-  shell-specific functions used during configuration.
-* ``ibin/xtra/print-utilities.sh`` defines shared print, warning, and error
-  functions. They suppress output unless ``USRHOME_PRINT_ENABLED`` is ``1``
-  and ``TERM`` is set, nonempty, and not ``dumb``. The stderr functions
-  also apply the stderr destination rule described in the print policy.
-* ``ibin/envfor-cc-options`` configures extra options for the augmented
-  ``cc`` command. ``ibin/envfor-mk-diffo`` configures ``mk-diffo``.
-* ``ibin/envfor-git-extra`` sets up extra Git completion where supported.
-  ``ibin/envfor-perlbrew`` and ``ibin/envfor-sdkman`` activate installed
-  Perlbrew and SDKMAN environments.
-* ``ibin/envfor-lisp-with-clasp``, ``envfor-lisp-with-clisp``,
-  ``envfor-lisp-with-roswell``, and ``envfor-lisp-with-sbcl`` select the
-  implementation used by ``lisp``.
-* On macOS, ``ibin/envfor-gcc15-on-macos`` activates a GCC 15 toolchain;
-  ``ibin/envfor-gnu-binutils-on-macos`` and ``envfor-gnubin-on-macos``
-  activate Homebrew GNU tools. ``ibin/envfor-llvm`` activates Homebrew LLVM.
-* ``ibin/macos_bin_bash.sh`` and ``ibin/macos_homebrew_gnu_bash.bash``
-  launch login Bash shells for macOS Terminal profiles.
-* ``setup/macOS/create-gcc-as-gcc15.sh`` creates GCC 15 toolchain links
-  for Apple Silicon Homebrew. ``setup/macOS/setup-beyond-compare`` and
-  ``setup/macOS/setup-hammerspoon`` create command links for installed
-  applications.
-* ``template/usrcfg/do-user-bash-profile.bash`` is a template for
-  user-specific login Bash configuration.
-* ``test/run-tests`` runs ``test/test-sanitize-path.sh`` with available
-  shells. Run it from the repository root with ``./test/run-tests``.
+These files include helpers, sourced environment scripts, setup scripts,
+and tests. SSH base scripts are described in the `SSH helper documentation
+<bin/sub-ssh4/readme.rst>`_.
+
+======================================================================== ===========================================================================
+Command or file                                                          Description
+======================================================================== ===========================================================================
+`envfor-cmds <bin/sub-ssh4/envfor-cmds>`_                                Read SSH target settings.
+
+`from-remote <bin/sub-ssh4/from-remote>`_                                Implement remote-to-local file copies.
+
+`from-remote-dir <bin/sub-ssh4/from-remote-dir>`_                        Implement remote-to-local directory copies.
+
+`to-remote <bin/sub-ssh4/to-remote>`_                                    Implement local-to-remote file copies.
+
+`to-remote-dir <bin/sub-ssh4/to-remote-dir>`_                            Implement local-to-remote directory copies.
+
+`ssh4-scoped <bin/sub-ssh4/ssh4-scoped>`_                                Implement an SSH connection.
+
+`do-se-env-check <bin/linux/selinux/hidden/do-se-env-check>`_            Validate the SELinux policy development environment for the SELinux
+                                                                         helpers.
+
+`audit-formatting filters <bin/other/>`_                                 ``au-extra-format*.awk``, ``au-log-lineup*.awk``, and
+                                                                         ``au-log-syscall2name.awk`` format audit records.
+
+`process-formatting filters <bin/other/>`_                               ``ps-emacs.awk`` filters Emacs process records; ``ps-*-format.awk`` files
+                                                                         format records for the process commands.
+
+`change_prompt <ibin/change_prompt>`_                                    Apply prompt changes.
+
+`do-extend-manpath <ibin/do-extend-manpath>`_                            Prepare ``MANPATH`` for extension.
+
+`fpath.sh <ibin/inc/fpath.sh>`_                                          Define path-relationship functions.
+
+`setfor-bash-common <ibin/setfor-bash-common>`_                          Define Bash-specific functions used during configuration.
+
+`setfor-zsh-common <ibin/setfor-zsh-common>`_                            Define Zsh-specific functions used during configuration.
+
+`print-utilities.sh <ibin/xtra/print-utilities.sh>`_                     Define shared print, warning, and error functions. Suppress output unless
+                                                                         ``USRHOME_PRINT_ENABLED`` is ``1`` and ``TERM`` is set, nonempty, and not
+                                                                         ``dumb``. The stderr functions also apply the stderr destination rule
+                                                                         described in the print policy.
+
+`envfor-cc-options <ibin/envfor-cc-options>`_                            Configure extra options for the augmented ``cc`` command.
+
+`envfor-mk-diffo <ibin/envfor-mk-diffo>`_                                Configure ``mk-diffo``.
+
+`envfor-git-extra <ibin/envfor-git-extra>`_                              Set up extra Git completion where supported.
+
+`envfor-perlbrew <ibin/envfor-perlbrew>`_                                Activate an installed Perlbrew environment.
+
+`envfor-sdkman <ibin/envfor-sdkman>`_                                    Activate an installed SDKMAN environment.
+
+`envfor-lisp-with-clasp <ibin/envfor-lisp-with-clasp>`_                  Select the Clasp implementation used by ``lisp``.
+
+`envfor-lisp-with-clisp <ibin/envfor-lisp-with-clisp>`_                  Select the Clisp implementation used by ``lisp``.
+
+`envfor-lisp-with-roswell <ibin/envfor-lisp-with-roswell>`_              Select the Roswell implementation used by ``lisp``.
+
+`envfor-lisp-with-sbcl <ibin/envfor-lisp-with-sbcl>`_                    Select the SBCL implementation used by ``lisp``.
+
+`envfor-gcc15-on-macos <ibin/envfor-gcc15-on-macos>`_                    Activate a GCC 15 toolchain on macOS.
+
+`envfor-gnu-binutils-on-macos <ibin/envfor-gnu-binutils-on-macos>`_      Activate Homebrew GNU binutils on macOS.
+
+`envfor-gnubin-on-macos <ibin/envfor-gnubin-on-macos>`_                  Activate Homebrew GNU tools on macOS.
+
+`envfor-llvm <ibin/envfor-llvm>`_                                        Activate Homebrew LLVM on macOS.
+
+`macos_bin_bash.sh <ibin/macos_bin_bash.sh>`_                            Launch a login Bash shell for a macOS Terminal profile.
+
+`macos_homebrew_gnu_bash.bash <ibin/macos_homebrew_gnu_bash.bash>`_      Launch a login Bash shell for a macOS Terminal profile.
+
+`create-gcc-as-gcc15.sh <setup/macOS/create-gcc-as-gcc15.sh>`_           Create GCC 15 toolchain links for Apple Silicon Homebrew.
+
+`setup-beyond-compare <setup/macOS/setup-beyond-compare>`_               Create command links for an installed application.
+
+`setup-hammerspoon <setup/macOS/setup-hammerspoon>`_                     Create command links for an installed application.
+
+`do-user-bash-profile.bash <template/usrcfg/do-user-bash-profile.bash>`_ Template for user-specific login Bash configuration.
+
+`test/run-tests <test/run-tests>`_                                       Run ``test/test-sanitize-path.sh`` with available shells. Run from the
+                                                                         repository root with ``./test/run-tests``.
+======================================================================== ===========================================================================
+
 
 
 USRHOME Prompt
@@ -3285,7 +3462,7 @@ Thanks!
 .. _diff:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/diff
 .. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
 .. _lint-sh:                                           https://github.com/pierre-rouleau/usrhome/blob/main/bin/lint-sh
-.. _use-diff command:                                  `Miscellaneous Commands`_
+.. _use-diff command:                                  `Development and conversion`_
 .. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
 .. _example template file for do-user.sh:              https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user.sh#L72
 .. _usrcfg do-user-zshrc.sh example file does:         https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh#L55
