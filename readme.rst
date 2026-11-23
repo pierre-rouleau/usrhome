@@ -1296,203 +1296,9 @@ USRHOME Command Name               Description
 ``restore-title``                  Restore title that might have been affected by error.
 ================================== ================================================================
 
-Directory Navigation
---------------------
-
-Extensions to the ``cd`` command.
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``.. [DIR]``                       Perform ``cd ../DIR``.
-                                   If DIR is not specified, performs ``cd ..``
-
-``... [DIR]``                      Performs ``cd ../../DIR``
-                                   If DIR is not specified, performs ``cd ../..``
-
-``.... [DIR]``                     Performs ``cd ../../../DIR``
-                                   If DIR is not specified, performs ``cd ../../..``
-
-``cd-to``                          Search for file specified by file FNAME or directory DNAME in
-                                   current directory tree.
-  - ``cd-to [-h|--help]``
-  - ``cd-to [-H] FNAME``
-  - ``cd-to -d [-H] DNAME``
-
-                                   - The FNAME and DNAME can be expressed with `fd`_ glob support.
-                                   - By default, does not search into hidden directories.
-                                     Specify the ``-H`` option to search into them.
-                                   - If **one** file/directory is found, change the current
-                                     directory to the directory that holds it and print the
-                                     ``ls -l`` for it.
-                                   - If several files/directories are found, print a cautionary
-                                     note with the number of found items and their path names
-                                     (relative to current directory).
-
-                                     - If the ``EDITOR`` environment variable is set, the script
-                                       prompts the user for editing the items.  On a 'y' answer it
-                                       edits the files found using the editor selected by ``EDITOR``.
-
-                                   - File search performed by the `fd`_ utility.  If it's not
-                                     installed the command exits with an error.
-
-                                   - Exit code:
-
-                                     - 0: one file was found, the current directory was changed.
-                                     - 1: no file found.
-                                     - n: the number of files found if they were not edited.
-
-
-``pel [SUBDIR]``                   Change current directory to PEL_ depot directory or its SUBDIR
-                                   if specified.
-                                   Also set terminal title to 'PEL'.
-
-``usrhome [SUBDIR]``               Change current directory to USRHOME depot directory
-                                   or its SUBDIR if specified.
-                                   Also set terminal title to 'USRHOME'.
-
-``usrcfg [SUBDIR]``                Change current directory to the USRHOME personal/persistent
-                                   configuration directory, usrcfg
-                                   or its SUBDIR if specified.
-                                   Also set terminal title to 'USRHOME:usrcfg'
-================================== ================================================================
-
-
-Cd to Conceptual Directories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``cdh [SUBDIR]``                   cd to *home*: the directory identified by ``USRHOME_DIR_MY``
-                                   or its identified ``SUBDIR``.
-
-``cdlic [SUBDIR]``                 cd to the directory identified by the ``USRHOME_DIR_LIC``
-                                   or its identified ``SUBDIR``.
-
-``cdlog [SUBDIR]``                 cd to the directory identified by the ``USRHOME_DIR_LOG``
-                                   or its identified ``SUBDIR``.
-
-``cdv [SUBDIR]``                   **On macOS only**, cd to the ``/Volume`` directory
-                                   or its identified ``SUBDIR``.
-
-``cdtmp [SUBDIR]``                 cd to user-specific temporary directory, identified by
-                                   ``USRHOME_DIR_TMP`` or its identified ``SUBDIR``.
-
-``cdpub [SUBDIR]``                 cd to *public projects*; the directory identified by
-                                   ``USRHOME_DIR_PUBLIC``, or its identified
-                                   ``SUBDIR``.
-                                   This directory tree is meant to hold the
-                                   repositories of your public projects.
-
-``cdother [SUBDIR]``               cd to *other public projects*; the directory identified by
-                                   ``USRHOME_DIR_OTHER``, or its identified
-                                   ``SUBDIR``.
-                                   This directory tree is meant to hold clones
-                                   of public projects repositories where you
-                                   do not submit anything.
-
-``cdlocal [SUBDIR]``               cd to *local, private, projects*; the directory identified by
-                                   ``USRHOME_DIR_LOCAL``, or its identified
-                                   ``SUBDIR``.
-                                   This directory tree is meant to hold files
-                                   that you keep on your system and do not
-                                   publish anywhere.
-
-``cdcontract [SUBDIR]``            cd to *local, private, contract projects*; the directory identified by
-                                   ``USRHOME_DIR_CONTRACT``, or its identified
-                                   ``SUBDIR``.
-                                   This directory tree is meant to hold
-                                   contract related files
-                                   that you keep on your system and only share
-                                   with your customer or employer.
-
-================================== ================================================================
-
-The commands described above change the current directory to several conceptually important
-(*holder*) directories.  Those directories are identified by USRHOME environment variables.
-The name of these environment variables start with the ``USRHOME_DIR_``
-prefix. They are:
-
-USRHOME_DIR_MY:
-  The directory where all your development directories are located.
-
-  - On macOS, it is often different from ``HOME``:
-
-    - it could be ``$HOME/Documents`` if you want the files located
-      in that directory tree replicated by Apple iCloud or,
-    - it could be another directory, like ``$HOME/my`` if you do *not*
-      want them replicated and stored in the iCloud.
-
-  - On any system, it could be used to identify a directory tree specific to a given activity or content
-    type or just be set to the value of ``$HOME``.
-
-USRHOME_DIR_LIC:
-  The directory where you could collect all the licence files you have agreed with when
-  using a software service or package.
-
-USRHOME_DIR_LOG :
-  The directory where you could store activity log files and notes.
-
-USRHOME_DIR_TMP:
-  The name of a directory where your user's temporary files may be stored,
-  in a separate directory than the standard ``/tmp`` directory.
-  That can be used for testing code and checking if your tested code suffers from
-  *temporary file leakage*.
 
 
 
-**Where to Define these Environment Variables**
-
-These environment variables are defined in the user persistent configuration
-file common to Bash and Z Shell: the ``usrcfg/setfor-all-config.sh`` file.
-
-During installation_, the `setup/setup-usrhome`_ script initializes them
-to the value stored in `usrhome/template/setfor-all-config.sh`_ template file.
-You can change them or add logic in your file to control their values any way you need.
-
-The following commands are shortcuts to change the current directory to one of these
-directories.
-
-**Obsolete environment variables**
-
-The following environment variables were previously used and have now been
-replaced.  If you code uses them you will have to update that code to take the
-new names into account.
-
-
-USRHOME_DIR_DV:
-  This used to identify the main development directory tree.
-  This concept is no longer supported; the new directory names
-  are tied to their privacy context.
-
-USRHOME_DIR_PRIV:
-  This has been replaced by either USRHOME_DIR_CONTRACT or USRHOME_DIR_LOCAL,
-  where the first one is private because it's for files developed for
-  contractual purposes.  The second is for you local files that you do not
-  intend to publish anywhere (yet or always).
-
-USRHOME_DIR_PUB:
-  This was replaced by USRHOME_DIR_PUBLIC or USRHOME_DIR_OTHER.
-  Both are for public files; the first one is for your own projects that you
-  publish while the second is for other public projects without any of your
-  participation.
-
-The following old commands have been removed.
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``cddv [SUBDIR]``                  cd to *main development*; the directory identified by
-                                   ``USRHOME_DIR_DV`` or its identified ``SUBDIR``.
-
-``cdpriv [SUBDIR]``                cd to *private projects*; the directory identified by
-                                   ``USRHOME_DIR_PRIV`` or its identified ``SUBDIR``.
-
-``cdpub [SUBDIR]``                 It still exists **but** instead of using
-                                   ``USRHOME_DIR_PUB`` it used ``USRHOME_DIR_PUBLIC``.
-================================== ================================================================
 
 
 Listing Files/Directories/Links
@@ -2330,16 +2136,245 @@ Command or file                          Description
 Directory Commands
 ~~~~~~~~~~~~~~~~~~
 
+Directory Navigation
+^^^^^^^^^^^^^^^^^^^^
+
+Extensions to the ``cd`` command.
+
 ================================== ===========================================================================
 Command or file                    Description
 ================================== ===========================================================================
-`md`_                              Shortcut for ``mkdir``.
+`..`_ ``[DIR]``                    Change current directory to parent directory and optionally to its sibling
+                                   specified by the optional argument.
 
-`rd`_                              Shortcut for ``rmdir``.
+                                   - ``..`` is equivalent to ``cd ..``
+                                   - ``.. abc`` is equivalent to ``cd ../abc``
 
-`mdd`_                             Run ``mkdir`` followed by ``cd``. If DIRPATH has '/', create intermediate
-                                   directories as required and print them on stdout.
+`...`_ ``[DIR]``                   Change current directory to grand-parent directory and optionally to its sibling
+                                   specified by the optional argument.
+
+                                   - ``...`` is equivalent to ``cd ../..``
+                                   - ``... abc`` is equivalent to ``cd ../../abc``
+
+`....`_ ``[DIR]``                  Change current directory to grand-grand-parent directory and optionally to
+                                   its sibling  specified by the optional argument.
+
+                                   - ``....`` is equivalent to ``cd ../../..``
+                                   - ``.... abc`` is equivalent to ``cd ../../../abc``
+
+
+`cd-to`_                           Search for file specified by file FNAME or directory DNAME in
+                                   current directory tree.
+
+                                   Usage:
+
+                                     - ``cd-to [-h|--help]``
+                                     - ``cd-to [-H] FNAME``
+                                     - ``cd-to -d [-H] DNAME``
+
+                                   - The FNAME and DNAME can be expressed with `fd`_ glob support.
+                                   - By default, does not search into hidden directories.
+                                     Specify the ``-H`` option to search into them.
+                                   - If **one** file/directory is found, change the current
+                                     directory to the directory that holds it and print the
+                                     ``ls -l`` for it.
+                                   - If several files/directories are found, print a cautionary
+                                     note with the number of found items and their path names
+                                     (relative to current directory).
+
+                                     - If the ``EDITOR`` environment variable is set, the script
+                                       prompts the user for editing the items.  On a 'y' answer it
+                                       edits the files found using the editor selected by ``EDITOR``.
+
+                                   - File search performed by the `fd`_ utility.  If it's not
+                                     installed the command exits with an error.
+
+                                   - Exit code:
+
+                                     - 0: one file was found, the current directory was changed.
+                                     - 1: no file found.
+                                     - n: the number of files found if they were not edited.
+
+`pel`__ ``[SUBDIR]``               Change current directory to PEL_ depot directory or its sub-directory
+                                   if specified by the SUBDIR argument.
+                                   Also set terminal title to 'PEL'.
+
+`usrhome`_ ``[SUBDIR]``            Change current directory to USRHOME depot directory or its sub-directory
+                                   if specified by the SUBDIR argument.
+                                   Also set terminal title to 'USRHOME'.
+
+`usrcfg`_ ``[SUBDIR]``             Change current directory to the USRHOME personal/persistent
+                                   configuration directory, usrcfg, or its sub-directory if specified
+                                   by the SUBDIR argument.
+                                   Also set terminal title to 'USRHOME:usrcfg'.
 ================================== ===========================================================================
+
+
+__  ibin/setfor-alias#L587
+
+
+Cd to Conceptual Directories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+`cdh`_ ``[SUBDIR]``                cd to *home*: the directory identified by ``USRHOME_DIR_MY``
+                                   or its identified ``SUBDIR``.
+
+`cdlic`_ ``[SUBDIR]``              cd to the directory identified by the ``USRHOME_DIR_LIC``
+                                   or its identified ``SUBDIR``.
+
+`cdlog`_ ``[SUBDIR]``              cd to the directory identified by the ``USRHOME_DIR_LOG``
+                                   or its identified ``SUBDIR``.
+
+`cdv`_ ``[SUBDIR]``                **On macOS only**, cd to the ``/Volume`` directory
+                                   or its identified ``SUBDIR``.
+
+`cdtmp`_ ``[SUBDIR]``              cd to user-specific temporary directory, identified by
+                                   ``USRHOME_DIR_TMP`` or its identified ``SUBDIR``.
+
+`cdpub`_ ``[SUBDIR]``              cd to *public projects*; the directory identified by
+                                   ``USRHOME_DIR_PUBLIC``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold the
+                                   repositories of your public projects.
+
+`cdother`_ ``[SUBDIR]``            cd to *other public projects*; the directory identified by
+                                   ``USRHOME_DIR_OTHER``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold clones
+                                   of public projects repositories where you
+                                   do not submit anything.
+
+`cdlocal`_ ``[SUBDIR]``            cd to *local, private, projects*; the directory identified by
+                                   ``USRHOME_DIR_LOCAL``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold files
+                                   that you keep on your system and do not
+                                   publish anywhere.
+
+`cdcontract`_ ``[SUBDIR]``         cd to *local, private, contract projects*; the directory identified by
+                                   ``USRHOME_DIR_CONTRACT``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold
+                                   contract related files
+                                   that you keep on your system and only share
+                                   with your customer or employer.
+
+================================== ================================================================
+
+The commands described above change the current directory to several conceptually important
+(*holder*) directories.  Those directories are identified by USRHOME environment variables.
+The name of these environment variables start with the ``USRHOME_DIR_``
+prefix. They are:
+
+USRHOME_DIR_MY:
+  The directory where all your development directories are located.
+
+  - On macOS, it is often different from ``HOME``:
+
+    - it could be ``$HOME/Documents`` if you want the files located
+      in that directory tree replicated by Apple iCloud or,
+    - it could be another directory, like ``$HOME/my`` if you do *not*
+      want them replicated and stored in the iCloud.
+
+  - On any system, it could be used to identify a directory tree specific to a given activity or content
+    type or just be set to the value of ``$HOME``.
+
+USRHOME_DIR_LIC:
+  The directory where you could collect all the licence files you have agreed with when
+  using a software service or package.
+
+USRHOME_DIR_LOG :
+  The directory where you could store activity log files and notes.
+
+USRHOME_DIR_TMP:
+  The name of a directory where your user's temporary files may be stored,
+  in a separate directory than the standard ``/tmp`` directory.
+  That can be used for testing code and checking if your tested code suffers from
+  *temporary file leakage*.
+
+
+
+**Where to Define these Environment Variables**
+
+These environment variables are defined in the user persistent configuration
+file common to Bash and Z Shell: the ``usrcfg/setfor-all-config.sh`` file.
+
+During installation_, the `setup/setup-usrhome`_ script initializes them
+to the value stored in `usrhome/template/setfor-all-config.sh`_ template file.
+You can change them or add logic in your file to control their values any way you need.
+
+The following commands are shortcuts to change the current directory to one of these
+directories.
+
+**Obsolete environment variables**
+
+The following environment variables were previously used and have now been
+replaced.  If you code uses them you will have to update that code to take the
+new names into account.
+
+
+USRHOME_DIR_DV:
+  This used to identify the main development directory tree.
+  This concept is no longer supported; the new directory names
+  are tied to their privacy context.
+
+USRHOME_DIR_PRIV:
+  This has been replaced by either USRHOME_DIR_CONTRACT or USRHOME_DIR_LOCAL,
+  where the first one is private because it's for files developed for
+  contractual purposes.  The second is for you local files that you do not
+  intend to publish anywhere (yet or always).
+
+USRHOME_DIR_PUB:
+  This was replaced by USRHOME_DIR_PUBLIC or USRHOME_DIR_OTHER.
+  Both are for public files; the first one is for your own projects that you
+  publish while the second is for other public projects without any of your
+  participation.
+
+The following old commands have been removed.
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+``cddv [SUBDIR]``                  cd to *main development*; the directory identified by
+                                   ``USRHOME_DIR_DV`` or its identified ``SUBDIR``.
+
+``cdpriv [SUBDIR]``                cd to *private projects*; the directory identified by
+                                   ``USRHOME_DIR_PRIV`` or its identified ``SUBDIR``.
+
+``cdpub [SUBDIR]``                 It still exists **but** instead of using
+                                   ``USRHOME_DIR_PUB`` it used ``USRHOME_DIR_PUBLIC``.
+================================== ================================================================
+
+
+Make directory
+^^^^^^^^^^^^^^
+
+================================== ===========================================================================
+Command or file                    Description
+================================== ===========================================================================
+`md`_                              Alias to ``mkdir``; make directory.
+
+`mdd`_                             Make directory and cd into it.
+                                   This executes ``mkdir`` followed by ``cd``.
+                                   If DIRPATH has '/', create intermediate directories as required
+                                   and print them on stdout.
+================================== ===========================================================================
+
+Remove Empty Directory
+^^^^^^^^^^^^^^^^^^^^^^
+
+================================== ===========================================================================
+Command or file                    Description
+================================== ===========================================================================
+`rd`_                              Alias to ``rmdir``; remove empty directory.
+================================== ===========================================================================
+
+
+
 
 System and process information
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3425,6 +3460,7 @@ Thanks!
 .. _USRHOME dot files:                                 https://github.com/pierre-rouleau/usrhome/tree/main/dot
 .. _do-add-to-path:                                    https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-add-to-path
 .. _do-cbr:                                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
+.. _cd-to:
 .. _do-cd-to:                                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cd-to
 .. _do-clrenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
 .. _xtra/sanitize-path-posix.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/xtra/sanitize-path-posix.sh
@@ -3627,5 +3663,22 @@ Thanks!
 .. _`do-user-bash-profile.bash`: template/usrcfg/do-user-bash-profile.bash
 .. _`test/run-tests`: test/run-tests
 .. _`SSH helper documentation`: bin/sub-ssh4/readme.rst
+.. _..:         ibin/setfor-alias#L689
+.. _...:        ibin/setfor-alias#L690
+.. _....:       ibin/setfor-alias#L691
+.. _usrcfg:     ibin/setfor-alias#L589
+.. _usrhome:    ibin/setfor-alias#L911
+.. _cdh:        ibin/setfor-alias#620
+.. _cdlic:      ibin/setfor-alias#625
+.. _cdlog:      ibin/setfor-alias#630
+.. _cdv:        ibin/setfor-alias#613
+.. _cdtmp:      ibin/setfor-alias#669
+.. _cdpub:      ibin/setfor-alias#650
+.. _cdother:    ibin/setfor-alias#664
+.. _cdlocal:    ibin/setfor-alias#657
+.. _cdcontract: ibin/setfor-alias#643
+
 
 .. ---------------------------------------------------------------------------
+
+..  LocalWords:  usrcfg USRHOME SUBDIR PEL
