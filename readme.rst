@@ -570,16 +570,21 @@ the USRHOME/ibin directory.  There are 3 groups of such files:
 
 **Shell Environment Control Commands**:
 
-The files used by the *use-ENV* commands.  These commands setup the current
-shell to use a specific set of commands or tools.  USRHOME provides some of
-these commands:
+Several USRHOME commands have a name that uses the *use-ENV* format.
+These are alias to the sourcing of scripts located inside the USRHOME ibin
+directory.
+Some have simpler names.
+The following table lists example of some of these commands.
 
 ===================== =========================== ========================================================
 Alias                 ``$USRHOME/ibin`` File      Purpose
 ===================== =========================== ========================================================
 **use-cbr**           `envfor-cbr`_               Implements the `use-cbr command`_.
+
 **use-diff**          `envfor-diff`_              Implements the `use-diff command`_ that sets up how
                                                   USRHOME diff_ operates in the current shell.
+                                                  See the section titled `File Diff Operations`_.
+
 **use-emacs-for-man** `envfor-emacs-for-man`_     Activate Emacs as Man reader.
 **use-gnu-global**    `envfor-gnu-global`_        Activate the GNU Global tool-chain in shell.
                                                   See source for information on how to install GNU Global.
@@ -2071,6 +2076,8 @@ Command or file                                        Description
 `use-diff`_                                            Select the program invoked by USRHOME's ``diff`` dispatcher in the current
                                                        shell.
 
+                                                       - `use-diff - alias to ibin/envfor-diff`_
+
 diff_                                                  USRHOME diff_ is a shell-based dispatcher program.
 
                                                        - By default it uses the standard ``/usr/bin/diff`` program
@@ -3540,8 +3547,6 @@ Thanks!
 .. _bin/:                                              bin/
 .. _pre-configured shell prompts:                      `USRHOME Shell Prompt`_
 .. _lint-sh: bin/lint-sh
-.. _diff: bin/diff
-.. _use-diff: ibin/envfor-diff
 .. _clang-version: bin/clang-version
 .. _diffo: bin/diffo
 .. _dumpo: bin/dumpo
@@ -3654,21 +3659,26 @@ Thanks!
 .. _`do-user-bash-profile.bash`: template/usrcfg/do-user-bash-profile.bash
 .. _`test/run-tests`: test/run-tests
 .. _`SSH helper documentation`: bin/sub-ssh4/readme.rst
-.. _usrcfg:           ibin/setfor-alias#L589
-.. _cdv:              ibin/setfor-alias#L613
-.. _cdh:              ibin/setfor-alias#L620
-.. _cdlic:            ibin/setfor-alias#L625
-.. _cdlog:            ibin/setfor-alias#L630
-.. _cdcontract:       ibin/setfor-alias#L643
-.. _cdpub:            ibin/setfor-alias#L650
-.. _cdlocal:          ibin/setfor-alias#L657
-.. _cdother:          ibin/setfor-alias#L664
-.. _cdtmp:            ibin/setfor-alias#L669
-.. _..:               ibin/setfor-alias#L689
-.. _...:              ibin/setfor-alias#L690
-.. _....:             ibin/setfor-alias#L691
-.. _git-cln:          ibin/setfor-alias#L906
-.. _usrhome:          ibin/setfor-alias#L911
+.. _usrcfg:                               ibin/setfor-alias#L589
+.. _cdv:                                  ibin/setfor-alias#L613
+.. _cdh:                                  ibin/setfor-alias#L620
+.. _cdlic:                                ibin/setfor-alias#L625
+.. _cdlog:                                ibin/setfor-alias#L630
+.. _cdcontract:                           ibin/setfor-alias#L643
+.. _cdpub:                                ibin/setfor-alias#L650
+.. _cdlocal:                              ibin/setfor-alias#L657
+.. _cdother:                              ibin/setfor-alias#L664
+.. _cdtmp:                                ibin/setfor-alias#L669
+.. _..:                                   ibin/setfor-alias#L689
+.. _...:                                  ibin/setfor-alias#L690
+.. _....:                                 ibin/setfor-alias#L691
+.. _git-cln:                              ibin/setfor-alias#L906
+.. _usrhome:                              ibin/setfor-alias#L911
+.. _use-diff - alias to ibin/envfor-diff: ibin/setfor-alias#L916
+
+.. _diff: bin/diff
+.. _use-diff: ibin/envfor-diff
+
 .. _Dired:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-dired.pdf
 .. _use-git-extra:    ibin/envfor-git-extra
 ..                    setfor-alias#L906
