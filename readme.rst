@@ -338,7 +338,6 @@ several structural mechanisms:
 
 **No Elevated Privileges**
 
-
 Local-prefix installations do not require ``sudo``. Installation scripts
 normally run with the invoking user's permissions. This does not sandbox
 them or protect files accessible to that user.
@@ -380,108 +379,24 @@ variables, internal server network topologies, and private paths stay
 contained within an isolated, private repository ecosystem, minimizing the
 risk of accidental exposure to public version-control systems.
 
-
-Setup Examples
-==============
-
-Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
-9.3.
-
-macOS shells
-------------
-
-The macOS Sonoma default shell is zsh. I have installed the latest Bash
-shell via Homebrew and also installed Rust.   These are available on the
-default zsh shell, which is shown starting in the first terminal seen in the
-back (ttys013).  The PATH available in that shell has 17 entries.  It has
-access to Rust and several Homebrew directories.
-
-I have also configured Terminal to start a Bash login shell. That shell
-(ttys014) is
-also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
-anything on the PATH of the login shells.  They have 10 directories in their
-PATH; the first one being ``/usr/local/bin``.
-
-Then I start another terminal (ttys015) with macOS default zsh non-login
-interactive shell.   As for the first one (ttys013), it sets up Homebrew and
-Rust because my USRHOME setup is done that way for those shells.  It has 17
-directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
-prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
-shell nested level.  From bash I create a zsh sub-shell from where I launch a
-``sleep 100`` command in the background.  The zsh shows ``1 ⚙`` identifying a
-running background job.  And when I issue an invalid command, it prints the
-exit code (127) followed by a red ⨯.
-
-.. figure:: res/macOS-shells.png
-
-Rocky Linux 9.3 shell
----------------------
-
-The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
-default shell is Bash 5.1. Again here I
-started two terminal instances: the first one launches the default Bash,
-instrumented with the exact same USRHOME settings than my macOS one.
-On Linux, Homebrew is not used.  But it also activates Rust.
-
-USRHOME does some check for vulnerabilities and it detects a possible one in
-Rocky Linux 9.3 and reports it when it is executing as the first level.
-The prompt prints:
-
-- the exit code of the last command,
-- the elapsed time (duration) of the completed command,
-- the shell nested level,
-- the number of background jobs running,
-- the user name @ hostname @ current time in 24-hour format
-- the current directory in side square brackets.
-
-The second non-login shell is executing a terminal-based Emacs process, which
-runs a terminal mode shell.  The USRHOME shell is Emacs-aware.
-The bash prompt is not affected when running inside Emacs.
-It can display the same information.
-You can see the PATH components shown by the showpath command.
-
-USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
-entries and empty entries. Here everything is fine.
-
-When the shell is placed in sudo mode, the prompt changes color and shows a
-``#`` instead of a ``$`` after the word ``bash``.
-
-The third terminal is configured to launch Bash in login mode. Here, USRHOME
-does not add anything to the PATH; the Bash login shells are unmodified and do
-not have access for any extra tools, therefore the PATH is shorter.
-These shells do not perform USRHOME simple (and quite limited) vulnerability
-check.
-
-Also note that, to help distinguish the login shell, I set the login shell
-prompt to red and the color of the non-login prompt to blue.
-
-.. figure:: res/RockyLinux-shells.png
-
-
-Kali Linux zsh shells with tracing enable
------------------------------------------
-
-You can activate shell tracing with USRHOME.
-When enabled, the shell prints what file is sourced when the shell starts,
-as this is shown in the Kali Linux, where zsh is the default shell.
-
-Rust is not installed in that system but it uses the same USRHOME
-*common* configuration as the others (with the temporary exception of enabling
-tracing) and the shell prints a warning.
-
-.. figure:: res/Kali-Linux-zshell.png
-
-It would be possible to move the request to use Rust from the common
-configuration file (in this case the file usrcfg/do-user.sh, that has logic
-similar to the `example template file for do-user.sh`_ ) into a
-node-specific file that the usrcfg logic could identify.  That could be done
-by the do-user.sh in the way that the `usrcfg do-user-zshrc.sh example file
-does`_.
-
-
 If you want to know how this all works, read on (and see the section
 titled `The Z Shell Startup, Dot Files and User Configuration`_).
 
+**All USRHOME code passes strict static analysis**
+
+All executable and sourced shell script files are analyzed with
+ShellCheck and all info, warnings and errors are fixed.  The code
+is analyzed with the `lint-sh`_ tool which runs ShellCheck and
+detects other potential problems.
+
+**Other: The xz Library Security Check**
+
+USRHOME reports the security issues by checking for the presence of
+compromised command line tools in the PATH.  The list of detected compromised
+tools is:
+
+- `xz version 5.2.5`_
+- `xz version 5.6.0 and 5.6.1`_
 
 Install USRHOME - How to Set it Up
 ==================================
@@ -655,16 +570,21 @@ the USRHOME/ibin directory.  There are 3 groups of such files:
 
 **Shell Environment Control Commands**:
 
-The files used by the *use-ENV* commands.  These commands setup the current
-shell to use a specific set of commands or tools.  USRHOME provides some of
-these commands:
+Several USRHOME commands have a name that uses the *use-ENV* format.
+These are alias to the sourcing of scripts located inside the USRHOME ibin
+directory.
+Some have simpler names.
+The following table lists example of some of these commands.
 
 ===================== =========================== ========================================================
 Alias                 ``$USRHOME/ibin`` File      Purpose
 ===================== =========================== ========================================================
 **use-cbr**           `envfor-cbr`_               Implements the `use-cbr command`_.
+
 **use-diff**          `envfor-diff`_              Implements the `use-diff command`_ that sets up how
                                                   USRHOME diff_ operates in the current shell.
+                                                  See the section titled `File Diff Operations`_.
+
 **use-emacs-for-man** `envfor-emacs-for-man`_     Activate Emacs as Man reader.
 **use-gnu-global**    `envfor-gnu-global`_        Activate the GNU Global tool-chain in shell.
                                                   See source for information on how to install GNU Global.
@@ -732,7 +652,7 @@ File Name (link to template)        Description
                                       USRHOME_DIR_PUB, USRHOME_DIR_TMP.
 
                                     - USRHOME_PROMPT_MODEL which select the prompt model. As
-                                      described further in the `USRHOME Prompt`_ section, the
+                                      described further in the `USRHOME Shell Prompt`_ section, the
                                       following values are supported:
 
                                       - 0: prompt is not defined by USRHOME logic, user code should
@@ -1013,6 +933,188 @@ USRHOME__USRCFG_SEEN               **USRHOME Internal environment variable**:
 ================================== ================================================================
 
 More information about these in the section `Cd to Conceptual Directories`_.
+
+
+USRHOME Shell Prompt
+====================
+
+USRHOME provides control for the Z Shell and Bash prompts as described in this
+section. USRHOME provides 3 pre-defined prompt models (model 1, 2 and 3) and
+reserves prompt model number 0 to be user-defined.
+
+Information About Prompt Control Variables
+------------------------------------------
+
+URSHOME provides the following commands to get information about the shell
+prompt.
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+``info-prompt [-q]``               Print information about shell's prompt controlling variables.
+                                   By default it prints the values of all variables.  With the
+                                   ``-q`` option it only prints the values of
+                                   the ``USRHOME_PROMPT_MODEL``
+                                   and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
+                                   shows the value of the default prompt mode, the second one, if
+                                   set, is the model of the current prompt, overriding the default.
+================================== ================================================================
+
+USRHOME prompt model control logic supports the environment variables
+described here:
+
+================================== ================================================================
+Environment variable               Description
+================================== ================================================================
+USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use of 1-second
+                                   resolution timer for the Bash prompt.
+
+                                   This is done by ignoring the potential availability of the GNU
+                                   coreutils ``gdate`` command and use the macOS supplied ``date``
+                                   command.
+
+                                   You may want to do this if the Bash prompt on macOS runs into a
+                                   race condition and prints a message similar to::
+
+                                     bash: child setpgid (75144 to 75141): Operation not permitted
+
+                                   This might occur when you are executing a fast command and pipe
+                                   it into another.
+
+                                   Setting USRHOME_SLOW_TIMER should prevent this problem.  You can
+                                   do it dynamically inside the Bash shell like this::
+
+                                     setenv USRHOME_SLOW_TIMER
+                                     bash
+
+                                   Or you can set it inside your usrcfg/setfor-all-config.sh by
+                                   including the following lines::
+
+                                     USRHOME_SLOW_TIMER=1
+                                     export USRHOME_SLOW_TIMER
+================================== ================================================================
+
+Prompt Model 0
+--------------
+
+With the ``USRHOME_PROMPT_MODEL`` environment variable set to 0, USRHOME
+does **not** configure the zsh prompt and expects the prompt to be set inside
+the user provided configuration files located inside the usrcfg directory,
+otherwise it uses the system default.
+
+
+Prompt Model 1, 2 and 3
+-----------------------
+
+These prompt models are predefined prompts that show multiple values in various
+ways.  As these might evolve over time, it's best to try them and see them in
+your terminal.
+
+The ``user@host`` information is shown when enabled. This can be dynamically
+enabled or disabled with the ``usrhome-prompt-toggle-usr-host`` command.
+
+In the following sessions, the command ``info-prompt -q`` is used to show which
+one is the default prompt model and which one is the currently used prompt.
+
+**The bash prompts**
+
+.. figure:: res/macOS-bash-prompts-01.png
+
+**The zsh prompts**
+
+.. figure:: res/macOS-zsh-prompts-01.png
+
+**Notable prompt features**
+
+All provided prompts, show:
+
+- A leading '>' character,
+- the exit code of the last command, in decimal or hexadecimal,
+- current time in 24-hour HH:MM:SS format,
+- the shell nested level, prefixed with 'L',
+- optional user-name @ host-name,
+- the full or last 3 directory components of the current directory,
+- the shell name (bash, or zsh),
+- the last character is '#' if the current user has root privilege,
+  otherwise the '$' character is used for bash and the '%' character is for zsh.
+
+Some also show the Week day and month date, the number of currently running jobs
+of the shell.
+
+Prompt model 2 and 3 prints the elapsed time of the last command with
+millisecond resolution.  On macOS without GNU coreutils gdate available the
+resolution is in seconds.
+
+The zsh prompt can also print extra information:
+
+- zsh prompt model 1 shows extra information on the right side of the line,
+  there is enough room: the full path of the current directory, and VCS (Git or
+  Mercurial) repository name.
+- The VCS (Git or Mercurial) repository name is shown in all zsh prompts.
+
+  - If the current directory is part of a Git or Mercurial repository, the
+    prompt shows 2 spaces followed by:
+
+    - 'git:' for Git repository and 'hg:' for Mercurial repository,
+    - the VCS branch name in parenthesis
+    - the VCS repository name.
+
+- Exit code of error and number of running jobs are  also shown in the right
+  hand side in zsh prompts.
+
+  - If the exit code of the last error is not 0, the exit code followed by
+    a red '⨯' character.
+  - If the shell has sub-process jobs, the number of jobs is shown,
+    followed by a yellow '⚙' character.
+
+**Examples**
+
+Some extra examples shown here:
+
+.. figure:: res/zsh-prompt-01.png
+
+
+Here's an example when the prompt model 2 is selected by user configuration
+and the user dynamically changes it inside the shell.
+
+
+.. figure:: res/zsh-prompt-02.png
+
+And here's another example, when the shell with prompt model 2, has two nested
+instances of suspended Emacs running, in a macOS terminal.
+
+.. figure:: res/zsh-prompt-03.png
+
+When the shell has running background jobs, the USRHOME commands that use
+``exec zsh`` to re-initialize the Z Shell won't proceed and will print a
+warning message instead.  In the example above the two running process where ``e`` the
+USRHOME name for terminal-based emacs.  To be able to change the process
+prompt, these two suspended Emacs process must first be terminated (by making
+them active in the foreground again with ``fg`` and then closing Emacs).  Once
+there's no background process the ``usrhome-prompt-toggle-usr-host`` command
+can be used.
+
+Showing the shell type helps when capturing commands for logs: it explicitly
+identifies the shell.
+
+.. figure:: res/zsh-prompt-model-3.png
+
+Prompt Search Regexp
+--------------------
+
+Use the following regular expressions to search a prompt, or
+to install them in editors, like Emacs, to navigate through
+prompt lines inside a shell.
+
+The regular expression syntax shown here correspond to the
+`Emacs 'string-format' regular expression syntax`_, the syntax you can use
+inside Emacs configuration.
+
+============================ ========================================
+Prompt                       Emacs Regular Expression
+============================ ========================================
+All models                   ``^\(\(zsh\)\|\(bash\)\)[%#$]``
+============================ ========================================
 
 
 USRHOME Commands and Scripts
@@ -1296,203 +1398,9 @@ USRHOME Command Name               Description
 ``restore-title``                  Restore title that might have been affected by error.
 ================================== ================================================================
 
-Directory Navigation
---------------------
-
-Extensions to the ``cd`` command.
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``.. [DIR]``                       Perform ``cd ../DIR``.
-                                   If DIR is not specified, performs ``cd ..``
-
-``... [DIR]``                      Performs ``cd ../../DIR``
-                                   If DIR is not specified, performs ``cd ../..``
-
-``.... [DIR]``                     Performs ``cd ../../../DIR``
-                                   If DIR is not specified, performs ``cd ../../..``
-
-``cd-to``                          Search for file specified by file FNAME or directory DNAME in
-                                   current directory tree.
-  - ``cd-to [-h|--help]``
-  - ``cd-to [-H] FNAME``
-  - ``cd-to -d [-H] DNAME``
-
-                                   - The FNAME and DNAME can be expressed with `fd`_ glob support.
-                                   - By default, does not search into hidden directories.
-                                     Specify the ``-H`` option to search into them.
-                                   - If **one** file/directory is found, change the current
-                                     directory to the directory that holds it and print the
-                                     ``ls -l`` for it.
-                                   - If several files/directories are found, print a cautionary
-                                     note with the number of found items and their path names
-                                     (relative to current directory).
-
-                                     - If the ``EDITOR`` environment variable is set, the script
-                                       prompts the user for editing the items.  On a 'y' answer it
-                                       edits the files found using the editor selected by ``EDITOR``.
-
-                                   - File search performed by the `fd`_ utility.  If it's not
-                                     installed the command exits with an error.
-
-                                   - Exit code:
-
-                                     - 0: one file was found, the current directory was changed.
-                                     - 1: no file found.
-                                     - n: the number of files found if they were not edited.
-
-
-``pel [SUBDIR]``                   Change current directory to PEL_ depot directory or its SUBDIR
-                                   if specified.
-                                   Also set terminal title to 'PEL'.
-
-``usrhome [SUBDIR]``               Change current directory to USRHOME depot directory
-                                   or its SUBDIR if specified.
-                                   Also set terminal title to 'USRHOME'.
-
-``usrcfg [SUBDIR]``                Change current directory to the USRHOME personal/persistent
-                                   configuration directory, usrcfg
-                                   or its SUBDIR if specified.
-                                   Also set terminal title to 'USRHOME:usrcfg'
-================================== ================================================================
-
-
-Cd to Conceptual Directories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``cdh [SUBDIR]``                   cd to *home*: the directory identified by ``USRHOME_DIR_MY``
-                                   or its identified ``SUBDIR``.
-
-``cdlic [SUBDIR]``                 cd to the directory identified by the ``USRHOME_DIR_LIC``
-                                   or its identified ``SUBDIR``.
-
-``cdlog [SUBDIR]``                 cd to the directory identified by the ``USRHOME_DIR_LOG``
-                                   or its identified ``SUBDIR``.
-
-``cdv [SUBDIR]``                   **On macOS only**, cd to the ``/Volume`` directory
-                                   or its identified ``SUBDIR``.
-
-``cdtmp [SUBDIR]``                 cd to user-specific temporary directory, identified by
-                                   ``USRHOME_DIR_TMP`` or its identified ``SUBDIR``.
-
-``cdpub [SUBDIR]``                 cd to *public projects*; the directory identified by
-                                   ``USRHOME_DIR_PUBLIC``, or its identified
-                                   ``SUBDIR``.
-                                   This directory tree is meant to hold the
-                                   repositories of your public projects.
-
-``cdother [SUBDIR]``               cd to *other public projects*; the directory identified by
-                                   ``USRHOME_DIR_OTHER``, or its identified
-                                   ``SUBDIR``.
-                                   This directory tree is meant to hold clones
-                                   of public projects repositories where you
-                                   do not submit anything.
-
-``cdlocal [SUBDIR]``               cd to *local, private, projects*; the directory identified by
-                                   ``USRHOME_DIR_LOCAL``, or its identified
-                                   ``SUBDIR``.
-                                   This directory tree is meant to hold files
-                                   that you keep on your system and do not
-                                   publish anywhere.
-
-``cdcontract [SUBDIR]``            cd to *local, private, contract projects*; the directory identified by
-                                   ``USRHOME_DIR_CONTRACT``, or its identified
-                                   ``SUBDIR``.
-                                   This directory tree is meant to hold
-                                   contract related files
-                                   that you keep on your system and only share
-                                   with your customer or employer.
-
-================================== ================================================================
-
-The commands described above change the current directory to several conceptually important
-(*holder*) directories.  Those directories are identified by USRHOME environment variables.
-The name of these environment variables start with the ``USRHOME_DIR_``
-prefix. They are:
-
-USRHOME_DIR_MY:
-  The directory where all your development directories are located.
-
-  - On macOS, it is often different from ``HOME``:
-
-    - it could be ``$HOME/Documents`` if you want the files located
-      in that directory tree replicated by Apple iCloud or,
-    - it could be another directory, like ``$HOME/my`` if you do *not*
-      want them replicated and stored in the iCloud.
-
-  - On any system, it could be used to identify a directory tree specific to a given activity or content
-    type or just be set to the value of ``$HOME``.
-
-USRHOME_DIR_LIC:
-  The directory where you could collect all the licence files you have agreed with when
-  using a software service or package.
-
-USRHOME_DIR_LOG :
-  The directory where you could store activity log files and notes.
-
-USRHOME_DIR_TMP:
-  The name of a directory where your user's temporary files may be stored,
-  in a separate directory than the standard ``/tmp`` directory.
-  That can be used for testing code and checking if your tested code suffers from
-  *temporary file leakage*.
 
 
 
-**Where to Define these Environment Variables**
-
-These environment variables are defined in the user persistent configuration
-file common to Bash and Z Shell: the ``usrcfg/setfor-all-config.sh`` file.
-
-During installation_, the `setup/setup-usrhome`_ script initializes them
-to the value stored in `usrhome/template/setfor-all-config.sh`_ template file.
-You can change them or add logic in your file to control their values any way you need.
-
-The following commands are shortcuts to change the current directory to one of these
-directories.
-
-**Obsolete environment variables**
-
-The following environment variables were previously used and have now been
-replaced.  If you code uses them you will have to update that code to take the
-new names into account.
-
-
-USRHOME_DIR_DV:
-  This used to identify the main development directory tree.
-  This concept is no longer supported; the new directory names
-  are tied to their privacy context.
-
-USRHOME_DIR_PRIV:
-  This has been replaced by either USRHOME_DIR_CONTRACT or USRHOME_DIR_LOCAL,
-  where the first one is private because it's for files developed for
-  contractual purposes.  The second is for you local files that you do not
-  intend to publish anywhere (yet or always).
-
-USRHOME_DIR_PUB:
-  This was replaced by USRHOME_DIR_PUBLIC or USRHOME_DIR_OTHER.
-  Both are for public files; the first one is for your own projects that you
-  publish while the second is for other public projects without any of your
-  participation.
-
-The following old commands have been removed.
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``cddv [SUBDIR]``                  cd to *main development*; the directory identified by
-                                   ``USRHOME_DIR_DV`` or its identified ``SUBDIR``.
-
-``cdpriv [SUBDIR]``                cd to *private projects*; the directory identified by
-                                   ``USRHOME_DIR_PRIV`` or its identified ``SUBDIR``.
-
-``cdpub [SUBDIR]``                 It still exists **but** instead of using
-                                   ``USRHOME_DIR_PUB`` it used ``USRHOME_DIR_PUBLIC``.
-================================== ================================================================
 
 
 Listing Files/Directories/Links
@@ -1664,11 +1572,11 @@ USRHOME Command Name               Description
                                    - Prepends only the directories that exits
                                      and are not already present in PATH.
 
-                                    - Examples:
+                                     - Examples:
 
-                                      - ``prepend_to_path ~/my-bin``
-                                      - ``prepend_to_path ~/my-bin:$HOME/other-bin``
-                                      - ``prepend_to_path $HOME/my-bin:$HOME/other-bin``
+                                       - ``prepend_to_path ~/my-bin``
+                                       - ``prepend_to_path ~/my-bin:$HOME/other-bin``
+                                       - ``prepend_to_path $HOME/my-bin:$HOME/other-bin``
 
                                    - **Caution**: shells only expand the ~ at the beginning
                                      of strings, therefore you cannot use it elsewhere in the
@@ -2087,76 +1995,6 @@ each one if you want.  Or just use one method.  The code is flexible.
   files with a `PDF index`_ to a large set of topics and file format/language supports).
   The `help PDF`_ has a `section that describe Emacs man and woman support`_.
 
-
-Miscellaneous Commands
-----------------------
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``cls``                            Shortcut for ``clear``; clear the content of the shell window.
-
-diff_                              USRHOME diff_ is a shell-based dispatcher program.
-
-                                   - By default it uses the standard ``/usr/bin/diff`` program
-                                   - You can change this behaviour in the current shell by
-                                     executing the ``use-diff`` command (an alias which sources
-                                     the `envfor-diff`_ script).  With it, you can select other
-                                     programs that will be invoked by the command.
-
-
-``dsize [DPATH]``                  Compute and print the size of all files in the directory tree
-                                   identified by DPATH, which defaults to the current directory.
-                                   If the directory has no sub-directories the command counts
-                                   the bytes of each files in the directory and produces a byte
-                                   count. Otherwise it uses the ``du`` command, which runs faster,
-                                   and print the size in units of 1024 bytes multiples.
-
-find-dir_                          Find and print directories DIR inside directory tree ROOT.
-
-                                   Its help is::
-
-                                      Usage: find-dir [--inc-hidden|-H] DIR [ROOT]
-                                             find-dir [-h|--help]
-
-                                      Find and print all directories with name 'DIR'
-                                      inside the specified directory tree ('ROOT').
-
-                                      - By default ROOT is the current directory.
-                                      - By default exclude all hidden directories (such as .git)
-                                        unless --inc-hidden option is specified.
-
-                                      Exit codes: 0 if at least one directory found.
-                                                : 1 if nothing is found.
-                                                : 2 if the command line is invalid.
-
-
-``flip-to-ln DPATH FNAME``         Move file FNAME into directory DPATH and create a symbolic link
-                                   FNAME that points to its new location inside directory DPATH.
-
-                                   - Under Linux, where the GNU coreutils ln (>= 8.16) has the
-                                     ``-r`` option switch, the symbolic links are always created
-                                     relative if they can be.
-                                   - Under macOS if you need to create relative symbolic links
-                                     you must provide relative FNAME and DNAME arguments.
-
-``md``                             Shortcut for ``mkdir``
-
-``rd``                             Shortcut for ``rmdir``
-
-``mdd DIRPATH``                    A mkdir followed by cd.  If DIRPATH has '/', then create
-                                   intermediate directories as required and print them on stdout.
-
-``p3``                             Shortcut for ``python3``
-
-``pngquantf FNAME``                Compress PNG file identified by FNAME (with or without ``.png``
-                                   file extension.   Uses pngquant_.
-
-``pstree-for [PID]``               Print the process tree for specified process ID, PID.
-                                   If PID is not specified, the command uses the process ID of
-                                   the current process.
-================================== ================================================================
-
 Additional Scripts
 ------------------
 
@@ -2179,10 +2017,6 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 `use-cc-options`_                                      Configure extra options for the augmented ``cc`` command.
 
-`use-mk-diffo`_                                        Configure ``mk-diffo``.
-
-`use-git-extra`_                                       Set up extra Git completion where supported.
-
 `use-perlbrew`_                                        Activate an installed Perlbrew environment.
 
 `use-sdkman`_                                          Activate an installed SDKMAN environment.
@@ -2204,8 +2038,23 @@ Command or file                                        Description
 `use-llvm`_                                            Activate Homebrew LLVM on macOS.
 ====================================================== ===========================================================================
 
-Development and conversion
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Programming Language Support
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
+`clang-version`_                                       Print the Clang version. If its C++ executable is missing, attempt to build
+                                                       it with ``make``.
+
+`isvalid-python3`_                                     Check a file with Python 3's ``compileall`` module.
+
+`lisp`_                                                Launch the Common Lisp implementation selected by a ``use-lisp-with-*``
+                                                       environment script.
+====================================================== ===========================================================================
+
+Code Analysis Commands
+~~~~~~~~~~~~~~~~~~~~~~
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -2214,24 +2063,244 @@ Command or file                                        Description
                                                        tree, performing validation checks that ShellCheck does not do. With ``-s``
                                                        or ``-S``, also execute ShellCheck. All USRHOME executable and source shell
                                                        files are analyzed by this tool.
+====================================================== ===========================================================================
 
-`diff`_                                                Shell-based dispatcher. By default it uses ``/usr/bin/diff``. The `use-diff
-                                                       command`_ selects other programs for the current shell.
 
+
+File Diff Operations
+~~~~~~~~~~~~~~~~~~~~
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
 `use-diff`_                                            Select the program invoked by USRHOME's ``diff`` dispatcher in the current
                                                        shell.
 
-`clang-version`_                                       Print the Clang version. If its C++ executable is missing, attempt to build
-                                                       it with ``make``.
+                                                       **Usage**::
+
+                                                          use-diff [PROGRAM-NICKNAME]
+
+                                                          Supported PROGRAM-NICKNAME:
+
+                                                          - diff            : The default.  Use /usr/bin/diff.
+                                                          - diff-u          : Use /usr/bin/diff -u
+                                                          - bcomp           : Use Beyond Compare launcher
+                                                          - bcompare        : Use Beyond Compare main application.
+                                                          - svndiff-diff    : Use diff, but expect arguments provided by svndiff.
+                                                          - svndiff-bcomp   : Use bcomp, but expect arguments provided by svndiff.
+                                                          - svndiff-bcompare: Use bcompare, but expect arguments provided by svndiff.
+
+                                                       **alias:** `to ibin/envfor-diff`_
+
+diff_                                                  USRHOME diff_ is a shell-based dispatcher program.
+
+                                                       - By default it uses the standard ``/usr/bin/diff`` program
+                                                       - You can change this behaviour in the current shell by
+                                                         executing the ``use-diff`` command (an alias which sources
+                                                         the `envfor-diff`_ script).  With it, you can select other
+                                                         programs that will be invoked by the command.
 
 `diffo`_                                               Compare object files by their disassembled code.
 
+                                                       **Usage**::
+
+                                                          diffo -h | --help
+
+                                                          diffo [[-w | --with-source]  [-s | --string] [-l | --less]]  OBJ-OLD OBJ-NEW
+
+                                                             - OBJ-OLD            : path of the old object file.
+                                                             - OBJ-NEW            : path of the new object file.
+                                                             - -w | --with-source : insert C/C++ source code in the generated assembler.
+                                                             - -s | --string      : also compare strings extracted from files.
+                                                             - -l | --less        : pipe differences to less
+
+
 `dumpo`_                                               Print an object's disassembly.
+
+                                                       **Usage**::
+
+                                                             dumpo -h | --help
+
+                                                             dumpo [[-w | --with-source]  [-l | --less]] OBJ
+
+                                                                - OBJ                : path of the object file.
+                                                                - -w | --with-source : insert C/C++ source code in the generated assembler.
+                                                                - -l | --less        : pipe differences to less
+====================================================== ===========================================================================
+
+
+Track Evolution of Compiled File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use the ``mk-diffo`` utility to track the evolution of a source code file
+over its modifications by comparing the assembler code generated from the
+compiler for it as it evolves.
+
+mk-diffo does not compile that file; it generates the assembler code from the
+existing object file and keeps a copy of the source file, the object file
+and the assembler file for each time you use ``mk-diffo`` inside a directory
+tree.  The root of the directory tree is named after a project and under it
+the source file name.  ``mk-diffo`` uses the ``diffo`` utility to generate the
+assembler from the object file and the diff from the previous version.
+
+After using it once, mk-diffo compares the generate assembler file of the
+very first generated copy (by default) with the latest one it just
+created. It then prints the difference if there are any.  If they are the
+same, it prints a message stating that.
+
+Before using ``mk-diffo``, execute ``use-mk-diffo`` to set up the environment
+variables used to identify the location of the directory tree, the project
+name, the name of the source code file, the directory where the object file
+is stored and it's extension.
+
+You'd typically execute ``mk-diffo`` after each compilation of the source code
+file after it's modification to check if the generated code has changed.
+This can be quite comforting to know that the generated assembler code has
+not changed after making style-only code changes. Use it to reduce tension
+among the development team when changing code to make it more readable, fix
+warnings and any change you deem important but want to ensure no problem is
+caused by those changes.
+
+
+**To use it**:
+
+- Make sure you compile the C/C++ source files with debugging activated.
+- Specialize your shell by executing: ``use-mkdiffo``
+
+  - This identifies the following:
+
+    - ``USRHOME_DIFFO_ROOT_DIR``: The directory tree where all files are stored.
+    - ``USRHOME_DIFFO_PROJECT`` : The project name; used as a sub-directory in the main directory tree.
+    - ``USRHOME_DIFFO_FNAME``   : The full path to the source code file checked.
+    - ``USRHOME_DIFFO_OBJ_DIR`` : The full path of the directory holding the the object file resulting from the compilation of the source code file.
+
+- When executing mk-diffo, the extra information is passed:
+
+  - The file version number, starting at 0 and incremented each time
+    the mk-diffo command is issued for the specific project.
+
+**Directory Tree**:
+
+All files are stored inside a single directory tree. The directory tree has
+four directory levels:
+
+- The root directory identified by USRHOME_DIFFO_ROOT_DIR (here, ~/my/results/diffo).
+- The project name, identified by USRHOME_DIFFO_PROJECT (in the following
+  diagram you can see two projects: proj-1 and proj-2.)  Any name can be
+  used.
+- The file name, identified by USRHOME_DIFFO_FNAME.  Inside the proj-1, we
+  can see file-a.c and file-b.c.  In project-2 we can see pel.cpp.
+- The test number, starting at 0.
+
+Here's an example of the directory tree maintained by ``mk-diffo``::
+
+          ~/my/results
+          └── diffo
+              ├── proj-1
+              │   ├── file-a.c
+              │   │   ├── 000
+              │   │   │   ├── file-a.asm
+              │   │   │   ├── file-a.c
+              │   │   │   └── file-a.o
+              │   │   └── 001
+              │   │       ├── file-a.asm
+              │   │       ├── file-a.c
+              │   │       └── file-a.o
+              │   └── file-b.c
+              │       ├── 000
+              │       │   ├── file-b.asm
+              │       │   ├── file-b.c
+              │       │   └── file-b.o
+              │       ├── 001
+              │       │   ├── file-b.asm
+              │       │   ├── file-b.c
+              │       │   └── file-b.o
+              │       └── 002
+              │           ├── file-b.asm
+              │           ├── file-b.c
+              │           └── file-b.o
+              └── proj-2
+                  └── pel.cpp
+                      └── 000
+                          ├── pel.asm
+                          ├── pel.cpp
+                          └── pel.o
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
+`use-mk-diffo`_                                        Setup the shell to use ``mk-diffo`` to track evolution
+                                                       of the object code of a source code file.
+
+                                                       **Usage**::
+
+                                                          use-mk-diffo -h | --help
+
+                                                          use-mk-diffo DB-ROOT-DIR PROJECT SRC_FNAME OBJ-DIR [OBJ-EXT]
+
+                                                          where:
+                                                            - DB-ROOT-DIR: The directory tree where all files are stored.
+                                                            - PROJECT    : The name of the project to which SRC_FNAME belongs.
+                                                                           That name is used as the name of the sub-directory
+                                                                           of the main directory tree, identified by DB-ROOT_DIR
+                                                            - SRC_FNAME  : The source code file name (with its extension).
+                                                                           Identify the absolute path of the file or
+                                                                           the path relative to the directory from where the
+                                                                           mk-diffo commands will be issued.
+                                                            - OBJ_DIR    : The full path of the directory holding the
+                                                                           the object file resulting from the compilation
+                                                                           of the source code file.
+                                                            - OBJ-EXT    : Object file extension. Include the leading period.
+                                                                           If not specified it defaults to ".o".
+                                                                           To specify empty extension, if you want to track the
+                                                                           evolution of single source file program executable,
+                                                                           use " ".
+
+                                                       **alias:** `to ibin/envfor-mk-diffo`_
 
 `mk-diffo`_                                            Record and compare object code across versions. Requires the
                                                        ``USRHOME_DIFFO_*`` environment.
 
-`isvalid-python3`_                                     Check a file with Python 3's ``compileall`` module.
+                                                       **Usage**::
+
+                                                         mk-diffo [[-w | --with-source] [-s | --string] [-l | --less]] [REFNO]
+
+                                                         Store the source and object file inside the mk-diffo directory tree
+                                                         for the current file and reference number, then compare the object file
+                                                         with the object file for the previous version or the version specified by
+                                                         REFNO.
+
+                                                            REFNO : optional reference number.  Default is last one created.
+                                                                    It must be a valid integer.
+                                                                    Leading 0 are accepted, but remain a base-10 value.
+
+                                                            Options passed to diffo:
+                                                            - -w | --with-source : insert C/C++ source code in the generated assembler.
+                                                            - -s | --string      : compare strings extracted from files (always generated).
+                                                            - -l | --less        : pipe differences to less
+
+                                                         ENVIRONMENT:
+                                                           - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
+                                                           - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
+                                                                                     in the main directory tree.
+                                                           - USRHOME_DIFFO_FNAME   : The source code file name.
+                                                           - USRHOME_DIFFO_OBJ_DIR : Directory name of the corresponding object file.
+                                                           - USRHOME_DIFFO_OBJEXT  : Object file extension. Include leading period.
+                                                                                     Defaults to \".o\".
+                                                                                     Use \" \" for extension-less files
+                                                                                     if you want to analyze single source file
+                                                                                     executable files.
+
+====================================================== ===========================================================================
+
+
+Git Support Commands
+~~~~~~~~~~~~~~~~~~~~
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
+`use-git-extra`_                                       Activation command: Set up extra Git completion for the shell where supported.
 
 `git-lbr`_                                             List selected local or remote Git branches.
 
@@ -2241,18 +2310,31 @@ Command or file                                        Description
 
 `git-sw`_                                              Check out a branch. Can use shell completion.
 
+`git-cln`_ ``REPO`` ``BRANCH``                         Clone a Git repo and check out a specific branch.
+
+                                                       - REPO:   the Git repository url.
+                                                       - BRANCH: the Git branch name.  One that is shown by 'git branch'.
+
+                                                       The git clone is only done if the specified BRANCH exists in the
+                                                       specified REPO.  The local directory created for the REPO is named
+                                                       after the BRANCH.
+
+====================================================== ===========================================================================
+
+Text File Format Conversion
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
 `iconv-iso8859-utf8`_                                  Convert a file from ISO-8859-1 to UTF-8. Copy the original to
                                                        ``USRHOME_DIR_TMP`` and overwrite the input file.
 
 `iconv-iso8859-utf8-all`_                              Use ``fd`` (or ``find``) and ``file`` to select files for the same
                                                        conversion. Review the selection and keep backups before use.
-
-`download-website`_                                    Use ``wget`` to download a URL tree into the current directory and adjust
-                                                       links for local viewing.
-
-`lisp`_                                                Launch the Common Lisp implementation selected by a ``use-lisp-with-*``
-                                                       environment script.
 ====================================================== ===========================================================================
+
+
 
 
 
@@ -2264,9 +2346,12 @@ Files and searches
 ======================================== ===========================================================================
 Command or file                          Description
 ======================================== ===========================================================================
-`dsize`_                                 Compute and print the size of files in a directory tree. DPATH defaults to
+`dsize`_ ``[DPATH]``                     Compute and print the size of files in a directory tree. DPATH defaults to
                                          the current directory. Without subdirectories, count bytes in each file.
-                                         Otherwise, use ``du`` and print units of 1024 bytes.
+                                         If the directory has no sub-directories the command counts
+                                         the bytes of each files in the directory and produces a byte
+                                         count. Otherwise it uses the ``du`` command, which runs faster,
+                                         and print the size in units of 1024 bytes multiples.
 
 `find-dir`_                              Find directories named DIR inside ROOT. ROOT defaults to the current
                                          directory. Hidden directories are excluded unless ``--inc-hidden`` or
@@ -2277,13 +2362,25 @@ Command or file                          Description
                                            find-dir [--inc-hidden|-H] DIR [ROOT]
                                            find-dir [-h|--help]
 
-                                         Exit codes: 0 if at least one directory is found, 1 if none is found, and 2
-                                         for invalid arguments.
+                                           Find and print all directories with name 'DIR'
+                                           inside the specified directory tree ('ROOT').
 
-`flip-to-ln`_                            Move file FNAME into directory DPATH and create a symbolic link at FNAME.
-                                         On Linux with GNU coreutils ``ln`` >= 8.16, create relative links when
-                                         possible. On macOS, use relative FNAME and DPATH arguments to create a
-                                         relative link.
+                                           - By default ROOT is the current directory.
+                                           - By default exclude all hidden directories (such as .git)
+                                             unless --inc-hidden option is specified.
+
+                                           Exit codes: 0 if at least one directory found.
+                                                     : 1 if nothing is found.
+                                                     : 2 if the command line is invalid.
+
+`flip-to-ln`_ ``DPATH FNAME``            Move file FNAME into directory DPATH and create a symbolic link at FNAME
+                                         that points to the file.
+
+                                         - Under Linux, where the GNU coreutils ln (>= 8.16) has the
+                                           ``-r`` option switch, the symbolic links are always created
+                                           relative if they can be.
+                                         - Under macOS if you need to create relative symbolic links
+                                           you must provide relative FNAME and DNAME arguments.
 
 `files-in`_                              List entries in a directory tree, including symbolic links. ``-l`` requests
                                          a long listing.
@@ -2317,29 +2414,262 @@ Command or file                          Description
 `rgf`_                                   Search selected file types with ``rg`` or ``rga``. ``bin/sub/rg-f``
                                          implements its type dispatch.
 
-`pngquantf`_                             Compress the PNG file identified by FNAME, with or without the ``.png``
-                                         extension. Uses pngquant_.
+`pngquantf`_ ``FNAME``                   Compress the PNG file identified by FNAME, with or without the ``.png``
+                                         extension. Uses pngquant_.  Useful under Emacs `Dired`_ to comppress
+                                         selected png files.
 
 `print-if-exists`_                       Read paths from standard input and print the normalized paths that exist.
 
 `withh-ls`_                              Print a header for the last argument before invoking ``ls``.
 
 `withh-rpm`_                             Print a header for the last argument before invoking ``rpm``.
+
+`download-website`_                      Use ``wget`` to download a URL tree into the current directory and adjust
+                                         links for local viewing.
 ======================================== ===========================================================================
 
 Directory Commands
 ~~~~~~~~~~~~~~~~~~
 
+Directory Navigation
+^^^^^^^^^^^^^^^^^^^^
+
+Extensions to the ``cd`` command.
+
 ================================== ===========================================================================
 Command or file                    Description
 ================================== ===========================================================================
-`md`_                              Shortcut for ``mkdir``.
+`..`_ ``[DIR]``                    Change current directory to parent directory and optionally to its sibling
+                                   specified by the optional argument.
 
-`rd`_                              Shortcut for ``rmdir``.
+                                   - ``..`` is equivalent to ``cd ..``
+                                   - ``.. abc`` is equivalent to ``cd ../abc``
 
-`mdd`_                             Run ``mkdir`` followed by ``cd``. If DIRPATH has '/', create intermediate
-                                   directories as required and print them on stdout.
+`...`_ ``[DIR]``                   Change current directory to grand-parent directory and optionally to its sibling
+                                   specified by the optional argument.
+
+                                   - ``...`` is equivalent to ``cd ../..``
+                                   - ``... abc`` is equivalent to ``cd ../../abc``
+
+`....`_ ``[DIR]``                  Change current directory to grand-grand-parent directory and optionally to
+                                   its sibling  specified by the optional argument.
+
+                                   - ``....`` is equivalent to ``cd ../../..``
+                                   - ``.... abc`` is equivalent to ``cd ../../../abc``
+
+
+`cd-to`_                           Search for file specified by file FNAME or directory DNAME in
+                                   current directory tree.
+
+                                   - Usage:
+
+                                     - ``cd-to [-h|--help]``
+                                     - ``cd-to [-H] FNAME``
+                                     - ``cd-to -d [-H] DNAME``
+
+                                   - The FNAME and DNAME can be expressed with `fd`_ glob support.
+                                   - By default, does not search into hidden directories.
+                                     Specify the ``-H`` option to search into them.
+                                   - If **one** file/directory is found, change the current
+                                     directory to the directory that holds it and print the
+                                     ``ls -l`` for it.
+                                   - If several files/directories are found, print a cautionary
+                                     note with the number of found items and their path names
+                                     (relative to current directory).
+
+                                     - If the ``EDITOR`` environment variable is set, the script
+                                       prompts the user for editing the items.  On a 'y' answer it
+                                       edits the files found using the editor selected by ``EDITOR``.
+
+                                   - File search performed by the `fd`_ utility.  If it's not
+                                     installed the command exits with an error.
+
+                                   - Exit code:
+
+                                     - 0: one file was found, the current directory was changed.
+                                     - 1: no file found.
+                                     - n: the number of files found if they were not edited.
+
+`pel`__ ``[SUBDIR]``               Change current directory to PEL_ depot directory or its sub-directory
+                                   if specified by the SUBDIR argument.
+                                   Also set terminal title to 'PEL'.
+
+`usrhome`_ ``[SUBDIR]``            Change current directory to USRHOME depot directory or its sub-directory
+                                   if specified by the SUBDIR argument.
+                                   Also set terminal title to 'USRHOME'.
+
+`usrcfg`_ ``[SUBDIR]``             Change current directory to the USRHOME personal/persistent
+                                   configuration directory, usrcfg, or its sub-directory if specified
+                                   by the SUBDIR argument.
+                                   Also set terminal title to 'USRHOME:usrcfg'.
 ================================== ===========================================================================
+
+
+__  ibin/setfor-alias#L587
+
+
+Cd to Conceptual Directories
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+`cdh`_ ``[SUBDIR]``                cd to *home*: the directory identified by ``USRHOME_DIR_MY``
+                                   or its identified ``SUBDIR``.
+
+`cdlic`_ ``[SUBDIR]``              cd to the directory identified by the ``USRHOME_DIR_LIC``
+                                   or its identified ``SUBDIR``.
+
+`cdlog`_ ``[SUBDIR]``              cd to the directory identified by the ``USRHOME_DIR_LOG``
+                                   or its identified ``SUBDIR``.
+
+`cdv`_ ``[SUBDIR]``                **On macOS only**, cd to the ``/Volume`` directory
+                                   or its identified ``SUBDIR``.
+
+`cdtmp`_ ``[SUBDIR]``              cd to user-specific temporary directory, identified by
+                                   ``USRHOME_DIR_TMP`` or its identified ``SUBDIR``.
+
+`cdpub`_ ``[SUBDIR]``              cd to *public projects*; the directory identified by
+                                   ``USRHOME_DIR_PUBLIC``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold the
+                                   repositories of your public projects.
+
+`cdother`_ ``[SUBDIR]``            cd to *other public projects*; the directory identified by
+                                   ``USRHOME_DIR_OTHER``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold clones
+                                   of public projects repositories where you
+                                   do not submit anything.
+
+`cdlocal`_ ``[SUBDIR]``            cd to *local, private, projects*; the directory identified by
+                                   ``USRHOME_DIR_LOCAL``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold files
+                                   that you keep on your system and do not
+                                   publish anywhere.
+
+`cdcontract`_ ``[SUBDIR]``         cd to *local, private, contract projects*; the directory identified by
+                                   ``USRHOME_DIR_CONTRACT``, or its identified
+                                   ``SUBDIR``.
+                                   This directory tree is meant to hold
+                                   contract related files
+                                   that you keep on your system and only share
+                                   with your customer or employer.
+
+================================== ================================================================
+
+The commands described above change the current directory to several conceptually important
+(*holder*) directories.  Those directories are identified by USRHOME environment variables.
+The name of these environment variables start with the ``USRHOME_DIR_``
+prefix. They are:
+
+USRHOME_DIR_MY:
+  The directory where all your development directories are located.
+
+  - On macOS, it is often different from ``HOME``:
+
+    - it could be ``$HOME/Documents`` if you want the files located
+      in that directory tree replicated by Apple iCloud or,
+    - it could be another directory, like ``$HOME/my`` if you do *not*
+      want them replicated and stored in the iCloud.
+
+  - On any system, it could be used to identify a directory tree specific to a given activity or content
+    type or just be set to the value of ``$HOME``.
+
+USRHOME_DIR_LIC:
+  The directory where you could collect all the licence files you have agreed with when
+  using a software service or package.
+
+USRHOME_DIR_LOG :
+  The directory where you could store activity log files and notes.
+
+USRHOME_DIR_TMP:
+  The name of a directory where your user's temporary files may be stored,
+  in a separate directory than the standard ``/tmp`` directory.
+  That can be used for testing code and checking if your tested code suffers from
+  *temporary file leakage*.
+
+
+
+**Where to Define these Environment Variables**
+
+These environment variables are defined in the user persistent configuration
+file common to Bash and Z Shell: the ``usrcfg/setfor-all-config.sh`` file.
+
+During installation_, the `setup/setup-usrhome`_ script initializes them
+to the value stored in `usrhome/template/setfor-all-config.sh`_ template file.
+You can change them or add logic in your file to control their values any way you need.
+
+The following commands are shortcuts to change the current directory to one of these
+directories.
+
+**Obsolete environment variables**
+
+The following environment variables were previously used and have now been
+replaced.  If you code uses them you will have to update that code to take the
+new names into account.
+
+
+USRHOME_DIR_DV:
+  This used to identify the main development directory tree.
+  This concept is no longer supported; the new directory names
+  are tied to their privacy context.
+
+USRHOME_DIR_PRIV:
+  This has been replaced by either USRHOME_DIR_CONTRACT or USRHOME_DIR_LOCAL,
+  where the first one is private because it's for files developed for
+  contractual purposes.  The second is for you local files that you do not
+  intend to publish anywhere (yet or always).
+
+USRHOME_DIR_PUB:
+  This was replaced by USRHOME_DIR_PUBLIC or USRHOME_DIR_OTHER.
+  Both are for public files; the first one is for your own projects that you
+  publish while the second is for other public projects without any of your
+  participation.
+
+The following old commands have been removed.
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+``cddv [SUBDIR]``                  cd to *main development*; the directory identified by
+                                   ``USRHOME_DIR_DV`` or its identified ``SUBDIR``.
+
+``cdpriv [SUBDIR]``                cd to *private projects*; the directory identified by
+                                   ``USRHOME_DIR_PRIV`` or its identified ``SUBDIR``.
+
+``cdpub [SUBDIR]``                 It still exists **but** instead of using
+                                   ``USRHOME_DIR_PUB`` it used ``USRHOME_DIR_PUBLIC``.
+================================== ================================================================
+
+
+Make directory
+~~~~~~~~~~~~~~
+
+================================== ===========================================================================
+Command or file                    Description
+================================== ===========================================================================
+`md`_                              Alias to ``mkdir``; make directory.
+
+`mdd`_                             Make directory and cd into it.
+                                   This executes ``mkdir`` followed by ``cd``.
+                                   If DIRPATH has '/', create intermediate directories as required
+                                   and print them on stdout.
+================================== ===========================================================================
+
+Remove Empty Directory
+~~~~~~~~~~~~~~~~~~~~~~
+
+================================== ===========================================================================
+Command or file                    Description
+================================== ===========================================================================
+`rd`_                              Alias to ``rmdir``; remove empty directory.
+================================== ===========================================================================
+
+
+
 
 System and process information
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2380,7 +2710,7 @@ Command or file                                        Description
 
 `ps-python`_                                           List Python processes running in terminals.
 
-`pstree-for`_                                          Print the process tree for PID. If PID is not specified, use the process ID
+`pstree-for`_ ``PID]``                                 Print the process tree for PID. If PID is not specified, use the process ID
                                                        of the current process.
 
 `shell-age`_                                           Report when the shell opened and its age.
@@ -2532,192 +2862,6 @@ Command or file                                                          Descrip
 `test/run-tests`_                                                        Run ``test/test-sanitize-path.sh`` with available shells. Run from the
                                                                          repository root with ``./test/run-tests``.
 ======================================================================== ===========================================================================
-
-
-
-USRHOME Prompt
-==============
-
-USRHOME provides control for the Z Shell and Bash prompts as described in this
-section. USRHOME provides 3 pre-defined prompt models (model 1, 2 and 3) and
-reserves prompt model number 0 to be user-defined.
-
-Information About Prompt Control Variables
-------------------------------------------
-
-URSHOME provides the following commands to get information about the shell
-prompt.
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``info-prompt [-q]``               Print information about shell's prompt controlling variables.
-                                   By default it prints the values of all variables.  With the
-                                   ``-q`` option it only prints the values of
-                                   the ``USRHOME_PROMPT_MODEL``
-                                   and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
-                                   shows the value of the default prompt mode, the second one, if
-                                   set, is the model of the current prompt, overriding the default.
-================================== ================================================================
-
-USRHOME prompt model control logic supports the environment variables
-described here:
-
-================================== ================================================================
-Environment variable               Description
-================================== ================================================================
-USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use of 1-second
-                                   resolution timer for the Bash prompt.
-
-                                   This is done by ignoring the potential availability of the GNU
-                                   coreutils ``gdate`` command and use the macOS supplied ``date``
-                                   command.
-
-                                   You may want to do this if the Bash prompt on macOS runs into a
-                                   race condition and prints a message similar to::
-
-                                     bash: child setpgid (75144 to 75141): Operation not permitted
-
-                                   This might occur when you are executing a fast command and pipe
-                                   it into another.
-
-                                   Setting USRHOME_SLOW_TIMER should prevent this problem.  You can
-                                   do it dynamically inside the Bash shell like this::
-
-                                     setenv USRHOME_SLOW_TIMER
-                                     bash
-
-                                   Or you can set it inside your usrcfg/setfor-all-config.sh by
-                                   including the following lines::
-
-                                     USRHOME_SLOW_TIMER=1
-                                     export USRHOME_SLOW_TIMER
-================================== ================================================================
-
-Prompt Model 0
---------------
-
-With the ``USRHOME_PROMPT_MODEL`` environment variable set to 0, USRHOME
-does **not** configure the zsh prompt and expects the prompt to be set inside
-the user provided configuration files located inside the usrcfg directory,
-otherwise it uses the system default.
-
-
-Prompt Model 1, 2 and 3
------------------------
-
-These prompt models are predefined prompts that show multiple values in various
-ways.  As these might evolve over time, it's best to try them and see them in
-your terminal.
-
-The ``user@host`` information is shown when enabled. This can be dynamically
-enabled or disabled with the ``usrhome-prompt-toggle-usr-host`` command.
-
-In the following sessions, the command ``info-prompt -q`` is used to show which
-one is the default prompt model and which one is the currently used prompt.
-
-**The bash prompts**
-
-.. figure:: res/macOS-bash-prompts-01.png
-
-**The zsh prompts**
-
-.. figure:: res/macOS-zsh-prompts-01.png
-
-**Notable prompt features**
-
-All provided prompts, show:
-
-- A leading '>' character,
-- the exit code of the last command, in decimal or hexadecimal,
-- current time in 24-hour HH:MM:SS format,
-- the shell nested level, prefixed with 'L',
-- optional user-name @ host-name,
-- the full or last 3 directory components of the current directory,
-- the shell name (bash, or zsh),
-- the last character is '#' if the current user has root privilege,
-  otherwise the '$' character is used for bash and the '%' character is for zsh.
-
-Some also show the Week day and month date, the number of currently running jobs
-of the shell.
-
-Prompt model 2 and 3 prints the elapsed time of the last command with
-millisecond resolution.  On macOS without GNU coreutils gdate available the
-resolution is in seconds.
-
-The zsh prompt can also print extra information:
-
-- zsh prompt model 1 shows extra information on the right side of the line,
-  there is enough room: the full path of the current directory, and VCS (Git or
-  Mercurial) repository name.
-- The VCS (Git or Mercurial) repository name is shown in all zsh prompts.
-
-  - If the current directory is part of a Git or Mercurial repository, the
-    prompt shows 2 spaces followed by:
-
-    - 'git:' for Git repository and 'hg:' for Mercurial repository,
-    - the VCS branch name in parenthesis
-    - the VCS repository name.
-
-- Exit code of error and number of running jobs are  also shown in the right
-  hand side in zsh prompts.
-
-  - If the exit code of the last error is not 0, the exit code followed by
-    a red '⨯' character.
-  - If the shell has sub-process jobs, the number of jobs is shown,
-    followed by a yellow '⚙' character.
-
-**Examples**
-
-Some extra examples shown here:
-
-.. figure:: res/zsh-prompt-01.png
-
-
-Here's an example when the prompt model 2 is selected by user configuration
-and the user dynamically changes it inside the shell.
-
-
-.. figure:: res/zsh-prompt-02.png
-
-And here's another example, when the shell with prompt model 2, has two nested
-instances of suspended Emacs running, in a macOS terminal.
-
-.. figure:: res/zsh-prompt-03.png
-
-When the shell has running background jobs, the USRHOME commands that use
-``exec zsh`` to re-initialize the Z Shell won't proceed and will print a
-warning message instead.  In the example above the two running process where ``e`` the
-USRHOME name for terminal-based emacs.  To be able to change the process
-prompt, these two suspended Emacs process must first be terminated (by making
-them active in the foreground again with ``fg`` and then closing Emacs).  Once
-there's no background process the ``usrhome-prompt-toggle-usr-host`` command
-can be used.
-
-Showing the shell type helps when capturing commands for logs: it explicitly
-identifies the shell.
-
-.. figure:: res/zsh-prompt-model-3.png
-
-Prompt Search Regexp
---------------------
-
-Use the following regular expressions to search a prompt, or
-to install them in editors, like Emacs, to navigate through
-prompt lines inside a shell.
-
-The regular expression syntax shown here correspond to the
-`Emacs 'string-format' regular expression syntax`_, the syntax you can use
-inside Emacs configuration.
-
-============================ ========================================
-Prompt                       Emacs Regular Expression
-============================ ========================================
-All models                   ``^\(\(zsh\)\|\(bash\)\)[%#$]``
-============================ ========================================
-
-
-
 
 Command and Script Organization
 ===============================
@@ -3097,21 +3241,103 @@ mentions that USRHOME sanitized the PATH and how to see more as we can see here:
 
 .. figure:: res/zsh-tracing-aquamacs-02.png
 
-USRHOME Security Checking
-=========================
 
-USRHOME reports the security issues by checking for the presence of
-compromised command line tools in the PATH.  The list of detected compromised
-tools is:
+Setup Examples
+==============
 
-- `xz version 5.2.5`_
-- `xz version 5.6.0 and 5.6.1`_
+Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
+9.3.
 
-Here's what the shell would show when the compromised tool is present in the
-system.
+macOS shells
+------------
 
-.. figure:: res/xz-vulnerability.png
+The macOS Sonoma default shell is zsh. I have installed the latest Bash
+shell via Homebrew and also installed Rust.   These are available on the
+default zsh shell, which is shown starting in the first terminal seen in the
+back (ttys013).  The PATH available in that shell has 17 entries.  It has
+access to Rust and several Homebrew directories.
 
+I have also configured Terminal to start a Bash login shell. That shell
+(ttys014) is
+also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
+anything on the PATH of the login shells.  They have 10 directories in their
+PATH; the first one being ``/usr/local/bin``.
+
+Then I start another terminal (ttys015) with macOS default zsh non-login
+interactive shell.   As for the first one (ttys013), it sets up Homebrew and
+Rust because my USRHOME setup is done that way for those shells.  It has 17
+directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
+prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
+shell nested level.  From bash I create a zsh sub-shell from where I launch a
+``sleep 100`` command in the background.  The zsh shows ``1 ⚙`` identifying a
+running background job.  And when I issue an invalid command, it prints the
+exit code (127) followed by a red ⨯.
+
+.. figure:: res/macOS-shells.png
+
+Rocky Linux 9.3 shell
+---------------------
+
+The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
+default shell is Bash 5.1. Again here I
+started two terminal instances: the first one launches the default Bash,
+instrumented with the exact same USRHOME settings than my macOS one.
+On Linux, Homebrew is not used.  But it also activates Rust.
+
+USRHOME does some check for vulnerabilities and it detects a possible one in
+Rocky Linux 9.3 and reports it when it is executing as the first level.
+The prompt prints:
+
+- the exit code of the last command,
+- the elapsed time (duration) of the completed command,
+- the shell nested level,
+- the number of background jobs running,
+- the user name @ hostname @ current time in 24-hour format
+- the current directory in side square brackets.
+
+The second non-login shell is executing a terminal-based Emacs process, which
+runs a terminal mode shell.  The USRHOME shell is Emacs-aware.
+The bash prompt is not affected when running inside Emacs.
+It can display the same information.
+You can see the PATH components shown by the showpath command.
+
+USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
+entries and empty entries. Here everything is fine.
+
+When the shell is placed in sudo mode, the prompt changes color and shows a
+``#`` instead of a ``$`` after the word ``bash``.
+
+The third terminal is configured to launch Bash in login mode. Here, USRHOME
+does not add anything to the PATH; the Bash login shells are unmodified and do
+not have access for any extra tools, therefore the PATH is shorter.
+These shells do not perform USRHOME simple (and quite limited) vulnerability
+check.
+
+Also note that, to help distinguish the login shell, I set the login shell
+prompt to red and the color of the non-login prompt to blue.
+
+.. figure:: res/RockyLinux-shells.png
+
+
+Kali Linux zsh shells with tracing enable
+-----------------------------------------
+
+You can activate shell tracing with USRHOME.
+When enabled, the shell prints what file is sourced when the shell starts,
+as this is shown in the Kali Linux, where zsh is the default shell.
+
+Rust is not installed in that system but it uses the same USRHOME
+*common* configuration as the others (with the temporary exception of enabling
+tracing) and the shell prints a warning.
+
+.. figure:: res/Kali-Linux-zshell.png
+
+It would be possible to move the request to use Rust from the common
+configuration file (in this case the file usrcfg/do-user.sh, that has logic
+similar to the `example template file for do-user.sh`_ ) into a
+node-specific file that the usrcfg logic could identify.  That could be done
+by the do-user.sh in the way that the `usrcfg do-user-zshrc.sh example file
+does`_.
 
 
 Adding Your Own Environment Customization to your Shell
@@ -3425,6 +3651,7 @@ Thanks!
 .. _USRHOME dot files:                                 https://github.com/pierre-rouleau/usrhome/tree/main/dot
 .. _do-add-to-path:                                    https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-add-to-path
 .. _do-cbr:                                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
+.. _cd-to:
 .. _do-cd-to:                                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cd-to
 .. _do-clrenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
 .. _xtra/sanitize-path-posix.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/xtra/sanitize-path-posix.sh
@@ -3477,7 +3704,7 @@ Thanks!
 .. _zlogin.zsh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogin.zsh
 .. _zlogout.zsh:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogout.zsh
 .. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
-.. _use-diff command:                                  `Development and conversion`_
+.. _use-diff command:                                  `File Diff Operations`_
 .. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
 .. _example template file for do-user.sh:              https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user.sh#L72
 .. _usrcfg do-user-zshrc.sh example file does:         https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh#L55
@@ -3511,10 +3738,8 @@ Thanks!
 .. _template/usrcfg/do-user.sh:                        template/usrcfg/do-user.sh
 .. _ibin/:                                             ibin/
 .. _bin/:                                              bin/
-.. _pre-configured shell prompts:                      `USRHOME Prompt`_
+.. _pre-configured shell prompts:                      `USRHOME Shell Prompt`_
 .. _lint-sh: bin/lint-sh
-.. _diff: bin/diff
-.. _use-diff: ibin/envfor-diff
 .. _clang-version: bin/clang-version
 .. _diffo: bin/diffo
 .. _dumpo: bin/dumpo
@@ -3627,5 +3852,30 @@ Thanks!
 .. _`do-user-bash-profile.bash`: template/usrcfg/do-user-bash-profile.bash
 .. _`test/run-tests`: test/run-tests
 .. _`SSH helper documentation`: bin/sub-ssh4/readme.rst
+.. _diff: bin/diff
+.. _use-diff:                             ibin/envfor-diff
+.. _usrcfg:                               ibin/setfor-alias#L589
+.. _cdv:                                  ibin/setfor-alias#L613
+.. _cdh:                                  ibin/setfor-alias#L620
+.. _cdlic:                                ibin/setfor-alias#L625
+.. _cdlog:                                ibin/setfor-alias#L630
+.. _cdcontract:                           ibin/setfor-alias#L643
+.. _cdpub:                                ibin/setfor-alias#L650
+.. _cdlocal:                              ibin/setfor-alias#L657
+.. _cdother:                              ibin/setfor-alias#L664
+.. _cdtmp:                                ibin/setfor-alias#L669
+.. _..:                                   ibin/setfor-alias#L689
+.. _...:                                  ibin/setfor-alias#L690
+.. _....:                                 ibin/setfor-alias#L691
+.. _git-cln:                              ibin/setfor-alias#L906
+.. _usrhome:                              ibin/setfor-alias#L911
+.. _to ibin/envfor-diff:                  ibin/setfor-alias#L916
+.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L931
+.. _Dired:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-dired.pdf
+.. _use-git-extra:    ibin/envfor-git-extra
+..                    setfor-alias#L906
+
 
 .. ---------------------------------------------------------------------------
+
+..  LocalWords:  usrcfg USRHOME SUBDIR PEL

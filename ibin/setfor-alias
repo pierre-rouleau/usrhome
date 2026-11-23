@@ -4,7 +4,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 15:07:28 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-23 11:37:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -865,8 +865,6 @@ after the BRANCH.
 "
 }
 
-
-
 __git__cln()
 {
     # Arguments:
@@ -904,6 +902,8 @@ __git__cln()
     fi
 }
 alias git-cln=__git__cln
+
+alias use-git-extra='source $USRHOME_DIR/ibin/envfor-git-extra'
 
 # ----------------------------------------------------------------------------
 # Topic: Alias: Environment Setup Control

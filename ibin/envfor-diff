@@ -4,7 +4,7 @@
 # Purpose   : Set the diff program to use in the current shell.
 # Created   : Wednesday, May  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:31:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-23 13:43:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -52,9 +52,9 @@ use-diff: Select the program used by the diff command in the current shell.
           Stores this value inside the USRHOME_DIFF environment variable,
           for use by the USRHOME diff script.
 
-Usage: use-diff PROGRAM_NICKNAME
+Usage: use-diff [PROGRAM-NICKNAME]
 
-Supported PROGRAM_NICKNAME:
+Supported PROGRAM-NICKNAME:
   - diff            : The default.  Use /usr/bin/diff.
   - diff-u          : Use /usr/bin/diff -u
   - bcomp           : Use Beyond Compare launcher
