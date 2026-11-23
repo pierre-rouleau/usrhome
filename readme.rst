@@ -2261,7 +2261,7 @@ Command or file                    Description
 `cd-to`_                           Search for file specified by file FNAME or directory DNAME in
                                    current directory tree.
 
-                                   Usage:
+                                   - Usage:
 
                                      - ``cd-to [-h|--help]``
                                      - ``cd-to [-H] FNAME``
