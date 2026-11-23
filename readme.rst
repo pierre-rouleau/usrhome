@@ -2076,9 +2076,7 @@ Command or file                                        Description
 `use-diff`_                                            Select the program invoked by USRHOME's ``diff`` dispatcher in the current
                                                        shell.
 
-                                                       **Usage:**
-
-                                                       ::
+                                                       **Usage**::
 
                                                           use-diff [PROGRAM-NICKNAME]
 
@@ -2092,7 +2090,7 @@ Command or file                                        Description
                                                           - svndiff-bcomp   : Use bcomp, but expect arguments provided by svndiff.
                                                           - svndiff-bcompare: Use bcompare, but expect arguments provided by svndiff.
 
-                                                       **Implementation**: `use-diff - alias to ibin/envfor-diff`_
+                                                       **alias:** `to ibin/envfor-diff`_
 
 diff_                                                  USRHOME diff_ is a shell-based dispatcher program.
 
@@ -2102,17 +2100,197 @@ diff_                                                  USRHOME diff_ is a shell-
                                                          the `envfor-diff`_ script).  With it, you can select other
                                                          programs that will be invoked by the command.
 
-
-
-`use-mk-diffo`_                                        Configure ``mk-diffo``.
-
 `diffo`_                                               Compare object files by their disassembled code.
 
+                                                       **Usage**::
+
+                                                          diffo -h | --help
+
+                                                          diffo [[-w | --with-source]  [-s | --string] [-l | --less]]  OBJ-OLD OBJ-NEW
+
+                                                             - OBJ-OLD            : path of the old object file.
+                                                             - OBJ-NEW            : path of the new object file.
+                                                             - -w | --with-source : insert C/C++ source code in the generated assembler.
+                                                             - -s | --string      : also compare strings extracted from files.
+                                                             - -l | --less        : pipe differences to less
+
+
 `dumpo`_                                               Print an object's disassembly.
+
+                                                       **Usage**::
+
+                                                             dumpo -h | --help
+
+                                                             dumpo [[-w | --with-source]  [-l | --less]] OBJ
+
+                                                                - OBJ                : path of the object file.
+                                                                - -w | --with-source : insert C/C++ source code in the generated assembler.
+                                                                - -l | --less        : pipe differences to less
+====================================================== ===========================================================================
+
+
+Track Evolution of Compiled File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use the ``mk-diffo`` utility to track the evolution of a source code file
+over its modifications by comparing the assembler code generated from the
+compiler for it as it evolves.
+
+mk-diffo does not compile that file; it generates the assembler code from the
+existing object file and keeps a copy of the source file, the object file
+and the assembler file for each time you use ``mk-diffo`` inside a directory
+tree.  The root of the directory tree is named after a project and under it
+the source file name.  ``mk-diffo`` uses the ``diffo`` utility to generate the
+assembler from the object file and the diff from the previous version.
+
+After using it once, mk-diffo compares the generate assembler file of the
+very first generated copy (by default) with the latest one it just
+created. It then prints the difference if there are any.  If they are the
+same, it prints a message stating that.
+
+Before using ``mk-diffo``, execute ``use-mk-diffo`` to set up the environment
+variables used to identify the location of the directory tree, the project
+name, the name of the source code file, the directory where the object file
+is stored and it's extension.
+
+You'd typically execute ``mk-diffo`` after each compilation of the source code
+file after it's modification to check if the generated code has changed.
+This can be quite comforting to know that the generated assembler code has
+not changed after making style-only code changes. Use it to reduce tension
+among the development team when changing code to make it more readable, fix
+warnings and any change you deem important but want to ensure no problem is
+caused by those changes.
+
+
+**To use it**:
+
+ - Make sure you compile the C/C++ source files with debugging activated.
+ - Specialize your shell by executing: use-mkdiffo
+
+   - That is an alias to the file $USRHOME_DIR/ibin/envfor-mkdiffo
+   - This identifies the following:
+
+     - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
+     - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory in the main directory tree.
+     - USRHOME_DIFFO_FNAME   : The full path to the source code file checked.
+     - USRHOME_DIFFO_OBJ_DIR : The full path of the directory holding the the object file resulting from the compilation of the source code file.
+
+- When executing mk-diffo, the extra information is passed:
+
+  - The file version number, starting at 0 and incremented each time
+    the mk-diffo command is issued for the specific project.
+
+**Directory Tree**:
+
+All files are stored inside a single directory tree. The directory tree has
+four directory levels:
+
+ - The root directory identified by USRHOME_DIFFO_ROOT_DIR (here, ~/my/results/diffo).
+ - The project name, identified by USRHOME_DIFFO_PROJECT (in the following
+   diagram you can see two projects: proj-1 and proj-2.)  Any name can be
+   used.
+ - The file name, identified by USRHOME_DIFFO_FNAME.  Inside the proj-1, we
+    can see file-a.c and file-b.c.  In project-2 we can see pel.cpp.
+ - The test number, starting at 0.
+
+ Here's an example of the directory tree maintained by ``mk-diffo``::
+
+          ~/my/results
+          └── diffo
+              ├── proj-1
+              │   ├── file-a.c
+              │   │   ├── 000
+              │   │   │   ├── file-a.asm
+              │   │   │   ├── file-a.c
+              │   │   │   └── file-a.o
+              │   │   └── 001
+              │   │       ├── file-a.asm
+              │   │       ├── file-a.c
+              │   │       └── file-a.o
+              │   └── file-b.c
+              │       ├── 000
+              │       │   ├── file-b.asm
+              │       │   ├── file-b.c
+              │       │   └── file-b.o
+              │       ├── 001
+              │       │   ├── file-b.asm
+              │       │   ├── file-b.c
+              │       │   └── file-b.o
+              │       └── 002
+              │           ├── file-b.asm
+              │           ├── file-b.c
+              │           └── file-b.o
+              └── proj-2
+                  └── pel.cpp
+                      └── 000
+                          ├── pel.asm
+                          ├── pel.cpp
+                          └── pel.o
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
+`use-mk-diffo`_                                        Setup the shell to use ``mk-diffo`` to track evolution
+                                                       of the object code of a source code file.
+
+                                                       **Usage**::
+
+                                                          use-mk-diffo -h | --help
+
+                                                          use-mk-diffo DB-ROOT-DIR PROJECT SRC_FNAME OBJ-DIR [OBJ-EXT]
+
+                                                          where:
+                                                            - DB-ROOT-DIR: The directory tree where all files are stored.
+                                                            - PROJECT    : The name of the project to which SRC_FNAME belongs.
+                                                                           That name is used as the name of the sub-directory
+                                                                           of the main directory tree, identified by DB-ROOT_DIR
+                                                            - SRC_FNAME  : The source code file name (with its extension).
+                                                                           Identify the absolute path of the file or
+                                                                           the path relative to the directory from where the
+                                                                           mk-diffo commands will be issued.
+                                                            - OBJ_DIR    : The full path of the directory holding the
+                                                                           the object file resulting from the compilation
+                                                                           of the source code file.
+                                                            - OBJ-EXT    : Object file extension. Include the leading period.
+                                                                           If not specified it defaults to ".o".
+                                                                           To specify empty extension, if you want to track the
+                                                                           evolution of single source file program executable,
+                                                                           use " ".
+
+                                                       **alias:** `to ibin/envfor-mk-diffo`_
 
 `mk-diffo`_                                            Record and compare object code across versions. Requires the
                                                        ``USRHOME_DIFFO_*`` environment.
 
+                                                       **Usage**::
+
+                                                         mk-diffo [[-w | --with-source] [-s | --string] [-l | --less]] [REFNO]
+
+                                                         Store the source and object file inside the mk-diffo directory tree
+                                                         for the current file and reference number, then compare the object file
+                                                         with the object file for the previous version or the version specified by
+                                                         REFNO.
+
+                                                            REFNO : optional reference number.  Default is last one created.
+                                                                    It must be a valid integer.
+                                                                    Leading 0 are accepted, but remain a base-10 value.
+
+                                                            Options passed to diffo:
+                                                            - -w | --with-source : insert C/C++ source code in the generated assembler.
+                                                            - -s | --string      : compare strings extracted from files (always generated).
+                                                            - -l | --less        : pipe differences to less
+
+                                                         ENVIRONMENT:
+                                                           - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
+                                                           - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory
+                                                                                     in the main directory tree.
+                                                           - USRHOME_DIFFO_FNAME   : The source code file name.
+                                                           - USRHOME_DIFFO_OBJ_DIR : Directory name of the corresponding object file.
+                                                           - USRHOME_DIFFO_OBJEXT  : Object file extension. Include leading period.
+                                                                                     Defaults to \".o\".
+                                                                                     Use \" \" for extension-less files
+                                                                                     if you want to analyze single source file
+                                                                                     executable files.
 
 ====================================================== ===========================================================================
 
@@ -3675,6 +3853,8 @@ Thanks!
 .. _`do-user-bash-profile.bash`: template/usrcfg/do-user-bash-profile.bash
 .. _`test/run-tests`: test/run-tests
 .. _`SSH helper documentation`: bin/sub-ssh4/readme.rst
+.. _diff: bin/diff
+.. _use-diff:                             ibin/envfor-diff
 .. _usrcfg:                               ibin/setfor-alias#L589
 .. _cdv:                                  ibin/setfor-alias#L613
 .. _cdh:                                  ibin/setfor-alias#L620
@@ -3690,11 +3870,8 @@ Thanks!
 .. _....:                                 ibin/setfor-alias#L691
 .. _git-cln:                              ibin/setfor-alias#L906
 .. _usrhome:                              ibin/setfor-alias#L911
-.. _use-diff - alias to ibin/envfor-diff: ibin/setfor-alias#L916
-
-.. _diff: bin/diff
-.. _use-diff: ibin/envfor-diff
-
+.. _to ibin/envfor-diff:                  ibin/setfor-alias#L916
+.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L931
 .. _Dired:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-dired.pdf
 .. _use-git-extra:    ibin/envfor-git-extra
 ..                    setfor-alias#L906
