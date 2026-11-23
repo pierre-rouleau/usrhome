@@ -2189,7 +2189,7 @@ four directory levels:
   diagram you can see two projects: proj-1 and proj-2.)  Any name can be
   used.
 - The file name, identified by USRHOME_DIFFO_FNAME.  Inside the proj-1, we
-   can see file-a.c and file-b.c.  In project-2 we can see pel.cpp.
+  can see file-a.c and file-b.c.  In project-2 we can see pel.cpp.
 - The test number, starting at 0.
 
 Here's an example of the directory tree maintained by ``mk-diffo``::
