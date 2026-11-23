@@ -380,108 +380,23 @@ variables, internal server network topologies, and private paths stay
 contained within an isolated, private repository ecosystem, minimizing the
 risk of accidental exposure to public version-control systems.
 
-
-Setup Examples
-==============
-
-Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
-9.3.
-
-macOS shells
-------------
-
-The macOS Sonoma default shell is zsh. I have installed the latest Bash
-shell via Homebrew and also installed Rust.   These are available on the
-default zsh shell, which is shown starting in the first terminal seen in the
-back (ttys013).  The PATH available in that shell has 17 entries.  It has
-access to Rust and several Homebrew directories.
-
-I have also configured Terminal to start a Bash login shell. That shell
-(ttys014) is
-also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
-anything on the PATH of the login shells.  They have 10 directories in their
-PATH; the first one being ``/usr/local/bin``.
-
-Then I start another terminal (ttys015) with macOS default zsh non-login
-interactive shell.   As for the first one (ttys013), it sets up Homebrew and
-Rust because my USRHOME setup is done that way for those shells.  It has 17
-directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
-prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
-shell nested level.  From bash I create a zsh sub-shell from where I launch a
-``sleep 100`` command in the background.  The zsh shows ``1 ⚙`` identifying a
-running background job.  And when I issue an invalid command, it prints the
-exit code (127) followed by a red ⨯.
-
-.. figure:: res/macOS-shells.png
-
-Rocky Linux 9.3 shell
----------------------
-
-The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
-default shell is Bash 5.1. Again here I
-started two terminal instances: the first one launches the default Bash,
-instrumented with the exact same USRHOME settings than my macOS one.
-On Linux, Homebrew is not used.  But it also activates Rust.
-
-USRHOME does some check for vulnerabilities and it detects a possible one in
-Rocky Linux 9.3 and reports it when it is executing as the first level.
-The prompt prints:
-
-- the exit code of the last command,
-- the elapsed time (duration) of the completed command,
-- the shell nested level,
-- the number of background jobs running,
-- the user name @ hostname @ current time in 24-hour format
-- the current directory in side square brackets.
-
-The second non-login shell is executing a terminal-based Emacs process, which
-runs a terminal mode shell.  The USRHOME shell is Emacs-aware.
-The bash prompt is not affected when running inside Emacs.
-It can display the same information.
-You can see the PATH components shown by the showpath command.
-
-USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
-entries and empty entries. Here everything is fine.
-
-When the shell is placed in sudo mode, the prompt changes color and shows a
-``#`` instead of a ``$`` after the word ``bash``.
-
-The third terminal is configured to launch Bash in login mode. Here, USRHOME
-does not add anything to the PATH; the Bash login shells are unmodified and do
-not have access for any extra tools, therefore the PATH is shorter.
-These shells do not perform USRHOME simple (and quite limited) vulnerability
-check.
-
-Also note that, to help distinguish the login shell, I set the login shell
-prompt to red and the color of the non-login prompt to blue.
-
-.. figure:: res/RockyLinux-shells.png
-
-
-Kali Linux zsh shells with tracing enable
------------------------------------------
-
-You can activate shell tracing with USRHOME.
-When enabled, the shell prints what file is sourced when the shell starts,
-as this is shown in the Kali Linux, where zsh is the default shell.
-
-Rust is not installed in that system but it uses the same USRHOME
-*common* configuration as the others (with the temporary exception of enabling
-tracing) and the shell prints a warning.
-
-.. figure:: res/Kali-Linux-zshell.png
-
-It would be possible to move the request to use Rust from the common
-configuration file (in this case the file usrcfg/do-user.sh, that has logic
-similar to the `example template file for do-user.sh`_ ) into a
-node-specific file that the usrcfg logic could identify.  That could be done
-by the do-user.sh in the way that the `usrcfg do-user-zshrc.sh example file
-does`_.
-
-
 If you want to know how this all works, read on (and see the section
 titled `The Z Shell Startup, Dot Files and User Configuration`_).
 
+The xz Library Security Check
+-----------------------------
+
+USRHOME reports the security issues by checking for the presence of
+compromised command line tools in the PATH.  The list of detected compromised
+tools is:
+
+- `xz version 5.2.5`_
+- `xz version 5.6.0 and 5.6.1`_
+
+Here's what the shell would show when the compromised tool is present in the
+system.
+
+.. figure:: res/xz-vulnerability.png
 
 Install USRHOME - How to Set it Up
 ==================================
@@ -732,7 +647,7 @@ File Name (link to template)        Description
                                       USRHOME_DIR_PUB, USRHOME_DIR_TMP.
 
                                     - USRHOME_PROMPT_MODEL which select the prompt model. As
-                                      described further in the `USRHOME Prompt`_ section, the
+                                      described further in the `USRHOME Shell Prompt`_ section, the
                                       following values are supported:
 
                                       - 0: prompt is not defined by USRHOME logic, user code should
@@ -1013,6 +928,188 @@ USRHOME__USRCFG_SEEN               **USRHOME Internal environment variable**:
 ================================== ================================================================
 
 More information about these in the section `Cd to Conceptual Directories`_.
+
+
+USRHOME Shell Prompt
+====================
+
+USRHOME provides control for the Z Shell and Bash prompts as described in this
+section. USRHOME provides 3 pre-defined prompt models (model 1, 2 and 3) and
+reserves prompt model number 0 to be user-defined.
+
+Information About Prompt Control Variables
+------------------------------------------
+
+URSHOME provides the following commands to get information about the shell
+prompt.
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+``info-prompt [-q]``               Print information about shell's prompt controlling variables.
+                                   By default it prints the values of all variables.  With the
+                                   ``-q`` option it only prints the values of
+                                   the ``USRHOME_PROMPT_MODEL``
+                                   and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
+                                   shows the value of the default prompt mode, the second one, if
+                                   set, is the model of the current prompt, overriding the default.
+================================== ================================================================
+
+USRHOME prompt model control logic supports the environment variables
+described here:
+
+================================== ================================================================
+Environment variable               Description
+================================== ================================================================
+USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use of 1-second
+                                   resolution timer for the Bash prompt.
+
+                                   This is done by ignoring the potential availability of the GNU
+                                   coreutils ``gdate`` command and use the macOS supplied ``date``
+                                   command.
+
+                                   You may want to do this if the Bash prompt on macOS runs into a
+                                   race condition and prints a message similar to::
+
+                                     bash: child setpgid (75144 to 75141): Operation not permitted
+
+                                   This might occur when you are executing a fast command and pipe
+                                   it into another.
+
+                                   Setting USRHOME_SLOW_TIMER should prevent this problem.  You can
+                                   do it dynamically inside the Bash shell like this::
+
+                                     setenv USRHOME_SLOW_TIMER
+                                     bash
+
+                                   Or you can set it inside your usrcfg/setfor-all-config.sh by
+                                   including the following lines::
+
+                                     USRHOME_SLOW_TIMER=1
+                                     export USRHOME_SLOW_TIMER
+================================== ================================================================
+
+Prompt Model 0
+--------------
+
+With the ``USRHOME_PROMPT_MODEL`` environment variable set to 0, USRHOME
+does **not** configure the zsh prompt and expects the prompt to be set inside
+the user provided configuration files located inside the usrcfg directory,
+otherwise it uses the system default.
+
+
+Prompt Model 1, 2 and 3
+-----------------------
+
+These prompt models are predefined prompts that show multiple values in various
+ways.  As these might evolve over time, it's best to try them and see them in
+your terminal.
+
+The ``user@host`` information is shown when enabled. This can be dynamically
+enabled or disabled with the ``usrhome-prompt-toggle-usr-host`` command.
+
+In the following sessions, the command ``info-prompt -q`` is used to show which
+one is the default prompt model and which one is the currently used prompt.
+
+**The bash prompts**
+
+.. figure:: res/macOS-bash-prompts-01.png
+
+**The zsh prompts**
+
+.. figure:: res/macOS-zsh-prompts-01.png
+
+**Notable prompt features**
+
+All provided prompts, show:
+
+- A leading '>' character,
+- the exit code of the last command, in decimal or hexadecimal,
+- current time in 24-hour HH:MM:SS format,
+- the shell nested level, prefixed with 'L',
+- optional user-name @ host-name,
+- the full or last 3 directory components of the current directory,
+- the shell name (bash, or zsh),
+- the last character is '#' if the current user has root privilege,
+  otherwise the '$' character is used for bash and the '%' character is for zsh.
+
+Some also show the Week day and month date, the number of currently running jobs
+of the shell.
+
+Prompt model 2 and 3 prints the elapsed time of the last command with
+millisecond resolution.  On macOS without GNU coreutils gdate available the
+resolution is in seconds.
+
+The zsh prompt can also print extra information:
+
+- zsh prompt model 1 shows extra information on the right side of the line,
+  there is enough room: the full path of the current directory, and VCS (Git or
+  Mercurial) repository name.
+- The VCS (Git or Mercurial) repository name is shown in all zsh prompts.
+
+  - If the current directory is part of a Git or Mercurial repository, the
+    prompt shows 2 spaces followed by:
+
+    - 'git:' for Git repository and 'hg:' for Mercurial repository,
+    - the VCS branch name in parenthesis
+    - the VCS repository name.
+
+- Exit code of error and number of running jobs are  also shown in the right
+  hand side in zsh prompts.
+
+  - If the exit code of the last error is not 0, the exit code followed by
+    a red '⨯' character.
+  - If the shell has sub-process jobs, the number of jobs is shown,
+    followed by a yellow '⚙' character.
+
+**Examples**
+
+Some extra examples shown here:
+
+.. figure:: res/zsh-prompt-01.png
+
+
+Here's an example when the prompt model 2 is selected by user configuration
+and the user dynamically changes it inside the shell.
+
+
+.. figure:: res/zsh-prompt-02.png
+
+And here's another example, when the shell with prompt model 2, has two nested
+instances of suspended Emacs running, in a macOS terminal.
+
+.. figure:: res/zsh-prompt-03.png
+
+When the shell has running background jobs, the USRHOME commands that use
+``exec zsh`` to re-initialize the Z Shell won't proceed and will print a
+warning message instead.  In the example above the two running process where ``e`` the
+USRHOME name for terminal-based emacs.  To be able to change the process
+prompt, these two suspended Emacs process must first be terminated (by making
+them active in the foreground again with ``fg`` and then closing Emacs).  Once
+there's no background process the ``usrhome-prompt-toggle-usr-host`` command
+can be used.
+
+Showing the shell type helps when capturing commands for logs: it explicitly
+identifies the shell.
+
+.. figure:: res/zsh-prompt-model-3.png
+
+Prompt Search Regexp
+--------------------
+
+Use the following regular expressions to search a prompt, or
+to install them in editors, like Emacs, to navigate through
+prompt lines inside a shell.
+
+The regular expression syntax shown here correspond to the
+`Emacs 'string-format' regular expression syntax`_, the syntax you can use
+inside Emacs configuration.
+
+============================ ========================================
+Prompt                       Emacs Regular Expression
+============================ ========================================
+All models                   ``^\(\(zsh\)\|\(bash\)\)[%#$]``
+============================ ========================================
 
 
 USRHOME Commands and Scripts
@@ -2566,192 +2663,6 @@ Command or file                                                          Descrip
                                                                          repository root with ``./test/run-tests``.
 ======================================================================== ===========================================================================
 
-
-
-USRHOME Prompt
-==============
-
-USRHOME provides control for the Z Shell and Bash prompts as described in this
-section. USRHOME provides 3 pre-defined prompt models (model 1, 2 and 3) and
-reserves prompt model number 0 to be user-defined.
-
-Information About Prompt Control Variables
-------------------------------------------
-
-URSHOME provides the following commands to get information about the shell
-prompt.
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``info-prompt [-q]``               Print information about shell's prompt controlling variables.
-                                   By default it prints the values of all variables.  With the
-                                   ``-q`` option it only prints the values of
-                                   the ``USRHOME_PROMPT_MODEL``
-                                   and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
-                                   shows the value of the default prompt mode, the second one, if
-                                   set, is the model of the current prompt, overriding the default.
-================================== ================================================================
-
-USRHOME prompt model control logic supports the environment variables
-described here:
-
-================================== ================================================================
-Environment variable               Description
-================================== ================================================================
-USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use of 1-second
-                                   resolution timer for the Bash prompt.
-
-                                   This is done by ignoring the potential availability of the GNU
-                                   coreutils ``gdate`` command and use the macOS supplied ``date``
-                                   command.
-
-                                   You may want to do this if the Bash prompt on macOS runs into a
-                                   race condition and prints a message similar to::
-
-                                     bash: child setpgid (75144 to 75141): Operation not permitted
-
-                                   This might occur when you are executing a fast command and pipe
-                                   it into another.
-
-                                   Setting USRHOME_SLOW_TIMER should prevent this problem.  You can
-                                   do it dynamically inside the Bash shell like this::
-
-                                     setenv USRHOME_SLOW_TIMER
-                                     bash
-
-                                   Or you can set it inside your usrcfg/setfor-all-config.sh by
-                                   including the following lines::
-
-                                     USRHOME_SLOW_TIMER=1
-                                     export USRHOME_SLOW_TIMER
-================================== ================================================================
-
-Prompt Model 0
---------------
-
-With the ``USRHOME_PROMPT_MODEL`` environment variable set to 0, USRHOME
-does **not** configure the zsh prompt and expects the prompt to be set inside
-the user provided configuration files located inside the usrcfg directory,
-otherwise it uses the system default.
-
-
-Prompt Model 1, 2 and 3
------------------------
-
-These prompt models are predefined prompts that show multiple values in various
-ways.  As these might evolve over time, it's best to try them and see them in
-your terminal.
-
-The ``user@host`` information is shown when enabled. This can be dynamically
-enabled or disabled with the ``usrhome-prompt-toggle-usr-host`` command.
-
-In the following sessions, the command ``info-prompt -q`` is used to show which
-one is the default prompt model and which one is the currently used prompt.
-
-**The bash prompts**
-
-.. figure:: res/macOS-bash-prompts-01.png
-
-**The zsh prompts**
-
-.. figure:: res/macOS-zsh-prompts-01.png
-
-**Notable prompt features**
-
-All provided prompts, show:
-
-- A leading '>' character,
-- the exit code of the last command, in decimal or hexadecimal,
-- current time in 24-hour HH:MM:SS format,
-- the shell nested level, prefixed with 'L',
-- optional user-name @ host-name,
-- the full or last 3 directory components of the current directory,
-- the shell name (bash, or zsh),
-- the last character is '#' if the current user has root privilege,
-  otherwise the '$' character is used for bash and the '%' character is for zsh.
-
-Some also show the Week day and month date, the number of currently running jobs
-of the shell.
-
-Prompt model 2 and 3 prints the elapsed time of the last command with
-millisecond resolution.  On macOS without GNU coreutils gdate available the
-resolution is in seconds.
-
-The zsh prompt can also print extra information:
-
-- zsh prompt model 1 shows extra information on the right side of the line,
-  there is enough room: the full path of the current directory, and VCS (Git or
-  Mercurial) repository name.
-- The VCS (Git or Mercurial) repository name is shown in all zsh prompts.
-
-  - If the current directory is part of a Git or Mercurial repository, the
-    prompt shows 2 spaces followed by:
-
-    - 'git:' for Git repository and 'hg:' for Mercurial repository,
-    - the VCS branch name in parenthesis
-    - the VCS repository name.
-
-- Exit code of error and number of running jobs are  also shown in the right
-  hand side in zsh prompts.
-
-  - If the exit code of the last error is not 0, the exit code followed by
-    a red '⨯' character.
-  - If the shell has sub-process jobs, the number of jobs is shown,
-    followed by a yellow '⚙' character.
-
-**Examples**
-
-Some extra examples shown here:
-
-.. figure:: res/zsh-prompt-01.png
-
-
-Here's an example when the prompt model 2 is selected by user configuration
-and the user dynamically changes it inside the shell.
-
-
-.. figure:: res/zsh-prompt-02.png
-
-And here's another example, when the shell with prompt model 2, has two nested
-instances of suspended Emacs running, in a macOS terminal.
-
-.. figure:: res/zsh-prompt-03.png
-
-When the shell has running background jobs, the USRHOME commands that use
-``exec zsh`` to re-initialize the Z Shell won't proceed and will print a
-warning message instead.  In the example above the two running process where ``e`` the
-USRHOME name for terminal-based emacs.  To be able to change the process
-prompt, these two suspended Emacs process must first be terminated (by making
-them active in the foreground again with ``fg`` and then closing Emacs).  Once
-there's no background process the ``usrhome-prompt-toggle-usr-host`` command
-can be used.
-
-Showing the shell type helps when capturing commands for logs: it explicitly
-identifies the shell.
-
-.. figure:: res/zsh-prompt-model-3.png
-
-Prompt Search Regexp
---------------------
-
-Use the following regular expressions to search a prompt, or
-to install them in editors, like Emacs, to navigate through
-prompt lines inside a shell.
-
-The regular expression syntax shown here correspond to the
-`Emacs 'string-format' regular expression syntax`_, the syntax you can use
-inside Emacs configuration.
-
-============================ ========================================
-Prompt                       Emacs Regular Expression
-============================ ========================================
-All models                   ``^\(\(zsh\)\|\(bash\)\)[%#$]``
-============================ ========================================
-
-
-
-
 Command and Script Organization
 ===============================
 
@@ -3130,21 +3041,103 @@ mentions that USRHOME sanitized the PATH and how to see more as we can see here:
 
 .. figure:: res/zsh-tracing-aquamacs-02.png
 
-USRHOME Security Checking
-=========================
 
-USRHOME reports the security issues by checking for the presence of
-compromised command line tools in the PATH.  The list of detected compromised
-tools is:
+Setup Examples
+==============
 
-- `xz version 5.2.5`_
-- `xz version 5.6.0 and 5.6.1`_
+Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
+9.3.
 
-Here's what the shell would show when the compromised tool is present in the
-system.
+macOS shells
+------------
 
-.. figure:: res/xz-vulnerability.png
+The macOS Sonoma default shell is zsh. I have installed the latest Bash
+shell via Homebrew and also installed Rust.   These are available on the
+default zsh shell, which is shown starting in the first terminal seen in the
+back (ttys013).  The PATH available in that shell has 17 entries.  It has
+access to Rust and several Homebrew directories.
 
+I have also configured Terminal to start a Bash login shell. That shell
+(ttys014) is
+also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
+anything on the PATH of the login shells.  They have 10 directories in their
+PATH; the first one being ``/usr/local/bin``.
+
+Then I start another terminal (ttys015) with macOS default zsh non-login
+interactive shell.   As for the first one (ttys013), it sets up Homebrew and
+Rust because my USRHOME setup is done that way for those shells.  It has 17
+directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
+prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
+shell nested level.  From bash I create a zsh sub-shell from where I launch a
+``sleep 100`` command in the background.  The zsh shows ``1 ⚙`` identifying a
+running background job.  And when I issue an invalid command, it prints the
+exit code (127) followed by a red ⨯.
+
+.. figure:: res/macOS-shells.png
+
+Rocky Linux 9.3 shell
+---------------------
+
+The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
+default shell is Bash 5.1. Again here I
+started two terminal instances: the first one launches the default Bash,
+instrumented with the exact same USRHOME settings than my macOS one.
+On Linux, Homebrew is not used.  But it also activates Rust.
+
+USRHOME does some check for vulnerabilities and it detects a possible one in
+Rocky Linux 9.3 and reports it when it is executing as the first level.
+The prompt prints:
+
+- the exit code of the last command,
+- the elapsed time (duration) of the completed command,
+- the shell nested level,
+- the number of background jobs running,
+- the user name @ hostname @ current time in 24-hour format
+- the current directory in side square brackets.
+
+The second non-login shell is executing a terminal-based Emacs process, which
+runs a terminal mode shell.  The USRHOME shell is Emacs-aware.
+The bash prompt is not affected when running inside Emacs.
+It can display the same information.
+You can see the PATH components shown by the showpath command.
+
+USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
+entries and empty entries. Here everything is fine.
+
+When the shell is placed in sudo mode, the prompt changes color and shows a
+``#`` instead of a ``$`` after the word ``bash``.
+
+The third terminal is configured to launch Bash in login mode. Here, USRHOME
+does not add anything to the PATH; the Bash login shells are unmodified and do
+not have access for any extra tools, therefore the PATH is shorter.
+These shells do not perform USRHOME simple (and quite limited) vulnerability
+check.
+
+Also note that, to help distinguish the login shell, I set the login shell
+prompt to red and the color of the non-login prompt to blue.
+
+.. figure:: res/RockyLinux-shells.png
+
+
+Kali Linux zsh shells with tracing enable
+-----------------------------------------
+
+You can activate shell tracing with USRHOME.
+When enabled, the shell prints what file is sourced when the shell starts,
+as this is shown in the Kali Linux, where zsh is the default shell.
+
+Rust is not installed in that system but it uses the same USRHOME
+*common* configuration as the others (with the temporary exception of enabling
+tracing) and the shell prints a warning.
+
+.. figure:: res/Kali-Linux-zshell.png
+
+It would be possible to move the request to use Rust from the common
+configuration file (in this case the file usrcfg/do-user.sh, that has logic
+similar to the `example template file for do-user.sh`_ ) into a
+node-specific file that the usrcfg logic could identify.  That could be done
+by the do-user.sh in the way that the `usrcfg do-user-zshrc.sh example file
+does`_.
 
 
 Adding Your Own Environment Customization to your Shell
@@ -3545,7 +3538,7 @@ Thanks!
 .. _template/usrcfg/do-user.sh:                        template/usrcfg/do-user.sh
 .. _ibin/:                                             ibin/
 .. _bin/:                                              bin/
-.. _pre-configured shell prompts:                      `USRHOME Prompt`_
+.. _pre-configured shell prompts:                      `USRHOME Shell Prompt`_
 .. _lint-sh: bin/lint-sh
 .. _diff: bin/diff
 .. _use-diff: ibin/envfor-diff
