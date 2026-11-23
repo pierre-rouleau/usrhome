@@ -2073,16 +2073,24 @@ File Diff Operations
 ====================================================== ===========================================================================
 Command or file                                        Description
 ====================================================== ===========================================================================
-`use-diff`_ ``[PROGRAM-NICKNAME]``                     Select the program invoked by USRHOME's ``diff`` dispatcher in the current
-                                                       shell.  Supported PROGRAM-NICKNAME:
+`use-diff`_                                            Select the program invoked by USRHOME's ``diff`` dispatcher in the current
+                                                       shell.
 
-                                                       - diff            : The default.  Use /usr/bin/diff.
-                                                       - diff-u          : Use /usr/bin/diff -u
-                                                       - bcomp           : Use Beyond Compare launcher
-                                                       - bcompare        : Use Beyond Compare main application.
-                                                       - svndiff-diff    : Use diff, but expect arguments provided by svndiff.
-                                                       - svndiff-bcomp   : Use bcomp, but expect arguments provided by svndiff.
-                                                       - svndiff-bcompare: Use bcompare, but expect arguments provided by svndiff.
+                                                       **Usage:**
+
+                                                       ::
+
+                                                          use-diff [PROGRAM-NICKNAME]
+
+                                                          Supported PROGRAM-NICKNAME:
+
+                                                          - diff            : The default.  Use /usr/bin/diff.
+                                                          - diff-u          : Use /usr/bin/diff -u
+                                                          - bcomp           : Use Beyond Compare launcher
+                                                          - bcompare        : Use Beyond Compare main application.
+                                                          - svndiff-diff    : Use diff, but expect arguments provided by svndiff.
+                                                          - svndiff-bcomp   : Use bcomp, but expect arguments provided by svndiff.
+                                                          - svndiff-bcompare: Use bcompare, but expect arguments provided by svndiff.
 
                                                        **Implementation**: `use-diff - alias to ibin/envfor-diff`_
 
