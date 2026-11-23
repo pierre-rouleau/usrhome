@@ -2164,16 +2164,16 @@ caused by those changes.
 
 **To use it**:
 
- - Make sure you compile the C/C++ source files with debugging activated.
- - Specialize your shell by executing: use-mkdiffo
+- Make sure you compile the C/C++ source files with debugging activated.
+- Specialize your shell by executing: use-mkdiffo
 
-   - That is an alias to the file $USRHOME_DIR/ibin/envfor-mkdiffo
-   - This identifies the following:
+  - That is an alias to the file $USRHOME_DIR/ibin/envfor-mkdiffo
+  - This identifies the following:
 
-     - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
-     - USRHOME_DIFFO_PROJECT : The project name; used as a sub-directory in the main directory tree.
-     - USRHOME_DIFFO_FNAME   : The full path to the source code file checked.
-     - USRHOME_DIFFO_OBJ_DIR : The full path of the directory holding the the object file resulting from the compilation of the source code file.
+    - ``USRHOME_DIFFO_ROOT_DIR``: The directory tree where all files are stored.
+    - ``USRHOME_DIFFO_PROJECT`` : The project name; used as a sub-directory in the main directory tree.
+    - ``USRHOME_DIFFO_FNAME``   : The full path to the source code file checked.
+    - ``USRHOME_DIFFO_OBJ_DIR`` : The full path of the directory holding the the object file resulting from the compilation of the source code file.
 
 - When executing mk-diffo, the extra information is passed:
 
