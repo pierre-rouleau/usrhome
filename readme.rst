@@ -2165,9 +2165,8 @@ caused by those changes.
 **To use it**:
 
 - Make sure you compile the C/C++ source files with debugging activated.
-- Specialize your shell by executing: use-mkdiffo
+- Specialize your shell by executing: ``use-mkdiffo``
 
-  - That is an alias to the file $USRHOME_DIR/ibin/envfor-mkdiffo
   - This identifies the following:
 
     - ``USRHOME_DIFFO_ROOT_DIR``: The directory tree where all files are stored.
@@ -2185,15 +2184,15 @@ caused by those changes.
 All files are stored inside a single directory tree. The directory tree has
 four directory levels:
 
- - The root directory identified by USRHOME_DIFFO_ROOT_DIR (here, ~/my/results/diffo).
- - The project name, identified by USRHOME_DIFFO_PROJECT (in the following
-   diagram you can see two projects: proj-1 and proj-2.)  Any name can be
-   used.
- - The file name, identified by USRHOME_DIFFO_FNAME.  Inside the proj-1, we
-    can see file-a.c and file-b.c.  In project-2 we can see pel.cpp.
- - The test number, starting at 0.
+- The root directory identified by USRHOME_DIFFO_ROOT_DIR (here, ~/my/results/diffo).
+- The project name, identified by USRHOME_DIFFO_PROJECT (in the following
+  diagram you can see two projects: proj-1 and proj-2.)  Any name can be
+  used.
+- The file name, identified by USRHOME_DIFFO_FNAME.  Inside the proj-1, we
+   can see file-a.c and file-b.c.  In project-2 we can see pel.cpp.
+- The test number, starting at 0.
 
- Here's an example of the directory tree maintained by ``mk-diffo``::
+Here's an example of the directory tree maintained by ``mk-diffo``::
 
           ~/my/results
           └── diffo
