@@ -338,7 +338,6 @@ several structural mechanisms:
 
 **No Elevated Privileges**
 
-
 Local-prefix installations do not require ``sudo``. Installation scripts
 normally run with the invoking user's permissions. This does not sandbox
 them or protect files accessible to that user.
@@ -383,8 +382,14 @@ risk of accidental exposure to public version-control systems.
 If you want to know how this all works, read on (and see the section
 titled `The Z Shell Startup, Dot Files and User Configuration`_).
 
-The xz Library Security Check
------------------------------
+**All USRHOME code passes strict static analysis**
+
+All executable and sourced shell script files are analyzed with
+ShellCheck and all info, warnings and errors are fixed.  The code
+is analyzed with the `lint-sh`_ tool which runs ShellCheck and
+detects other potential problems.
+
+**Other: The xz Library Security Check**
 
 USRHOME reports the security issues by checking for the presence of
 compromised command line tools in the PATH.  The list of detected compromised
