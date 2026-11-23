@@ -2084,7 +2084,7 @@ Command or file                                        Description
                                                        - svndiff-bcomp   : Use bcomp, but expect arguments provided by svndiff.
                                                        - svndiff-bcompare: Use bcompare, but expect arguments provided by svndiff.
 
-                                                       Implementation: `use-diff - alias to ibin/envfor-diff`_
+                                                       **Implementation**: `use-diff - alias to ibin/envfor-diff`_
 
 diff_                                                  USRHOME diff_ is a shell-based dispatcher program.
 
