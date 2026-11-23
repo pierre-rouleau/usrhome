@@ -1893,76 +1893,6 @@ each one if you want.  Or just use one method.  The code is flexible.
   files with a `PDF index`_ to a large set of topics and file format/language supports).
   The `help PDF`_ has a `section that describe Emacs man and woman support`_.
 
-
-Miscellaneous Commands
-----------------------
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-``cls``                            Shortcut for ``clear``; clear the content of the shell window.
-
-diff_                              USRHOME diff_ is a shell-based dispatcher program.
-
-                                   - By default it uses the standard ``/usr/bin/diff`` program
-                                   - You can change this behaviour in the current shell by
-                                     executing the ``use-diff`` command (an alias which sources
-                                     the `envfor-diff`_ script).  With it, you can select other
-                                     programs that will be invoked by the command.
-
-
-``dsize [DPATH]``                  Compute and print the size of all files in the directory tree
-                                   identified by DPATH, which defaults to the current directory.
-                                   If the directory has no sub-directories the command counts
-                                   the bytes of each files in the directory and produces a byte
-                                   count. Otherwise it uses the ``du`` command, which runs faster,
-                                   and print the size in units of 1024 bytes multiples.
-
-find-dir_                          Find and print directories DIR inside directory tree ROOT.
-
-                                   Its help is::
-
-                                      Usage: find-dir [--inc-hidden|-H] DIR [ROOT]
-                                             find-dir [-h|--help]
-
-                                      Find and print all directories with name 'DIR'
-                                      inside the specified directory tree ('ROOT').
-
-                                      - By default ROOT is the current directory.
-                                      - By default exclude all hidden directories (such as .git)
-                                        unless --inc-hidden option is specified.
-
-                                      Exit codes: 0 if at least one directory found.
-                                                : 1 if nothing is found.
-                                                : 2 if the command line is invalid.
-
-
-``flip-to-ln DPATH FNAME``         Move file FNAME into directory DPATH and create a symbolic link
-                                   FNAME that points to its new location inside directory DPATH.
-
-                                   - Under Linux, where the GNU coreutils ln (>= 8.16) has the
-                                     ``-r`` option switch, the symbolic links are always created
-                                     relative if they can be.
-                                   - Under macOS if you need to create relative symbolic links
-                                     you must provide relative FNAME and DNAME arguments.
-
-``md``                             Shortcut for ``mkdir``
-
-``rd``                             Shortcut for ``rmdir``
-
-``mdd DIRPATH``                    A mkdir followed by cd.  If DIRPATH has '/', then create
-                                   intermediate directories as required and print them on stdout.
-
-``p3``                             Shortcut for ``python3``
-
-``pngquantf FNAME``                Compress PNG file identified by FNAME (with or without ``.png``
-                                   file extension.   Uses pngquant_.
-
-``pstree-for [PID]``               Print the process tree for specified process ID, PID.
-                                   If PID is not specified, the command uses the process ID of
-                                   the current process.
-================================== ================================================================
-
 Additional Scripts
 ------------------
 
@@ -1985,10 +1915,6 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 `use-cc-options`_                                      Configure extra options for the augmented ``cc`` command.
 
-`use-mk-diffo`_                                        Configure ``mk-diffo``.
-
-`use-git-extra`_                                       Set up extra Git completion where supported.
-
 `use-perlbrew`_                                        Activate an installed Perlbrew environment.
 
 `use-sdkman`_                                          Activate an installed SDKMAN environment.
@@ -2010,8 +1936,23 @@ Command or file                                        Description
 `use-llvm`_                                            Activate Homebrew LLVM on macOS.
 ====================================================== ===========================================================================
 
-Development and conversion
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Programming Language Support
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
+`clang-version`_                                       Print the Clang version. If its C++ executable is missing, attempt to build
+                                                       it with ``make``.
+
+`isvalid-python3`_                                     Check a file with Python 3's ``compileall`` module.
+
+`lisp`_                                                Launch the Common Lisp implementation selected by a ``use-lisp-with-*``
+                                                       environment script.
+====================================================== ===========================================================================
+
+Code Analysis Commands
+~~~~~~~~~~~~~~~~~~~~~~
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -2020,15 +1961,30 @@ Command or file                                        Description
                                                        tree, performing validation checks that ShellCheck does not do. With ``-s``
                                                        or ``-S``, also execute ShellCheck. All USRHOME executable and source shell
                                                        files are analyzed by this tool.
+====================================================== ===========================================================================
 
-`diff`_                                                Shell-based dispatcher. By default it uses ``/usr/bin/diff``. The `use-diff
-                                                       command`_ selects other programs for the current shell.
 
+
+File Diff Operations
+~~~~~~~~~~~~~~~~~~~~
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
 `use-diff`_                                            Select the program invoked by USRHOME's ``diff`` dispatcher in the current
                                                        shell.
 
-`clang-version`_                                       Print the Clang version. If its C++ executable is missing, attempt to build
-                                                       it with ``make``.
+diff_                                                  USRHOME diff_ is a shell-based dispatcher program.
+
+                                                       - By default it uses the standard ``/usr/bin/diff`` program
+                                                       - You can change this behaviour in the current shell by
+                                                         executing the ``use-diff`` command (an alias which sources
+                                                         the `envfor-diff`_ script).  With it, you can select other
+                                                         programs that will be invoked by the command.
+
+
+
+`use-mk-diffo`_                                        Configure ``mk-diffo``.
 
 `diffo`_                                               Compare object files by their disassembled code.
 
@@ -2037,7 +1993,17 @@ Command or file                                        Description
 `mk-diffo`_                                            Record and compare object code across versions. Requires the
                                                        ``USRHOME_DIFFO_*`` environment.
 
-`isvalid-python3`_                                     Check a file with Python 3's ``compileall`` module.
+
+====================================================== ===========================================================================
+
+
+Git Support Commands
+~~~~~~~~~~~~~~~~~~~~
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
+`use-git-extra`_                                       Activation command: Set up extra Git completion for the shell where supported.
 
 `git-lbr`_                                             List selected local or remote Git branches.
 
@@ -2047,18 +2013,31 @@ Command or file                                        Description
 
 `git-sw`_                                              Check out a branch. Can use shell completion.
 
+`git-cln`_ ``REPO`` ``BRANCH``                         Clone a Git repo and check out a specific branch.
+
+                                                       - REPO:   the Git repository url.
+                                                       - BRANCH: the Git branch name.  One that is shown by 'git branch'.
+
+                                                       The git clone is only done if the specified BRANCH exists in the
+                                                       specified REPO.  The local directory created for the REPO is named
+                                                       after the BRANCH.
+
+====================================================== ===========================================================================
+
+Text File Format Conversion
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+====================================================== ===========================================================================
+Command or file                                        Description
+====================================================== ===========================================================================
 `iconv-iso8859-utf8`_                                  Convert a file from ISO-8859-1 to UTF-8. Copy the original to
                                                        ``USRHOME_DIR_TMP`` and overwrite the input file.
 
 `iconv-iso8859-utf8-all`_                              Use ``fd`` (or ``find``) and ``file`` to select files for the same
                                                        conversion. Review the selection and keep backups before use.
-
-`download-website`_                                    Use ``wget`` to download a URL tree into the current directory and adjust
-                                                       links for local viewing.
-
-`lisp`_                                                Launch the Common Lisp implementation selected by a ``use-lisp-with-*``
-                                                       environment script.
 ====================================================== ===========================================================================
+
+
 
 
 
@@ -2070,9 +2049,12 @@ Files and searches
 ======================================== ===========================================================================
 Command or file                          Description
 ======================================== ===========================================================================
-`dsize`_                                 Compute and print the size of files in a directory tree. DPATH defaults to
+`dsize`_ ``[DPATH]``                     Compute and print the size of files in a directory tree. DPATH defaults to
                                          the current directory. Without subdirectories, count bytes in each file.
-                                         Otherwise, use ``du`` and print units of 1024 bytes.
+                                         If the directory has no sub-directories the command counts
+                                         the bytes of each files in the directory and produces a byte
+                                         count. Otherwise it uses the ``du`` command, which runs faster,
+                                         and print the size in units of 1024 bytes multiples.
 
 `find-dir`_                              Find directories named DIR inside ROOT. ROOT defaults to the current
                                          directory. Hidden directories are excluded unless ``--inc-hidden`` or
@@ -2083,13 +2065,25 @@ Command or file                          Description
                                            find-dir [--inc-hidden|-H] DIR [ROOT]
                                            find-dir [-h|--help]
 
-                                         Exit codes: 0 if at least one directory is found, 1 if none is found, and 2
-                                         for invalid arguments.
+                                           Find and print all directories with name 'DIR'
+                                           inside the specified directory tree ('ROOT').
 
-`flip-to-ln`_                            Move file FNAME into directory DPATH and create a symbolic link at FNAME.
-                                         On Linux with GNU coreutils ``ln`` >= 8.16, create relative links when
-                                         possible. On macOS, use relative FNAME and DPATH arguments to create a
-                                         relative link.
+                                           - By default ROOT is the current directory.
+                                           - By default exclude all hidden directories (such as .git)
+                                             unless --inc-hidden option is specified.
+
+                                           Exit codes: 0 if at least one directory found.
+                                                     : 1 if nothing is found.
+                                                     : 2 if the command line is invalid.
+
+`flip-to-ln`_ ``DPATH FNAME``            Move file FNAME into directory DPATH and create a symbolic link at FNAME
+                                         that points to the file.
+
+                                         - Under Linux, where the GNU coreutils ln (>= 8.16) has the
+                                           ``-r`` option switch, the symbolic links are always created
+                                           relative if they can be.
+                                         - Under macOS if you need to create relative symbolic links
+                                           you must provide relative FNAME and DNAME arguments.
 
 `files-in`_                              List entries in a directory tree, including symbolic links. ``-l`` requests
                                          a long listing.
@@ -2123,14 +2117,18 @@ Command or file                          Description
 `rgf`_                                   Search selected file types with ``rg`` or ``rga``. ``bin/sub/rg-f``
                                          implements its type dispatch.
 
-`pngquantf`_                             Compress the PNG file identified by FNAME, with or without the ``.png``
-                                         extension. Uses pngquant_.
+`pngquantf`_ ``FNAME``                   Compress the PNG file identified by FNAME, with or without the ``.png``
+                                         extension. Uses pngquant_.  Useful under Emacs `Dired`_ to comppress
+                                         selected png files.
 
 `print-if-exists`_                       Read paths from standard input and print the normalized paths that exist.
 
 `withh-ls`_                              Print a header for the last argument before invoking ``ls``.
 
 `withh-rpm`_                             Print a header for the last argument before invoking ``rpm``.
+
+`download-website`_                      Use ``wget`` to download a URL tree into the current directory and adjust
+                                         links for local viewing.
 ======================================== ===========================================================================
 
 Directory Commands
@@ -2214,7 +2212,7 @@ __  ibin/setfor-alias#L587
 
 
 Cd to Conceptual Directories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 ================================== ================================================================
@@ -2351,7 +2349,7 @@ USRHOME Command Name               Description
 
 
 Make directory
-^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~
 
 ================================== ===========================================================================
 Command or file                    Description
@@ -2365,7 +2363,7 @@ Command or file                    Description
 ================================== ===========================================================================
 
 Remove Empty Directory
-^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~
 
 ================================== ===========================================================================
 Command or file                    Description
@@ -2415,7 +2413,7 @@ Command or file                                        Description
 
 `ps-python`_                                           List Python processes running in terminals.
 
-`pstree-for`_                                          Print the process tree for PID. If PID is not specified, use the process ID
+`pstree-for`_ ``PID]``                                 Print the process tree for PID. If PID is not specified, use the process ID
                                                        of the current process.
 
 `shell-age`_                                           Report when the shell opened and its age.
@@ -3513,7 +3511,7 @@ Thanks!
 .. _zlogin.zsh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogin.zsh
 .. _zlogout.zsh:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogout.zsh
 .. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
-.. _use-diff command:                                  `Development and conversion`_
+.. _use-diff command:                                  `File Diff Operations`_
 .. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
 .. _example template file for do-user.sh:              https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user.sh#L72
 .. _usrcfg do-user-zshrc.sh example file does:         https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh#L55
@@ -3663,20 +3661,24 @@ Thanks!
 .. _`do-user-bash-profile.bash`: template/usrcfg/do-user-bash-profile.bash
 .. _`test/run-tests`: test/run-tests
 .. _`SSH helper documentation`: bin/sub-ssh4/readme.rst
-.. _..:         ibin/setfor-alias#L689
-.. _...:        ibin/setfor-alias#L690
-.. _....:       ibin/setfor-alias#L691
-.. _usrcfg:     ibin/setfor-alias#L589
-.. _usrhome:    ibin/setfor-alias#L911
-.. _cdh:        ibin/setfor-alias#620
-.. _cdlic:      ibin/setfor-alias#625
-.. _cdlog:      ibin/setfor-alias#630
-.. _cdv:        ibin/setfor-alias#613
-.. _cdtmp:      ibin/setfor-alias#669
-.. _cdpub:      ibin/setfor-alias#650
-.. _cdother:    ibin/setfor-alias#664
-.. _cdlocal:    ibin/setfor-alias#657
-.. _cdcontract: ibin/setfor-alias#643
+.. _usrcfg:           ibin/setfor-alias#L589
+.. _cdv:              ibin/setfor-alias#L613
+.. _cdh:              ibin/setfor-alias#L620
+.. _cdlic:            ibin/setfor-alias#L625
+.. _cdlog:            ibin/setfor-alias#L630
+.. _cdcontract:       ibin/setfor-alias#L643
+.. _cdpub:            ibin/setfor-alias#L650
+.. _cdlocal:          ibin/setfor-alias#L657
+.. _cdother:          ibin/setfor-alias#L664
+.. _cdtmp:            ibin/setfor-alias#L669
+.. _..:               ibin/setfor-alias#L689
+.. _...:              ibin/setfor-alias#L690
+.. _....:             ibin/setfor-alias#L691
+.. _git-cln:          ibin/setfor-alias#L906
+.. _usrhome:          ibin/setfor-alias#L911
+.. _Dired:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-dired.pdf
+.. _use-git-extra:    ibin/envfor-git-extra
+..                    setfor-alias#L906
 
 
 .. ---------------------------------------------------------------------------
