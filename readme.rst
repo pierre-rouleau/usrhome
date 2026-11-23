@@ -1567,11 +1567,11 @@ USRHOME Command Name               Description
                                    - Prepends only the directories that exits
                                      and are not already present in PATH.
 
-                                    - Examples:
+                                     - Examples:
 
-                                      - ``prepend_to_path ~/my-bin``
-                                      - ``prepend_to_path ~/my-bin:$HOME/other-bin``
-                                      - ``prepend_to_path $HOME/my-bin:$HOME/other-bin``
+                                       - ``prepend_to_path ~/my-bin``
+                                       - ``prepend_to_path ~/my-bin:$HOME/other-bin``
+                                       - ``prepend_to_path $HOME/my-bin:$HOME/other-bin``
 
                                    - **Caution**: shells only expand the ~ at the beginning
                                      of strings, therefore you cannot use it elsewhere in the
