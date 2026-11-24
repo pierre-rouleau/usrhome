@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-24 13:28:31 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-24 13:42:30 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -147,12 +147,13 @@ mk-diffo - Store another file set and compare object files.
 
   • Print this help information.
 
-  Usage: mk-diffo [[-w | --with-source] [-s | --string] [-l | --less]] [REFNO]
+  Usage: mk-diffo [[-w | --with-source] [-s | --strings] [-l | --less]] [REFNO]
 
   • Store the source and object file inside the mk-diffo directory tree
     for the current file and reference number, then compare the object file
     with the object file for the first version or the version specified by
-    REFNO.
+    REFNO.  Use an explicit REFNO of 0 to overwrite the comparison with the
+    new version of the file.
 
      REFNO : optional reference number.  Default is the first one created.
              It must be a valid integer.

@@ -1667,7 +1667,7 @@ existing object file and keeps a copy of the source file, the object file
 and the assembler file for each time you use ``mk-diffo`` inside a directory
 tree.  The root of the directory tree is named after a project and under it
 the source file name.  ``mk-diffo`` uses the ``diffo`` utility to generate the
-assembler from the object file and the diff from the previous version.
+assembler from the object file and the diff from the first version created.
 
 After using it once, mk-diffo compares the generate assembler file of the
 very first generated copy (by default) with the latest one it just
@@ -1691,7 +1691,7 @@ caused by those changes.
 **To use it**:
 
 - Make sure you compile the C/C++ source files with debugging activated.
-- Specialize your shell by executing: ``use-mkdiffo``
+- Specialize your shell by executing: ``use-mk-diffo``
 
   - This identifies the following:
 
@@ -1794,7 +1794,8 @@ Command or file                                        Description
                                                          Store the source and object file inside the mk-diffo directory tree
                                                          for the current file and reference number, then compare the object file
                                                          with the object file for the first version or the version specified by
-                                                         REFNO.
+                                                         REFNO.  Use an explicit REFNO of 0 to overwrite the comparison with the
+                                                         new version of the file.
 
                                                             REFNO : optional
                                                             reference number. Default is the first one created.
