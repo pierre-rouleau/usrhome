@@ -1155,15 +1155,17 @@ USRHOME Command Name               Description
 
                                    This is an alias to `bin/showpath`_
 
-``usrhome-env``                    Display the values of all USRHOME environment variables
+`usrhome-env`_                     Display the values of all USRHOME environment variables
                                    currently set in the shell.
 
-``usrhome-switch-path``            Modify PATH.  Swap current PATH with the value stored inside the
+                                   This is an alias to `bin/usrhome-env`_
+
+`usrhome-switch-path`_             Modify PATH.  Swap current PATH with the value stored inside the
                                    ``USRHOME_ORIGINAL_PATH`` environment variable.  This is set to
                                    PATH value the system had inside the shell before USRHOME
                                    added support for itself and other tools.
 
-``sanitize-path [VARIABLE]``       Sanitize a PATH-like variable in the current shell.
+`sanitize-path`_ [VARIABLE]        Sanitize a PATH-like variable in the current shell.
                                    The alias calls ``_usrhome_sanitize_path``.  The default
                                    variable is PATH.  The named variable must be set and
                                    writable.  The command removes leading whitespace from
@@ -1197,6 +1199,8 @@ USRHOME Command Name               Description
                                    the value, unless TERM is ``dumb``.
 
                                    The command is silent if the value is valid and has not been modified.
+
+                                   This is a `alias for _usrhome_sanitize_path`_.
 ================================== ================================================================
 
 Dynamic Path Management
@@ -3847,7 +3851,8 @@ Thanks!
 .. _diff: bin/diff
 .. _bin/showpath:                         bin/showpath
 .. _use-diff:                             ibin/envfor-diff
-.. _showpath:                             ibin/setfor-alias#L52
+.. _showpath:                             ibin/setfor-alias#L46
+.. _usrhome-env:                          ibin/setfor-alias#L52
 .. _info-shell-special-var:               ibin/setfor-alias#L103
 .. _restore-title:                        ibin/setfor-alias#L183
 .. _l:
@@ -3864,6 +3869,7 @@ Thanks!
 .. _setenv:                               ibin/setfor-alias#L421
 .. _clrenv:                               ibin/setfor-alias#L457
 .. _add-to-path:                          ibin/setfor-alias#L499
+.. _alias for _usrhome_sanitize_path:     ibin/setfor-alias#L559
 .. _usrhome:                              ibin/setfor-alias#L588
 .. _usrcfg:                               ibin/setfor-alias#L589
 .. _cdv:                                  ibin/setfor-alias#L613
@@ -3897,7 +3903,9 @@ Thanks!
 .. _tracing the execution of the shell configuration files: `USRHOME Shell Startup File Execution Tracing`_
 .. _Bash set-title: ibin/setfor-bash-common#L33
 .. _Zsh set-title:  ibin/setfor-zsh-common#L31
-
+.. _bin/usrhome-env:  bin/usrhome-env
+.. _usrhome-switch-path:  ibin/setfor-path#L201
+.. _sanitize-path: ibin/xtra/sanitize-path-posix.sh
 
 .. ---------------------------------------------------------------------------
 
