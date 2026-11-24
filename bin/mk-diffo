@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 16:58:36 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-23 16:37:50 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -113,16 +113,16 @@ print_usage()
     printf -- "\
 mk-diffo - Store another file set and compare object files.
 
-  The mk-diffo utility is used to track the evolution of a source code file
+  Use the mk-diffo utility to track the evolution of a source code file
   over its modifications by comparing the assembler code generated from the
   compiler for it as it evolves.
 
-  It does not compile that file; it generates the assembler code from the
+  mk-diffo does not compile that file; it generates the assembler code from the
   existing object file and keeps a copy of the source file, the object file
   and the assembler file for each time you use mk-diffo inside a directory
   tree.  The root of the directory tree is named after a project and under it
   the source file name.  mk-diffo uses the diffo utility to generate the
-  assembler from the object file.
+  assembler from the object file and the diff from the previous version.
 
   After using it once, mk-diffo compares the generate assembler file of the
   very first generated copy (by default) with the latest one it just
