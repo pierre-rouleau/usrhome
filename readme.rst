@@ -1793,10 +1793,11 @@ Command or file                                        Description
 
                                                          Store the source and object file inside the mk-diffo directory tree
                                                          for the current file and reference number, then compare the object file
-                                                         with the object file for the previous version or the version specified by
+                                                         with the object file for the first version or the version specified by
                                                          REFNO.
 
-                                                            REFNO : optional reference number.  Default is last one created.
+                                                            REFNO : optional
+                                                            reference number. Default is the first one created.
                                                                     It must be a valid integer.
                                                                     Leading 0 are accepted, but remain a base-10 value.
 
