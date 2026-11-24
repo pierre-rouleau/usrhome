@@ -280,14 +280,9 @@ Shell startup tracing
 ---------------------
 
 USRHOME can trace the sourcing of its shell configuration files to help
-you diagnose startup problems. The trace shows the order and nesting of
-participating files. Set ``USRHOME_TRACE_SHELL_CONFIG`` to ``1`` in
-``usrcfg/setfor-all-config.sh`` to print the trace to the shell. Set it
-to an absolute file name in an existing directory to also append the
-trace and PATH values to that file. You can use
-``usrhome-shell-toggle-tracing`` to toggle tracing and restart the
-current Bash or Zsh shell. Tracing output is suppressed in non-interactive
-shells and when ``TERM`` is ``dumb``.
+you diagnose startup problems.
+See the section titled `USRHOME Shell Startup File Execution Tracing`_ for
+more information.
 
 For Teams & Power Users
 -----------------------
@@ -3176,12 +3171,16 @@ Edit your file: ``$USRHOME_DIR_USRCFG/setfor-all-config.sh`` and set
 
 1                                    USRHOME prints tracing info on stdout
 
-Name of a file                       USRHOME prints tracing info on stdout
+Absolute file name                   USRHOME prints tracing info on stdout
                                      and into the specified file.
 ==================================== =======================================
 
 With USRHOME tracing active, when you open a new shell inside a terminal, or
 create a sub-shell, you can see which file is sourced.
+
+Inside a shell, you can use ``usrhome-shell-toggle-tracing`` to toggle tracing
+and restart the current Bash or Zsh shell. Tracing output is suppressed in
+non-interactive shells and when ``TERM`` is ``dumb``.
 
 Tracing Examples
 ----------------
