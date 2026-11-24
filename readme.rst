@@ -504,7 +504,7 @@ they are not hidden.
 ========================= =====================================================
 Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ========================= =====================================================
-``~/.zshenv``             $USRHOME_DIR/dot/\ `zshenv.zsh`_
+``~/.zshenv``             ``$USRHOME_DIR``/dot/\ `zshenv.zsh`_
 ``~/.zprofile``           ``$USRHOME_DIR/dot/``\ `zprofile.zsh`_
 ``~/.zshrc``              ``$USRHOME_DIR/dot/``\ `zshrc.zsh`_
 ``~/.zlogin``             ``$USRHOME_DIR/dot/``\ `zlogin.zsh`_
