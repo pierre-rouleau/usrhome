@@ -4,7 +4,7 @@
 # Purpose   : Make a new object file diff to track evolution of a source file.
 # Created   : Thursday, June 13 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-24 13:42:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-24 13:52:53 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -122,7 +122,7 @@ mk-diffo - Store another file set and compare object files.
   and the assembler file for each time you use mk-diffo inside a directory
   tree.  The root of the directory tree is named after a project and under it
   the source file name.  mk-diffo uses the diffo utility to generate the
-  assembler from the object file and the diff from the previous version.
+  assembler from the object file and the diff from the first version (000).
 
   After using it once, mk-diffo compares the generate assembler file of the
   very first generated copy (by default) with the latest one it just
@@ -149,11 +149,12 @@ mk-diffo - Store another file set and compare object files.
 
   Usage: mk-diffo [[-w | --with-source] [-s | --strings] [-l | --less]] [REFNO]
 
-  • Store the source and object file inside the mk-diffo directory tree
-    for the current file and reference number, then compare the object file
-    with the object file for the first version or the version specified by
-    REFNO.  Use an explicit REFNO of 0 to overwrite the comparison with the
-    new version of the file.
+  • Store the source and object file inside the mk-diffo directory tree for
+    the current file and reference number, then compare the object file with
+    the object file for the first version or the version specified by REFNO.
+    Use an explicit REFNO of 0 to overwrite the saved 000 file with the
+    current file.  This does not create a new numbered version or perform a
+    comparison.
 
      REFNO : optional reference number.  Default is the first one created.
              It must be a valid integer.
@@ -161,7 +162,7 @@ mk-diffo - Store another file set and compare object files.
 
      Options passed to diffo:
      - -w | --with-source : insert C/C++ source code in the generated assembler.
-     - -s | --string      : compare strings extracted from files (always generated).
+     - -s | --strings     : compare strings extracted from files (always generated).
      - -l | --less        : pipe differences to less
 
   ENVIRONMENT:
@@ -212,7 +213,7 @@ if [ -z "$USRHOME_DIFFO_ROOT_DIR" ] ||    \
        [ -z "$USRHOME_DIFFO_OBJEXT" ]; then
     usrhome_printf_error 'mk-diffo: The USRHOME_DIFFO environment variables
 \t   required for using mk-diffo are not set!
-\t   Please first execute use-mk-info to set them up.
+\t   Please first execute use-mk-diffo to set them up.
 \t   Use mk-diffo -h for more information.\n'
     exit 2
     fi

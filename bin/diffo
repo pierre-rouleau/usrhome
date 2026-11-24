@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 12:06:37 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-24 13:54:12 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,13 +30,13 @@ print_usage()
 diffo -- Compare 2 object files by comparing their assembler code.
          Print the diff output on stdout.
 
- Usage: diffo [[-w | --with-source]  [-s | --string] [-l | --less]]  OBJ-OLD OBJ-NEW
+ Usage: diffo [[-w | --with-source]  [-s | --strings] [-l | --less]]  OBJ-OLD OBJ-NEW
         diffo -h | --help
 
    - OBJ-OLD            : path of the old object file.
    - OBJ-NEW            : path of the new object file.
    - -w | --with-source : insert C/C++ source code in the generated assembler.
-   - -s | --string      : also compare strings extracted from files.
+   - -s | --strings     : also compare strings extracted from files.
    - -l | --less        : pipe differences to less
 
   Note: - diffo requires a version of objdump which supports the

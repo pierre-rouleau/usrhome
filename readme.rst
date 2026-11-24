@@ -1632,12 +1632,12 @@ diff_                                                  USRHOME diff_ is a shell-
 
                                                           diffo -h | --help
 
-                                                          diffo [[-w | --with-source]  [-s | --string] [-l | --less]]  OBJ-OLD OBJ-NEW
+                                                          diffo [[-w | --with-source]  [-s | --strings] [-l | --less]]  OBJ-OLD OBJ-NEW
 
                                                              - OBJ-OLD            : path of the old object file.
                                                              - OBJ-NEW            : path of the new object file.
                                                              - -w | --with-source : insert C/C++ source code in the generated assembler.
-                                                             - -s | --string      : also compare strings extracted from files.
+                                                             - -s | --strings     : also compare strings extracted from files.
                                                              - -l | --less        : pipe differences to less
 
 
@@ -1789,23 +1789,24 @@ Command or file                                        Description
 
                                                        **Usage**::
 
-                                                         mk-diffo [[-w | --with-source] [-s | --string] [-l | --less]] [REFNO]
+                                                         mk-diffo [[-w | --with-source] [-s | --strings] [-l | --less]] [REFNO]
 
                                                          Store the source and object file inside the mk-diffo directory tree
                                                          for the current file and reference number, then compare the object file
                                                          with the object file for the first version or the version specified by
-                                                         REFNO.  Use an explicit REFNO of 0 to overwrite the comparison with the
-                                                         new version of the file.
+                                                         REFNO. Use an explicit REFNO of 0 to overwrite the saved 000 file with the
+                                                         current file.  This does not create a new numbered version or perform a
+                                                         comparison.
 
-                                                            REFNO : optional
-                                                            reference number. Default is the first one created.
-                                                                    It must be a valid integer.
-                                                                    Leading 0 are accepted, but remain a base-10 value.
+                                                           REFNO : optional
+                                                           reference number. Default is the first one created.
+                                                                   It must be a valid integer.
+                                                                   Leading 0 are accepted, but remain a base-10 value.
 
-                                                            Options passed to diffo:
-                                                            - -w | --with-source : insert C/C++ source code in the generated assembler.
-                                                            - -s | --string      : compare strings extracted from files (always generated).
-                                                            - -l | --less        : pipe differences to less
+                                                           Options passed to diffo:
+                                                           - -w | --with-source : insert C/C++ source code in the generated assembler.
+                                                           - -s | --strings     : compare strings extracted from files (always generated).
+                                                           - -l | --less        : pipe differences to less
 
                                                          ENVIRONMENT:
                                                            - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
