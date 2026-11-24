@@ -3218,102 +3218,6 @@ mentions that USRHOME sanitized the PATH and how to see more as we can see here:
 .. figure:: res/zsh-tracing-aquamacs-02.png
 
 
-Setup Examples
-==============
-
-Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
-9.3.
-
-macOS shells
-------------
-
-The macOS Sonoma default shell is zsh. I have installed the latest Bash
-shell via Homebrew and also installed Rust.   These are available on the
-default zsh shell, which is shown starting in the first terminal seen in the
-back (ttys013).  The PATH available in that shell has 17 entries.  It has
-access to Rust and several Homebrew directories.
-
-I have also configured Terminal to start a Bash login shell. That shell
-(ttys014) is
-also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
-anything on the PATH of the login shells.  They have 10 directories in their
-PATH; the first one being ``/usr/local/bin``.
-
-Then I start another terminal (ttys015) with macOS default zsh non-login
-interactive shell.   As for the first one (ttys013), it sets up Homebrew and
-Rust because my USRHOME setup is done that way for those shells.  It has 17
-directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
-prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
-shell nested level.  From bash I create a zsh sub-shell from where I launch a
-``sleep 100`` command in the background.  The zsh shows ``1 ⚙`` identifying a
-running background job.  And when I issue an invalid command, it prints the
-exit code (127) followed by a red ⨯.
-
-.. figure:: res/macOS-shells.png
-
-Rocky Linux 9.3 shell
----------------------
-
-The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
-default shell is Bash 5.1. Again here I
-started two terminal instances: the first one launches the default Bash,
-instrumented with the exact same USRHOME settings than my macOS one.
-On Linux, Homebrew is not used.  But it also activates Rust.
-
-USRHOME does some check for vulnerabilities and it detects a possible one in
-Rocky Linux 9.3 and reports it when it is executing as the first level.
-The prompt prints:
-
-- the exit code of the last command,
-- the elapsed time (duration) of the completed command,
-- the shell nested level,
-- the number of background jobs running,
-- the user name @ hostname @ current time in 24-hour format
-- the current directory in side square brackets.
-
-The second non-login shell is executing a terminal-based Emacs process, which
-runs a terminal mode shell.  The USRHOME shell is Emacs-aware.
-The bash prompt is not affected when running inside Emacs.
-It can display the same information.
-You can see the PATH components shown by the showpath command.
-
-USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
-entries and empty entries. Here everything is fine.
-
-When the shell is placed in sudo mode, the prompt changes color and shows a
-``#`` instead of a ``$`` after the word ``bash``.
-
-The third terminal is configured to launch Bash in login mode. Here, USRHOME
-does not add anything to the PATH; the Bash login shells are unmodified and do
-not have access for any extra tools, therefore the PATH is shorter.
-These shells do not perform USRHOME simple (and quite limited) vulnerability
-check.
-
-Also note that, to help distinguish the login shell, I set the login shell
-prompt to red and the color of the non-login prompt to blue.
-
-.. figure:: res/RockyLinux-shells.png
-
-
-Kali Linux zsh shells with tracing enable
------------------------------------------
-
-You can activate shell tracing with USRHOME.
-When enabled, the shell prints what file is sourced when the shell starts,
-as this is shown in the Kali Linux, where zsh is the default shell.
-
-Rust is not installed in that system but it uses the same USRHOME
-*common* configuration as the others (with the temporary exception of enabling
-tracing) and the shell prints a warning.
-
-.. figure:: res/Kali-Linux-zshell.png
-
-It would be possible to move the request to use Rust from the common
-configuration file (in this case the file usrcfg/do-user.sh, that has logic
-similar to the `example template file for do-user.sh`_ ) into a
-node-specific file that the usrcfg logic could identify.  That could be done
-by the do-user.sh in the way that the `usrcfg do-user-zshrc.sh example file
-does`_.
 
 
 Adding Your Own Environment Customization to your Shell
@@ -3477,53 +3381,24 @@ Z Shell as we can see:
 
   .. figure:: res/use-rust-in-aquamacs.png
 
-Using USRHOME on Kali Linux
-===========================
 
-Kali Linux uses zsh as the default shell.
-It has it's own prompt definition with  several Z Shell extensions
-enabled, which the USRHOME default shell does not have yet.
-
-You can still use USRHOME on Kali Linux and take advantage of the USRHOME commands
-and philosophy of storing the USRHOME main code and the local shell
-customization inside the usrcfg directory.  That can also be stored inside a
-repository.  In this example, the usrcfg files are stored inside my **local**
-Mercurial repository.  The logic in the various files support multiple target
-environment, which they select by checking the host name and other values.
-
-This way, I can **centralize the shell setting of all computers or VMs** I use
-inside **a single repository** that I clone inside the usrcfg directory of these
-computers and VMs.  I can design the logic once, specialize it for various
-environments and distribute it through the VCS.
-
-Here's a Kali Linux terminal with the Z shell using USRHOME selecting the
-original Kali Linux Z Shell configuration (moved into the
-``usrcfg/do-user-zshrc.zsh`` file and selected based on the USRHOME prompt
-model value):
-
-.. figure:: res/on-kali-linux.png
-
-And then, after changing the color scheme of Kali Linux terminal, two
-terminals, one running the terminal version of Emacs launched with an alias to
-``emacs -nw`` and the graphical version of Emacs launched from the shell with a shell
-function that captures the current working directory and runs in background.
-You can see the prompts inside the Emacs shell-mode and term-mode buffers.
-
-
-.. figure:: res/on-kali-linux-02.png
-
-
+Using USRHOME -- Setup Examples
+===============================
 
 Using USRHOME on macOS
-======================
+----------------------
+
+The default shell used by the latest versions of macOS zsh.
+Bash is also available but it's an old version of Bash.
 
 On macOS several tools that are available on Linux are missing.
 
 I am using Homebrew_ to install these tools.  When used on macOS running on
-Apple Silicon CPU, Homebrew_ does require sudo access because it places all
-files inside the ``/opt/homebrew`` directory tree, with ``/opt/homebrew/bin``
-the location of the executable files (or symlinks to the executable files).
-This directory is not on PATH unless you place it.  USRHOME adds it for macOS.
+Apple Silicon CPU, Homebrew_ does require sudo access for initial installation
+because it places all files inside the ``/opt/homebrew`` directory tree, with
+``/opt/homebrew/bin`` the location of the executable files (or symlinks to the
+executable files).  This directory is not on PATH unless you place it.
+USRHOME adds it for macOS.
 
 USRHOME provides several features to enhance the command line experience on
 macOS without affecting macOS default environment.  It becomes possible to use
@@ -3534,7 +3409,7 @@ More information about the extra features are described in the following
 sections.
 
 Using GCC on macOS
-------------------
+~~~~~~~~~~~~~~~~~~
 
 The following commands specializes the shell to use a specific version of the
 GCC tool chain inside the shell.  That shell can then build using the specified
@@ -3573,6 +3448,139 @@ tool chain instead of the Apple-supplied Clang tool chain.
                                           PATH, effectively activating the GCC commands.
 = ===================================== =============================================================
 
+Example macOS shells
+~~~~~~~~~~~~~~~~~~~~
+
+
+I have installed the latest Bash shell via Homebrew and also installed Rust.
+
+These are available on the default zsh shell, which is shown starting in the
+first terminal seen in the back (ttys013).  The PATH available in that shell
+has 17 entries.  It has access to Rust and several Homebrew directories.
+
+I have also configured Terminal to start a Bash login shell. That shell
+(ttys014) is
+also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
+anything on the PATH of the login shells.  They have 10 directories in their
+PATH; the first one being ``/usr/local/bin``.
+
+Then I start another terminal (ttys015) with macOS default zsh non-login
+interactive shell.   As for the first one (ttys013), it sets up Homebrew and
+Rust because my USRHOME setup is done that way for those shells.  It has 17
+directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
+prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
+shell nested level.  From bash I create a zsh sub-shell from where I launch a
+``sleep 100`` command in the background.  The zsh shows ``1 ⚙`` identifying a
+running background job.  And when I issue an invalid command, it prints the
+exit code (127) followed by a red ⨯.
+
+.. figure:: res/macOS-shells.png
+
+.. ---------------------------------------------------------------------------
+
+Using USRHOME on Rocky Linux
+----------------------------
+
+Rocky Linux 9.3 shell
+~~~~~~~~~~~~~~~~~~~~~
+
+The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
+default shell is Bash 5.1. Again here I
+started two terminal instances: the first one launches the default Bash,
+instrumented with the exact same USRHOME settings than my macOS one.
+On Linux, Homebrew is not used.  But it also activates Rust.
+
+USRHOME does some check for vulnerabilities and it detects a possible one in
+Rocky Linux 9.3 and reports it when it is executing as the first level.
+The prompt prints:
+
+- the exit code of the last command,
+- the elapsed time (duration) of the completed command,
+- the shell nested level,
+- the number of background jobs running,
+- the user name @ hostname @ current time in 24-hour format
+- the current directory in side square brackets.
+
+The second non-login shell is executing a terminal-based Emacs process, which
+runs a terminal mode shell.  The USRHOME shell is Emacs-aware.
+The bash prompt is not affected when running inside Emacs.
+It can display the same information.
+You can see the PATH components shown by the showpath command.
+
+USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
+entries and empty entries. Here everything is fine.
+
+When the shell is placed in sudo mode, the prompt changes color and shows a
+``#`` instead of a ``$`` after the word ``bash``.
+
+The third terminal is configured to launch Bash in login mode. Here, USRHOME
+does not add anything to the PATH; the Bash login shells are unmodified and do
+not have access for any extra tools, therefore the PATH is shorter.
+These shells do not perform USRHOME simple (and quite limited) vulnerability
+check.
+
+Also note that, to help distinguish the login shell, I set the login shell
+prompt to red and the color of the non-login prompt to blue.
+
+.. figure:: res/RockyLinux-shells.png
+
+.. ---------------------------------------------------------------------------
+
+Using USRHOME on Kali Linux
+---------------------------
+
+Kali Linux uses zsh as the default shell.
+It has it's own prompt definition with  several Z Shell extensions
+enabled, which the USRHOME default shell does not have yet.
+
+You can still use USRHOME on Kali Linux and take advantage of the USRHOME commands
+and philosophy of storing the USRHOME main code and the local shell
+customization inside the usrcfg directory.  That can also be stored inside a
+repository.  In this example, the usrcfg files are stored inside my **local**
+Mercurial repository.  The logic in the various files support multiple target
+environment, which they select by checking the host name and other values.
+
+This way, I can **centralize the shell setting of all computers or VMs** I use
+inside **a single repository** that I clone inside the usrcfg directory of these
+computers and VMs.  I can design the logic once, specialize it for various
+environments and distribute it through the VCS.
+
+Here's a Kali Linux terminal with the Z shell using USRHOME selecting the
+original Kali Linux Z Shell configuration (moved into the
+``usrcfg/do-user-zshrc.zsh`` file and selected based on the USRHOME prompt
+model value):
+
+.. figure:: res/on-kali-linux.png
+
+And then, after changing the color scheme of Kali Linux terminal, two
+terminals, one running the terminal version of Emacs launched with an alias to
+``emacs -nw`` and the graphical version of Emacs launched from the shell with a shell
+function that captures the current working directory and runs in background.
+You can see the prompts inside the Emacs shell-mode and term-mode buffers.
+
+
+.. figure:: res/on-kali-linux-02.png
+
+
+Kali Linux zsh shells with tracing enable
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can activate shell tracing with USRHOME.
+When enabled, the shell prints what file is sourced when the shell starts,
+as this is shown in the Kali Linux, where zsh is the default shell.
+
+Rust is not installed in that system but it uses the same USRHOME
+*common* configuration as the others (with the temporary exception of enabling
+tracing) and the shell prints a warning.
+
+.. figure:: res/Kali-Linux-zshell.png
+
+It would be possible to move the request to use Rust from the common
+configuration file (in this case the file usrcfg/do-user.sh, that has logic
+similar to the `example template file for do-user.sh`_ ) into a
+node-specific file that the usrcfg logic could identify.  That could be done
+by the do-user.sh in the way that the `usrcfg do-user-zshrc.sh example file
+does`_.
 
 .. ---------------------------------------------------------------------------
 
