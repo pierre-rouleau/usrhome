@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-24 13:54:12 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-24 14:32:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -57,6 +57,29 @@ diffo -- Compare 2 object files by comparing their assembler code.
           Do:  'use-cc-options -g'
         - Exit code is 0 if there are no detected change.
           1 if only the assembler or string changes, 2 if both change.
+
+  Overview:  When executing diffo old.o new.o:
+
+   - The file old.asm, old.o and new.o must exists and
+     old.txt must exist when you use the --strings option.
+   - diffo generates new.asm from new.o
+   - diffo compares new.asm with the existing old.asm.
+   - If you specify the --strings option, diffo compares the
+     strings it extracts from new.o from an existing old.txt.
+   - diffo generates new.txt in all cases, even when you do not
+     specify the --strings option.
+   - diffo uses the old.asm and old.txt if they exist.  If they
+     do not exist, you can create them by executing the following
+     command:
+
+     objdump --disassemble --demangle --no-addresses old.o | tail -n +3 > old.asm
+     strings old.o > old.txt
+
+   - The old.txt file is only needed for the comparison when you use -s or
+     --strings options.  If you use --with-source or a customized objdump,
+     generate old.asm with matching options.
+   - Of course the object files compared must correspond to the evolution
+     of the same source code file.
 "
 }
 
