@@ -1019,27 +1019,27 @@ Command to Display and Manipulate Environment Variables
 -------------------------------------------------------
 
 The following commands help manage and read the content of environment
-variables used int he current shell.  Any modification to an environment
-variable become available to the current shell and any sub-shells.  It does
+variables used in the current shell.  Any modification to an environment
+variable become available to the current shell and any sub-shells; it does
 not persists once the shell exits.
 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``add-to-path DIRPATH``            Add DIRPATH to the front of the current shell PATH.
+`add-to-path`_ ``DIRPATH``         Add DIRPATH to the front of the current shell PATH.
 
-``add-to-path --end DIRPATH``      Add DIRPATH to the end of the current shell PATH.
+`add-to-path`_ ``--end DIRPATH``   Add DIRPATH to the end of the current shell PATH.
 
                                    - This is an alias to ``_usrhome_add_to_path`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
 
-``clrenv VARNAME``                 Clear (remove) the environment variable specified by name from
+`clrenv`_ ``VARNAME``              Clear (remove) the environment variable specified by name from
                                    the environment of the *current* shell.
 
                                    - This is an alias to ``_usrhome_clrenv`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
 
-``setenv VARNAME VALUE``           Set the environment variable named VARNAME to the specified
+`setenv`_ ``VARNAME VALUE``        Set the environment variable named VARNAME to the specified
                                    VALUE and inject it inside the *current* shell.
 
                                    - This is an alias to ``_usrhome_setenv`` implemented in
@@ -3855,6 +3855,9 @@ Thanks!
 .. _lsdd -a:                              ibin/setfor-alias#L347
 .. _lsl:                                  ibin/setfor-alias#L351
 .. _info-rosetta2:                        ibin/setfor-alias#L406
+.. _setenv:                               ibin/setfor-alias#L421
+.. _clrenv:                               ibin/setfor-alias#L457
+.. _add-to-path:                          ibin/setfor-alias#L499
 .. _usrcfg:                               ibin/setfor-alias#L589
 .. _cdv:                                  ibin/setfor-alias#L613
 .. _cdh:                                  ibin/setfor-alias#L620
