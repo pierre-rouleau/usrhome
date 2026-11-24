@@ -977,8 +977,9 @@ USRHOME Command Name               Description
                                    - NAME: optional name or first letters of the names.
                                    - If the ``USRHOME_USE_PIKE`` environment variable
                                      is set to 1 inside your ``$USRCFG/setfor-all-config``
-                                     file, lsda is an alias to the ``lsdd -a`` tool utility
+                                     file, lsda is an alias to the `lsdd -a`_ tool utility
                                      described below and provides many more features.
+                                   - Otherwise a shell script `lsda function`_ is used.
 
 
 ``lsdd [OPTION] [FILE...]``        List directories only.
@@ -3850,6 +3851,8 @@ Thanks!
 .. _lt:
 .. _lta:                                  ibin/setfor-alias#L218
 .. _lsd:                                  ibin/setfor-alias#L278
+.. _lsda function:                        ibin/setfor-alias#L299
+.. _lsdd -a:                              ibin/setfor-alias#L347
 .. _lsl:                                  ibin/setfor-alias#L351
 .. _info-rosetta2:                        ibin/setfor-alias#L406
 .. _usrcfg:                               ibin/setfor-alias#L589
