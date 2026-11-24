@@ -1026,20 +1026,20 @@ not persists once the shell exits.
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-`add-to-path`_ ``DIRPATH``         Add DIRPATH to the front of the current shell PATH.
+`add-to-path`_ DIRPATH             Add DIRPATH to the front of the current shell PATH.
 
-`add-to-path`_ ``--end DIRPATH``   Add DIRPATH to the end of the current shell PATH.
+`add-to-path`_ --end DIRPATH       Add DIRPATH to the end of the current shell PATH.
 
                                    - This is an alias to ``_usrhome_add_to_path`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
 
-`clrenv`_ ``VARNAME``              Clear (remove) the environment variable specified by name from
+`clrenv`_ VARNAME                  Clear (remove) the environment variable specified by name from
                                    the environment of the *current* shell.
 
                                    - This is an alias to ``_usrhome_clrenv`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
 
-`setenv`_ ``VARNAME VALUE``        Set the environment variable named VARNAME to the specified
+`setenv`_ VARNAME VALUE            Set the environment variable named VARNAME to the specified
                                    VALUE and inject it inside the *current* shell.
 
                                    - This is an alias to ``_usrhome_setenv`` implemented in
@@ -1077,7 +1077,7 @@ USRHOME Command Name               Description
 
                                    - This is an alias to `usrhome/ibin/envfor-info`_
 
-`append-to-path`_ ``DIRS``         Append directories to PATH.
+`append-to-path`_ DIRS             Append directories to PATH.
 
                                    - DIRS is either one directory or a list a
                                      colon-separated directories.
@@ -1094,7 +1094,7 @@ USRHOME Command Name               Description
                                      list!
                                    - This is an alias to `append_to_path`_.
 
-`prepend_to_path`_ ``DIRS``        Prepend directories to PATH.
+`prepend_to_path`_ DIRS            Prepend directories to PATH.
 
                                    - DIRS is either one directory or a list a
                                      colon-separated directories.
