@@ -2625,9 +2625,9 @@ Bash login shell execution sequence
 
 - ~/.bash_profile  --> ``$USRHOME_DIR``\ /dot/bash_profile.bash
 
-  - ``$USRHOME_DIR``\ _DIR_USRCFG/setfor-all-config.sh  *(must exist!)*
+  - ``$USRHOME_DIR_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
 
-    - ``$USRHOME_DIR``\ _DIR_USRCFG/do-user-bash_profile.bash
+    - ``$USRHOME_DIR_DIR_USRCFG``\ /do-user-bash_profile.bash
 
 - ~/.bashrc        --> ``$USRHOME_DIR``\ /dot/bashrc.bash
 
@@ -2640,9 +2640,9 @@ Bash login shell execution sequence
     - ``$USRHOME_DIR``\ /ibin/envfor-homebrew
     - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
-  - ``$USRHOME_DIR``\ _USRCFG/do-user-bashrc.bash  *(if it exists)*
+  - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash  *(if it exists)*
 
-    - ``$USRHOME_DIR``\ _USRCFG/do-user.sh   *(if it exists)*
+    - ``$USRHOME_DIR_USRCFG``\ /do-user.sh   *(if it exists)*
 
 
 The zsh Configuration Files
