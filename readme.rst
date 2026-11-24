@@ -1045,13 +1045,13 @@ USRHOME Command Name               Description
                                    - This is an alias to ``_usrhome_setenv`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
 
-``use-usrhome``                    Add USRHOME binary directory and ``~/bin`` to PATH if present.
+`use-usrhome`_                     Add USRHOME binary directory and ``~/bin`` to PATH if present.
                                    This command is automatically executed for zsh shell started
                                    under USRHOME control.
 
                                    - This is an alias to `usrhome/ibin/envfor-usrhome`_
 
-``use-homebrew``                   Add Homebrew directories to PATH if required for the CPU
+`use-homebrew`_                    Add Homebrew directories to PATH if required for the CPU
                                    architecture.
                                    This command is automatically executed for zsh shell started
                                    under USRHOME control when the ``USRHOME_USE_HOMEBREW``
@@ -1059,10 +1059,10 @@ USRHOME Command Name               Description
                                    common shell configuration file
                                    ``usrcfg/setfor-all-config.sh`` .
 
-                                   - This is an alias to `usrhome/ibin/envfor-homebrew`_
+                                   - This is an alias to `usrhome/ibin/setfor-alias#L912`_
 
 
-``use-info``                       Add ``info`` directories located in standard places to
+`use-info`_                        Add ``info`` directories located in standard places to
                                    the ``INFOPATH`` environment variable.  Use it to extend
                                    the ``INFOPATH`` when using the `stand-alone GNU info reader`_
                                    or info within Emacs.  It searches for info directories once
@@ -1077,7 +1077,7 @@ USRHOME Command Name               Description
 
                                    - This is an alias to `usrhome/ibin/envfor-info`_
 
-``append_to_path DIRS``            Append directories to PATH.
+`append-to-path`_ ``DIRS``         Append directories to PATH.
 
                                    - DIRS is either one directory or a list a
                                      colon-separated directories.
@@ -1085,15 +1085,16 @@ USRHOME Command Name               Description
                                      and are not already present in PATH.
                                    - Examples:
 
-                                     - ``append_to_path ~/my-bin``
-                                     - ``append_to_path ~/my-bin:$HOME/other-bin``
-                                     - ``append_to_path $HOME/my-bin:$HOME/other-bin``
+                                     - ``append-to-path ~/my-bin``
+                                     - ``append-to-path ~/my-bin:$HOME/other-bin``
+                                     - ``append-to-path $HOME/my-bin:$HOME/other-bin``
 
                                    - **Caution**: shells only expand the ~ at the beginning
                                      of strings, therefore you cannot use it elsewhere in the
                                      list!
+                                   - This is an alias to `append_to_path`_.
 
-``prepend_to_path DIRS``           Prepend directories to PATH.
+`prepend_to_path`_ ``DIRS``        Prepend directories to PATH.
 
                                    - DIRS is either one directory or a list a
                                      colon-separated directories.
@@ -1109,8 +1110,9 @@ USRHOME Command Name               Description
                                    - **Caution**: shells only expand the ~ at the beginning
                                      of strings, therefore you cannot use it elsewhere in the
                                      list!
+                                   - This is an alias to `prepend_to_path`_.
 
-``showpath [-n] [varname][PATH]``  Print the value of PATH, MANPATH or LIBPATH, or any PATH
+`showpath`_ [-n] [varname][PATH]   Print the value of PATH, MANPATH or LIBPATH, or any PATH
                                    specific environment variable placing each directory
                                    in its own line.
 
@@ -1150,6 +1152,8 @@ USRHOME Command Name               Description
                                    exit-code of 0.
 
                                    Help is printed when the ``-h`` or ``--help`` option is used.
+
+                                   This is an alias to `bin/showpath`_
 
 ``usrhome-env``                    Display the values of all USRHOME environment variables
                                    currently set in the shell.
@@ -2637,7 +2641,7 @@ Bash login shell execution sequence
 
   - ``$USRHOME_DIR``\ /ibin/setfor-path
 
-    - ``$USRHOME_DIR``\ /ibin/envfor-homebrew
+    - ``$USRHOME_DIR``\ /ibin/setfor-alias#L912
     - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
   - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash  *(if it exists)*
@@ -2713,7 +2717,7 @@ Z Shell login shell execution sequence
 
   - ``$USRHOME_DIR``\ /ibin/setfor-path
 
-    - ``$USRHOME_DIR``\ /ibin/envfor-homebrew
+    - ``$USRHOME_DIR``\ /ibin/setfor-alias#L912
     - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
   - ``$USRHOME_DIR_USRCFG``\ /do-user-zshrc.zsh  *(must exist)*
@@ -2771,7 +2775,7 @@ The following files are not meant to be used manually. They are executed when th
 
                                       It sources the following extra ibin files:
 
-                                      - ``USRHOME_DIR/ibin/envfor-homebrew``, when
+                                      - ``USRHOME_DIR/ibin/setfor-alias#L912``, when
                                         ``USRHOME_USE_HOMEBREW`` environment variable is set to 1
                                         in the file ``usrcfg/setfor-all-config.sh``.
                                         That prepends the Homebrew directory to the path.
@@ -3714,7 +3718,7 @@ Thanks!
 .. _usrhome/ibin/do-clrenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
 .. _usrhome/ibin/do-setenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
 .. _usrhome/ibin/envfor-usrhome:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-usrhome
-.. _usrhome/ibin/envfor-homebrew:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-homebrew
+.. _usrhome/ibin/setfor-alias#L912:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias#L912
 .. _conceptual directories:                            `Cd to Conceptual Directories`_
 .. _Pike:                                              https://en.wikipedia.org/wiki/Pike_(programming_language)
 .. _lsdd:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/lsdd
@@ -3841,7 +3845,9 @@ Thanks!
 .. _`test/run-tests`: test/run-tests
 .. _`SSH helper documentation`: bin/sub-ssh4/readme.rst
 .. _diff: bin/diff
+.. _bin/showpath:                         bin/showpath
 .. _use-diff:                             ibin/envfor-diff
+.. _showpath:                             ibin/setfor-alias#L52
 .. _info-shell-special-var:               ibin/setfor-alias#L103
 .. _restore-title:                        ibin/setfor-alias#L183
 .. _l:
@@ -3858,6 +3864,7 @@ Thanks!
 .. _setenv:                               ibin/setfor-alias#L421
 .. _clrenv:                               ibin/setfor-alias#L457
 .. _add-to-path:                          ibin/setfor-alias#L499
+.. _usrhome:                              ibin/setfor-alias#L588
 .. _usrcfg:                               ibin/setfor-alias#L589
 .. _cdv:                                  ibin/setfor-alias#L613
 .. _cdh:                                  ibin/setfor-alias#L620
@@ -3874,10 +3881,16 @@ Thanks!
 .. _info-prompt:                          ibin/setfor-alias#L696
 .. _info-desktop:                         ibin/setfor-alias#L791
 .. _git-cln:                              ibin/setfor-alias#L906
-.. _usrhome:                              ibin/setfor-alias#L911
+.. _use-usrhome:                          ibin/setfor-alias#L911
+.. _use-homebrew:                         ibin/setfor-alias#L912
+.. _use-info:                             ibin/setfor-alias#L913
 .. _to ibin/envfor-diff:                  ibin/setfor-alias#L916
-.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L931
+.. _append-to-path:                       ibin/setfor-alias#L917
+.. _prepend-to-path:                      ibin/setfor-alias#L918
+.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L933
 .. _info-shell:                           bin/info-shell
+.. _append_to_path:                       ibin/setfor-path#L40
+.. _prepend_to_path:                      ibin/setfor-path#L88
 .. _Dired:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-dired.pdf
 .. _use-git-extra:    ibin/envfor-git-extra
 ..                    setfor-alias#L906
