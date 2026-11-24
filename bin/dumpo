@@ -4,7 +4,7 @@
 # Purpose   : Dump object file into assembler.
 # Created   : Friday, July  5 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 12:11:39 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-24 14:11:45 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,6 +41,12 @@ dumpo -- Print the assembler corresponding to a object file.
    - -w | --with-source : insert C/C++ source code in the generated assembler.
    - -l | --less        : pipe differences to less
 
+  Note: - diffo and mk-diffo use dumpo and requires a version of
+          objdump which supports the --no-addresses option, preventing
+          a diff from simply detecting different addresses.
+          - If the available version of objdump does not support
+            the --no-addresses option, set the USRHOME_OBJDUMP_NO_NO_ADDRESS
+            environment variable to -- or to another switch that is supported.
 "
 }
 
@@ -113,17 +119,24 @@ if [ -n "$OBJDUMP" ]; then
     objdumper="$OBJDUMP"
 fi
 
+if [ -n "$USRHOME_OBJDUMP_NO_NO_ADDRESS" ]; then
+    objdump_no_address_opt=${USRHOME_OBJDUMP_NO_NO_ADDRESS}
+else
+    objdump_no_address_opt=--no-addresses
+fi
+
+
 if [ "$with_less" = "true" ]; then
     if [ "$with_source" = "" ]; then
-        ${objdumper} --disassemble --demangle "$objf"  | less
+        ${objdumper} --disassemble --demangle "${objdump_no_address_opt}" "$objf"  | less
     else
-        ${objdumper} --disassemble --demangle --source "$objf" | less
+        ${objdumper} --disassemble --demangle --source "${objdump_no_address_opt}" "$objf" | less
     fi
 else
     if [ "$with_source" = "" ]; then
-        ${objdumper} --disassemble --demangle "$objf"
+        ${objdumper} --disassemble --demangle "${objdump_no_address_opt}" "$objf"
     else
-        ${objdumper} --disassemble --demangle --source "$objf"
+        ${objdumper} --disassemble --demangle --source "${objdump_no_address_opt}" "$objf"
     fi
 fi
 

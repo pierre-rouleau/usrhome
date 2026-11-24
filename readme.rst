@@ -112,7 +112,7 @@ variables that identify the location of directories and USRHOME state.
 To help you create your *usrcfg* repository, USRHOME provides a set of `usrcfg
 template files`_ that correspond to what I use in my *usrcfg* repository.
 This also corresponds to what is shown in the diagram included in the section
-titled `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
+titled `USRHOME System Shell Startup File Diagram`_.
 
 
 Shell support and portability
@@ -280,14 +280,9 @@ Shell startup tracing
 ---------------------
 
 USRHOME can trace the sourcing of its shell configuration files to help
-you diagnose startup problems. The trace shows the order and nesting of
-participating files. Set ``USRHOME_TRACE_SHELL_CONFIG`` to ``1`` in
-``usrcfg/setfor-all-config.sh`` to print the trace to the shell. Set it
-to an absolute file name in an existing directory to also append the
-trace and PATH values to that file. You can use
-``usrhome-shell-toggle-tracing`` to toggle tracing and restart the
-current Bash or Zsh shell. Tracing output is suppressed in non-interactive
-shells and when ``TERM`` is ``dumb``.
+you diagnose startup problems.
+See the section titled `USRHOME Shell Startup File Execution Tracing`_ for
+more information.
 
 For Teams & Power Users
 -----------------------
@@ -380,7 +375,7 @@ contained within an isolated, private repository ecosystem, minimizing the
 risk of accidental exposure to public version-control systems.
 
 If you want to know how this all works, read on (and see the section
-titled `The Z Shell Startup, Dot Files and User Configuration`_).
+titled `USRHOME Shell Startup File Structure`_).
 
 **All USRHOME code passes strict static analysis**
 
@@ -453,7 +448,7 @@ located inside the usrcfg directory.
 
 For that you need to understand which file is sourced when the Bash or the Z
 Shell is started in the various ways it is started. Read the section titled
-`The Z Shell Startup, Dot Files and User Configuration`_.
+`USRHOME Shell Startup File Structure`_.
 
 Then you can decide to use your original ``~/.zshrc`` and other Z Shell configuration
 files that have been backed-up by `setup/setup-usrhome`_ and copy all or part of their
@@ -464,475 +459,6 @@ directory and use ideas from there.
 
 .. ---------------------------------------------------------------------------
 
-USRHOME Organization
-====================
-
-The Bash Configuration Files
-----------------------------
-
-The Bash shell uses the configuration files listed in the left column (which
-includes the ``~/.profile`` file also uses by sh).
-USRHOME replaces them to symbolic link files that point to the USRHOME files
-listed in the right column.
-
-========================= =====================================================
-Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
-========================= =====================================================
-``~/.profile``            ``$USRHOME_DIR/dot/``\ `profile.sh`_
-``~/.bash_profile``       ``$USRHOME_DIR/dot/``\ `bash_profile.bash`_
-``~/.bash_login``         ``$USRHOME_DIR/dot/``\ `bash_login.bash`_
-``~/.bashrc``             ``$USRHOME_DIR/dot/``\ `bashrc.bash`_
-``~/.bash_logout``        ``$USRHOME_DIR/dot/``\ `bash_logout.bash`_
-========================= =====================================================
-
-
-The zsh Configuration Files
----------------------------
-
-The Z Shell uses the configuration files listed in the left column.
-USRHOME replaces them to symbolic link files that point to the USRHOME files
-listed in the right column.
-
-========================= =====================================================
-Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
-========================= =====================================================
-``~/.zshenv``             ``$USRHOME_DIR/dot/``\ `zshenv.zsh`_
-``~/.zprofile``           ``$USRHOME_DIR/dot/``\ `zprofile.zsh`_
-``~/.zshrc``              ``$USRHOME_DIR/dot/``\ `zshrc.zsh`_
-``~/.zlogin``             ``$USRHOME_DIR/dot/``\ `zlogin.zsh`_
-``~/.zlogout``            ``$USRHOME_DIR/dot/``\ `zlogout.zsh`_
-========================= =====================================================
-
-USRHOME Internal Configuration Files
-------------------------------------
-
-As shown by the diagram in the section titled
-`The Z and Bash Shell Startup, Dot Files and User Configuration`_,
-USRHOME uses several other configuration files that are sourced when the shell
-starts.  Some are used by the Bash shell, some by the Z Shell some by
-both. All of these files are source and stored in USRHOME ibin directory.
-
-The following files are not meant to be used manually. They are executed when the shell starts.
-
-
-===================================== ============================================================
-``$USRHOME/ibin`` File                Purpose
-===================================== ============================================================
-`setfor-alias`_                       Defines USRHOME alias and shell functions that are common
-                                      to Bash and the Z Shell.  The file defines several command
-                                      aliases, including the USRHOME-specific command aliases that
-                                      use the following ``ibin/setfor-`` files:
-
-                                      - ``$USRHOME_DIR/ibin/setfor-prompt-model-to``: sourced to
-                                        implement **setfor-prompt-model-to**
-                                      - ``$USRHOME_DIR/ibin/setfor-prompt-toggle-usr-host``:
-                                        sourced to implement **setfor-prompt-toggle-usr-host**
-                                      - ``$USRHOME_DIR/ibin/setfor-shell-toggle-tracing``:
-                                        sourced to implement **setfor-shell-toggle-tracing**
-
-`setfor-bash-alias`_                  Defines USRHOME alias and shell functions that are only used
-                                      in the Bash shell.
-
-`setfor-path`_                        Holds the USRHOME logic that controls modification of the
-                                      PATH environment variable and functions that deals with it.
-                                      Also defines and runs functions that perform a simple
-                                      security check that verifies for the presence of some known
-                                      compromised libraries in the system, printing a warning if
-                                      they are found.
-
-                                      It sources the following extra ibin files:
-
-                                      - ``USRHOME_DIR/ibin/envfor-homebrew``, when
-                                        ``USRHOME_USE_HOMEBREW`` environment variable is set to 1
-                                        in the file ``usrcfg/setfor-all-config.sh``.
-                                        That prepends the Homebrew directory to the path.
-                                      - ``USRHOME_DIR/ibin/envfor_usrhome``, always, to prepend
-                                        the ``USRHOME_DIR/bin`` to PATH and ``~/bin`` if present.
-
-
-`setfor-zsh-alias`_                   Defines USRHOME alias and shell functions that are only used
-                                      in the Z Shell.
-
-`shell-tracing.sh`_                   Defines the ``usrhome_trace_in()`` and
-                                      ``usrhome_trace_out()`` shell functions USRHOME executes to
-                                      print a trace of which configuration file is used when the
-                                      shell starts when the user activates shell tracing by the
-                                      ``$USRHOME_TRACE_SHELL_CONFIG`` environment variable to 1
-                                      inside the file ``usrcfg/setfor_shell_tracing.sh``.
-===================================== ============================================================
-
-
-Sourced Files Implementing USRHOME Provided Commands
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-USRHOME provides several commands that use shell sourced files, also stored in
-the USRHOME/ibin directory.  There are 3 groups of such files:
-
-**Shell Environment Control Commands**:
-
-Several USRHOME commands have a name that uses the *use-ENV* format.
-These are alias to the sourcing of scripts located inside the USRHOME ibin
-directory.
-Some have simpler names.
-The following table lists example of some of these commands.
-
-===================== =========================== ========================================================
-Alias                 ``$USRHOME/ibin`` File      Purpose
-===================== =========================== ========================================================
-**use-cbr**           `envfor-cbr`_               Implements the `use-cbr command`_.
-
-**use-diff**          `envfor-diff`_              Implements the `use-diff command`_ that sets up how
-                                                  USRHOME diff_ operates in the current shell.
-                                                  See the section titled `File Diff Operations`_.
-
-**use-emacs-for-man** `envfor-emacs-for-man`_     Activate Emacs as Man reader.
-**use-gnu-global**    `envfor-gnu-global`_        Activate the GNU Global tool-chain in shell.
-                                                  See source for information on how to install GNU Global.
-
-**pel**               `envfor-pel`_               Change current directory to PEL root. Set terminal title.
-===================== =========================== ========================================================
-
-The user would probably want to create some extra ones;  the
-`usrhome/template/usrcfg/ibin`_ directory provides some examples.
-
-**Simple Commands that affect the current shell**:
-
-========================================== ========================================================
-``$USRHOME/ibin`` File                     Purpose
-========================================== ========================================================
-`do-cd-to`_                                Implements the `cd-to command`_.
-`do-usrcfg`_                               Implements the `usrcfg command`_.
-`do-usrhome`_                              Implements the `usrhome command`_.
-========================================== ========================================================
-
-**Helper Sourced Files**
-
-========================================== ========================================================
-``$USRHOME/ibin`` File                     Purpose
-========================================== ========================================================
-`xtra/sanitize-path-posix.sh`_             Defines the function used by the `sanitize-path command`_.
-`which-shell`_                             Identifies the shell (Bash, Z Shell, or other): sets the
-                                           USRHOME_SHELL environment variable to "zsh", "bash",
-                                           etc.
-
-                                           It is used by other USRHOME shell functions.
-                                           Can also be used by user's shell functions.
-========================================== ========================================================
-
-
-
-The User Configuration Files used by USRHOME
---------------------------------------------
-
-=================================== ================================================================
-File Name (link to template)        Description
-=================================== ================================================================
-`usrcfg/setfor-all-config.sh`_      **Required**. Holds user configuration that applies to the Bash
-                                    and Z Shell.  Therefore it must be written in POSIX sh script,
-                                    compatible with both Bash and Z Shell.
-
-                                    It defines:
-
-                                    - USRHOME_TRACE_SHELL_CONFIG which controls shell tracing:
-
-                                      - 0 : disable shell tracing,
-                                      - 1 : enable shell tracing to shell stdout,
-                                      - file name: enable shell tracing to shell stdout and to the
-                                        specified file.  The file name must be an absolute file name
-                                        inside an existing directory.
-
-                                    - USRHOME_USE_HOMEBREW:
-
-                                      - 0: don't use Homebrew_,
-                                      - 1: to activate the use of (already installed) Homebrew_.
-
-                                    - The USRHOME concept directory variables (see next section)
-                                      which includes: USRHOME_DIR_MY, USRHOME_DIR_LIC,
-                                      USRHOME_DIR_LOG, USRHOME_DIR_DV, USRHOME_DIR_PRIV,
-                                      USRHOME_DIR_PUB, USRHOME_DIR_TMP.
-
-                                    - USRHOME_PROMPT_MODEL which select the prompt model. As
-                                      described further in the `USRHOME Shell Prompt`_ section, the
-                                      following values are supported:
-
-                                      - 0: prompt is not defined by USRHOME logic, user code should
-                                        define it or use system's default.
-                                      - 1,2 or 3: USRHOME pre-defined prompt.
-
-                                    - USRHOME_CONFIG_AT_LOGIN:
-
-                                      - Leave undefined, if you do not want to modify PATH in a
-                                        login shell.
-                                      - 1: define it to 1 if you want the PATH modified in the login
-                                        shell so it has the
-                                        same configuration than then non-login interactive shell.
-
-                                    The file also sources the `usrhome/ibin/shell-tracing.sh`_ to define
-                                    USRHOME-specific logic to control optional shell config file tracing.
-
-`usrcfg/do-user-zprofile.zsh`_      **Optional**. User-specific Z Shell zprofile logic.
-
-                                    - This must be written in Z Shell compatible logic.
-                                    - It also holds some USRHOME-specific logic to control optional
-                                      shell config file tracing.
-
-`usrcfg/do-user-zshrc.zsh`_         **Required for Z Shell**. User-specific Z Shell specific
-                                    configuration.
-
-                                    - This must be written in Z Shell compatible logic.
-                                    - It also holds some USRHOME-specific logic to control optional
-                                      shell config file tracing.
-                                    - That file could also source a node-specific file stored inside
-                                      the ``usrcfg/node/do-NODE-zshrc.zsh`` file where
-                                      ``NODE`` is identified with ``hostname -s``.
-
-`usrcfg/do-user-bash_profile.bash`_ **Optional**. User-specific Bash Shell specific configuration.
-                                    In some system the ~/.bash_login is executed during login.
-                                    On those systems it might be useful to write configuration logic
-                                    that must only be executed once, at login, inside this file, as
-                                    one would do with the ``~/.bash_login``.
-
-                                    - This must be written in Bash compatible logic.
-                                    - It should also hold some USRHOME-specific logic to control
-                                      optional shell config file tracing.
-                                    - That file could also source a node-specific file stored inside
-                                      the ``usrcfg/node/do-NODE-bash_profile.bash`` file where
-                                      ``NODE`` is identified with ``hostname -s``.
-
-`usrcfg/do-user-bashrc.bash`_       **Required for Bash**. User-specific Bash Shell specific
-                                    configuration.
-
-                                    - This must be written in Bash compatible logic.
-                                    - It also holds some USRHOME-specific logic to control optional
-                                      shell config file tracing.
-                                    - That file could also source a node-specific file stored inside
-                                      the ``usrcfg/node/do-NODE-bashrc.bash`` file where
-                                      ``NODE`` is identified with ``hostname -s``.
-=================================== ================================================================
-
-As said above, the usrcfg directory is expected to be a sibling to the usrhome
-directory; they must both be inside the same parent directory.
-This allows USRHOME to automatically set the ``USRHOME_DIR_USRCFG`` environment variable to hold
-the full path of the usrcfg directory.
-It's recommended to place the USRHOME directory and the usrcfg directory inside a parent directory
-that only holds these two directories.  That simplifies your searches when you need to identify
-where some logic is placed.
-
-
-See the section titled
-`The Z Shell Startup, Dot Files and User Configuration`_
-for more information.
-
-Checking configuration nodes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-``setup/check-nodes`` is intended to help audit the ``usrcfg`` node
-configuration and selected shell startup links in the home directory.
-
-The tool is not yet operational. Except for ``-h`` and ``--help``, it
-exits with status 44 before performing an audit. It does not currently
-validate host names or remove files.
-
-To display the available help, run this command from the USRHOME root::
-
-    setup/check-nodes --help
-
-
-The USRHOME Configuration Environment Variables
------------------------------------------------
-
-**Conventions**:
-
-- All environment variables used by USRHOME have a name that starts
-  with ``USRHOME_``.
-- All of those that identify the path of a directory have a name that starts with
-  ``USRHOME_DIR_``.
-- All *internal* USRHOME environment variables have a name that start with ``USRHOME__``.
-  These variables are only used by USRHOME logic and should not be modified by user's logic.
-
-
-=============================== =================================================
-Environment Variable Name       Purpose
-=============================== =================================================
-USRHOME_DIR                     Path to the usrhome directory.
-
-                                - This is the most important environment
-                                  variable.
-                                - When installing USRHOME, the
-                                  `setup/setup-usrhome`_ installation script
-                                  creates symbolic links in the home directory
-                                  to the Bash and Zsh startup scripts stored in
-                                  the usrhome directory tree.  These scripts
-                                  identify the usrhome directory by inferring
-                                  it from the location of the scripts.
-
-                                Therefore, you do not need to write code to
-                                initialize the value of USRHOME_DIR, the Bash
-                                an Zsh startup logic provided by USRHOME
-                                handle that.  You will, however, have to
-                                initialize the value of several other
-                                environment variables in your usrcfg scripts.
-
-                                There are more environment variables that
-                                identify `conceptual directories`_. They are
-                                all based on ``USRHOME_DIR`` value and are:
-
-                                - ``USRHOME_DIR_PUBLIC``
-                                - ``USRHOME_DIR_OTHER``
-                                - ``USRHOME_DIR_LOCAL``
-                                - ``USRHOME_DIR_CONTRACT``
-
-
-
-USRHOME_TRACE_SHELL_CONFIG      Set to 1 to activate tracing of the configuration
-                                file sourcing.
-                                Use the ``usrhome-shell-toggle-tracing``
-                                command to
-                                toggle this in the current shell.
-
-USRHOME_PROMPT_SHOW_USR_HOST    Set to 1 to display user name and host name
-                                in the prompt.
-                                Use the ``usrhome-prompt-toggle-usr-host``
-                                command to
-                                toggle this in the current shell.
-
-USRHOME_CONFIG_AT_LOGIN         Set to 1 to inform USRHOME files to perform
-                                configuration when invoked in a login shell.
-                                If you want to restrict use of USRHOME controlled
-                                configuration to interactive shells, don't set it,
-                                or set it to 0.  If set this must be set inside the
-                                `usrcfg/setfor-all-config.sh`_ file.
-
-USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
-                                directories to the PATH.
-
-
-
-USRHOME_DIR_HELPDIR             Optional Zsh help directory. A non-empty
-                                value takes precedence over ``HELPDIR``.
-                                The directory must contain a readable
-                                ``cd`` or ``print`` help file. See
-                                `Help for Zsh Builtin Commands`_.
-
-USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
-                                syntax of the prompt used by the shell.
-                                The prompts for zsh and Bash are independent and you can
-                                define a different prompt model value for each.
-                                The supported values are:
-
-                                - **0** : no prompt defined by USRHOME.
-                                  Either use the shell default or a user
-                                  specified prompt inside the shell specific
-                                  usrcfg file.
-                                  default prompt.
-
-                                - **1** (or not defined), **2** or **3**,
-                                  a USRHOME pre-defined shell prompt.
-
-                                Users can change the prompt dynamically by
-                                issuing a ``usrhome-prompt-model-to NUMBER``
-                                command.
-
-                                Under Zsh, changing the prompt may restart the
-                                shell. In that case the command will prompt
-                                before proceeding.
-                                See `Shell Behavior Control`_ for restart
-                                confirmation details.
-
-USRHOME_ORIGINAL_PATH           Set to the value of PATH before USRHOME adds to it.
-                                You can restore that value with the
-                                ``usrhome-switch-path`` command if necessary
-                                for testing purposes.
-
-USRHOME_SHOW_PATH_ACTIVATION    Set to 1 to see PATH changes done by the various
-                                ``use-ENV`` commands, including their use when
-                                the shell starts.
-=============================== =================================================
-
-When USRHOME Z Shell startup logic executes, USRHOME sets these other
-environment variables:
-
-================================== ================================================================
-Environment Variable Name          Purpose
-================================== ================================================================
-USRHOME_DIR_MY                     Main user directory, used by USRHOME `Directory Navigation`_.
-                                   Change current directory to this directory with the ``cdh``
-                                   command.
-
-USRHOME_DIR_LIC                    Directory where you can keep the software license files for the
-                                   software tools you use. Change current directory to this
-                                   directory with the ``cdlic`` command.
-
-USRHOME_DIR_LOG                    Directory where your own log files and notes can be stored.
-                                   Change current directory to this directory with the ``cdlog``
-                                   command.
-
-USRHOME_DIR_PUBLIC                 The root directory where your public
-                                   development repositories are stored.
-
-                                   - Used by used by USRHOME `Directory Navigation`_.
-                                   - Change current directory to this directory with the ``cd-public``
-                                     command.
-
-                                   - Previous implementation used ``USRHOME_DIR_DV`` environment variable
-                                     and the ``cddv`` command, which are both deprecated now.
-
-USRHOME_DIR_OTHER                  The root directory where clones of other public repositories
-                                   are stored.  These repositories are developed by other people
-                                   but you have a clone to use them as developed or just for
-                                   looking into them.
-
-                                   - Used by used by USRHOME `Directory Navigation`_.
-                                   - Change current directory to this directory with the ``cd-other``
-                                     command.
-                                   - Previously identified by the now deprecated ``USRHOME_DIR_PUB``
-                                     environment variable and the deprecated ``cdpub`` command.
-
-
-USRHOME_DIR_LOCAL                  The root directory that holds code repositories that are your
-                                   private code, not distributed anywhere but used locally in the
-                                   system.
-
-                                   - Used by used by USRHOME `Directory Navigation`_.
-                                   - Change current directory to this directory with the ``cd-local``
-                                     command.
-                                   - Previously identified by the now deprecated ``USRHOME_DIR_PRIV``
-                                     environment variable and the deprecated ``cdpriv`` command.
-
-USRHOME_DIR_CONTRACT               The root directory that holds proprietary contract code.
-
-                                   - Used by used by USRHOME `Directory Navigation`_.
-                                   - Change current directory to this directory with the ``cd-contract``
-                                     command.
-
-USRHOME_DIR_TMP                    User local temporary directory.
-                                   Change current directory to this directory with the ``cdtmp``
-                                   command.
-
-USRHOME_DIR_USRCFG                 The path of the user configuration directory.
-                                   Something like ``/Users/roup/my/dv/usrcfg``.
-                                   Use the ``usrcfg`` command to change the current directory to
-                                   that directory.
-
-
-USRHOME__IN_LOGIN                  **USRHOME Internal environment variable**:
-                                   A logic flag set to 1 by `usrhome/dot/zprofile.zsh`_ and
-                                   `usrhome/dot/bash_profile.bash`_ to inform the shell code that
-                                   the sourcing of the configuration files is being done by a login
-                                   shell.  When the sourcing of the configuration file is done by a
-                                   sub-shell this is not set.  The `usrcfg/setfor-all-config.sh`_ file
-                                   can set the USRHOME_CONFIG_AT_LOGIN flag to 1 to indicate the
-                                   USRHOME configuration should be done at login.
-
-USRHOME__PATH_SET                  **USRHOME Internal environment variable**:
-                                   A logic flag set when USRHOME modified PATH.
-
-USRHOME__USRCFG_SEEN               **USRHOME Internal environment variable**:
-                                   A logic flag set when USRHOME has processed user-specified
-                                   usrcfg configuration.
-================================== ================================================================
-
-More information about these in the section `Cd to Conceptual Directories`_.
 
 
 USRHOME Shell Prompt
@@ -2106,12 +1632,12 @@ diff_                                                  USRHOME diff_ is a shell-
 
                                                           diffo -h | --help
 
-                                                          diffo [[-w | --with-source]  [-s | --string] [-l | --less]]  OBJ-OLD OBJ-NEW
+                                                          diffo [[-w | --with-source]  [-s | --strings] [-l | --less]]  OBJ-OLD OBJ-NEW
 
                                                              - OBJ-OLD            : path of the old object file.
                                                              - OBJ-NEW            : path of the new object file.
                                                              - -w | --with-source : insert C/C++ source code in the generated assembler.
-                                                             - -s | --string      : also compare strings extracted from files.
+                                                             - -s | --strings     : also compare strings extracted from files.
                                                              - -l | --less        : pipe differences to less
 
 
@@ -2141,7 +1667,7 @@ existing object file and keeps a copy of the source file, the object file
 and the assembler file for each time you use ``mk-diffo`` inside a directory
 tree.  The root of the directory tree is named after a project and under it
 the source file name.  ``mk-diffo`` uses the ``diffo`` utility to generate the
-assembler from the object file and the diff from the previous version.
+assembler from the object file and the diff from the first version created.
 
 After using it once, mk-diffo compares the generate assembler file of the
 very first generated copy (by default) with the latest one it just
@@ -2165,7 +1691,7 @@ caused by those changes.
 **To use it**:
 
 - Make sure you compile the C/C++ source files with debugging activated.
-- Specialize your shell by executing: ``use-mkdiffo``
+- Specialize your shell by executing: ``use-mk-diffo``
 
   - This identifies the following:
 
@@ -2263,21 +1789,24 @@ Command or file                                        Description
 
                                                        **Usage**::
 
-                                                         mk-diffo [[-w | --with-source] [-s | --string] [-l | --less]] [REFNO]
+                                                         mk-diffo [[-w | --with-source] [-s | --strings] [-l | --less]] [REFNO]
 
                                                          Store the source and object file inside the mk-diffo directory tree
                                                          for the current file and reference number, then compare the object file
-                                                         with the object file for the previous version or the version specified by
-                                                         REFNO.
+                                                         with the object file for the first version or the version specified by
+                                                         REFNO. Use an explicit REFNO of 0 to overwrite the saved 000 file with the
+                                                         current file.  This does not create a new numbered version or perform a
+                                                         comparison.
 
-                                                            REFNO : optional reference number.  Default is last one created.
-                                                                    It must be a valid integer.
-                                                                    Leading 0 are accepted, but remain a base-10 value.
+                                                           REFNO : optional
+                                                           reference number. Default is the first one created.
+                                                                   It must be a valid integer.
+                                                                   Leading 0 are accepted, but remain a base-10 value.
 
-                                                            Options passed to diffo:
-                                                            - -w | --with-source : insert C/C++ source code in the generated assembler.
-                                                            - -s | --string      : compare strings extracted from files (always generated).
-                                                            - -l | --less        : pipe differences to less
+                                                           Options passed to diffo:
+                                                           - -w | --with-source : insert C/C++ source code in the generated assembler.
+                                                           - -s | --strings     : compare strings extracted from files (always generated).
+                                                           - -l | --less        : pipe differences to less
 
                                                          ENVIRONMENT:
                                                            - USRHOME_DIFFO_ROOT_DIR: The directory tree where all files are stored.
@@ -2957,10 +2486,7 @@ do-\ *CMD*               Sourced file typically invoked by it corresponding *CMD
 
 setfor-\ *SHELL-SETUP*   Sourced file that is part of the shell setup logic that comes from
                          USRHOME or from the user specific usrcfg directory.  See the diagrams
-                         inside the following sections:
-
-                         - `The Z Shell Startup, Dot Files and User Configuration`_,
-                         - `The Z and Bash Shell Startup, Dot Files and User Configuration`_.
+                         inside the section titled `USRHOME System Shell Startup File Diagram`_.
 ======================== =======================================================================
 
 File Format Convention
@@ -3027,42 +2553,116 @@ Sourced Shell Files Format
             #  sh-shell: sh
             #  End:
 
-The Z Shell Startup, Dot Files and User Configuration
------------------------------------------------------
 
-The Z Shell has five different user configuration files:
+.. ---------------------------------------------------------------------------
 
-- ~/.zshenv
-- ~/.zprofile
-- ~/.zshrc
-- ~/.zlogin
-- ~/.zlogout
+USRHOME Shell Startup File Structure
+====================================
 
-USRHOME implements its own copy of each of these files, stored in the
-usrhome/dot directory.  The files are named differently, without a leading
-period and with a ``.zsh`` file extension.   That simplifies editing and
-management on these files on various environments. Several tools require a
-special option to process hidden files; it's not needed for these files since
-they are not hidden.
+USRHOME explicitly supports the Bash and the Z shell, and concentrates on
+user terminal shells.  Script logic is POSIX compliant unless a Bash or Z shell
+specific logic is required.
 
-However, to be used, USRHOME setup places them inside the user home directory,
-creating hidden symlinks to the files.  The result is the following:
+USRHOME is built on the principle that shell configuration logic is provided by
+**two** sets of files:
 
-============== ==========================
-Symbolic link  USRHOME File Identified
-============== ==========================
-~/.zshenv      usrhome/dot/zshenv.zsh
-~/.zprofile    usrhome/dot/zprofile./zsh
-~/.zshrc       usrhome/dot/zshrc.zsh
-~/.zlogin      usrhome/dot/zlogin.zsh
-~/.zlogout     usrhome/dot/zlogout.zsh
-============== ==========================
+- the files provided by the USRHOME repository, and
+- the files provided by another, user-provided, repository: the **usrcfg**
+  repository.
+
+The files provided by USRHOME provides the infra-structure logic and several
+commands that will be available in the shells.  The content of the files are not
+meant to be modified by the users.  A change here requires a pull request to
+the project.
+
+All user-specific logic is stored in the files stored in the **usrcfg**
+directory tree.
+
+Since the reason for the USRHOME project is to ease the shell configuration
+setup and distribution of many computers or Virtual Machines without *having* to
+use containers, the **usrcfg** directory tree should also be a VCS repository
+controlled by the user (**and kept private**).  It then becomes possible to keep an
+history of the shell configuration of multiple computers inside these 2
+repositories and it becomes easy to set computers by cloning or updating the two
+repositories inside these computers.
+
+The **usrcfg** stores logic that is common to all the users system in the files
+located in its root directory.  The logic that is specific to each computer must
+be stored inside a sub-directory of the **usrcfg/node** directory.
+
+Shell Configuration Files
+-------------------------
+
+USRHOME implements its own copy of the shell configuration files and stores
+them inside the ``usrhome/dot`` directory.  The USRHOME files have a similar but
+different name to the standard file names; the USRHOME file names have no
+leading period and have a file extension that identifies the shell that uses
+them.
+
+The Bash Configuration Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Bash shell uses the configuration files listed in the left column (which
+includes the ``~/.profile`` file also uses by sh).
+USRHOME replaces them to symbolic link files that point to the USRHOME files
+listed in the right column.
+
+========================= =====================================================
+Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
+========================= =====================================================
+``~/.profile``            ``$USRHOME_DIR``/dot/\ `profile.sh`_
+``~/.bash_profile``       ``$USRHOME_DIR``/dot/\ `bash_profile.bash`_
+``~/.bash_login``         ``$USRHOME_DIR``/dot/\ `bash_login.bash`_
+``~/.bashrc``             ``$USRHOME_DIR``/dot/\ `bashrc.bash`_
+``~/.bash_logout``        ``$USRHOME_DIR``/dot/\ `bash_logout.bash`_
+========================= =====================================================
+
+
+Bash login shell execution sequence
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- ~/.bash_profile  --> ``$USRHOME_DIR``\ /dot/bash_profile.bash
+
+  - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
+
+    - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
+
+- ~/.bashrc        --> ``$USRHOME_DIR``\ /dot/bashrc.bash
+
+  - ``$USRHOME_DIR``\ /ibin/setfor-bash-alias
+
+    - ``$USRHOME_DIR``\ /ibin/setfor-alias
+
+  - ``$USRHOME_DIR``\ /ibin/setfor-path
+
+    - ``$USRHOME_DIR``\ /ibin/envfor-homebrew
+    - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
+
+  - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash  *(if it exists)*
+
+    - ``$USRHOME_DIR_USRCFG``\ /do-user.sh   *(if it exists)*
+
+
+The zsh Configuration Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Z Shell uses the configuration files listed in the left column.
+USRHOME replaces them to symbolic link files that point to the USRHOME files
+listed in the right column.
+
+========================= =====================================================
+Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
+========================= =====================================================
+``~/.zshenv``             ``$USRHOME_DIR``/dot/\ `zshenv.zsh`_
+``~/.zprofile``           ``$USRHOME_DIR``/dot/\ `zprofile.zsh`_
+``~/.zshrc``              ``$USRHOME_DIR``/dot/\ `zshrc.zsh`_
+``~/.zlogin``             ``$USRHOME_DIR``/dot/\ `zlogin.zsh`_
+``~/.zlogout``            ``$USRHOME_DIR``/dot/\ `zlogout.zsh`_
+========================= =====================================================
 
 The `files sourced by the Z Shell`_ depend on how the Z Shell is started.
 The files sourced by USRHOME take advantage of that behaviour to inject the
-user configuration, as shown in the following diagram portion.
-
-.. figure:: res/zsh-startup-01.png
+user configuration, as shown in the top of the `USRHOME System Shell Startup File Diagram`_.
 
 - The ``~/zshenv`` is sourced in all case.  Therefore the
   `usrhome/dot/zshenv.zsh`_ sources the user's basic configuration file
@@ -3081,133 +2681,512 @@ user configuration, as shown in the following diagram portion.
   configuration files or the application that launched the sub-shell if
   this warning appears.
 
-The user can provide extra startup logic for the Z Shell.  USRHOME Z Shell
-startup code sources the following user configuration files stored in the user
-managed usrcfg directory:
+The user provides extra startup logic for the Z Shell in the following files:
 
 - usrcfg/do-user-zprofile.zsh
 - usrcfg/do-user-zshrc.zsh
 
-Each of these files is sourced if they exist. In turn these files could source
-files for the specific node if the user wants to support several hosts.  The
-diagram shows the order in which the files are sourced.
+The USRHOME files sources these files if they exist.
+In turn these files could source files for the specific node if the user wants
+to support several hosts.
+The diagram shows the order in which the files are sourced.
 
-The Z and Bash Shell Startup, Dot Files and User Configuration
---------------------------------------------------------------
+Z Shell login shell execution sequence
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-USRHOME supports the Bash and the Z shell and currently concentrates on
-using these shells on user development computers (as opposed to servers).
-To support both shells, more configuration files are
-required and some logic is the same for both shells.  The following diagram
-shows all files currently used in the USRHOME system to support both shells.
+- ~/.zshenv    --> ``$USRHOME_DIR``\ /dot/zshenv.zsh
 
-USRHOME is built on the principle that shell configuration logic is provided by
-**two** sets of files:
+  - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist)*
 
-- the files provided by the USRHOME repository, and
-- the files provided by another, user-provided, repository: the **usrcfg**
-  repository.
+- ~/.zprofile  --> ``$USRHOME_DIR``\ /dot/zprofile.zsh
 
-The files provided by USRHOME provides the basic infra-structure logic and some
-commands that will be available in the shells.  The content of the files are not
-meant to be modified by the users (unless someone wants to change or add a
-feature to USRHOME).
+  - ``$USRHOME_DIR``\ /ibin/setfor-path
+  - ``$USRHOME_DIR_USRCFG``\ /do-user-zprofile.zsh
 
-The user-specific logic is stored in the files stored in the **usrcfg**
-directory tree.
+- ~/.zshrc     --> ``$USRHOME_DIR``\ /dot/zshrc.zsh
 
-Since the reason for the USRHOME project is to ease the shell configuration
-setup and distribution of many computers or Virtual Machines without *having* to
-use containers, the **usrcfg** directory tree should also be a VCS repository
-controlled by the user (and kept private).  It then becomes possible to keep an
-history of the shell configuration of multiple computers inside these 2
-repositories and it becomes easy to set computers by cloning or updating the two
-repositories inside these computers.
+  - ``$USRHOME_DIR``\ /ibin/setfor-zsh-alias
 
-The **usrcfg** stores logic that is common to all the users system in the files
-located in its root directory.  The logic that is specific to each computer must
-be stored inside a sub-directory of the **usrcfg/node** directory.
+    - ``$USRHOME_DIR``\ /ibin/setfor-alias
 
-The following diagram shows which configuration file is sourced when the Bash
+  - ``$USRHOME_DIR``\ /ibin/setfor-path
+
+    - ``$USRHOME_DIR``\ /ibin/envfor-homebrew
+    - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
+
+  - ``$USRHOME_DIR_USRCFG``\ /do-user-zshrc.zsh  *(must exist)*
+
+    - ``$USRHOME_DIR_USRCFG``\ /do-user.sh  *(must exist)*
+
+- ~/.zlogin    --> ``$USRHOME_DIR``\ /dot/zlogin.zsh
+
+
+USRHOME System Shell Startup File Diagram
+-----------------------------------------
+
+The following diagram shows which shell configuration file is sourced when the Bash
 and Z shell start as a login or as a sub-shell.
 
 .. figure:: res/zsh-bash-startup-01.png
 
 
-Shell Startup File Execution Sequences
---------------------------------------
+USRHOME Internal Configuration Files
+------------------------------------
 
-Activate startup file tracing by setting ``USRHOME_TRACE_SHELL_CONFIG`` to 1
-inside your ``$USRHOME_DIR_USRCFG/setfor-all-config.sh`` file.
-Set it to 0 to prevent tracing.
+As shown by the diagram in the section titled
+`USRHOME System Shell Startup File Diagram`_,
+USRHOME uses several other configuration files that are sourced when the shell
+starts.  Some are used by the Bash shell, some by the Z Shell some by
+both. All of these files are source and stored in USRHOME ibin directory.
+
+The following files are not meant to be used manually. They are executed when the shell starts.
 
 
-Bash login shell execution sequence
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===================================== ============================================================
+``$USRHOME/ibin`` File                Purpose
+===================================== ============================================================
+`setfor-alias`_                       Defines USRHOME alias and shell functions that are common
+                                      to Bash and the Z Shell.  The file defines several command
+                                      aliases, including the USRHOME-specific command aliases that
+                                      use the following ``ibin/setfor-`` files:
 
-- ~/.bash_profile  --> $USRHOME_DIR/dot/bash_profile.bash
+                                      - ``$USRHOME_DIR/ibin/setfor-prompt-model-to``: sourced to
+                                        implement **setfor-prompt-model-to**
+                                      - ``$USRHOME_DIR/ibin/setfor-prompt-toggle-usr-host``:
+                                        sourced to implement **setfor-prompt-toggle-usr-host**
+                                      - ``$USRHOME_DIR/ibin/setfor-shell-toggle-tracing``:
+                                        sourced to implement **setfor-shell-toggle-tracing**
 
-  - $$USRHOME_DIR_DIR_USRCFG/setfor-all-config.sh  *(must exist!)*
+`setfor-bash-alias`_                  Defines USRHOME alias and shell functions that are only used
+                                      in the Bash shell.
 
-    - $$USRHOME_DIR_DIR_USRCFG/do-user-bash_profile.bash
+`setfor-path`_                        Holds the USRHOME logic that controls modification of the
+                                      PATH environment variable and functions that deals with it.
+                                      Also defines and runs functions that perform a simple
+                                      security check that verifies for the presence of some known
+                                      compromised libraries in the system, printing a warning if
+                                      they are found.
 
-- ~/.bashrc        --> $USRHOME_DIR/dot/bashrc.bash
+                                      It sources the following extra ibin files:
 
-  - $USRHOME_DIR/ibin/setfor-bash-alias
+                                      - ``USRHOME_DIR/ibin/envfor-homebrew``, when
+                                        ``USRHOME_USE_HOMEBREW`` environment variable is set to 1
+                                        in the file ``usrcfg/setfor-all-config.sh``.
+                                        That prepends the Homebrew directory to the path.
+                                      - ``USRHOME_DIR/ibin/envfor_usrhome``, always, to prepend
+                                        the ``USRHOME_DIR/bin`` to PATH and ``~/bin`` if present.
 
-    - $USRHOME_DIR/ibin/setfor-alias
 
-  - $USRHOME_DIR/ibin/setfor-path
+`setfor-zsh-alias`_                   Defines USRHOME alias and shell functions that are only used
+                                      in the Z Shell.
 
-    - $USRHOME_DIR/ibin/envfor-homebrew
-    - $USRHOME_DIR/ibin/envfor-usrhome
+`shell-tracing.sh`_                   Defines the ``usrhome_trace_in()`` and
+                                      ``usrhome_trace_out()`` shell functions USRHOME executes to
+                                      print a trace of which configuration file is used when the
+                                      shell starts when the user activates shell tracing by the
+                                      ``$USRHOME_TRACE_SHELL_CONFIG`` environment variable to 1
+                                      inside the file ``usrcfg/setfor_shell_tracing.sh``.
+===================================== ============================================================
 
-  - $USRHOME_DIR_USRCFG/do-user-bashrc.bash  *(if it exists)*
 
-    - $USRHOME_DIR_USRCFG/do-user.sh   *(if it exists)*
+Sourced Files Implementing USRHOME Provided Commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Z Shell login shell execution sequence
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+USRHOME provides several commands that use shell sourced files, also stored in
+the USRHOME/ibin directory.  There are 3 groups of such files:
 
-- ~/.zshenv    --> $USRHOME_DIR/dot/zshenv.zsh
+**Shell Environment Control Commands**:
 
-  - $USRHOME_DIR_USRCFG/setfor-all-config.sh  *(must exist)*
+Several USRHOME commands have a name that uses the *use-ENV* format.
+These are alias to the sourcing of scripts located inside the USRHOME ibin
+directory.
+Some have simpler names.
+The following table lists example of some of these commands.
 
-- ~/.zprofile  --> $USRHOME_DIR/dot/zprofile.zsh
+===================== =========================== ========================================================
+Alias                 ``$USRHOME/ibin`` File      Purpose
+===================== =========================== ========================================================
+**use-cbr**           `envfor-cbr`_               Implements the `use-cbr command`_.
 
-  - $USRHOME_DIR/ibin/setfor-path
-  - $USRHOME_DIR_USRCFG/do-user-zprofile.zsh
+**use-diff**          `envfor-diff`_              Implements the `use-diff command`_ that sets up how
+                                                  USRHOME diff_ operates in the current shell.
+                                                  See the section titled `File Diff Operations`_.
 
-- ~/.zshrc     --> $USRHOME_DIR/dot/zshrc.zsh
+**use-emacs-for-man** `envfor-emacs-for-man`_     Activate Emacs as Man reader.
+**use-gnu-global**    `envfor-gnu-global`_        Activate the GNU Global tool-chain in shell.
+                                                  See source for information on how to install GNU Global.
 
-  - $USRHOME_DIR/ibin/setfor-zsh-alias
+**pel**               `envfor-pel`_               Change current directory to PEL root. Set terminal title.
+===================== =========================== ========================================================
 
-    - $USRHOME_DIR/ibin/setfor-alias
+The user would probably want to create some extra ones;  the
+`usrhome/template/usrcfg/ibin`_ directory provides some examples.
 
-  - $USRHOME_DIR/ibin/setfor-path
+**Simple Commands that affect the current shell**:
 
-    - $USRHOME_DIR/ibin/envfor-homebrew
-    - $USRHOME_DIR/ibin/envfor-usrhome
+========================================== ========================================================
+``$USRHOME/ibin`` File                     Purpose
+========================================== ========================================================
+`do-cd-to`_                                Implements the `cd-to command`_.
+`do-usrcfg`_                               Implements the `usrcfg command`_.
+`do-usrhome`_                              Implements the `usrhome command`_.
+========================================== ========================================================
 
-  - $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user-zshrc.zsh  *(must exist)*
+**Helper Sourced Files**
 
-    - $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user.sh  *(must exist)*
+========================================== ========================================================
+``$USRHOME/ibin`` File                     Purpose
+========================================== ========================================================
+`xtra/sanitize-path-posix.sh`_             Defines the function used by the `sanitize-path command`_.
+`which-shell`_                             Identifies the shell (Bash, Z Shell, or other): sets the
+                                           USRHOME_SHELL environment variable to "zsh", "bash",
+                                           etc.
 
-- ~/.zlogin    --> $USRHOME_DIR/dot/zlogin.zsh
+                                           It is used by other USRHOME shell functions.
+                                           Can also be used by user's shell functions.
+========================================== ========================================================
 
-Activate Tracing of the Sourcing of the Shell Configuration Files
------------------------------------------------------------------
 
-By setting the value of ``USRHOME_TRACE_SHELL_CONFIG`` to 1 inside your
-``usrcfg/setfor-all-config.sh`` file you activate USRHOME's shell
-configuration file tracing.  Then when
-you open a new shell inside a terminal, or create a sub-shell, you can see
-which file is sourced.
 
-You can also set the value of ``USRHOME_TRACE_SHELL_CONFIG`` to the name of a
-file located inside an existing directory.  That activates the tracing to the
-shell stdout as for the value ``1`` but it also activates storing the trace
-lines inside the specified file.
+The User Configuration Files used by USRHOME
+--------------------------------------------
+
+=================================== ================================================================
+File Name (link to template)        Description
+=================================== ================================================================
+`usrcfg/setfor-all-config.sh`_      **Required**. Holds user configuration that applies to the Bash
+                                    and Z Shell.  Therefore it must be written in POSIX sh script,
+                                    compatible with both Bash and Z Shell.
+
+                                    It defines:
+
+                                    - USRHOME_TRACE_SHELL_CONFIG which controls shell tracing:
+
+                                      - 0 : disable shell tracing,
+                                      - 1 : enable shell tracing to shell stdout,
+                                      - file name: enable shell tracing to shell stdout and to the
+                                        specified file.  The file name must be an absolute file name
+                                        inside an existing directory.
+
+                                    - USRHOME_USE_HOMEBREW:
+
+                                      - 0: don't use Homebrew_,
+                                      - 1: to activate the use of (already installed) Homebrew_.
+
+                                    - The USRHOME concept directory variables (see next section)
+                                      which includes: USRHOME_DIR_MY, USRHOME_DIR_LIC,
+                                      USRHOME_DIR_LOG, USRHOME_DIR_DV, USRHOME_DIR_PRIV,
+                                      USRHOME_DIR_PUB, USRHOME_DIR_TMP.
+
+                                    - USRHOME_PROMPT_MODEL which select the prompt model. As
+                                      described further in the `USRHOME Shell Prompt`_ section, the
+                                      following values are supported:
+
+                                      - 0: prompt is not defined by USRHOME logic, user code should
+                                        define it or use system's default.
+                                      - 1,2 or 3: USRHOME pre-defined prompt.
+
+                                    - USRHOME_CONFIG_AT_LOGIN:
+
+                                      - Leave undefined, if you do not want to modify PATH in a
+                                        login shell.
+                                      - 1: define it to 1 if you want the PATH modified in the login
+                                        shell so it has the
+                                        same configuration than then non-login interactive shell.
+
+                                    The file also sources the `usrhome/ibin/shell-tracing.sh`_ to define
+                                    USRHOME-specific logic to control optional shell config file tracing.
+
+`usrcfg/do-user-zprofile.zsh`_      **Optional**. User-specific Z Shell zprofile logic.
+
+                                    - This must be written in Z Shell compatible logic.
+                                    - It also holds some USRHOME-specific logic to control optional
+                                      shell config file tracing.
+
+`usrcfg/do-user-zshrc.zsh`_         **Required for Z Shell**. User-specific Z Shell specific
+                                    configuration.
+
+                                    - This must be written in Z Shell compatible logic.
+                                    - It also holds some USRHOME-specific logic to control optional
+                                      shell config file tracing.
+                                    - That file could also source a node-specific file stored inside
+                                      the ``usrcfg/node/do-NODE-zshrc.zsh`` file where
+                                      ``NODE`` is identified with ``hostname -s``.
+
+`usrcfg/do-user-bash_profile.bash`_ **Optional**. User-specific Bash Shell specific configuration.
+                                    In some system the ~/.bash_login is executed during login.
+                                    On those systems it might be useful to write configuration logic
+                                    that must only be executed once, at login, inside this file, as
+                                    one would do with the ``~/.bash_login``.
+
+                                    - This must be written in Bash compatible logic.
+                                    - It should also hold some USRHOME-specific logic to control
+                                      optional shell config file tracing.
+                                    - That file could also source a node-specific file stored inside
+                                      the ``usrcfg/node/do-NODE-bash_profile.bash`` file where
+                                      ``NODE`` is identified with ``hostname -s``.
+
+`usrcfg/do-user-bashrc.bash`_       **Required for Bash**. User-specific Bash Shell specific
+                                    configuration.
+
+                                    - This must be written in Bash compatible logic.
+                                    - It also holds some USRHOME-specific logic to control optional
+                                      shell config file tracing.
+                                    - That file could also source a node-specific file stored inside
+                                      the ``usrcfg/node/do-NODE-bashrc.bash`` file where
+                                      ``NODE`` is identified with ``hostname -s``.
+=================================== ================================================================
+
+As said above, the usrcfg directory is expected to be a sibling to the usrhome
+directory; they must both be inside the same parent directory.
+This allows USRHOME to automatically set the ``USRHOME_DIR_USRCFG`` environment variable to hold
+the full path of the usrcfg directory.
+It's recommended to place the USRHOME directory and the usrcfg directory inside a parent directory
+that only holds these two directories.  That simplifies your searches when you need to identify
+where some logic is placed.
+
+
+See the section titled `USRHOME Shell Startup File Structure`_ for more information.
+
+Checking configuration nodes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``setup/check-nodes`` is intended to help audit the ``usrcfg`` node
+configuration and selected shell startup links in the home directory.
+
+The tool is not yet operational. Except for ``-h`` and ``--help``, it
+exits with status 44 before performing an audit. It does not currently
+validate host names or remove files.
+
+To display the available help, run this command from the USRHOME root::
+
+    setup/check-nodes --help
+
+
+USRHOME Configuration Environment Variables
+===========================================
+
+**Conventions**:
+
+- All environment variables used by USRHOME have a name starting with ``USRHOME_``.
+- All of those that identify the path of a directory have a name starting with ``USRHOME_DIR_``.
+- All *internal* USRHOME environment variables have a name that start with ``USRHOME__``.
+  These variables are only used by USRHOME logic and should not be modified by user's logic.
+
+
+=============================== =================================================
+Environment Variable Name       Purpose
+=============================== =================================================
+USRHOME_DIR                     Path to the usrhome directory.
+
+                                - This is the most important environment
+                                  variable.
+                                - When installing USRHOME, the
+                                  `setup/setup-usrhome`_ installation script
+                                  creates symbolic links in the home directory
+                                  to the Bash and Zsh startup scripts stored in
+                                  the usrhome directory tree.  These scripts
+                                  identify the usrhome directory by inferring
+                                  it from the location of the scripts.
+
+                                Therefore, you do not need to write code to
+                                initialize the value of USRHOME_DIR, the Bash
+                                an Zsh startup logic provided by USRHOME
+                                handle that.  You will, however, have to
+                                initialize the value of several other
+                                environment variables in your usrcfg scripts.
+
+                                There are more environment variables that
+                                identify `conceptual directories`_. They are
+                                all based on ``USRHOME_DIR`` value and are:
+
+                                - ``USRHOME_DIR_PUBLIC``
+                                - ``USRHOME_DIR_OTHER``
+                                - ``USRHOME_DIR_LOCAL``
+                                - ``USRHOME_DIR_CONTRACT``
+
+USRHOME_TRACE_SHELL_CONFIG      Set to 1 to activate tracing of the configuration
+                                file sourcing.
+                                Use the ``usrhome-shell-toggle-tracing``
+                                command to
+                                toggle this in the current shell.
+
+USRHOME_PROMPT_SHOW_USR_HOST    Set to 1 to display user name and host name
+                                in the prompt.
+                                Use the ``usrhome-prompt-toggle-usr-host``
+                                command to
+                                toggle this in the current shell.
+
+USRHOME_CONFIG_AT_LOGIN         Set to 1 to inform USRHOME files to perform
+                                configuration when invoked in a login shell.
+                                If you want to restrict use of USRHOME controlled
+                                configuration to interactive shells, don't set it,
+                                or set it to 0.  If set this must be set inside the
+                                `usrcfg/setfor-all-config.sh`_ file.
+
+USRHOME_USE_HOMEBREW            Set to 1 when using Homebrew, to add Homebrew
+                                directories to the PATH.
+
+USRHOME_DIR_HELPDIR             Optional Zsh help directory. A non-empty
+                                value takes precedence over ``HELPDIR``.
+                                The directory must contain a readable
+                                ``cd`` or ``print`` help file. See
+                                `Help for Zsh Builtin Commands`_.
+
+USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
+                                syntax of the prompt used by the shell.
+                                The prompts for zsh and Bash are independent and you can
+                                define a different prompt model value for each.
+                                The supported values are:
+
+                                - **0** : no prompt defined by USRHOME.
+                                  Either use the shell default or a user
+                                  specified prompt inside the shell specific
+                                  usrcfg file.
+                                  default prompt.
+
+                                - **1** (or not defined), **2** or **3**,
+                                  a USRHOME pre-defined shell prompt.
+
+                                Users can change the prompt dynamically by
+                                issuing a ``usrhome-prompt-model-to NUMBER``
+                                command.
+
+                                Under Zsh, changing the prompt may restart the
+                                shell. In that case the command will prompt
+                                before proceeding.
+                                See `Shell Behavior Control`_ for restart
+                                confirmation details.
+
+USRHOME_ORIGINAL_PATH           Set to the value of PATH before USRHOME adds to it.
+                                You can restore that value with the
+                                ``usrhome-switch-path`` command if necessary
+                                for testing purposes.
+
+USRHOME_SHOW_PATH_ACTIVATION    Set to 1 to see PATH changes done by the various
+                                ``use-ENV`` commands, including their use when
+                                the shell starts.
+=============================== =================================================
+
+When USRHOME Z Shell startup logic executes, USRHOME sets these other
+environment variables:
+
+================================== ================================================================
+Environment Variable Name          Purpose
+================================== ================================================================
+USRHOME_DIR_MY                     Main user directory, used by USRHOME `Directory Navigation`_.
+                                   Change current directory to this directory with the ``cdh``
+                                   command.
+
+USRHOME_DIR_LIC                    Directory where you can keep the software license files for the
+                                   software tools you use. Change current directory to this
+                                   directory with the ``cdlic`` command.
+
+USRHOME_DIR_LOG                    Directory where your own log files and notes can be stored.
+                                   Change current directory to this directory with the ``cdlog``
+                                   command.
+
+USRHOME_DIR_PUBLIC                 The root directory where your public
+                                   development repositories are stored.
+
+                                   - Used by used by USRHOME `Directory Navigation`_.
+                                   - Change current directory to this directory with the ``cd-public``
+                                     command.
+
+                                   - Previous implementation used ``USRHOME_DIR_DV`` environment variable
+                                     and the ``cddv`` command, which are both deprecated now.
+
+USRHOME_DIR_OTHER                  The root directory where clones of other public repositories
+                                   are stored.  These repositories are developed by other people
+                                   but you have a clone to use them as developed or just for
+                                   looking into them.
+
+                                   - Used by used by USRHOME `Directory Navigation`_.
+                                   - Change current directory to this directory with the ``cd-other``
+                                     command.
+                                   - Previously identified by the now deprecated ``USRHOME_DIR_PUB``
+                                     environment variable and the deprecated ``cdpub`` command.
+
+
+USRHOME_DIR_LOCAL                  The root directory that holds code repositories that are your
+                                   private code, not distributed anywhere but used locally in the
+                                   system.
+
+                                   - Used by used by USRHOME `Directory Navigation`_.
+                                   - Change current directory to this directory with the ``cd-local``
+                                     command.
+                                   - Previously identified by the now deprecated ``USRHOME_DIR_PRIV``
+                                     environment variable and the deprecated ``cdpriv`` command.
+
+USRHOME_DIR_CONTRACT               The root directory that holds proprietary contract code.
+
+                                   - Used by used by USRHOME `Directory Navigation`_.
+                                   - Change current directory to this directory with the ``cd-contract``
+                                     command.
+
+USRHOME_DIR_TMP                    User local temporary directory.
+                                   Change current directory to this directory with the ``cdtmp``
+                                   command.
+
+USRHOME_DIR_USRCFG                 The path of the user configuration directory.
+                                   Something like ``/Users/roup/my/dv/usrcfg``.
+                                   Use the ``usrcfg`` command to change the current directory to
+                                   that directory.
+
+
+USRHOME__IN_LOGIN                  **USRHOME Internal environment variable**:
+                                   A logic flag set to 1 by `usrhome/dot/zprofile.zsh`_ and
+                                   `usrhome/dot/bash_profile.bash`_ to inform the shell code that
+                                   the sourcing of the configuration files is being done by a login
+                                   shell.  When the sourcing of the configuration file is done by a
+                                   sub-shell this is not set.  The `usrcfg/setfor-all-config.sh`_ file
+                                   can set the USRHOME_CONFIG_AT_LOGIN flag to 1 to indicate the
+                                   USRHOME configuration should be done at login.
+
+USRHOME__PATH_SET                  **USRHOME Internal environment variable**:
+                                   A logic flag set when USRHOME modified PATH.
+
+USRHOME__USRCFG_SEEN               **USRHOME Internal environment variable**:
+                                   A logic flag set when USRHOME has processed user-specified
+                                   usrcfg configuration.
+================================== ================================================================
+
+More information about these in the section `Cd to Conceptual Directories`_.
+
+
+.. ---------------------------------------------------------------------------
+
+
+
+USRHOME Shell Startup File Execution Tracing
+============================================
+
+Activate the shell startup file tracing to help debug your shell startup.
+To do this:
+
+Edit your file: ``$USRHOME_DIR_USRCFG/setfor-all-config.sh`` and set
+``USRHOME_TRACE_SHELL_CONFIG`` value to one of the following:
+
+==================================== =======================================
+``USRHOME_TRACE_SHELL_CONFIG`` value Impact
+==================================== =======================================
+0                                    No tracing
+
+1                                    USRHOME prints tracing info on stdout
+
+Absolute file name                   USRHOME prints tracing info on stdout
+                                     and into the specified file.
+==================================== =======================================
+
+With USRHOME tracing active, when you open a new shell inside a terminal, or
+create a sub-shell, you can see which file is sourced.
+
+Inside a shell, you can use ``usrhome-shell-toggle-tracing`` to toggle tracing
+and restart the current Bash or Zsh shell. Tracing output is suppressed in
+non-interactive shells and when ``TERM`` is ``dumb``.
+
+Tracing Examples
+----------------
 
 With all usrcfg files existing, this is what you'd see from macOS that uses the Z
 Shell as the default shell when you open a new terminal and then create a
@@ -3242,102 +3221,6 @@ mentions that USRHOME sanitized the PATH and how to see more as we can see here:
 .. figure:: res/zsh-tracing-aquamacs-02.png
 
 
-Setup Examples
-==============
-
-Here's two screen captures of USRHOME taken on macOS Sonoma and Rocky Linux
-9.3.
-
-macOS shells
-------------
-
-The macOS Sonoma default shell is zsh. I have installed the latest Bash
-shell via Homebrew and also installed Rust.   These are available on the
-default zsh shell, which is shown starting in the first terminal seen in the
-back (ttys013).  The PATH available in that shell has 17 entries.  It has
-access to Rust and several Homebrew directories.
-
-I have also configured Terminal to start a Bash login shell. That shell
-(ttys014) is
-also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
-anything on the PATH of the login shells.  They have 10 directories in their
-PATH; the first one being ``/usr/local/bin``.
-
-Then I start another terminal (ttys015) with macOS default zsh non-login
-interactive shell.   As for the first one (ttys013), it sets up Homebrew and
-Rust because my USRHOME setup is done that way for those shells.  It has 17
-directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
-prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
-shell nested level.  From bash I create a zsh sub-shell from where I launch a
-``sleep 100`` command in the background.  The zsh shows ``1 ⚙`` identifying a
-running background job.  And when I issue an invalid command, it prints the
-exit code (127) followed by a red ⨯.
-
-.. figure:: res/macOS-shells.png
-
-Rocky Linux 9.3 shell
----------------------
-
-The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
-default shell is Bash 5.1. Again here I
-started two terminal instances: the first one launches the default Bash,
-instrumented with the exact same USRHOME settings than my macOS one.
-On Linux, Homebrew is not used.  But it also activates Rust.
-
-USRHOME does some check for vulnerabilities and it detects a possible one in
-Rocky Linux 9.3 and reports it when it is executing as the first level.
-The prompt prints:
-
-- the exit code of the last command,
-- the elapsed time (duration) of the completed command,
-- the shell nested level,
-- the number of background jobs running,
-- the user name @ hostname @ current time in 24-hour format
-- the current directory in side square brackets.
-
-The second non-login shell is executing a terminal-based Emacs process, which
-runs a terminal mode shell.  The USRHOME shell is Emacs-aware.
-The bash prompt is not affected when running inside Emacs.
-It can display the same information.
-You can see the PATH components shown by the showpath command.
-
-USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
-entries and empty entries. Here everything is fine.
-
-When the shell is placed in sudo mode, the prompt changes color and shows a
-``#`` instead of a ``$`` after the word ``bash``.
-
-The third terminal is configured to launch Bash in login mode. Here, USRHOME
-does not add anything to the PATH; the Bash login shells are unmodified and do
-not have access for any extra tools, therefore the PATH is shorter.
-These shells do not perform USRHOME simple (and quite limited) vulnerability
-check.
-
-Also note that, to help distinguish the login shell, I set the login shell
-prompt to red and the color of the non-login prompt to blue.
-
-.. figure:: res/RockyLinux-shells.png
-
-
-Kali Linux zsh shells with tracing enable
------------------------------------------
-
-You can activate shell tracing with USRHOME.
-When enabled, the shell prints what file is sourced when the shell starts,
-as this is shown in the Kali Linux, where zsh is the default shell.
-
-Rust is not installed in that system but it uses the same USRHOME
-*common* configuration as the others (with the temporary exception of enabling
-tracing) and the shell prints a warning.
-
-.. figure:: res/Kali-Linux-zshell.png
-
-It would be possible to move the request to use Rust from the common
-configuration file (in this case the file usrcfg/do-user.sh, that has logic
-similar to the `example template file for do-user.sh`_ ) into a
-node-specific file that the usrcfg logic could identify.  That could be done
-by the do-user.sh in the way that the `usrcfg do-user-zshrc.sh example file
-does`_.
 
 
 Adding Your Own Environment Customization to your Shell
@@ -3501,53 +3384,24 @@ Z Shell as we can see:
 
   .. figure:: res/use-rust-in-aquamacs.png
 
-Using USRHOME on Kali Linux
-===========================
 
-Kali Linux uses zsh as the default shell.
-It has it's own prompt definition with  several Z Shell extensions
-enabled, which the USRHOME default shell does not have yet.
-
-You can still use USRHOME on Kali Linux and take advantage of the USRHOME commands
-and philosophy of storing the USRHOME main code and the local shell
-customization inside the usrcfg directory.  That can also be stored inside a
-repository.  In this example, the usrcfg files are stored inside my **local**
-Mercurial repository.  The logic in the various files support multiple target
-environment, which they select by checking the host name and other values.
-
-This way, I can **centralize the shell setting of all computers or VMs** I use
-inside **a single repository** that I clone inside the usrcfg directory of these
-computers and VMs.  I can design the logic once, specialize it for various
-environments and distribute it through the VCS.
-
-Here's a Kali Linux terminal with the Z shell using USRHOME selecting the
-original Kali Linux Z Shell configuration (moved into the
-``usrcfg/do-user-zshrc.zsh`` file and selected based on the USRHOME prompt
-model value):
-
-.. figure:: res/on-kali-linux.png
-
-And then, after changing the color scheme of Kali Linux terminal, two
-terminals, one running the terminal version of Emacs launched with an alias to
-``emacs -nw`` and the graphical version of Emacs launched from the shell with a shell
-function that captures the current working directory and runs in background.
-You can see the prompts inside the Emacs shell-mode and term-mode buffers.
-
-
-.. figure:: res/on-kali-linux-02.png
-
-
+Using USRHOME -- Setup Examples
+===============================
 
 Using USRHOME on macOS
-======================
+----------------------
+
+The default shell used by the latest versions of macOS zsh.
+Bash is also available but it's an old version of Bash.
 
 On macOS several tools that are available on Linux are missing.
 
 I am using Homebrew_ to install these tools.  When used on macOS running on
-Apple Silicon CPU, Homebrew_ does require sudo access because it places all
-files inside the ``/opt/homebrew`` directory tree, with ``/opt/homebrew/bin``
-the location of the executable files (or symlinks to the executable files).
-This directory is not on PATH unless you place it.  USRHOME adds it for macOS.
+Apple Silicon CPU, Homebrew_ does require sudo access for initial installation
+because it places all files inside the ``/opt/homebrew`` directory tree, with
+``/opt/homebrew/bin`` the location of the executable files (or symlinks to the
+executable files).  This directory is not on PATH unless you place it.
+USRHOME adds it for macOS.
 
 USRHOME provides several features to enhance the command line experience on
 macOS without affecting macOS default environment.  It becomes possible to use
@@ -3558,7 +3412,7 @@ More information about the extra features are described in the following
 sections.
 
 Using GCC on macOS
-------------------
+~~~~~~~~~~~~~~~~~~
 
 The following commands specializes the shell to use a specific version of the
 GCC tool chain inside the shell.  That shell can then build using the specified
@@ -3597,6 +3451,139 @@ tool chain instead of the Apple-supplied Clang tool chain.
                                           PATH, effectively activating the GCC commands.
 = ===================================== =============================================================
 
+Example macOS shells
+~~~~~~~~~~~~~~~~~~~~
+
+
+I have installed the latest Bash shell via Homebrew and also installed Rust.
+
+These are available on the default zsh shell, which is shown starting in the
+first terminal seen in the back (ttys013).  The PATH available in that shell
+has 17 entries.  It has access to Rust and several Homebrew directories.
+
+I have also configured Terminal to start a Bash login shell. That shell
+(ttys014) is
+also controlled by USRHOME but my USRHOME setting prevents USRHOME to add
+anything on the PATH of the login shells.  They have 10 directories in their
+PATH; the first one being ``/usr/local/bin``.
+
+Then I start another terminal (ttys015) with macOS default zsh non-login
+interactive shell.   As for the first one (ttys013), it sets up Homebrew and
+Rust because my USRHOME setup is done that way for those shells.  It has 17
+directories in PATH.  Then I create a Bash sub-shell.  You can see it in the
+prompt.  The ``L2`` is the value of the ``SHLVL`` variable identifying the
+shell nested level.  From bash I create a zsh sub-shell from where I launch a
+``sleep 100`` command in the background.  The zsh shows ``1 ⚙`` identifying a
+running background job.  And when I issue an invalid command, it prints the
+exit code (127) followed by a red ⨯.
+
+.. figure:: res/macOS-shells.png
+
+.. ---------------------------------------------------------------------------
+
+Using USRHOME on Rocky Linux
+----------------------------
+
+Rocky Linux 9.3 shell
+~~~~~~~~~~~~~~~~~~~~~
+
+The screen shot show a setting I have for Rocky Linux 9.3.  Rocky Linux 9.3
+default shell is Bash 5.1. Again here I
+started two terminal instances: the first one launches the default Bash,
+instrumented with the exact same USRHOME settings than my macOS one.
+On Linux, Homebrew is not used.  But it also activates Rust.
+
+USRHOME does some check for vulnerabilities and it detects a possible one in
+Rocky Linux 9.3 and reports it when it is executing as the first level.
+The prompt prints:
+
+- the exit code of the last command,
+- the elapsed time (duration) of the completed command,
+- the shell nested level,
+- the number of background jobs running,
+- the user name @ hostname @ current time in 24-hour format
+- the current directory in side square brackets.
+
+The second non-login shell is executing a terminal-based Emacs process, which
+runs a terminal mode shell.  The USRHOME shell is Emacs-aware.
+The bash prompt is not affected when running inside Emacs.
+It can display the same information.
+You can see the PATH components shown by the showpath command.
+
+USRHOME will sanitize and report sloppy PATH such as PATH with duplicate
+entries and empty entries. Here everything is fine.
+
+When the shell is placed in sudo mode, the prompt changes color and shows a
+``#`` instead of a ``$`` after the word ``bash``.
+
+The third terminal is configured to launch Bash in login mode. Here, USRHOME
+does not add anything to the PATH; the Bash login shells are unmodified and do
+not have access for any extra tools, therefore the PATH is shorter.
+These shells do not perform USRHOME simple (and quite limited) vulnerability
+check.
+
+Also note that, to help distinguish the login shell, I set the login shell
+prompt to red and the color of the non-login prompt to blue.
+
+.. figure:: res/RockyLinux-shells.png
+
+.. ---------------------------------------------------------------------------
+
+Using USRHOME on Kali Linux
+---------------------------
+
+Kali Linux uses zsh as the default shell.
+It has it's own prompt definition with  several Z Shell extensions
+enabled, which the USRHOME default shell does not have yet.
+
+You can still use USRHOME on Kali Linux and take advantage of the USRHOME commands
+and philosophy of storing the USRHOME main code and the local shell
+customization inside the usrcfg directory.  That can also be stored inside a
+repository.  In this example, the usrcfg files are stored inside my **local**
+Mercurial repository.  The logic in the various files support multiple target
+environment, which they select by checking the host name and other values.
+
+This way, I can **centralize the shell setting of all computers or VMs** I use
+inside **a single repository** that I clone inside the usrcfg directory of these
+computers and VMs.  I can design the logic once, specialize it for various
+environments and distribute it through the VCS.
+
+Here's a Kali Linux terminal with the Z shell using USRHOME selecting the
+original Kali Linux Z Shell configuration (moved into the
+``usrcfg/do-user-zshrc.zsh`` file and selected based on the USRHOME prompt
+model value):
+
+.. figure:: res/on-kali-linux.png
+
+And then, after changing the color scheme of Kali Linux terminal, two
+terminals, one running the terminal version of Emacs launched with an alias to
+``emacs -nw`` and the graphical version of Emacs launched from the shell with a shell
+function that captures the current working directory and runs in background.
+You can see the prompts inside the Emacs shell-mode and term-mode buffers.
+
+
+.. figure:: res/on-kali-linux-02.png
+
+
+Kali Linux zsh shells with tracing enable
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can activate shell tracing with USRHOME.
+When enabled, the shell prints what file is sourced when the shell starts,
+as this is shown in the Kali Linux, where zsh is the default shell.
+
+Rust is not installed in that system but it uses the same USRHOME
+*common* configuration as the others (with the temporary exception of enabling
+tracing) and the shell prints a warning.
+
+.. figure:: res/Kali-Linux-zshell.png
+
+It would be possible to move the request to use Rust from the common
+configuration file (in this case the file usrcfg/do-user.sh, that has logic
+similar to the `example template file for do-user.sh`_ ) into a
+node-specific file that the usrcfg logic could identify.  That could be done
+by the do-user.sh in the way that the `usrcfg do-user-zshrc.sh example file
+does`_.
 
 .. ---------------------------------------------------------------------------
 
@@ -3624,7 +3611,6 @@ Thanks!
 .. _Pragmatic Emacs Library:                           https://github.com/pierre-rouleau/pel#readme
 .. _numeric keypad:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
 .. _fd:                                                https://github.com/sharkdp/fd#readme
-.. _The Z Shell Startup, Dot Files and User Configuration: #the-z-shell-startup-dot-files-and-user-configuration
 .. _Z Shell:                                           https://en.wikipedia.org/wiki/Z_shell
 .. _files sourced by the Z Shell:                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/zsh.pdf
 .. _Aquamacs:                                          https://aquamacs.org
