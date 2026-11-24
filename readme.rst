@@ -23,7 +23,7 @@ USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
    :target: #install-usrhome---how-to-set-it-up
 
 :Author:  Pierre Rouleau
-:Copyright: © 2024, 2025, 2026, Pierre Rouleau
+:Copyright: © 2024-2026, Pierre Rouleau
 :Install: `How to install USRHOME`_
 
 .. ---------------------------------------------------------------------------
@@ -646,10 +646,14 @@ All models                   ``^\(\(zsh\)\|\(bash\)\)[%#$]``
 USRHOME Commands and Scripts
 ============================
 
+USRHOME provides a set of commands available in all supported shells.
+They are described in the following sub-sections.
+
+
 USRHOME print policy
 --------------------
 
-he USRHOME print functions provide output for users in interactive
+USRHOME print functions provide output for users in interactive
 sessions. They suppress output during unattended execution and in Emacs Tramp
 sessions.
 
@@ -771,10 +775,14 @@ recommended.
 Shell Behavior Control
 ----------------------
 
+The following commands can be used to dynamically alter the behaviour
+of the shells controlled by USRHOME.
+
+
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-`usrhome-shell-toggle-tracing`_    Toggle tracing the execution of the shell configuration files
+`usrhome-shell-toggle-tracing`_    Toggle `tracing the execution of the shell configuration files`_
                                    when a shell starts.  This toggles the value of the
                                    ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
                                    and vice-versa.
@@ -865,14 +873,11 @@ These are implemented as shell functions or alias inside `usrhome/ibin/setfor-al
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``info-desktop``                   Print the name of the desktop software type being used.
+`info-desktop`_                    Print the name of the desktop software type being used.
                                    Internally also set the shell variable USRHOME_DESKTOP which can
                                    later be used inside shell scripts.
 
-                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
-                                     function.
-
-``info-prompt [-q]``               Print information about shell's prompt controlling variables.
+`info-prompt`_ [-q]                Print information about shell's prompt controlling variables.
                                    By default it prints the values of all variables.  With the
                                    ``-q`` option it only prints the values of
                                    the ``USRHOME_PROMPT_MODEL``
@@ -881,17 +886,10 @@ USRHOME Command Name               Description
                                    set, is the model of the current prompt,
                                    overriding the default.
 
-                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
-                                     function.
-
-``info-rosetta2``                  Available on macOS only.  Checks whether `Rosetta 2`_ is installed
+`info-rosetta2`_                   Available on macOS only.  Checks whether `Rosetta 2`_ is installed
                                    and prints info about it.
 
-                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
-                                     function.
-
-
-``info-shell-special-var [ARGS]``  List the shell special variables like ``$*``, ``$@``, ``$?`` and
+`info-shell-special-var`_ [ARGS]   List the shell special variables like ``$*``, ``$@``, ``$?`` and
                                    others,  describing their purpose and showing their values.
 
                                    - When command line arguments are passed to the command, it
@@ -901,13 +899,8 @@ USRHOME Command Name               Description
                                    - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
                                      function.
 
-
-
-``info-shell``                     Show current and default shell environment variable names
+`info-shell`_                      Show current and default shell environment variable names
                                    and values.
-
-                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a simple
-                                     alias.
 ================================== ================================================================
 
 Terminal Window Control
@@ -921,7 +914,13 @@ USRHOME Command Name               Description
                                    The command accepts only 1 parameter, so if you want to set the
                                    title with embedded spaces just quote the entire title.
                                    With no argument: removes the title.
-``restore-title``                  Restore title that might have been affected by error.
+
+                                   USRHOME provides two different implementations:
+
+                                   - `Bash set-title`_
+                                   - `Zsh set-title`_
+
+`restore-title`_                   Restore title that might have been affected by error.
 ================================== ================================================================
 
 
@@ -937,38 +936,40 @@ The following command shortcuts for specialized use of **ls** are provided by US
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``l``                              Colorized **ls** that also shows the file type symbol.
+`l`_                               Colorized **ls** that also shows the file type symbol.
 
                                    - Supports supplementation ls options and arguments.
 
-``la``                             Same as ``l`` but also show hidden files.
+`la`_                              Same as ``l`` but also show hidden files.
 
                                    - Supports supplementation ls options and arguments.
 
-``ll``                             ``ls -l`` with colorized and  file type symbols.
+`ll`_                              ``ls -l`` with colorized and  file type symbols.
 
                                    - Supports supplementation ls options and arguments.
 
-``lla``                            Same as ``ll`` but also show hidden files.
+`lla`_                             Same as ``ll`` but also show hidden files.
 
                                    - Supports supplementation ls options and arguments.
 
-``lt``                             ``ls -ltr`` with colorized and  file type symbols.
+`lt`_                              ``ls -ltr`` with colorized and  file type symbols.
 
                                    - Supports supplementation ls options and arguments.
 
-``lta``                            Same as ``lt`` but also show hidden files.
+`lta`_                             Same as ``lt`` but also show hidden files.
 
                                    - Supports any ls options.
 
 ``lsd [NAME]``                     List sub-directories in current directory.
 
                                    - NAME: optional name or first letters of the names.
+                                   - Two implementations are provided:
 
-                                   - If the ``USRHOME_USE_PIKE`` environment variable
-                                     is set to 1 inside your ``$USRCFG/setfor-all-config``
-                                     file, lsd is an alias to the ``lsdd`` tool utility
-                                     described below and provides many more features.
+                                     - If the ``USRHOME_USE_PIKE`` environment variable
+                                       is set to 1 inside your ``$USRCFG/setfor-all-config``
+                                       file, lsd is an alias to the `lsdd`_ tool utility
+                                       described below and provides many more features.
+                                     - Otherwise a shell script `lsd`_ is used.
 
 ``lsda [NAME]``                    List sub-directories in current directory,
                                    includes hidden directories.
@@ -976,8 +977,9 @@ USRHOME Command Name               Description
                                    - NAME: optional name or first letters of the names.
                                    - If the ``USRHOME_USE_PIKE`` environment variable
                                      is set to 1 inside your ``$USRCFG/setfor-all-config``
-                                     file, lsda is an alias to the ``lsdd -a`` tool utility
+                                     file, lsda is an alias to the `lsdd -a`_ tool utility
                                      described below and provides many more features.
+                                   - Otherwise a shell script `lsda function`_ is used.
 
 
 ``lsdd [OPTION] [FILE...]``        List directories only.
@@ -998,13 +1000,13 @@ USRHOME Command Name               Description
 
                                    `lsdd`_ is implemented as a `Pike`_ script;
                                    to use it you must have `Pike`_ installed.
-                                   Pike scripts are compiled then executed but the
-                                   compilation is fast.  To use it simply type the
-                                   command on the shell.
+                                   Pike scripts are compiled each time then
+                                   executed but the compilation is fast.
+                                   To use it simply type the command on the shell.
                                    It is a much better implementation than the shell
-                                   scripts lsd and lsda.
+                                   scripts `lsd`_ and lsda.
 
-``lsl [-l] ['NAME']``              List symbolic links in current directory.
+`lsl`_ ``[-l] ['NAME']``           List symbolic links in current directory.
 
                                    - With ``-l``, list using the ``ls -l`` format.
                                    - ``NAME``: optional symlink name glob pattern. Must be placed
@@ -1017,39 +1019,39 @@ Command to Display and Manipulate Environment Variables
 -------------------------------------------------------
 
 The following commands help manage and read the content of environment
-variables used int he current shell.  Any modification to an environment
-variable become available to the current shell and any sub-shells.  It does
+variables used in the current shell.  Any modification to an environment
+variable become available to the current shell and any sub-shells; it does
 not persists once the shell exits.
 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``add-to-path DIRPATH``            Add DIRPATH to the front of the current shell PATH.
+`add-to-path`_ DIRPATH             Add DIRPATH to the front of the current shell PATH.
 
-``add-to-path --end DIRPATH``      Add DIRPATH to the end of the current shell PATH.
+`add-to-path`_ --end DIRPATH       Add DIRPATH to the end of the current shell PATH.
 
                                    - This is an alias to ``_usrhome_add_to_path`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
 
-``clrenv VARNAME``                 Clear (remove) the environment variable specified by name from
+`clrenv`_ VARNAME                  Clear (remove) the environment variable specified by name from
                                    the environment of the *current* shell.
 
                                    - This is an alias to ``_usrhome_clrenv`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
 
-``setenv VARNAME VALUE``           Set the environment variable named VARNAME to the specified
+`setenv`_ VARNAME VALUE            Set the environment variable named VARNAME to the specified
                                    VALUE and inject it inside the *current* shell.
 
                                    - This is an alias to ``_usrhome_setenv`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
 
-``use-usrhome``                    Add USRHOME binary directory and ``~/bin`` to PATH if present.
+`use-usrhome`_                     Add USRHOME binary directory and ``~/bin`` to PATH if present.
                                    This command is automatically executed for zsh shell started
                                    under USRHOME control.
 
                                    - This is an alias to `usrhome/ibin/envfor-usrhome`_
 
-``use-homebrew``                   Add Homebrew directories to PATH if required for the CPU
+`use-homebrew`_                    Add Homebrew directories to PATH if required for the CPU
                                    architecture.
                                    This command is automatically executed for zsh shell started
                                    under USRHOME control when the ``USRHOME_USE_HOMEBREW``
@@ -1057,10 +1059,10 @@ USRHOME Command Name               Description
                                    common shell configuration file
                                    ``usrcfg/setfor-all-config.sh`` .
 
-                                   - This is an alias to `usrhome/ibin/envfor-homebrew`_
+                                   - This is an alias to `usrhome/ibin/setfor-alias#L912`_
 
 
-``use-info``                       Add ``info`` directories located in standard places to
+`use-info`_                        Add ``info`` directories located in standard places to
                                    the ``INFOPATH`` environment variable.  Use it to extend
                                    the ``INFOPATH`` when using the `stand-alone GNU info reader`_
                                    or info within Emacs.  It searches for info directories once
@@ -1075,7 +1077,7 @@ USRHOME Command Name               Description
 
                                    - This is an alias to `usrhome/ibin/envfor-info`_
 
-``append_to_path DIRS``            Append directories to PATH.
+`append-to-path`_ DIRS             Append directories to PATH.
 
                                    - DIRS is either one directory or a list a
                                      colon-separated directories.
@@ -1083,15 +1085,16 @@ USRHOME Command Name               Description
                                      and are not already present in PATH.
                                    - Examples:
 
-                                     - ``append_to_path ~/my-bin``
-                                     - ``append_to_path ~/my-bin:$HOME/other-bin``
-                                     - ``append_to_path $HOME/my-bin:$HOME/other-bin``
+                                     - ``append-to-path ~/my-bin``
+                                     - ``append-to-path ~/my-bin:$HOME/other-bin``
+                                     - ``append-to-path $HOME/my-bin:$HOME/other-bin``
 
                                    - **Caution**: shells only expand the ~ at the beginning
                                      of strings, therefore you cannot use it elsewhere in the
                                      list!
+                                   - This is an alias to `append_to_path`_.
 
-``prepend_to_path DIRS``           Prepend directories to PATH.
+`prepend_to_path`_ DIRS            Prepend directories to PATH.
 
                                    - DIRS is either one directory or a list a
                                      colon-separated directories.
@@ -1107,8 +1110,9 @@ USRHOME Command Name               Description
                                    - **Caution**: shells only expand the ~ at the beginning
                                      of strings, therefore you cannot use it elsewhere in the
                                      list!
+                                   - This is an alias to `prepend_to_path`_.
 
-``showpath [-n] [varname][PATH]``  Print the value of PATH, MANPATH or LIBPATH, or any PATH
+`showpath`_ [-n] [varname][PATH]   Print the value of PATH, MANPATH or LIBPATH, or any PATH
                                    specific environment variable placing each directory
                                    in its own line.
 
@@ -1149,15 +1153,19 @@ USRHOME Command Name               Description
 
                                    Help is printed when the ``-h`` or ``--help`` option is used.
 
-``usrhome-env``                    Display the values of all USRHOME environment variables
+                                   This is an alias to `bin/showpath`_
+
+`usrhome-env`_                     Display the values of all USRHOME environment variables
                                    currently set in the shell.
 
-``usrhome-switch-path``            Modify PATH.  Swap current PATH with the value stored inside the
+                                   This is an alias to `bin/usrhome-env`_
+
+`usrhome-switch-path`_             Modify PATH.  Swap current PATH with the value stored inside the
                                    ``USRHOME_ORIGINAL_PATH`` environment variable.  This is set to
                                    PATH value the system had inside the shell before USRHOME
                                    added support for itself and other tools.
 
-``sanitize-path [VARIABLE]``       Sanitize a PATH-like variable in the current shell.
+`sanitize-path`_ [VARIABLE]        Sanitize a PATH-like variable in the current shell.
                                    The alias calls ``_usrhome_sanitize_path``.  The default
                                    variable is PATH.  The named variable must be set and
                                    writable.  The command removes leading whitespace from
@@ -1191,6 +1199,8 @@ USRHOME Command Name               Description
                                    the value, unless TERM is ``dumb``.
 
                                    The command is silent if the value is valid and has not been modified.
+
+                                   This is a `alias for _usrhome_sanitize_path`_.
 ================================== ================================================================
 
 Dynamic Path Management
@@ -2635,7 +2645,7 @@ Bash login shell execution sequence
 
   - ``$USRHOME_DIR``\ /ibin/setfor-path
 
-    - ``$USRHOME_DIR``\ /ibin/envfor-homebrew
+    - ``$USRHOME_DIR``\ /ibin/setfor-alias#L912
     - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
   - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash  *(if it exists)*
@@ -2711,7 +2721,7 @@ Z Shell login shell execution sequence
 
   - ``$USRHOME_DIR``\ /ibin/setfor-path
 
-    - ``$USRHOME_DIR``\ /ibin/envfor-homebrew
+    - ``$USRHOME_DIR``\ /ibin/setfor-alias#L912
     - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
   - ``$USRHOME_DIR_USRCFG``\ /do-user-zshrc.zsh  *(must exist)*
@@ -2769,7 +2779,7 @@ The following files are not meant to be used manually. They are executed when th
 
                                       It sources the following extra ibin files:
 
-                                      - ``USRHOME_DIR/ibin/envfor-homebrew``, when
+                                      - ``USRHOME_DIR/ibin/setfor-alias#L912``, when
                                         ``USRHOME_USE_HOMEBREW`` environment variable is set to 1
                                         in the file ``usrcfg/setfor-all-config.sh``.
                                         That prepends the Homebrew directory to the path.
@@ -3712,7 +3722,7 @@ Thanks!
 .. _usrhome/ibin/do-clrenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
 .. _usrhome/ibin/do-setenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
 .. _usrhome/ibin/envfor-usrhome:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-usrhome
-.. _usrhome/ibin/envfor-homebrew:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-homebrew
+.. _usrhome/ibin/setfor-alias#L912:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias#L912
 .. _conceptual directories:                            `Cd to Conceptual Directories`_
 .. _Pike:                                              https://en.wikipedia.org/wiki/Pike_(programming_language)
 .. _lsdd:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/lsdd
@@ -3839,7 +3849,28 @@ Thanks!
 .. _`test/run-tests`: test/run-tests
 .. _`SSH helper documentation`: bin/sub-ssh4/readme.rst
 .. _diff: bin/diff
+.. _bin/showpath:                         bin/showpath
 .. _use-diff:                             ibin/envfor-diff
+.. _showpath:                             ibin/setfor-alias#L46
+.. _usrhome-env:                          ibin/setfor-alias#L52
+.. _info-shell-special-var:               ibin/setfor-alias#L103
+.. _restore-title:                        ibin/setfor-alias#L183
+.. _l:
+.. _la:
+.. _ll:
+.. _lla:
+.. _lt:
+.. _lta:                                  ibin/setfor-alias#L218
+.. _lsd:                                  ibin/setfor-alias#L278
+.. _lsda function:                        ibin/setfor-alias#L299
+.. _lsdd -a:                              ibin/setfor-alias#L347
+.. _lsl:                                  ibin/setfor-alias#L351
+.. _info-rosetta2:                        ibin/setfor-alias#L406
+.. _setenv:                               ibin/setfor-alias#L421
+.. _clrenv:                               ibin/setfor-alias#L457
+.. _add-to-path:                          ibin/setfor-alias#L499
+.. _alias for _usrhome_sanitize_path:     ibin/setfor-alias#L559
+.. _usrhome:                              ibin/setfor-alias#L588
 .. _usrcfg:                               ibin/setfor-alias#L589
 .. _cdv:                                  ibin/setfor-alias#L613
 .. _cdh:                                  ibin/setfor-alias#L620
@@ -3853,14 +3884,28 @@ Thanks!
 .. _..:                                   ibin/setfor-alias#L689
 .. _...:                                  ibin/setfor-alias#L690
 .. _....:                                 ibin/setfor-alias#L691
+.. _info-prompt:                          ibin/setfor-alias#L696
+.. _info-desktop:                         ibin/setfor-alias#L791
 .. _git-cln:                              ibin/setfor-alias#L906
-.. _usrhome:                              ibin/setfor-alias#L911
+.. _use-usrhome:                          ibin/setfor-alias#L911
+.. _use-homebrew:                         ibin/setfor-alias#L912
+.. _use-info:                             ibin/setfor-alias#L913
 .. _to ibin/envfor-diff:                  ibin/setfor-alias#L916
-.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L931
+.. _append-to-path:                       ibin/setfor-alias#L917
+.. _prepend-to-path:                      ibin/setfor-alias#L918
+.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L933
+.. _info-shell:                           bin/info-shell
+.. _append_to_path:                       ibin/setfor-path#L40
+.. _prepend_to_path:                      ibin/setfor-path#L88
 .. _Dired:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-dired.pdf
 .. _use-git-extra:    ibin/envfor-git-extra
 ..                    setfor-alias#L906
-
+.. _tracing the execution of the shell configuration files: `USRHOME Shell Startup File Execution Tracing`_
+.. _Bash set-title: ibin/setfor-bash-common#L33
+.. _Zsh set-title:  ibin/setfor-zsh-common#L31
+.. _bin/usrhome-env:  bin/usrhome-env
+.. _usrhome-switch-path:  ibin/setfor-path#L201
+.. _sanitize-path: ibin/xtra/sanitize-path-posix.sh
 
 .. ---------------------------------------------------------------------------
 
