@@ -493,10 +493,18 @@ The Z Shell uses the configuration files listed in the left column.
 USRHOME replaces them to symbolic link files that point to the USRHOME files
 listed in the right column.
 
+USRHOME implements its own copy of each of these files, stored in the
+usrhome/dot directory.  The files are named differently, without a leading
+period and with a ``.zsh`` file extension.   That simplifies editing and
+management on these files on various environments. Several tools require a
+special option to process hidden files; it's not needed for these files since
+they are not hidden.
+
+
 ========================= =====================================================
 Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ========================= =====================================================
-``~/.zshenv``             ``$USRHOME_DIR/dot/``\ `zshenv.zsh`_
+``~/.zshenv``             $USRHOME_DIR/dot/\ `zshenv.zsh`_
 ``~/.zprofile``           ``$USRHOME_DIR/dot/``\ `zprofile.zsh`_
 ``~/.zshrc``              ``$USRHOME_DIR/dot/``\ `zshrc.zsh`_
 ``~/.zlogin``             ``$USRHOME_DIR/dot/``\ `zlogin.zsh`_
@@ -3030,20 +3038,7 @@ Sourced Shell Files Format
 The Z Shell Startup, Dot Files and User Configuration
 -----------------------------------------------------
 
-The Z Shell has five different user configuration files:
 
-- ~/.zshenv
-- ~/.zprofile
-- ~/.zshrc
-- ~/.zlogin
-- ~/.zlogout
-
-USRHOME implements its own copy of each of these files, stored in the
-usrhome/dot directory.  The files are named differently, without a leading
-period and with a ``.zsh`` file extension.   That simplifies editing and
-management on these files on various environments. Several tools require a
-special option to process hidden files; it's not needed for these files since
-they are not hidden.
 
 However, to be used, USRHOME setup places them inside the user home directory,
 creating hidden symlinks to the files.  The result is the following:
