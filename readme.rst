@@ -2625,9 +2625,9 @@ Bash login shell execution sequence
 
 - ~/.bash_profile  --> ``$USRHOME_DIR``\ /dot/bash_profile.bash
 
-  - ``$USRHOME_DIR_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
+  - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
 
-    - ``$USRHOME_DIR_DIR_USRCFG``\ /do-user-bash_profile.bash
+    - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
 
 - ~/.bashrc        --> ``$USRHOME_DIR``\ /dot/bashrc.bash
 
@@ -2696,31 +2696,31 @@ The diagram shows the order in which the files are sourced.
 Z Shell login shell execution sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- ~/.zshenv    --> $USRHOME_DIR/dot/zshenv.zsh
+- ~/.zshenv    --> ``$USRHOME_DIR``\ /dot/zshenv.zsh
 
-  - $USRHOME_DIR_USRCFG/setfor-all-config.sh  *(must exist)*
+  - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist)*
 
-- ~/.zprofile  --> $USRHOME_DIR/dot/zprofile.zsh
+- ~/.zprofile  --> ``$USRHOME_DIR``\ /dot/zprofile.zsh
 
-  - $USRHOME_DIR/ibin/setfor-path
-  - $USRHOME_DIR_USRCFG/do-user-zprofile.zsh
+  - ``$USRHOME_DIR``\ /ibin/setfor-path
+  - ``$USRHOME_DIR_USRCFG``\ /do-user-zprofile.zsh
 
-- ~/.zshrc     --> $USRHOME_DIR/dot/zshrc.zsh
+- ~/.zshrc     --> ``$USRHOME_DIR``\ /dot/zshrc.zsh
 
-  - $USRHOME_DIR/ibin/setfor-zsh-alias
+  - ``$USRHOME_DIR``\ /ibin/setfor-zsh-alias
 
-    - $USRHOME_DIR/ibin/setfor-alias
+    - ``$USRHOME_DIR``\ /ibin/setfor-alias
 
-  - $USRHOME_DIR/ibin/setfor-path
+  - ``$USRHOME_DIR``\ /ibin/setfor-path
 
-    - $USRHOME_DIR/ibin/envfor-homebrew
-    - $USRHOME_DIR/ibin/envfor-usrhome
+    - ``$USRHOME_DIR``\ /ibin/envfor-homebrew
+    - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
-  - $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user-zshrc.zsh  *(must exist)*
+  - ``$USRHOME_DIR_USRCFG``\ /do-user-zshrc.zsh  *(must exist)*
 
-    - $USRHOME_DIR_$USRHOME_DIR_USRCFG/do-user.sh  *(must exist)*
+    - ``$USRHOME_DIR_USRCFG``\ /do-user.sh  *(must exist)*
 
-- ~/.zlogin    --> $USRHOME_DIR/dot/zlogin.zsh
+- ~/.zlogin    --> ``$USRHOME_DIR``\ /dot/zlogin.zsh
 
 
 USRHOME System Shell Startup File Diagram
