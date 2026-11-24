@@ -23,7 +23,7 @@ USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
    :target: #install-usrhome---how-to-set-it-up
 
 :Author:  Pierre Rouleau
-:Copyright: © 2024, 2025, 2026, Pierre Rouleau
+:Copyright: © 2024-2026, Pierre Rouleau
 :Install: `How to install USRHOME`_
 
 .. ---------------------------------------------------------------------------
@@ -646,10 +646,14 @@ All models                   ``^\(\(zsh\)\|\(bash\)\)[%#$]``
 USRHOME Commands and Scripts
 ============================
 
+USRHOME provides a set of commands available in all supported shells.
+They are described in the following sub-sections.
+
+
 USRHOME print policy
 --------------------
 
-he USRHOME print functions provide output for users in interactive
+USRHOME print functions provide output for users in interactive
 sessions. They suppress output during unattended execution and in Emacs Tramp
 sessions.
 
@@ -771,10 +775,14 @@ recommended.
 Shell Behavior Control
 ----------------------
 
+The following commands can be used to dynamically alter the behaviour
+of the shells controlled by USRHOME.
+
+
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-`usrhome-shell-toggle-tracing`_    Toggle tracing the execution of the shell configuration files
+`usrhome-shell-toggle-tracing`_    Toggle `tracing the execution of the shell configuration files`_
                                    when a shell starts.  This toggles the value of the
                                    ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
                                    and vice-versa.
@@ -865,14 +873,11 @@ These are implemented as shell functions or alias inside `usrhome/ibin/setfor-al
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``info-desktop``                   Print the name of the desktop software type being used.
+`info-desktop`_                    Print the name of the desktop software type being used.
                                    Internally also set the shell variable USRHOME_DESKTOP which can
                                    later be used inside shell scripts.
 
-                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
-                                     function.
-
-``info-prompt [-q]``               Print information about shell's prompt controlling variables.
+`info-prompt`_ [-q]                Print information about shell's prompt controlling variables.
                                    By default it prints the values of all variables.  With the
                                    ``-q`` option it only prints the values of
                                    the ``USRHOME_PROMPT_MODEL``
@@ -881,17 +886,10 @@ USRHOME Command Name               Description
                                    set, is the model of the current prompt,
                                    overriding the default.
 
-                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
-                                     function.
-
-``info-rosetta2``                  Available on macOS only.  Checks whether `Rosetta 2`_ is installed
+`info-rosetta2`_                   Available on macOS only.  Checks whether `Rosetta 2`_ is installed
                                    and prints info about it.
 
-                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
-                                     function.
-
-
-``info-shell-special-var [ARGS]``  List the shell special variables like ``$*``, ``$@``, ``$?`` and
+`info-shell-special-var`_ [ARGS]   List the shell special variables like ``$*``, ``$@``, ``$?`` and
                                    others,  describing their purpose and showing their values.
 
                                    - When command line arguments are passed to the command, it
@@ -901,13 +899,8 @@ USRHOME Command Name               Description
                                    - Implemented in: `usrhome/ibin/setfor-alias`_ as a shell
                                      function.
 
-
-
-``info-shell``                     Show current and default shell environment variable names
+`info-shell`_                      Show current and default shell environment variable names
                                    and values.
-
-                                   - Implemented in: `usrhome/ibin/setfor-alias`_ as a simple
-                                     alias.
 ================================== ================================================================
 
 Terminal Window Control
@@ -3840,6 +3833,8 @@ Thanks!
 .. _`SSH helper documentation`: bin/sub-ssh4/readme.rst
 .. _diff: bin/diff
 .. _use-diff:                             ibin/envfor-diff
+.. _info-shell-special-var:               ibin/setfor-alias#L103
+.. _info-rosetta2:                        ibin/setfor-alias#L406
 .. _usrcfg:                               ibin/setfor-alias#L589
 .. _cdv:                                  ibin/setfor-alias#L613
 .. _cdh:                                  ibin/setfor-alias#L620
@@ -3853,13 +3848,17 @@ Thanks!
 .. _..:                                   ibin/setfor-alias#L689
 .. _...:                                  ibin/setfor-alias#L690
 .. _....:                                 ibin/setfor-alias#L691
+.. _info-prompt:                          ibin/setfor-alias#L696
+.. _info-desktop:                         ibin/setfor-alias#L791
 .. _git-cln:                              ibin/setfor-alias#L906
 .. _usrhome:                              ibin/setfor-alias#L911
 .. _to ibin/envfor-diff:                  ibin/setfor-alias#L916
 .. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L931
+.. _info-shell:                           bin/info-shell
 .. _Dired:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-dired.pdf
 .. _use-git-extra:    ibin/envfor-git-extra
 ..                    setfor-alias#L906
+.. _tracing the execution of the shell configuration files: `USRHOME Shell Startup File Execution Tracing`_
 
 
 .. ---------------------------------------------------------------------------
