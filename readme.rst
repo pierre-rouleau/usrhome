@@ -914,7 +914,13 @@ USRHOME Command Name               Description
                                    The command accepts only 1 parameter, so if you want to set the
                                    title with embedded spaces just quote the entire title.
                                    With no argument: removes the title.
-``restore-title``                  Restore title that might have been affected by error.
+
+                                   USRHOME provides two different implementations:
+
+                                   - `Bash set-title`_
+                                   - `Zsh set-title`_
+
+`restore-title`_                   Restore title that might have been affected by error.
 ================================== ================================================================
 
 
@@ -930,38 +936,40 @@ The following command shortcuts for specialized use of **ls** are provided by US
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``l``                              Colorized **ls** that also shows the file type symbol.
+`l`_                               Colorized **ls** that also shows the file type symbol.
 
                                    - Supports supplementation ls options and arguments.
 
-``la``                             Same as ``l`` but also show hidden files.
+`la`_                              Same as ``l`` but also show hidden files.
 
                                    - Supports supplementation ls options and arguments.
 
-``ll``                             ``ls -l`` with colorized and  file type symbols.
+`ll`_                              ``ls -l`` with colorized and  file type symbols.
 
                                    - Supports supplementation ls options and arguments.
 
-``lla``                            Same as ``ll`` but also show hidden files.
+`lla`_                             Same as ``ll`` but also show hidden files.
 
                                    - Supports supplementation ls options and arguments.
 
-``lt``                             ``ls -ltr`` with colorized and  file type symbols.
+`lt`_                              ``ls -ltr`` with colorized and  file type symbols.
 
                                    - Supports supplementation ls options and arguments.
 
-``lta``                            Same as ``lt`` but also show hidden files.
+`lta`_                             Same as ``lt`` but also show hidden files.
 
                                    - Supports any ls options.
 
 ``lsd [NAME]``                     List sub-directories in current directory.
 
                                    - NAME: optional name or first letters of the names.
+                                   - Two implementations are provided:
 
-                                   - If the ``USRHOME_USE_PIKE`` environment variable
-                                     is set to 1 inside your ``$USRCFG/setfor-all-config``
-                                     file, lsd is an alias to the ``lsdd`` tool utility
-                                     described below and provides many more features.
+                                     - If the ``USRHOME_USE_PIKE`` environment variable
+                                       is set to 1 inside your ``$USRCFG/setfor-all-config``
+                                       file, lsd is an alias to the `lsdd`_ tool utility
+                                       described below and provides many more features.
+                                     - Otherwise a shell script `lsd`_ is used.
 
 ``lsda [NAME]``                    List sub-directories in current directory,
                                    includes hidden directories.
@@ -991,13 +999,13 @@ USRHOME Command Name               Description
 
                                    `lsdd`_ is implemented as a `Pike`_ script;
                                    to use it you must have `Pike`_ installed.
-                                   Pike scripts are compiled then executed but the
-                                   compilation is fast.  To use it simply type the
-                                   command on the shell.
+                                   Pike scripts are compiled each time then
+                                   executed but the compilation is fast.
+                                   To use it simply type the command on the shell.
                                    It is a much better implementation than the shell
-                                   scripts lsd and lsda.
+                                   scripts `lsd`_ and lsda.
 
-``lsl [-l] ['NAME']``              List symbolic links in current directory.
+`lsl`_ ``[-l] ['NAME']``           List symbolic links in current directory.
 
                                    - With ``-l``, list using the ``ls -l`` format.
                                    - ``NAME``: optional symlink name glob pattern. Must be placed
@@ -3834,6 +3842,15 @@ Thanks!
 .. _diff: bin/diff
 .. _use-diff:                             ibin/envfor-diff
 .. _info-shell-special-var:               ibin/setfor-alias#L103
+.. _restore-title:                        ibin/setfor-alias#L183
+.. _l:
+.. _la:
+.. _ll:
+.. _lla:
+.. _lt:
+.. _lta:                                  ibin/setfor-alias#L218
+.. _lsd:                                  ibin/setfor-alias#L278
+.. _lsl:                                  ibin/setfor-alias#L351
 .. _info-rosetta2:                        ibin/setfor-alias#L406
 .. _usrcfg:                               ibin/setfor-alias#L589
 .. _cdv:                                  ibin/setfor-alias#L613
@@ -3859,6 +3876,8 @@ Thanks!
 .. _use-git-extra:    ibin/envfor-git-extra
 ..                    setfor-alias#L906
 .. _tracing the execution of the shell configuration files: `USRHOME Shell Startup File Execution Tracing`_
+.. _Bash set-title: ibin/setfor-bash-common#L33
+.. _Zsh set-title:  ibin/setfor-zsh-common#L31
 
 
 .. ---------------------------------------------------------------------------
