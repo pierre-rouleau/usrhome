@@ -4,7 +4,7 @@
 # Purpose   : Compare 2 object files by comparing their assembler code.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-24 14:32:34 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-24 14:41:13 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -80,6 +80,12 @@ diffo -- Compare 2 object files by comparing their assembler code.
      generate old.asm with matching options.
    - Of course the object files compared must correspond to the evolution
      of the same source code file.
+   - If old.o changes, recreate its reference files.
+   - Make sure the old and new object files produce different reference file paths.
+     For example, diffo old.o old.obj uses old.asm for both objects, so it overwrites
+     the old reference before the comparison.  This should normally not be a problem
+     when using one compiler.
+
 "
 }
 
