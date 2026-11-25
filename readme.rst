@@ -1494,7 +1494,7 @@ inside Emacs.
                                         default man command inside the USRHOME shell.
 = ===================================== =============================================================
 
-The advantage of using the Emacs daemon and an emacsclient_ are:
+The advantage of using the Emacs daemon and an emacsclient_ [#emacs_daemon]_ are:
 
 - Speed.  Since Emacs is already running, the man command does not have to
   launch a new Emacs process that has to run through the initialization process;
@@ -3657,6 +3657,10 @@ Notes
                   - `Zsh shell parameters`_
                   - `Fish shell cd`_
 
+.. [#emacs_daemon] The `PEL`_ project provides useful commands to start Emacs daemons and use clients.
+                   More information is available in PEL `Using the Emacs stand-alone processes, daemon and clients`_.
+
+
 Feedback's Welcome!
 ===================
 
@@ -3974,6 +3978,7 @@ Thanks!
 .. _Bash cd:                               https://www.gnu.org/software/bash/manual/bash.html#index-cd
 .. _Zsh shell parameters:                  https://zsh.sourceforge.io/Intro/intro_13.html
 .. _Fish shell cd:                         https://fishshell.com/docs/current/cmds/cd.html
+.. _Using the Emacs stand-alone processes, daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 
 
 
