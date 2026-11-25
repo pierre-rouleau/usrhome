@@ -211,8 +211,8 @@ shown in the title bar of the terminal.
 Path management and security
 ----------------------------
 
-The ``showpath`` command displays the entries in a PATH-like variable.
-The ``sanitize-path`` command removes leading whitespace, duplicate
+The `showpath`_ command displays the entries in a PATH-like variable.
+The `sanitize-path`_ command removes leading whitespace, duplicate
 entries, and unwanted empty entries. ``MANPATH`` has separate rules for
 its empty-entry marker. Startup attempts to sanitize ``PATH`` in the
 configured shell contexts described below.
@@ -221,6 +221,10 @@ When PATH sanitization succeeds, removing empty entries reduces the risk
 of searching the current directory because of an empty PATH entry. The
 sanitizer does not verify that directories exist or are trusted. If
 sanitization fails, do not assume the original PATH is safe.
+
+USRHOME commands are CDPATH aware [#cdpath_note]_.
+The `lint-sh`_ utility explicitly looks for cd commands that may
+be affected by CDPATH and warns about them.
 
 USRHOME also includes limited checks for specific known problematic
 ``xz`` versions. These checks are not a general vulnerability scanner.
@@ -350,7 +354,7 @@ exposure window of external binaries.
 
 USRHOME loads ``ibin/xtra/sanitize-path-posix.sh`` through its alias
 setup.  The file defines ``_usrhome_sanitize_path``.  If loading succeeds,
-alias setup defines ``sanitize-path``.  Loading alone does not sanitize PATH.
+alias setup defines `sanitize-path`_.  Loading alone does not sanitize PATH.
 
 Zsh startup attempts to sanitize PATH.  Bash startup attempts to sanitize
 PATH in non-login shells and in login shells when
@@ -468,23 +472,103 @@ USRHOME provides control for the Z Shell and Bash prompts as described in this
 section. USRHOME provides 3 pre-defined prompt models (model 1, 2 and 3) and
 reserves prompt model number 0 to be user-defined.
 
-Information About Prompt Control Variables
-------------------------------------------
+Prompt Control Commands
+-----------------------
 
 URSHOME provides the following commands to get information about the shell
-prompt.
+prompt and to dynamically alter the behaviour of the prompt.
 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``info-prompt [-q]``               Print information about shell's prompt controlling variables.
+`info-prompt`_ [-q]                Print information about shell's prompt controlling variables.
                                    By default it prints the values of all variables.  With the
                                    ``-q`` option it only prints the values of
                                    the ``USRHOME_PROMPT_MODEL``
                                    and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
                                    shows the value of the default prompt mode, the second one, if
                                    set, is the model of the current prompt, overriding the default.
+
+`usrhome-shell-toggle-tracing`_    Toggle `tracing the execution of the shell configuration files`_
+                                   when a shell starts.  This toggles the value of the
+                                   ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
+                                   and vice-versa.
+
+                                   Note that if the variable value was a file name, toggling it
+                                   twice will simply re-activate the tracing to stdout, not to the
+                                   file.
+
+                                   - The original value of this environment variable is set inside
+                                     your `usrcfg/setfor-all-config.sh`_ file.
+                                     The default value is 0 as
+                                     identified by `usrhome/template/setfor-all-config.sh`_
+                                     used to initialize the usrcfg file.
+
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
+
+`usrhome-prompt-toggle-usr-host`_  Toggle the inclusion of the user name and host name inside
+                                   the prompt.
+
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
+
+                                   The command is not affected by this limitation when issued
+                                   in the Bash shell.
+
+`usrhome-prompt-model-to`_ NUMBER  Dynamically change the prompt model to the specified NUMBER.
+
+                                   - This command also supports the ``-h`` and ``--help`` command
+                                     line options which pint the usage.
+
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
+
+                                   The command is not affected by this limitation when issued
+                                   in the Bash shell.
 ================================== ================================================================
+
+The above commands may need to restart the shell under some conditions.
+Before a command restarts the shell, it warns that unsaved shell history
+and other shell state may be lost, and asks for confirmation. The
+confirmation does not save shell history. The result depends on the shell
+history configuration.
+
+Enter ``y`` or ``Y`` to restart. Any other response, including an empty
+response or end of input, cancels the restart and leaves the setting
+unchanged. If the command cannot prompt in an interactive terminal, it
+cancels the restart.
+
+The commands do not restart the shell while unfinished jobs are present.
+Terminate the jobs before retrying.
+
+Custom Zsh prompt
+~~~~~~~~~~~~~~~~~
+
+Zsh prompt model 0 supports a custom prompt defined in
+``$USRHOME_DIR_USRCFG/do-user-zshrc.zsh``. If the prompt setup must run
+at shell startup, set the restart model to 0 in that file::
+
+    export USRHOME_PROMPT_MODEL_REQUIRES_RESTART=0
+
+Keep this assignment outside any model-specific condition. Run the custom
+prompt setup only when the selected model is 0. The selected model is
+``USRHOME_PROMPT_MODEL_OVERRIDE`` when that variable is nonempty;
+otherwise, it is ``USRHOME_PROMPT_MODEL``.
+
+When you select model 0, USRHOME asks for confirmation before replacing
+the current Zsh shell. The new shell runs the startup configuration
+again. If you cancel, the prompt setting remains unchanged.
+
+The restart variable identifies a model number. The value 0 does not
+disable restarts. If the variable is unset or has another value, USRHOME
+selects its simple Zsh prompt for model 0.
+
+Shell Prompt Control Environment Variable
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 USRHOME prompt model control logic supports the environment variables
 described here:
@@ -492,6 +576,21 @@ described here:
 ================================== ================================================================
 Environment variable               Description
 ================================== ================================================================
+USRHOME_PROMPT_MODEL               Prompt model number used by the USRHOME shell unless the
+                                   ``USRHOME_PROMPT_MODEL_OVERRIDE`` environment variable is set.
+                                   A value in the [0, 3] range.
+
+                                   - 0 corresponds to the user-specified model (if identified by
+                                     usrcfg logic) or the system default prompt.
+                                   - 1, 2 and 3 are USRHOME pre-defined prompts.
+
+
+
+USRHOME_PROMPT_MODEL_OVERRIDE      Prompt model number imposed to the USRHOME shell when set.
+                                   When set it has a value in the [0, 3] range with the exact same
+                                   meaning of ``USRHOME_PROMPT_MODEL``.  If unset the USRHOME shell
+                                   uses the prompt identified by ``USRHOME_PROMPT_MODEL``.
+
 USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use of 1-second
                                    resolution timer for the Bash prompt.
 
@@ -507,7 +606,7 @@ USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use
                                    This might occur when you are executing a fast command and pipe
                                    it into another.
 
-                                   Setting USRHOME_SLOW_TIMER should prevent this problem.  You can
+                                   Setting ``USRHOME_SLOW_TIMER`` should prevent this problem.  You can
                                    do it dynamically inside the Bash shell like this::
 
                                      setenv USRHOME_SLOW_TIMER
@@ -537,7 +636,7 @@ ways.  As these might evolve over time, it's best to try them and see them in
 your terminal.
 
 The ``user@host`` information is shown when enabled. This can be dynamically
-enabled or disabled with the ``usrhome-prompt-toggle-usr-host`` command.
+enabled or disabled with the `usrhome-prompt-toggle-usr-host`_ command.
 
 In the following sessions, the command ``info-prompt -q`` is used to show which
 one is the default prompt model and which one is the currently used prompt.
@@ -617,7 +716,7 @@ warning message instead.  In the example above the two running process where ``e
 USRHOME name for terminal-based emacs.  To be able to change the process
 prompt, these two suspended Emacs process must first be terminated (by making
 them active in the foreground again with ``fg`` and then closing Emacs).  Once
-there's no background process the ``usrhome-prompt-toggle-usr-host`` command
+there's no background process the `usrhome-prompt-toggle-usr-host`_ command
 can be used.
 
 Showing the shell type helps when capturing commands for logs: it explicitly
@@ -672,18 +771,23 @@ For example, both commands can print when run from a permitted interactive sessi
           usrhome-test-print
           sh -c 'usrhome-test-print'
 
-In both cases, the ``TERM`` and output-stream rules below also apply. The script’s
-shebang and the interactivity of an intermediate shell do not, by themselves,
-determine whether printing is permitted.
+If ``TERM`` is unset, empty, or set to dumb, all print functions suppress
+output. This rule also applies when ``USRHOME_STDERR_PRINT_TO_PIPE=1``.  The
+script’s shebang and the interactivity of an intermediate shell do not, by
+themselves, determine whether printing is permitted.
 
-The print functions suppress output during unattended shell startup and
+.. figure:: res/usrhome-test-print.png
+   :scale: 25 %
+
+The print functions also suppress output during unattended shell startup and
 scheduled jobs when ``USRHOME_PRINT_ENABLED`` is unset or is not ``1``.
 A non-interactive shell started by an interactive session can inherit
 ``USRHOME_PRINT_ENABLED=1`` and permit printing. The scheduled-job boundary
 below explains how to prevent a scheduled job from inheriting that permission.
 
-If ``TERM`` is unset, empty, or dumb, all print functions suppress output. This
-rule also applies when ``USRHOME_STDERR_PRINT_TO_PIPE=1``.
+.. figure:: res/usrhome-test-print-01.png
+   :scale: 25 %
+
 
 **Output streams**
 
@@ -691,16 +795,16 @@ USRHOME scripts send warning and error information, including related details,
 to standard error (stderr). They send requested results and help to standard
 output (stdout).
 
-When printing is permitted, usrhome_printf can write to stdout even when
+When printing is permitted, `usrhome_printf`_ can write to stdout even when
 stdout is redirected to a pipe or file.
 
 The stderr functions are:
 
-- usrhome_printf_stderr
-- usrhome_printf_warning
-- usrhome_printf_error
-- usrhome_print_warning
-- usrhome_print_error
+- `usrhome_printf_stderr`_
+- `usrhome_printf_warning`_
+- `usrhome_printf_error`_
+- `usrhome_print_warning`_
+- `usrhome_print_error`_
 
 By default, these functions print only when stderr is connected to a
 terminal. A normal stdout pipe does not redirect stderr:
@@ -768,99 +872,7 @@ particular, changing a result to direct printf would bypass the current
 helper’s suppression policy so using the USRHOME print and printf functions is
 recommended.
 
-
 .. ---------------------------------------------------------------------------
-
-
-Shell Behavior Control
-----------------------
-
-The following commands can be used to dynamically alter the behaviour
-of the shells controlled by USRHOME.
-
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-`usrhome-shell-toggle-tracing`_    Toggle `tracing the execution of the shell configuration files`_
-                                   when a shell starts.  This toggles the value of the
-                                   ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
-                                   and vice-versa.
-
-                                   Note that if the variable value was a file name, toggling it
-                                   twice will simply re-activate the tracing to stdout, not to the
-                                   file.
-
-                                   - The original value of this environment variable is set inside
-                                     your `usrcfg/setfor-all-config.sh`_ file.
-                                     The default value is 0 as
-                                     identified by `usrhome/template/setfor-all-config.sh`_
-                                     used to initialize the usrcfg file.
-
-                                   In Zsh, this command may need to restart the
-                                   shell to update the prompt. See restart
-                                   confirmation below.
-
-`usrhome-prompt-toggle-usr-host`_  Toggle the inclusion of the user name and host name inside
-                                   the prompt.
-
-                                   In Zsh, this command may need to restart the
-                                   shell to update the prompt. See restart
-                                   confirmation below.
-
-                                   The command is not affected by this limitation when issued
-                                   in the Bash shell.
-
-`usrhome-prompt-model-to`_ NUMBER  Dynamically change the prompt model to the specified NUMBER.
-
-                                   - This command also supports the ``-h`` and ``--help`` command
-                                     line options which pint the usage.
-
-                                   In Zsh, this command may need to restart the
-                                   shell to update the prompt. See restart
-                                   confirmation below.
-
-                                   The command is not affected by this limitation when issued
-                                   in the Bash shell.
-================================== ================================================================
-
-The above commands may need to restart the shell under some conditions.
-Before a command restarts the shell, it warns that unsaved shell history
-and other shell state may be lost, and asks for confirmation. The
-confirmation does not save shell history. The result depends on the shell
-history configuration.
-
-Enter ``y`` or ``Y`` to restart. Any other response, including an empty
-response or end of input, cancels the restart and leaves the setting
-unchanged. If the command cannot prompt in an interactive terminal, it
-cancels the restart.
-
-The commands do not restart the shell while unfinished jobs are present.
-Terminate the jobs before retrying.
-
-Custom Zsh prompt
-~~~~~~~~~~~~~~~~~
-
-Zsh prompt model 0 supports a custom prompt defined in
-``$USRHOME_DIR_USRCFG/do-user-zshrc.zsh``. If the prompt setup must run
-at shell startup, set the restart model to 0 in that file::
-
-    export USRHOME_PROMPT_MODEL_REQUIRES_RESTART=0
-
-Keep this assignment outside any model-specific condition. Run the custom
-prompt setup only when the selected model is 0. The selected model is
-``USRHOME_PROMPT_MODEL_OVERRIDE`` when that variable is nonempty;
-otherwise, it is ``USRHOME_PROMPT_MODEL``.
-
-When you select model 0, USRHOME asks for confirmation before replacing
-the current Zsh shell. The new shell runs the startup configuration
-again. If you cancel, the prompt setting remains unchanged.
-
-The restart variable identifies a model number. The value 0 does not
-disable restarts. If the variable is unset or has another value, USRHOME
-selects its simple Zsh prompt for model 0.
-
-
 
 Shell Status Info
 -----------------
@@ -960,25 +972,23 @@ USRHOME Command Name               Description
 
                                    - Supports any ls options.
 
-``lsd [NAME]``                     List sub-directories in current directory.
+`lsd`_ [NAME]                      List sub-directories in current directory.
 
                                    - NAME: optional name or first letters of the names.
                                    - Two implementations are provided:
 
-                                     - If the ``USRHOME_USE_PIKE`` environment variable
+                                     - An alias to `Pike`_  implemented `lsdd`_ if the ``USRHOME_USE_PIKE`` environment variable
                                        is set to 1 inside your ``$USRCFG/setfor-all-config``
-                                       file, lsd is an alias to the `lsdd`_ tool utility
-                                       described below and provides many more features.
+                                       file.
                                      - Otherwise a shell script `lsd`_ is used.
 
-``lsda [NAME]``                    List sub-directories in current directory,
+`lsda`_ [NAME]                     List sub-directories in current directory,
                                    includes hidden directories.
 
                                    - NAME: optional name or first letters of the names.
-                                   - If the ``USRHOME_USE_PIKE`` environment variable
+                                   - An alias to `Pike`_  implemented `lsdd -a`_  if the ``USRHOME_USE_PIKE`` environment variable
                                      is set to 1 inside your ``$USRCFG/setfor-all-config``
-                                     file, lsda is an alias to the `lsdd -a`_ tool utility
-                                     described below and provides many more features.
+                                     file.
                                    - Otherwise a shell script `lsda function`_ is used.
 
 
@@ -1018,21 +1028,20 @@ USRHOME Command Name               Description
 Command to Display and Manipulate Environment Variables
 -------------------------------------------------------
 
-The following commands help manage and read the content of environment
-variables used in the current shell.  Any modification to an environment
-variable become available to the current shell and any sub-shells; it does
-not persists once the shell exits.
+The commands described in the following sub-sections manage and read the
+content of environment variables used in the current shell.  Any modification
+to an environment variable become available to the current shell and any
+sub-shells; it does not persists once the shell exits.
+
+Dynamic Environment Variable Management
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+With the following USRHOME commands you can set and clear the value of
+specified environment variables in the *current* shell.
 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-`add-to-path`_ DIRPATH             Add DIRPATH to the front of the current shell PATH.
-
-`add-to-path`_ --end DIRPATH       Add DIRPATH to the end of the current shell PATH.
-
-                                   - This is an alias to ``_usrhome_add_to_path`` implemented in
-                                     the file `usrhome/ibin/setfor-alias`_
-
 `clrenv`_ VARNAME                  Clear (remove) the environment variable specified by name from
                                    the environment of the *current* shell.
 
@@ -1044,38 +1053,26 @@ USRHOME Command Name               Description
 
                                    - This is an alias to ``_usrhome_setenv`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
+================================== ================================================================
 
-`use-usrhome`_                     Add USRHOME binary directory and ``~/bin`` to PATH if present.
-                                   This command is automatically executed for zsh shell started
-                                   under USRHOME control.
-
-                                   - This is an alias to `usrhome/ibin/envfor-usrhome`_
-
-`use-homebrew`_                    Add Homebrew directories to PATH if required for the CPU
-                                   architecture.
-                                   This command is automatically executed for zsh shell started
-                                   under USRHOME control when the ``USRHOME_USE_HOMEBREW``
-                                   environment variable is set to 1 inside the USRHOME user's
-                                   common shell configuration file
-                                   ``usrcfg/setfor-all-config.sh`` .
-
-                                   - This is an alias to `usrhome/ibin/setfor-alias#L912`_
+As usual, you can use the standard ``printenv`` command to print the value of any environment variables.
 
 
-`use-info`_                        Add ``info`` directories located in standard places to
-                                   the ``INFOPATH`` environment variable.  Use it to extend
-                                   the ``INFOPATH`` when using the `stand-alone GNU info reader`_
-                                   or info within Emacs.  It searches for info directories once
-                                   per process tree inside the following potential locations:
+Dynamic Path Management
+~~~~~~~~~~~~~~~~~~~~~~~
 
-                                   - Homebrew
-                                   - Emacs source repository, which must be identified by the
-                                     USRHOME_DIR_EMACS_SRC environment variable.
+The USRHOME commands and environment variables allow the dynamic management of the PATH
+in the *current*  shell.
 
-                                   Currently this list of locations is hard coded inside the
-                                   `usrhome/ibin/envfor-info`_ file.
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+`add-to-path`_ DIRPATH             Add DIRPATH to the front of the current shell PATH.
 
-                                   - This is an alias to `usrhome/ibin/envfor-info`_
+`add-to-path`_ --end DIRPATH       Add DIRPATH to the end of the current shell PATH.
+
+                                   - This is an alias to ``_usrhome_add_to_path`` implemented in
+                                     the file `usrhome/ibin/setfor-alias`_
 
 `append-to-path`_ DIRS             Append directories to PATH.
 
@@ -1126,7 +1123,7 @@ USRHOME Command Name               Description
                                    each line.
                                    Examples:
 
-                                   - ``showpath`` : prints PATH, one directory per line,
+                                   - `showpath`_ : prints PATH, one directory per line,
                                    - ``showpath PATH``: prints PATH, one directory per line,
                                    - ``showpath -n``: prints PATH with numbered lines,
                                    - ``showpath -n PATH``: prints PATH with numbered lines,
@@ -1146,7 +1143,7 @@ USRHOME Command Name               Description
                                    - 2 when specified environment variable is not defined,
                                    - 3 when the format of the specified path is incorrect.
 
-                                   Note: when MANPATH is undefined, ``showpath`` uses the manpath_
+                                   Note: when MANPATH is undefined, `showpath`_ uses the manpath_
                                    command (if available) and prints the path it returns.  It also
                                    prints a warning on stderr and exit with an
                                    exit-code of 0.
@@ -1154,11 +1151,6 @@ USRHOME Command Name               Description
                                    Help is printed when the ``-h`` or ``--help`` option is used.
 
                                    This is an alias to `bin/showpath`_
-
-`usrhome-env`_                     Display the values of all USRHOME environment variables
-                                   currently set in the shell.
-
-                                   This is an alias to `bin/usrhome-env`_
 
 `usrhome-switch-path`_             Modify PATH.  Swap current PATH with the value stored inside the
                                    ``USRHOME_ORIGINAL_PATH`` environment variable.  This is set to
@@ -1203,14 +1195,59 @@ USRHOME Command Name               Description
                                    This is a `alias for _usrhome_sanitize_path`_.
 ================================== ================================================================
 
-Dynamic Path Management
-~~~~~~~~~~~~~~~~~~~~~~~
 
-The USRHOME commands and environment variables allow the dynamic management of the PATH
-in the *current*  shell.  Here's a screen shot of this being done on a macOS Computer running on
-Apple Silicon CPU architecture.
+Here's a screen shot of this being done on a macOS Computer running on Apple
+Silicon CPU architecture.
 
 .. figure:: res/dynamic-path-management.png
+
+
+Dynamic USRHOME Shell Environment Control
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following USRHOME commands extend different aspects of the environment in *current* shell.
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+`use-usrhome`_                     Add USRHOME binary directory and ``~/bin`` to PATH if present.
+                                   This command is automatically executed for zsh shell started
+                                   under USRHOME control.
+
+                                   - This is an alias to `usrhome/ibin/envfor-usrhome`_
+
+`use-homebrew`_                    Add Homebrew directories to PATH if required for the CPU
+                                   architecture.
+                                   This command is automatically executed for zsh shell started
+                                   under USRHOME control when the ``USRHOME_USE_HOMEBREW``
+                                   environment variable is set to 1 inside the USRHOME user's
+                                   common shell configuration file
+                                   ``usrcfg/setfor-all-config.sh`` .
+
+                                   - This is an alias to `usrhome/ibin/setfor-alias#L912`_
+
+`use-info`_                        Add ``info`` directories located in standard places to
+                                   the ``INFOPATH`` environment variable.  Use it to extend
+                                   the ``INFOPATH`` when using the `stand-alone GNU info reader`_
+                                   or info within Emacs.  It searches for info directories once
+                                   per process tree inside the following potential locations:
+
+                                   - Homebrew
+                                   - Emacs source repository, which must be identified by the
+                                     USRHOME_DIR_EMACS_SRC environment variable.
+
+                                   Currently this list of locations is hard coded inside the
+                                   `usrhome/ibin/envfor-info`_ file.
+
+                                   - This is an alias to `usrhome/ibin/envfor-info`_
+
+
+
+`usrhome-env`_                     Display the values of all USRHOME environment variables
+                                   currently set in the shell.
+
+                                   This is an alias to `bin/usrhome-env`_
+================================== ================================================================
 
 Help for Zsh Builtin Commands
 -----------------------------
@@ -1404,7 +1441,7 @@ inside Emacs.
 = ===================================== =============================================================
 . Command                               Description
 = ===================================== =============================================================
-. ``use-emacs-for-man [-[gGsStT]]``     Install the Emacs-minded ``man`` command inside the shell.
+. `use-emacs-for-man`_ [-[gGsStT]]      Install the Emacs-minded ``man`` command inside the shell.
 
                                         By default it sets the Emacs launching mode to the terminal
                                         mode. You can change this by using one of the following
@@ -1435,24 +1472,29 @@ inside Emacs.
                                         - ``-T`` : same as ``-t`` but launches Emacs quicker with
                                           less initialization  by using Emacs -Q option.
 
+                                        This is activate in the shell via the `use-emacs-for-man alias`_.
 
 . - ``man [-[gGsStT]] TOPIC``           Open Emacs man mode viewer for the specified TOPIC.
   - ``man -man [OPTIONS] TOPIC``
                                         - If no option is identified it launches Emacs as selected
-                                          by the execution of ``use-emacs-for-man`` options.
+                                          by the execution of `use-emacs-for-man`_ options.
                                         - If man is executed with one of the 6 options, it uses the
                                           method selected by the option, overriding what was selected
-                                          by ``use-emacs-for-man``.
+                                          by `use-emacs-for-man_`.
 
                                         If you want to use the system's native man command from
-                                        a shell where you already executed ``use-emacs-for-man``,
+                                        a shell where you already executed `use-emacs-for-man`_,
                                         then you can use the ``-man`` special option, followed by
                                         all options you want to pass to the native man command.
                                         That executes the native man command with all options
                                         passed to it.
+
+                                        The man command activated by `use-emacs-for-man`_ is
+                                        implemented as a `man shell function`_ and replaces the
+                                        default man command inside the USRHOME shell.
 = ===================================== =============================================================
 
-The advantage of using the Emacs daemon and an emacsclient_ are:
+The advantage of using the Emacs daemon and an emacsclient_ [#emacs_daemon]_ are:
 
 - Speed.  Since Emacs is already running, the man command does not have to
   launch a new Emacs process that has to run through the initialization process;
@@ -1480,7 +1522,7 @@ emacs mode option to the man command. You can use several shells and use differe
 each one if you want.  Or just use one method.  The code is flexible.
 
 **Getting help**
-  You can pass the ``-h`` or ``--help`` options to both ``use-emacs-for-man``
+  You can pass the ``-h`` or ``--help`` options to both `use-emacs-for-man`_
   and the specialized ``man`` function.  They will print the usage and return
   an exit code of 1.
   The ``man`` command also prints a reminder that the native man command is not
@@ -1496,7 +1538,7 @@ each one if you want.  Or just use one method.  The code is flexible.
 - For man ``-s`` and ``-S``, when topic is not found: 4.
 
 **To Activate it Permanently in a Shell**:
-  You may not always want to type the ``use-emacs-for-man`` command.
+  You may not always want to type the `use-emacs-for-man`_ command.
   Instead you can add a specific man behaviour permanently inside your shell by
   sourcing the `usrhome/ibin/envfor-emacs-for-man`_ inside your shell startup code.
   For example, you could add the following code inside your ``usrcfg/do-user-zshrc.zsh``
@@ -1531,19 +1573,8 @@ each one if you want.  Or just use one method.  The code is flexible.
   files with a `PDF index`_ to a large set of topics and file format/language supports).
   The `help PDF`_ has a `section that describe Emacs man and woman support`_.
 
-Additional Scripts
-------------------
-
-The tables below describe executable scripts, sourced scripts, and shell
-commands. Command names link to their executable or sourced script. Other
-shell aliases and functions link to the file that defines them.
-Scripts in ``bin`` are available when the USRHOME command directory is
-on ``PATH``. Platform-specific directories and internal helpers are
-identified separately.
-
-
 Tool Activation Commands
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 Execute these commands inside a shell to activate the related commands
 in the current shell.
@@ -1575,7 +1606,7 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 
 Programming Language Support
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1590,7 +1621,7 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 
 Code Analysis Commands
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1604,7 +1635,7 @@ Command or file                                        Description
 
 
 File Diff Operations
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1666,7 +1697,7 @@ diff_                                                  USRHOME diff_ is a shell-
 
 
 Track Evolution of Compiled File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 Use the ``mk-diffo`` utility to track the evolution of a source code file
 over its modifications by comparing the assembler code generated from the
@@ -1834,7 +1865,7 @@ Command or file                                        Description
 
 
 Git Support Commands
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1861,7 +1892,7 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 
 Text File Format Conversion
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1874,13 +1905,8 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 
 
-
-
-
-
-
 Files and searches
-~~~~~~~~~~~~~~~~~~
+------------------
 
 ======================================== ===========================================================================
 Command or file                          Description
@@ -1968,10 +1994,10 @@ Command or file                          Description
 ======================================== ===========================================================================
 
 Directory Commands
-~~~~~~~~~~~~~~~~~~
+------------------
 
 Directory Navigation
-^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~
 
 Extensions to the ``cd`` command.
 
@@ -2048,7 +2074,7 @@ __  ibin/setfor-alias#L587
 
 
 Cd to Conceptual Directories
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ================================== ================================================================
@@ -2185,7 +2211,7 @@ USRHOME Command Name               Description
 
 
 Make directory
-~~~~~~~~~~~~~~
+--------------
 
 ================================== ===========================================================================
 Command or file                    Description
@@ -2199,7 +2225,7 @@ Command or file                    Description
 ================================== ===========================================================================
 
 Remove Empty Directory
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 ================================== ===========================================================================
 Command or file                    Description
@@ -2211,7 +2237,7 @@ Command or file                    Description
 
 
 System and process information
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -2263,7 +2289,7 @@ Command or file                                        Description
 
 
 Other Command Shortcuts
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 ================================== ===========================================================================
 Command or file                    Description
@@ -2275,7 +2301,7 @@ Command or file                    Description
 
 
 Platform-specific scripts
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 ======================================================== ===========================================================================
 Command or file                                          Description
@@ -2312,7 +2338,7 @@ Command or file                                          Description
 
 
 SELinux utilities
-~~~~~~~~~~~~~~~~~
+-----------------
 
 USRHOME provides Linux tools for SELinux policy development and
 troubleshooting. For the search scripts, set
@@ -2345,7 +2371,7 @@ Command or file                                              Description
 
 
 Internal and setup scripts
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 These files include helpers, sourced environment scripts, setup scripts,
 and tests. SSH base scripts are described in the `SSH helper documentation`_.
@@ -2421,8 +2447,8 @@ something inside the current running shell.  The source scripts all have names
 that start with one of the identified prefixes: ``setfor-`` or ``envfor-``.
 
 The ``setfor-`` sourced scripts are used by various USRHOME commands that
-control the shell, such as ``usrhome-shell-toggle-tracing`` and
-``usrhome-prompt-toggle-usr-host``.
+control the shell, such as `usrhome-shell-toggle-tracing`_ and
+`usrhome-prompt-toggle-usr-host`_.
 
 The ``envfor-ENV`` sourced scripts are used by the equivalent ``use-ENV``
 command.  These commands set the shell for the environment identified by the
@@ -2681,7 +2707,7 @@ user configuration, as shown in the top of the `USRHOME System Shell Startup Fil
 - The file `usrhome/ibin/setfor-path`_ controls adding extra directories in the
   PATH; the directories used by USRHOME and some other.  That file is
   optionally sourced  by the `usrhome/dot/zprofile.zsh`_ for a login shell and by the
-  usrhome/dot/zshrc.zsh in a sub-shell.  For the login shell the PATH is
+  usrhome/dot/zshrc.zsh in an interactive shell and sub-shell.  For a non-interactive login shell the PATH is
   modified only when the USRHOME_CONFIG_AT_LOGIN variable is set to 1.
 - Since the `usrhome/dot/zshrc.zsh`_ is used both in the login and the sub-shell,
   it's the file that sources the `usrhome/ibin/setfor-zsh-alias`_ to inject
@@ -2700,6 +2726,13 @@ The USRHOME files sources these files if they exist.
 In turn these files could source files for the specific node if the user wants
 to support several hosts.
 The diagram shows the order in which the files are sourced.
+
+To limit processing and help Emacs Tramp connections, the ``dot/zshrc.zsh``
+leaves early when the ``TERM`` environment variable is set to ``dumb`` (and
+that the shell is not already running inside Emacs as identified by the
+``INSIDE_EMACS`` environment variable).
+
+
 
 Z Shell login shell execution sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2899,7 +2932,7 @@ File Name (link to template)        Description
                                     - USRHOME_CONFIG_AT_LOGIN:
 
                                       - Leave undefined, if you do not want to modify PATH in a
-                                        login shell.
+                                        non-interactive login shell.
                                       - 1: define it to 1 if you want the PATH modified in the login
                                         shell so it has the
                                         same configuration than then non-login interactive shell.
@@ -3017,15 +3050,14 @@ USRHOME_DIR                     Path to the usrhome directory.
 
 USRHOME_TRACE_SHELL_CONFIG      Set to 1 to activate tracing of the configuration
                                 file sourcing.
-                                Use the ``usrhome-shell-toggle-tracing``
+                                Use the `usrhome-shell-toggle-tracing`_
                                 command to
                                 toggle this in the current shell.
 
 USRHOME_PROMPT_SHOW_USR_HOST    Set to 1 to display user name and host name
                                 in the prompt.
-                                Use the ``usrhome-prompt-toggle-usr-host``
-                                command to
-                                toggle this in the current shell.
+                                Use the `usrhome-prompt-toggle-usr-host`_
+                                command to toggle this in the current shell.
 
 USRHOME_CONFIG_AT_LOGIN         Set to 1 to inform USRHOME files to perform
                                 configuration when invoked in a login shell.
@@ -3065,8 +3097,7 @@ USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
                                 Under Zsh, changing the prompt may restart the
                                 shell. In that case the command will prompt
                                 before proceeding.
-                                See `Shell Behavior Control`_ for restart
-                                confirmation details.
+                                See `USRHOME Shell Prompt`_ section for details.
 
 USRHOME_ORIGINAL_PATH           Set to the value of PATH before USRHOME adds to it.
                                 You can restore that value with the
@@ -3191,7 +3222,7 @@ Absolute file name                   USRHOME prints tracing info on stdout
 With USRHOME tracing active, when you open a new shell inside a terminal, or
 create a sub-shell, you can see which file is sourced.
 
-Inside a shell, you can use ``usrhome-shell-toggle-tracing`` to toggle tracing
+Inside a shell, you can use `usrhome-shell-toggle-tracing`_ to toggle tracing
 and restart the current Bash or Zsh shell. Tracing output is suppressed in
 non-interactive shells and when ``TERM`` is ``dumb``.
 
@@ -3601,7 +3632,26 @@ Notes
 =====
 
 .. [#pike_note] Although `Pike`_ is not deployed in most system it is easy to setup and use.
-           It's also not necessary if you do not use that simple command.
+           If you have set the ``USRHOME_USE_PIKE`` environment variable to 1 in your ``usrcfg/setfor-all-config.sh``
+           the lsd command assumes that Pike is installed and that it is implemented in Pike
+           (as an alias to `lsdd`_) instead of the less capable `lsd`_ shell implementation.
+           Pike may not be well known but it's worth learning.  Read the `Pike`_ site to learn how to install it.
+
+
+.. [#cdpath_note] USRHOME commands unset CDPATH when it would have an impact on relative
+                  cd commands used by the USRHOME scripts.  This way you can still use
+                  CDPATH in your operations (assuming other shell scripts you use
+                  are also CDPATH aware).  More information related to CDPATH is available
+                  here:
+
+                  - `Navigating efficiently with CDPATH`_
+                  - `Linux command line navigation tips/tricks 3 - the CDPATH environment variable`_
+                  - `Bash cd`_
+                  - `Zsh shell parameters`_
+                  - `Fish shell cd`_
+
+.. [#emacs_daemon] The `PEL`_ project provides useful commands to start Emacs daemons and use clients.
+                   More information is available in PEL `Using the Emacs stand-alone processes, daemon and clients`_.
 
 
 Feedback's Welcome!
@@ -3640,47 +3690,49 @@ Thanks!
 .. _emacsclient:                                       https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
 .. _Emacs 'string-format' regular expression syntax:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
 .. _glob:                                              https://en.wikipedia.org/wiki/Glob_(programming)
-.. _usrhome/template/usrcfg/ibin:                      https://github.com/pierre-rouleau/usrhome/tree/main/template/usrcfg/ibin
+.. _usrhome/template/usrcfg/ibin:                      template/usrcfg/ibin
 .. _cbr command:
 .. _use-cbr command:                                   `CBR -- Single commands to Check, Build or Run`_
 .. _use-emacs-for-man command:                         `Using Emacs as a man reader`_
-.. _USRHOME dot files:                                 https://github.com/pierre-rouleau/usrhome/tree/main/dot
-.. _do-add-to-path:                                    https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-add-to-path
-.. _do-cbr:                                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
+.. _use-emacs-for-man:                                 ibin/envfor-emacs-for-man
+.. _man shell function:                                ibin/envfor-emacs-for-man#L179
+.. _USRHOME dot files:                                 dot
+.. _do-add-to-path:                                    ibin/do-add-to-path
+.. _do-cbr:                                            ibin/do-cbr
 .. _cd-to:
-.. _do-cd-to:                                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cd-to
-.. _do-clrenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
-.. _xtra/sanitize-path-posix.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/xtra/sanitize-path-posix.sh
-.. _do-setenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
-.. _do-usrcfg:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrcfg
-.. _do-usrhome:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrhome
-.. _dot/zshrc.zsh:                                     https://github.com/pierre-rouleau/usrhome/tree/main/dot/zshrc.zsh
-.. _envfor-cbr:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
-.. _envfor-emacs-for-man:                              https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
-.. _envfor-pel:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-pel
-.. _envfor-gnu-global:                                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gnu-global
-.. _setfor-alias:                                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
-.. _setfor-bash-alias:                                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-bash-alias
-.. _setfor-path:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-path
-.. _setfor-zsh-alias:                                  https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-zsh-alias
-.. _setup/setup-usrhome:                               https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
-.. _usrhome/ibin/shell-tracing.sh:                     https://github.com/pierre-rouleau/usrhome/blob/main/ibin/shell-tracing.sh
-.. _shell-tracing.sh:                                  https://github.com/pierre-rouleau/usrhome/blob/main/ibin/shell-tracing.sh
-.. _usrcfg/setfor-all-config.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
-.. _usrhome/ibin/setfor-zsh-alias:                     https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-zsh-alias
-.. _usrhome/ibin/setfor-path:                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-path
-.. _usrhome/dot/zprofile.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
-.. _usrhome/dot/zshenv.zsh:                            https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshenv.zsh
-.. _usrhome/dot/zshrc.zsh:                             https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshrc.zsh
-.. _usrhome/dot/bash_profile.bash:                     https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
-.. _usrhome/dot/zprofile.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
-.. _usrhome/dot:                                       https://github.com/pierre-rouleau/usrhome/tree/main/dot
-.. _usrhome/ibin/envfor-emacs-for-man:                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
-.. _usrhome/template/bin/ge:                           https://github.com/pierre-rouleau/usrhome/blob/main/template/bin/ge
-.. _usrhome/template/setfor-all-config.sh:             https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
-.. _usrcfg template files:                             https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg
-.. _usrhome/template:                                  https://github.com/pierre-rouleau/usrhome/blob/main/template
-.. _which-shell:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/which-shell
+.. _do-cd-to:                                          ibin/do-cd-to
+.. _do-clrenv:                                         ibin/do-clrenv
+.. _xtra/sanitize-path-posix.sh:                       ibin/xtra/sanitize-path-posix.sh
+.. _do-setenv:                                         ibin/do-setenv
+.. _do-usrcfg:                                         ibin/do-usrcfg
+.. _do-usrhome:                                        ibin/do-usrhome
+.. _dot/zshrc.zsh:                                     dot/zshrc.zsh
+.. _envfor-cbr:                                        ibin/envfor-cbr
+.. _envfor-emacs-for-man:                              ibin/envfor-emacs-for-man
+.. _envfor-pel:                                        ibin/envfor-pel
+.. _envfor-gnu-global:                                 ibin/envfor-gnu-global
+.. _setfor-alias:                                      ibin/setfor-alias
+.. _setfor-bash-alias:                                 ibin/setfor-bash-alias
+.. _setfor-path:                                       ibin/setfor-path
+.. _setfor-zsh-alias:                                  ibin/setfor-zsh-alias
+.. _setup/setup-usrhome:                               setup/setup-usrhome
+.. _usrhome/ibin/shell-tracing.sh:                     ibin/shell-tracing.sh
+.. _shell-tracing.sh:                                  ibin/shell-tracing.sh
+.. _usrcfg/setfor-all-config.sh:                       template/usrcfg/setfor-all-config.sh
+.. _usrhome/ibin/setfor-zsh-alias:                     ibin/setfor-zsh-alias
+.. _usrhome/ibin/setfor-path:                          ibin/setfor-path
+.. _usrhome/dot/zprofile.zsh:                          dot/zprofile.zsh
+.. _usrhome/dot/zshenv.zsh:                            dot/zshenv.zsh
+.. _usrhome/dot/zshrc.zsh:                             dot/zshrc.zsh
+.. _usrhome/dot/bash_profile.bash:                     dot/bash_profile.bash
+.. _usrhome/dot/zprofile.zsh:                          dot/zprofile.zsh
+.. _usrhome/dot:                                       dot
+.. _usrhome/ibin/envfor-emacs-for-man:                 ibin/envfor-emacs-for-man
+.. _usrhome/template/bin/ge:                           template/bin/ge
+.. _usrhome/template/setfor-all-config.sh:             template/usrcfg/setfor-all-config.sh
+.. _usrcfg template files:                             template/usrcfg
+.. _usrhome/template:                                  template
+.. _which-shell:                                       ibin/which-shell
 .. _cd-to command:                                     `Directory Navigation`_
 .. _usrcfg command:                                    `Directory Navigation`_
 .. _usrhome command:                                   `Directory Navigation`_
@@ -3689,43 +3741,43 @@ Thanks!
 .. _clrenv command:                                    `Command to Display and Manipulate Environment Variables`_
 .. _sanitize-path command:                             `Command to Display and Manipulate Environment Variables`_
 .. _setenv command:                                    `Command to Display and Manipulate Environment Variables`_
-.. _profile.sh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/profile.sh
-.. _bash_profile.bash:                                 https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
-.. _bash_login.bash:                                   https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_login.bash
-.. _bashrc.bash:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/bashrc.bash
-.. _bash_logout.bash:                                  https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_logout.bash
-.. _zshenv.zsh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshenv.zsh
-.. _zprofile.zsh:                                      https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
-.. _zshrc.zsh:                                         https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshrc.zsh
-.. _zlogin.zsh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogin.zsh
-.. _zlogout.zsh:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogout.zsh
-.. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
+.. _profile.sh:                                        dot/profile.sh
+.. _bash_profile.bash:                                 dot/bash_profile.bash
+.. _bash_login.bash:                                   dot/bash_login.bash
+.. _bashrc.bash:                                       dot/bashrc.bash
+.. _bash_logout.bash:                                  dot/bash_logout.bash
+.. _zshenv.zsh:                                        dot/zshenv.zsh
+.. _zprofile.zsh:                                      dot/zprofile.zsh
+.. _zshrc.zsh:                                         dot/zshrc.zsh
+.. _zlogin.zsh:                                        dot/zlogin.zsh
+.. _zlogout.zsh:                                       dot/zlogout.zsh
+.. _envfor-diff:                                       ibin/envfor-diff
 .. _use-diff command:                                  `File Diff Operations`_
 .. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
-.. _example template file for do-user.sh:              https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user.sh#L72
-.. _usrcfg do-user-zshrc.sh example file does:         https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh#L55
-.. _usrcfg/setfor-all-config.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
-.. _usrcfg/do-user-zprofile.zsh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zprofile.zsh
-.. _usrcfg/do-user-zshrc.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh
-.. _usrcfg/do-user-bash_profile.bash:                  https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bash_profile.bash
-.. _usrcfg/do-user-bashrc.bash:                        https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bashrc.bash
-.. _usrhome-shell-toggle-tracing:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-shell-toggle-tracing
-.. _usrhome-prompt-toggle-usr-host:                    https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-prompt-toggle-usr-host
-.. _usrhome-prompt-model-to:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-prompt-model-to
-.. _usrhome/ibin/setfor-alias:                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
-.. _usrhome/ibin/envfor-cbr:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
+.. _example template file for do-user.sh:              template/usrcfg/do-user.sh#L72
+.. _usrcfg do-user-zshrc.sh example file does:         template/usrcfg/do-user-zshrc.zsh#L55
+.. _usrcfg/setfor-all-config.sh:                       template/usrcfg/setfor-all-config.sh
+.. _usrcfg/do-user-zprofile.zsh:                       template/usrcfg/do-user-zprofile.zsh
+.. _usrcfg/do-user-zshrc.zsh:                          template/usrcfg/do-user-zshrc.zsh
+.. _usrcfg/do-user-bash_profile.bash:                  template/usrcfg/do-user-bash_profile.bash
+.. _usrcfg/do-user-bashrc.bash:                        template/usrcfg/do-user-bashrc.bash
+.. _usrhome-shell-toggle-tracing:                      ibin/setfor-shell-toggle-tracing
+.. _usrhome-prompt-toggle-usr-host:                    ibin/setfor-prompt-toggle-usr-host
+.. _usrhome-prompt-model-to:                           ibin/setfor-prompt-model-to
+.. _usrhome/ibin/setfor-alias:                         ibin/setfor-alias
+.. _usrhome/ibin/envfor-cbr:                           ibin/envfor-cbr
 .. _Emacs man support:                                 https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
-.. _create-gcc-as-gcc14.sh:                            https://github.com/pierre-rouleau/usrhome/blob/main/setup/macOS/create-gcc-as-gcc14.sh
-.. _usrhome/ibin/envfor-gcc14-on-macos:                https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gcc14-on-macos
-.. _usrhome/ibin/envfor-info:                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-info
+.. _create-gcc-as-gcc14.sh:                            setup/macOS/create-gcc-as-gcc14.sh
+.. _usrhome/ibin/envfor-gcc14-on-macos:                ibin/envfor-gcc14-on-macos
+.. _usrhome/ibin/envfor-info:                          ibin/envfor-info
 .. _stand-alone GNU info reader:                       https://www.gnu.org/software/texinfo/manual/info-stnd/info-stnd.html
-.. _usrhome/ibin/do-clrenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
-.. _usrhome/ibin/do-setenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
-.. _usrhome/ibin/envfor-usrhome:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-usrhome
-.. _usrhome/ibin/setfor-alias#L912:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias#L912
+.. _usrhome/ibin/do-clrenv:                            ibin/do-clrenv
+.. _usrhome/ibin/do-setenv:                            ibin/do-setenv
+.. _usrhome/ibin/envfor-usrhome:                       ibin/envfor-usrhome
+.. _usrhome/ibin/setfor-alias#L912:                    ibin/setfor-alias#L912
 .. _conceptual directories:                            `Cd to Conceptual Directories`_
 .. _Pike:                                              https://en.wikipedia.org/wiki/Pike_(programming_language)
-.. _lsdd:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/lsdd
+.. _lsdd:                                              bin/lsdd
 .. _AWK:                                               https://en.wikipedia.org/wiki/AWK
 .. _Cockpit:                                           https://cockpit-project.org/
 .. _installation:
@@ -3862,6 +3914,7 @@ Thanks!
 .. _lt:
 .. _lta:                                  ibin/setfor-alias#L218
 .. _lsd:                                  ibin/setfor-alias#L278
+.. _lsda:
 .. _lsda function:                        ibin/setfor-alias#L299
 .. _lsdd -a:                              ibin/setfor-alias#L347
 .. _lsl:                                  ibin/setfor-alias#L351
@@ -3890,6 +3943,7 @@ Thanks!
 .. _use-usrhome:                          ibin/setfor-alias#L911
 .. _use-homebrew:                         ibin/setfor-alias#L912
 .. _use-info:                             ibin/setfor-alias#L913
+.. _use-emacs-for-man alias:              ibin/setfor-alias#L915
 .. _to ibin/envfor-diff:                  ibin/setfor-alias#L916
 .. _append-to-path:                       ibin/setfor-alias#L917
 .. _prepend-to-path:                      ibin/setfor-alias#L918
@@ -3906,6 +3960,21 @@ Thanks!
 .. _bin/usrhome-env:  bin/usrhome-env
 .. _usrhome-switch-path:  ibin/setfor-path#L201
 .. _sanitize-path: ibin/xtra/sanitize-path-posix.sh
+.. _usrhome_printf:                       ibin/xtra/print-utilities.sh#L81
+.. _usrhome_printf_stderr:                ibin/xtra/print-utilities.sh#L94
+.. _usrhome_printf_warning:               ibin/xtra/print-utilities.sh#L107
+.. _usrhome_printf_error:                 ibin/xtra/print-utilities.sh#L126
+.. _usrhome_print_error:                  ibin/xtra/print-utilities.sh#L146
+.. _usrhome_print_warning:                ibin/xtra/print-utilities.sh#L162
+.. _Navigating efficiently with CDPATH: https://hashrocket.com/blog/posts/navigating-efficiently-with-cdpath
+.. _Linux command line navigation tips/tricks 3 - the CDPATH environment variable: https://www.howtoforge.com/tutorial/linux-command-line-tips-tricks-part-3-cdpath/
+.. _Bash cd:                               https://www.gnu.org/software/bash/manual/bash.html#index-cd
+.. _Zsh shell parameters:                  https://zsh.sourceforge.io/Intro/intro_13.html
+.. _Fish shell cd:                         https://fishshell.com/docs/current/cmds/cd.html
+.. _Using the Emacs stand-alone processes, daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
+
+
+
 
 .. ---------------------------------------------------------------------------
 
