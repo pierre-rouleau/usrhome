@@ -960,25 +960,23 @@ USRHOME Command Name               Description
 
                                    - Supports any ls options.
 
-``lsd [NAME]``                     List sub-directories in current directory.
+`lsd`_ [NAME]                      List sub-directories in current directory.
 
                                    - NAME: optional name or first letters of the names.
                                    - Two implementations are provided:
 
-                                     - If the ``USRHOME_USE_PIKE`` environment variable
+                                     - An alias to `Pike`_  implemented `lsdd`_ if the ``USRHOME_USE_PIKE`` environment variable
                                        is set to 1 inside your ``$USRCFG/setfor-all-config``
-                                       file, lsd is an alias to the `lsdd`_ tool utility
-                                       described below and provides many more features.
+                                       file.
                                      - Otherwise a shell script `lsd`_ is used.
 
-``lsda [NAME]``                    List sub-directories in current directory,
+`lsda`_ [NAME]                     List sub-directories in current directory,
                                    includes hidden directories.
 
                                    - NAME: optional name or first letters of the names.
-                                   - If the ``USRHOME_USE_PIKE`` environment variable
+                                   - An alias to `Pike`_  implemented `lsdd -a`_  if the ``USRHOME_USE_PIKE`` environment variable
                                      is set to 1 inside your ``$USRCFG/setfor-all-config``
-                                     file, lsda is an alias to the `lsdd -a`_ tool utility
-                                     described below and provides many more features.
+                                     file.
                                    - Otherwise a shell script `lsda function`_ is used.
 
 
@@ -3601,7 +3599,9 @@ Notes
 =====
 
 .. [#pike_note] Although `Pike`_ is not deployed in most system it is easy to setup and use.
-           It's also not necessary if you do not use that simple command.
+           If it's available on your system the lsd command is implemented
+           in Pike (as an alias to `lsdd`_) instead of the less capable `lsd`_ shell implementation.
+           Pike may not be well known but it's worth learning.
 
 
 Feedback's Welcome!
@@ -3862,6 +3862,7 @@ Thanks!
 .. _lt:
 .. _lta:                                  ibin/setfor-alias#L218
 .. _lsd:                                  ibin/setfor-alias#L278
+.. _lsda:
 .. _lsda function:                        ibin/setfor-alias#L299
 .. _lsdd -a:                              ibin/setfor-alias#L347
 .. _lsl:                                  ibin/setfor-alias#L351
