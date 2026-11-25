@@ -477,7 +477,7 @@ prompt.
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-``info-prompt [-q]``               Print information about shell's prompt controlling variables.
+`info-prompt`_ [-q]                Print information about shell's prompt controlling variables.
                                    By default it prints the values of all variables.  With the
                                    ``-q`` option it only prints the values of
                                    the ``USRHOME_PROMPT_MODEL``
@@ -691,16 +691,16 @@ USRHOME scripts send warning and error information, including related details,
 to standard error (stderr). They send requested results and help to standard
 output (stdout).
 
-When printing is permitted, usrhome_printf can write to stdout even when
+When printing is permitted, `usrhome_printf`_ can write to stdout even when
 stdout is redirected to a pipe or file.
 
 The stderr functions are:
 
-- usrhome_printf_stderr
-- usrhome_printf_warning
-- usrhome_printf_error
-- usrhome_print_warning
-- usrhome_print_error
+- `usrhome_printf_stderr`_
+- `usrhome_printf_warning`_
+- `usrhome_printf_error`_
+- `usrhome_print_warning`_
+- `usrhome_print_error`_
 
 By default, these functions print only when stderr is connected to a
 terminal. A normal stdout pipe does not redirect stderr:
@@ -767,7 +767,6 @@ This is separate from the ``TERM=dumb`` and unattended-session policy. In
 particular, changing a result to direct printf would bypass the current
 helper’s suppression policy so using the USRHOME print and printf functions is
 recommended.
-
 
 .. ---------------------------------------------------------------------------
 
@@ -3907,6 +3906,12 @@ Thanks!
 .. _bin/usrhome-env:  bin/usrhome-env
 .. _usrhome-switch-path:  ibin/setfor-path#L201
 .. _sanitize-path: ibin/xtra/sanitize-path-posix.sh
+.. _usrhome_printf:                       ibin/xtra/print-utilities.sh#L81
+.. _usrhome_printf_stderr:                ibin/xtra/print-utilities.sh#L94
+.. _usrhome_printf_warning:               ibin/xtra/print-utilities.sh#L107
+.. _usrhome_printf_error:                 ibin/xtra/print-utilities.sh#L126
+.. _usrhome_print_error:                  ibin/xtra/print-utilities.sh#L146
+.. _usrhome_print_warning:                ibin/xtra/print-utilities.sh#L162
 
 .. ---------------------------------------------------------------------------
 
