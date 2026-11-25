@@ -2727,8 +2727,11 @@ In turn these files could source files for the specific node if the user wants
 to support several hosts.
 The diagram shows the order in which the files are sourced.
 
-To limit processing and help Emacs Tramp connections, the ``dot/zshrc.zsh`` leaves early
-when the ``TERM`` environment variable is set to ``dumb``.
+To limit processing and help Emacs Tramp connections, the ``dot/zshrc.zsh``
+leaves early when the ``TERM`` environment variable is set to ``dumb`` (and
+that the shell is not already running inside Emacs as identified by the
+``INSIDE_EMACS`` environment variable).
+
 
 
 Z Shell login shell execution sequence
