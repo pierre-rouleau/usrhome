@@ -2707,7 +2707,7 @@ user configuration, as shown in the top of the `USRHOME System Shell Startup Fil
 - The file `usrhome/ibin/setfor-path`_ controls adding extra directories in the
   PATH; the directories used by USRHOME and some other.  That file is
   optionally sourced  by the `usrhome/dot/zprofile.zsh`_ for a login shell and by the
-  usrhome/dot/zshrc.zsh in a sub-shell.  For a non-interactive login shell the PATH is
+  usrhome/dot/zshrc.zsh in an interactive shell and sub-shell.  For a non-interactive login shell the PATH is
   modified only when the USRHOME_CONFIG_AT_LOGIN variable is set to 1.
 - Since the `usrhome/dot/zshrc.zsh`_ is used both in the login and the sub-shell,
   it's the file that sources the `usrhome/ibin/setfor-zsh-alias`_ to inject
@@ -2726,6 +2726,10 @@ The USRHOME files sources these files if they exist.
 In turn these files could source files for the specific node if the user wants
 to support several hosts.
 The diagram shows the order in which the files are sourced.
+
+To limit processing and help Emacs Tramp connections, the ``dot/zshrc.zsh`` leaves early
+when the ``TERM`` environment variable is set to ``dumb``.
+
 
 Z Shell login shell execution sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2925,7 +2929,7 @@ File Name (link to template)        Description
                                     - USRHOME_CONFIG_AT_LOGIN:
 
                                       - Leave undefined, if you do not want to modify PATH in a
-                                        login shell.
+                                        non-interactive login shell.
                                       - 1: define it to 1 if you want the PATH modified in the login
                                         shell so it has the
                                         same configuration than then non-login interactive shell.
