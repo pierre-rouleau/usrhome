@@ -537,7 +537,7 @@ ways.  As these might evolve over time, it's best to try them and see them in
 your terminal.
 
 The ``user@host`` information is shown when enabled. This can be dynamically
-enabled or disabled with the ``usrhome-prompt-toggle-usr-host`` command.
+enabled or disabled with the `usrhome-prompt-toggle-usr-host`_ command.
 
 In the following sessions, the command ``info-prompt -q`` is used to show which
 one is the default prompt model and which one is the currently used prompt.
@@ -3639,47 +3639,47 @@ Thanks!
 .. _emacsclient:                                       https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
 .. _Emacs 'string-format' regular expression syntax:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
 .. _glob:                                              https://en.wikipedia.org/wiki/Glob_(programming)
-.. _usrhome/template/usrcfg/ibin:                      https://github.com/pierre-rouleau/usrhome/tree/main/template/usrcfg/ibin
+.. _usrhome/template/usrcfg/ibin:                      template/usrcfg/ibin
 .. _cbr command:
 .. _use-cbr command:                                   `CBR -- Single commands to Check, Build or Run`_
 .. _use-emacs-for-man command:                         `Using Emacs as a man reader`_
-.. _USRHOME dot files:                                 https://github.com/pierre-rouleau/usrhome/tree/main/dot
-.. _do-add-to-path:                                    https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-add-to-path
-.. _do-cbr:                                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cbr
+.. _USRHOME dot files:                                 dot
+.. _do-add-to-path:                                    ibin/do-add-to-path
+.. _do-cbr:                                            ibin/do-cbr
 .. _cd-to:
-.. _do-cd-to:                                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-cd-to
-.. _do-clrenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
-.. _xtra/sanitize-path-posix.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/xtra/sanitize-path-posix.sh
-.. _do-setenv:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
-.. _do-usrcfg:                                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrcfg
-.. _do-usrhome:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-usrhome
-.. _dot/zshrc.zsh:                                     https://github.com/pierre-rouleau/usrhome/tree/main/dot/zshrc.zsh
-.. _envfor-cbr:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
-.. _envfor-emacs-for-man:                              https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
-.. _envfor-pel:                                        https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-pel
-.. _envfor-gnu-global:                                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gnu-global
-.. _setfor-alias:                                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
-.. _setfor-bash-alias:                                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-bash-alias
-.. _setfor-path:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-path
-.. _setfor-zsh-alias:                                  https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-zsh-alias
-.. _setup/setup-usrhome:                               https://github.com/pierre-rouleau/usrhome/blob/main/setup/setup-usrhome
-.. _usrhome/ibin/shell-tracing.sh:                     https://github.com/pierre-rouleau/usrhome/blob/main/ibin/shell-tracing.sh
-.. _shell-tracing.sh:                                  https://github.com/pierre-rouleau/usrhome/blob/main/ibin/shell-tracing.sh
-.. _usrcfg/setfor-all-config.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
-.. _usrhome/ibin/setfor-zsh-alias:                     https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-zsh-alias
-.. _usrhome/ibin/setfor-path:                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-path
-.. _usrhome/dot/zprofile.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
-.. _usrhome/dot/zshenv.zsh:                            https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshenv.zsh
-.. _usrhome/dot/zshrc.zsh:                             https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshrc.zsh
-.. _usrhome/dot/bash_profile.bash:                     https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
-.. _usrhome/dot/zprofile.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
-.. _usrhome/dot:                                       https://github.com/pierre-rouleau/usrhome/tree/main/dot
-.. _usrhome/ibin/envfor-emacs-for-man:                 https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-emacs-for-man
-.. _usrhome/template/bin/ge:                           https://github.com/pierre-rouleau/usrhome/blob/main/template/bin/ge
-.. _usrhome/template/setfor-all-config.sh:             https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
-.. _usrcfg template files:                             https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg
-.. _usrhome/template:                                  https://github.com/pierre-rouleau/usrhome/blob/main/template
-.. _which-shell:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/which-shell
+.. _do-cd-to:                                          ibin/do-cd-to
+.. _do-clrenv:                                         ibin/do-clrenv
+.. _xtra/sanitize-path-posix.sh:                       ibin/xtra/sanitize-path-posix.sh
+.. _do-setenv:                                         ibin/do-setenv
+.. _do-usrcfg:                                         ibin/do-usrcfg
+.. _do-usrhome:                                        ibin/do-usrhome
+.. _dot/zshrc.zsh:                                     dot/zshrc.zsh
+.. _envfor-cbr:                                        ibin/envfor-cbr
+.. _envfor-emacs-for-man:                              ibin/envfor-emacs-for-man
+.. _envfor-pel:                                        ibin/envfor-pel
+.. _envfor-gnu-global:                                 ibin/envfor-gnu-global
+.. _setfor-alias:                                      ibin/setfor-alias
+.. _setfor-bash-alias:                                 ibin/setfor-bash-alias
+.. _setfor-path:                                       ibin/setfor-path
+.. _setfor-zsh-alias:                                  ibin/setfor-zsh-alias
+.. _setup/setup-usrhome:                               setup/setup-usrhome
+.. _usrhome/ibin/shell-tracing.sh:                     ibin/shell-tracing.sh
+.. _shell-tracing.sh:                                  ibin/shell-tracing.sh
+.. _usrcfg/setfor-all-config.sh:                       template/usrcfg/setfor-all-config.sh
+.. _usrhome/ibin/setfor-zsh-alias:                     ibin/setfor-zsh-alias
+.. _usrhome/ibin/setfor-path:                          ibin/setfor-path
+.. _usrhome/dot/zprofile.zsh:                          dot/zprofile.zsh
+.. _usrhome/dot/zshenv.zsh:                            dot/zshenv.zsh
+.. _usrhome/dot/zshrc.zsh:                             dot/zshrc.zsh
+.. _usrhome/dot/bash_profile.bash:                     dot/bash_profile.bash
+.. _usrhome/dot/zprofile.zsh:                          dot/zprofile.zsh
+.. _usrhome/dot:                                       dot
+.. _usrhome/ibin/envfor-emacs-for-man:                 ibin/envfor-emacs-for-man
+.. _usrhome/template/bin/ge:                           template/bin/ge
+.. _usrhome/template/setfor-all-config.sh:             template/usrcfg/setfor-all-config.sh
+.. _usrcfg template files:                             template/usrcfg
+.. _usrhome/template:                                  template
+.. _which-shell:                                       ibin/which-shell
 .. _cd-to command:                                     `Directory Navigation`_
 .. _usrcfg command:                                    `Directory Navigation`_
 .. _usrhome command:                                   `Directory Navigation`_
@@ -3688,43 +3688,43 @@ Thanks!
 .. _clrenv command:                                    `Command to Display and Manipulate Environment Variables`_
 .. _sanitize-path command:                             `Command to Display and Manipulate Environment Variables`_
 .. _setenv command:                                    `Command to Display and Manipulate Environment Variables`_
-.. _profile.sh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/profile.sh
-.. _bash_profile.bash:                                 https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_profile.bash
-.. _bash_login.bash:                                   https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_login.bash
-.. _bashrc.bash:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/bashrc.bash
-.. _bash_logout.bash:                                  https://github.com/pierre-rouleau/usrhome/blob/main/dot/bash_logout.bash
-.. _zshenv.zsh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshenv.zsh
-.. _zprofile.zsh:                                      https://github.com/pierre-rouleau/usrhome/blob/main/dot/zprofile.zsh
-.. _zshrc.zsh:                                         https://github.com/pierre-rouleau/usrhome/blob/main/dot/zshrc.zsh
-.. _zlogin.zsh:                                        https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogin.zsh
-.. _zlogout.zsh:                                       https://github.com/pierre-rouleau/usrhome/blob/main/dot/zlogout.zsh
-.. _envfor-diff:                                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-diff
+.. _profile.sh:                                        dot/profile.sh
+.. _bash_profile.bash:                                 dot/bash_profile.bash
+.. _bash_login.bash:                                   dot/bash_login.bash
+.. _bashrc.bash:                                       dot/bashrc.bash
+.. _bash_logout.bash:                                  dot/bash_logout.bash
+.. _zshenv.zsh:                                        dot/zshenv.zsh
+.. _zprofile.zsh:                                      dot/zprofile.zsh
+.. _zshrc.zsh:                                         dot/zshrc.zsh
+.. _zlogin.zsh:                                        dot/zlogin.zsh
+.. _zlogout.zsh:                                       dot/zlogout.zsh
+.. _envfor-diff:                                       ibin/envfor-diff
 .. _use-diff command:                                  `File Diff Operations`_
 .. _Rosetta 2:                                         https://eclecticlight.co/2021/01/22/running-intel-code-on-your-m1-mac-rosetta-2-and-oah/
-.. _example template file for do-user.sh:              https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user.sh#L72
-.. _usrcfg do-user-zshrc.sh example file does:         https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh#L55
-.. _usrcfg/setfor-all-config.sh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/setfor-all-config.sh
-.. _usrcfg/do-user-zprofile.zsh:                       https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zprofile.zsh
-.. _usrcfg/do-user-zshrc.zsh:                          https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-zshrc.zsh
-.. _usrcfg/do-user-bash_profile.bash:                  https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bash_profile.bash
-.. _usrcfg/do-user-bashrc.bash:                        https://github.com/pierre-rouleau/usrhome/blob/main/template/usrcfg/do-user-bashrc.bash
-.. _usrhome-shell-toggle-tracing:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-shell-toggle-tracing
-.. _usrhome-prompt-toggle-usr-host:                    https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-prompt-toggle-usr-host
-.. _usrhome-prompt-model-to:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-prompt-model-to
-.. _usrhome/ibin/setfor-alias:                         https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias
-.. _usrhome/ibin/envfor-cbr:                           https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-cbr
+.. _example template file for do-user.sh:              template/usrcfg/do-user.sh#L72
+.. _usrcfg do-user-zshrc.sh example file does:         template/usrcfg/do-user-zshrc.zsh#L55
+.. _usrcfg/setfor-all-config.sh:                       template/usrcfg/setfor-all-config.sh
+.. _usrcfg/do-user-zprofile.zsh:                       template/usrcfg/do-user-zprofile.zsh
+.. _usrcfg/do-user-zshrc.zsh:                          template/usrcfg/do-user-zshrc.zsh
+.. _usrcfg/do-user-bash_profile.bash:                  template/usrcfg/do-user-bash_profile.bash
+.. _usrcfg/do-user-bashrc.bash:                        template/usrcfg/do-user-bashrc.bash
+.. _usrhome-shell-toggle-tracing:                      ibin/setfor-shell-toggle-tracing
+.. _usrhome-prompt-toggle-usr-host:                    ibin/setfor-prompt-toggle-usr-host
+.. _usrhome-prompt-model-to:                           ibin/setfor-prompt-model-to
+.. _usrhome/ibin/setfor-alias:                         ibin/setfor-alias
+.. _usrhome/ibin/envfor-cbr:                           ibin/envfor-cbr
 .. _Emacs man support:                                 https://www.gnu.org/software/emacs/manual/html_node/emacs/Man-Page.html#Man-Page
-.. _create-gcc-as-gcc14.sh:                            https://github.com/pierre-rouleau/usrhome/blob/main/setup/macOS/create-gcc-as-gcc14.sh
-.. _usrhome/ibin/envfor-gcc14-on-macos:                https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-gcc14-on-macos
-.. _usrhome/ibin/envfor-info:                          https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-info
+.. _create-gcc-as-gcc14.sh:                            setup/macOS/create-gcc-as-gcc14.sh
+.. _usrhome/ibin/envfor-gcc14-on-macos:                ibin/envfor-gcc14-on-macos
+.. _usrhome/ibin/envfor-info:                          ibin/envfor-info
 .. _stand-alone GNU info reader:                       https://www.gnu.org/software/texinfo/manual/info-stnd/info-stnd.html
-.. _usrhome/ibin/do-clrenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-clrenv
-.. _usrhome/ibin/do-setenv:                            https://github.com/pierre-rouleau/usrhome/blob/main/ibin/do-setenv
-.. _usrhome/ibin/envfor-usrhome:                       https://github.com/pierre-rouleau/usrhome/blob/main/ibin/envfor-usrhome
-.. _usrhome/ibin/setfor-alias#L912:                      https://github.com/pierre-rouleau/usrhome/blob/main/ibin/setfor-alias#L912
+.. _usrhome/ibin/do-clrenv:                            ibin/do-clrenv
+.. _usrhome/ibin/do-setenv:                            ibin/do-setenv
+.. _usrhome/ibin/envfor-usrhome:                       ibin/envfor-usrhome
+.. _usrhome/ibin/setfor-alias#L912:                    ibin/setfor-alias#L912
 .. _conceptual directories:                            `Cd to Conceptual Directories`_
 .. _Pike:                                              https://en.wikipedia.org/wiki/Pike_(programming_language)
-.. _lsdd:                                              https://github.com/pierre-rouleau/usrhome/blob/main/bin/lsdd
+.. _lsdd:                                              bin/lsdd
 .. _AWK:                                               https://en.wikipedia.org/wiki/AWK
 .. _Cockpit:                                           https://cockpit-project.org/
 .. _installation:
