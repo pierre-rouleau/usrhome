@@ -1,0 +1,91 @@
+name: Shell lint
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    name: Linux (${{ matrix.image }})
+    runs-on: ubuntu-24.04
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: ubuntu:24.04
+            packages: apt
+          - image: debian:bookworm
+            packages: apt
+          - image: fedora:44
+            packages: dnf
+
+    steps:
+      - name: Install dependencies
+        shell: sh
+        run: |
+          if [ "${{ matrix.packages }}" = apt ]; then
+            apt-get update
+            apt-get install -y \
+              ca-certificates git file shellcheck \
+              mawk findutils grep coreutils sed
+          else
+            dnf install -y \
+              ca-certificates git file ShellCheck \
+              gawk findutils grep coreutils sed
+          fi
+
+      - uses: actions/checkout@v4
+
+      - name: Prepare usrcfg and run lint-sh
+        shell: bash
+        run: |
+          export USRHOME_DIR="$GITHUB_WORKSPACE"
+          export USRHOME_DIR_USRCFG="${GITHUB_WORKSPACE%/*}/usrcfg"
+          export PATH="$USRHOME_DIR/bin:$PATH"
+
+          mkdir -p "$USRHOME_DIR_USRCFG"
+          cp -R "$USRHOME_DIR/template/usrcfg/." "$USRHOME_DIR_USRCFG/"
+
+          command -v shellcheck
+          shellcheck --version
+          lint-sh -d . -S -q -x
+
+  macos:
+    name: macOS (${{ matrix.runner }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, macos-15-intel]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ShellCheck if needed
+        shell: bash
+        run: |
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            brew install shellcheck
+          fi
+          command -v shellcheck
+
+      - name: Prepare usrcfg and run lint-sh
+        shell: bash
+        run: |
+          export USRHOME_DIR="$GITHUB_WORKSPACE"
+          export USRHOME_DIR_USRCFG="${GITHUB_WORKSPACE%/*}/usrcfg"
+          export PATH="$USRHOME_DIR/bin:$PATH"
+
+          mkdir -p "$USRHOME_DIR_USRCFG"
+          cp -R "$USRHOME_DIR/template/usrcfg/." "$USRHOME_DIR_USRCFG/"
+
+          shellcheck --version
+          lint-sh -d . -S -q -x
+
+# ----------------------------------------------------------------------------
