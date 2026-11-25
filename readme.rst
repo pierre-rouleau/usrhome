@@ -222,6 +222,10 @@ of searching the current directory because of an empty PATH entry. The
 sanitizer does not verify that directories exist or are trusted. If
 sanitization fails, do not assume the original PATH is safe.
 
+USRHOME commands are CDPATH aware [#cdpath_note]_.
+The `lint-sh`_ utility explicitly looks for cd commands that may
+be affected by CDPATH and warns about them.
+
 USRHOME also includes limited checks for specific known problematic
 ``xz`` versions. These checks are not a general vulnerability scanner.
 Keeping ``usrcfg`` separate helps you manage private configuration, but
@@ -3631,6 +3635,17 @@ Notes
            in Pike (as an alias to `lsdd`_) instead of the less capable `lsd`_ shell implementation.
            Pike may not be well known but it's worth learning.
 
+.. [#cdpath_note] USRHOME commands unset CDPATH when it would have an impact on relative
+                  cd commands used by the USRHOME scripts.  This way you can still use
+                  CDPATH in your operations (assuming other shell scripts you use
+                  are also CDPATH aware).  More information related to CDPATH is available
+                  here:
+
+                  - `Navigating efficiently with CDPATH`_
+                  - `Linux command line navigation tips/tricks 3 - the CDPATH environment variable`_
+                  - `Bash cd`_
+                  - `Zsh shell parameters`_
+                  - `Fish shell cd`_
 
 Feedback's Welcome!
 ===================
@@ -3941,6 +3956,14 @@ Thanks!
 .. _usrhome_printf_error:                 ibin/xtra/print-utilities.sh#L126
 .. _usrhome_print_error:                  ibin/xtra/print-utilities.sh#L146
 .. _usrhome_print_warning:                ibin/xtra/print-utilities.sh#L162
+.. _Navigating efficiently with CDPATH: https://hashrocket.com/blog/posts/navigating-efficiently-with-cdpath
+.. _Linux command line navigation tips/tricks 3 - the CDPATH environment variable: https://www.howtoforge.com/tutorial/linux-command-line-tips-tricks-part-3-cdpath/
+.. _Bash cd:                               https://www.gnu.org/software/bash/manual/bash.html#index-cd
+.. _Zsh shell parameters:                  https://zsh.sourceforge.io/Intro/intro_13.html
+.. _Fish shell cd:                         https://fishshell.com/docs/current/cmds/cd.html
+
+
+
 
 .. ---------------------------------------------------------------------------
 
