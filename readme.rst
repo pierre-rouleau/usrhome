@@ -572,6 +572,21 @@ described here:
 ================================== ================================================================
 Environment variable               Description
 ================================== ================================================================
+USRHOME_PROMPT_MODEL               Prompt model number used by the USRHOME shell unless the
+                                   ``USRHOME_PROMPT_MODEL_OVERRIDE`` environment variable is set.
+                                   A value in the [0, 3] range.
+
+                                   - 0 corresponds to the user-specified model (if identified by
+                                     usrcfg logic) or the system default prompt.
+                                   - 1, 2 and 3 are USRHOME pre-defined prompts.
+
+
+
+USRHOME_PROMPT_MODEL_OVERRIDE      Prompt model number imposed to the USRHOME shell when set.
+                                   When set it has a value in the [0, 3] range with the exact same
+                                   meaning of ``USRHOME_PROMPT_MODEL``.  If unset the USRHOME shell
+                                   uses the prompt identified by ``USRHOME_PROMPT_MODEL``.
+
 USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use of 1-second
                                    resolution timer for the Bash prompt.
 
@@ -587,7 +602,7 @@ USRHOME_SLOW_TIMER                 **On macOS only**: when set it forces the use
                                    This might occur when you are executing a fast command and pipe
                                    it into another.
 
-                                   Setting USRHOME_SLOW_TIMER should prevent this problem.  You can
+                                   Setting ``USRHOME_SLOW_TIMER`` should prevent this problem.  You can
                                    do it dynamically inside the Bash shell like this::
 
                                      setenv USRHOME_SLOW_TIMER
