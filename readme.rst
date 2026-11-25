@@ -1441,7 +1441,7 @@ inside Emacs.
 = ===================================== =============================================================
 . Command                               Description
 = ===================================== =============================================================
-. ``use-emacs-for-man [-[gGsStT]]``     Install the Emacs-minded ``man`` command inside the shell.
+. `use-emacs-for-man`_ [-[gGsStT]]      Install the Emacs-minded ``man`` command inside the shell.
 
                                         By default it sets the Emacs launching mode to the terminal
                                         mode. You can change this by using one of the following
@@ -1472,21 +1472,26 @@ inside Emacs.
                                         - ``-T`` : same as ``-t`` but launches Emacs quicker with
                                           less initialization  by using Emacs -Q option.
 
+                                        This is activate in the shell via the `use-emacs-for-man alias`_.
 
 . - ``man [-[gGsStT]] TOPIC``           Open Emacs man mode viewer for the specified TOPIC.
   - ``man -man [OPTIONS] TOPIC``
                                         - If no option is identified it launches Emacs as selected
-                                          by the execution of ``use-emacs-for-man`` options.
+                                          by the execution of `use-emacs-for-man`_ options.
                                         - If man is executed with one of the 6 options, it uses the
                                           method selected by the option, overriding what was selected
-                                          by ``use-emacs-for-man``.
+                                          by `use-emacs-for-man_`.
 
                                         If you want to use the system's native man command from
-                                        a shell where you already executed ``use-emacs-for-man``,
+                                        a shell where you already executed `use-emacs-for-man`_,
                                         then you can use the ``-man`` special option, followed by
                                         all options you want to pass to the native man command.
                                         That executes the native man command with all options
                                         passed to it.
+
+                                        The man command activated by `use-emacs-for-man`_ is
+                                        implemented as a `man shell function`_ and replaces the
+                                        default man command inside the USRHOME shell.
 = ===================================== =============================================================
 
 The advantage of using the Emacs daemon and an emacsclient_ are:
@@ -3692,6 +3697,8 @@ Thanks!
 .. _cbr command:
 .. _use-cbr command:                                   `CBR -- Single commands to Check, Build or Run`_
 .. _use-emacs-for-man command:                         `Using Emacs as a man reader`_
+.. _use-emacs-for-man:                                 ibin/envfor-emacs-for-man
+.. _man shell function:                                ibin/envfor-emacs-for-man#L179
 .. _USRHOME dot files:                                 dot
 .. _do-add-to-path:                                    ibin/do-add-to-path
 .. _do-cbr:                                            ibin/do-cbr
@@ -3939,6 +3946,7 @@ Thanks!
 .. _use-usrhome:                          ibin/setfor-alias#L911
 .. _use-homebrew:                         ibin/setfor-alias#L912
 .. _use-info:                             ibin/setfor-alias#L913
+.. _use-emacs-for-man alias:              ibin/setfor-alias#L915
 .. _to ibin/envfor-diff:                  ibin/setfor-alias#L916
 .. _append-to-path:                       ibin/setfor-alias#L917
 .. _prepend-to-path:                      ibin/setfor-alias#L918
