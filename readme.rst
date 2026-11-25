@@ -468,11 +468,11 @@ USRHOME provides control for the Z Shell and Bash prompts as described in this
 section. USRHOME provides 3 pre-defined prompt models (model 1, 2 and 3) and
 reserves prompt model number 0 to be user-defined.
 
-Information About Prompt Control Variables
-------------------------------------------
+Prompt Control Commands
+-----------------------
 
 URSHOME provides the following commands to get information about the shell
-prompt.
+prompt and to dynamically alter the behaviour of the prompt.
 
 ================================== ================================================================
 USRHOME Command Name               Description
@@ -484,7 +484,87 @@ USRHOME Command Name               Description
                                    and ``USRHOME_PROMPT_MODEL_OVERRIDE`` values.  The first one
                                    shows the value of the default prompt mode, the second one, if
                                    set, is the model of the current prompt, overriding the default.
+
+`usrhome-shell-toggle-tracing`_    Toggle `tracing the execution of the shell configuration files`_
+                                   when a shell starts.  This toggles the value of the
+                                   ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
+                                   and vice-versa.
+
+                                   Note that if the variable value was a file name, toggling it
+                                   twice will simply re-activate the tracing to stdout, not to the
+                                   file.
+
+                                   - The original value of this environment variable is set inside
+                                     your `usrcfg/setfor-all-config.sh`_ file.
+                                     The default value is 0 as
+                                     identified by `usrhome/template/setfor-all-config.sh`_
+                                     used to initialize the usrcfg file.
+
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
+
+`usrhome-prompt-toggle-usr-host`_  Toggle the inclusion of the user name and host name inside
+                                   the prompt.
+
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
+
+                                   The command is not affected by this limitation when issued
+                                   in the Bash shell.
+
+`usrhome-prompt-model-to`_ NUMBER  Dynamically change the prompt model to the specified NUMBER.
+
+                                   - This command also supports the ``-h`` and ``--help`` command
+                                     line options which pint the usage.
+
+                                   In Zsh, this command may need to restart the
+                                   shell to update the prompt. See restart
+                                   confirmation below.
+
+                                   The command is not affected by this limitation when issued
+                                   in the Bash shell.
 ================================== ================================================================
+
+The above commands may need to restart the shell under some conditions.
+Before a command restarts the shell, it warns that unsaved shell history
+and other shell state may be lost, and asks for confirmation. The
+confirmation does not save shell history. The result depends on the shell
+history configuration.
+
+Enter ``y`` or ``Y`` to restart. Any other response, including an empty
+response or end of input, cancels the restart and leaves the setting
+unchanged. If the command cannot prompt in an interactive terminal, it
+cancels the restart.
+
+The commands do not restart the shell while unfinished jobs are present.
+Terminate the jobs before retrying.
+
+Custom Zsh prompt
+~~~~~~~~~~~~~~~~~
+
+Zsh prompt model 0 supports a custom prompt defined in
+``$USRHOME_DIR_USRCFG/do-user-zshrc.zsh``. If the prompt setup must run
+at shell startup, set the restart model to 0 in that file::
+
+    export USRHOME_PROMPT_MODEL_REQUIRES_RESTART=0
+
+Keep this assignment outside any model-specific condition. Run the custom
+prompt setup only when the selected model is 0. The selected model is
+``USRHOME_PROMPT_MODEL_OVERRIDE`` when that variable is nonempty;
+otherwise, it is ``USRHOME_PROMPT_MODEL``.
+
+When you select model 0, USRHOME asks for confirmation before replacing
+the current Zsh shell. The new shell runs the startup configuration
+again. If you cancel, the prompt setting remains unchanged.
+
+The restart variable identifies a model number. The value 0 does not
+disable restarts. If the variable is unset or has another value, USRHOME
+selects its simple Zsh prompt for model 0.
+
+Shell Prompt Control Environment Variable
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 USRHOME prompt model control logic supports the environment variables
 described here:
@@ -617,7 +697,7 @@ warning message instead.  In the example above the two running process where ``e
 USRHOME name for terminal-based emacs.  To be able to change the process
 prompt, these two suspended Emacs process must first be terminated (by making
 them active in the foreground again with ``fg`` and then closing Emacs).  Once
-there's no background process the ``usrhome-prompt-toggle-usr-host`` command
+there's no background process the `usrhome-prompt-toggle-usr-host`_ command
 can be used.
 
 Showing the shell type helps when capturing commands for logs: it explicitly
@@ -769,97 +849,6 @@ helper’s suppression policy so using the USRHOME print and printf functions is
 recommended.
 
 .. ---------------------------------------------------------------------------
-
-
-Shell Behavior Control
-----------------------
-
-The following commands can be used to dynamically alter the behaviour
-of the shells controlled by USRHOME.
-
-
-================================== ================================================================
-USRHOME Command Name               Description
-================================== ================================================================
-`usrhome-shell-toggle-tracing`_    Toggle `tracing the execution of the shell configuration files`_
-                                   when a shell starts.  This toggles the value of the
-                                   ``USRHOME_TRACE_SHELL_CONFIG`` environment variable from 0 to 1
-                                   and vice-versa.
-
-                                   Note that if the variable value was a file name, toggling it
-                                   twice will simply re-activate the tracing to stdout, not to the
-                                   file.
-
-                                   - The original value of this environment variable is set inside
-                                     your `usrcfg/setfor-all-config.sh`_ file.
-                                     The default value is 0 as
-                                     identified by `usrhome/template/setfor-all-config.sh`_
-                                     used to initialize the usrcfg file.
-
-                                   In Zsh, this command may need to restart the
-                                   shell to update the prompt. See restart
-                                   confirmation below.
-
-`usrhome-prompt-toggle-usr-host`_  Toggle the inclusion of the user name and host name inside
-                                   the prompt.
-
-                                   In Zsh, this command may need to restart the
-                                   shell to update the prompt. See restart
-                                   confirmation below.
-
-                                   The command is not affected by this limitation when issued
-                                   in the Bash shell.
-
-`usrhome-prompt-model-to`_ NUMBER  Dynamically change the prompt model to the specified NUMBER.
-
-                                   - This command also supports the ``-h`` and ``--help`` command
-                                     line options which pint the usage.
-
-                                   In Zsh, this command may need to restart the
-                                   shell to update the prompt. See restart
-                                   confirmation below.
-
-                                   The command is not affected by this limitation when issued
-                                   in the Bash shell.
-================================== ================================================================
-
-The above commands may need to restart the shell under some conditions.
-Before a command restarts the shell, it warns that unsaved shell history
-and other shell state may be lost, and asks for confirmation. The
-confirmation does not save shell history. The result depends on the shell
-history configuration.
-
-Enter ``y`` or ``Y`` to restart. Any other response, including an empty
-response or end of input, cancels the restart and leaves the setting
-unchanged. If the command cannot prompt in an interactive terminal, it
-cancels the restart.
-
-The commands do not restart the shell while unfinished jobs are present.
-Terminate the jobs before retrying.
-
-Custom Zsh prompt
-~~~~~~~~~~~~~~~~~
-
-Zsh prompt model 0 supports a custom prompt defined in
-``$USRHOME_DIR_USRCFG/do-user-zshrc.zsh``. If the prompt setup must run
-at shell startup, set the restart model to 0 in that file::
-
-    export USRHOME_PROMPT_MODEL_REQUIRES_RESTART=0
-
-Keep this assignment outside any model-specific condition. Run the custom
-prompt setup only when the selected model is 0. The selected model is
-``USRHOME_PROMPT_MODEL_OVERRIDE`` when that variable is nonempty;
-otherwise, it is ``USRHOME_PROMPT_MODEL``.
-
-When you select model 0, USRHOME asks for confirmation before replacing
-the current Zsh shell. The new shell runs the startup configuration
-again. If you cancel, the prompt setting remains unchanged.
-
-The restart variable identifies a model number. The value 0 does not
-disable restarts. If the variable is unset or has another value, USRHOME
-selects its simple Zsh prompt for model 0.
-
-
 
 Shell Status Info
 -----------------
@@ -2445,8 +2434,8 @@ something inside the current running shell.  The source scripts all have names
 that start with one of the identified prefixes: ``setfor-`` or ``envfor-``.
 
 The ``setfor-`` sourced scripts are used by various USRHOME commands that
-control the shell, such as ``usrhome-shell-toggle-tracing`` and
-``usrhome-prompt-toggle-usr-host``.
+control the shell, such as `usrhome-shell-toggle-tracing`_ and
+`usrhome-prompt-toggle-usr-host`_.
 
 The ``envfor-ENV`` sourced scripts are used by the equivalent ``use-ENV``
 command.  These commands set the shell for the environment identified by the
@@ -3041,15 +3030,14 @@ USRHOME_DIR                     Path to the usrhome directory.
 
 USRHOME_TRACE_SHELL_CONFIG      Set to 1 to activate tracing of the configuration
                                 file sourcing.
-                                Use the ``usrhome-shell-toggle-tracing``
+                                Use the `usrhome-shell-toggle-tracing`_
                                 command to
                                 toggle this in the current shell.
 
 USRHOME_PROMPT_SHOW_USR_HOST    Set to 1 to display user name and host name
                                 in the prompt.
-                                Use the ``usrhome-prompt-toggle-usr-host``
-                                command to
-                                toggle this in the current shell.
+                                Use the `usrhome-prompt-toggle-usr-host`_
+                                command to toggle this in the current shell.
 
 USRHOME_CONFIG_AT_LOGIN         Set to 1 to inform USRHOME files to perform
                                 configuration when invoked in a login shell.
@@ -3089,8 +3077,7 @@ USRHOME_PROMPT_MODEL            Optional environment variable.  Identifies the
                                 Under Zsh, changing the prompt may restart the
                                 shell. In that case the command will prompt
                                 before proceeding.
-                                See `Shell Behavior Control`_ for restart
-                                confirmation details.
+                                See `USRHOME Shell Prompt`_ section for details.
 
 USRHOME_ORIGINAL_PATH           Set to the value of PATH before USRHOME adds to it.
                                 You can restore that value with the
@@ -3215,7 +3202,7 @@ Absolute file name                   USRHOME prints tracing info on stdout
 With USRHOME tracing active, when you open a new shell inside a terminal, or
 create a sub-shell, you can see which file is sourced.
 
-Inside a shell, you can use ``usrhome-shell-toggle-tracing`` to toggle tracing
+Inside a shell, you can use `usrhome-shell-toggle-tracing`_ to toggle tracing
 and restart the current Bash or Zsh shell. Tracing output is suppressed in
 non-interactive shells and when ``TERM`` is ``dumb``.
 
