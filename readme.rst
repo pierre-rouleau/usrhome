@@ -1522,7 +1522,7 @@ emacs mode option to the man command. You can use several shells and use differe
 each one if you want.  Or just use one method.  The code is flexible.
 
 **Getting help**
-  You can pass the ``-h`` or ``--help`` options to both ``use-emacs-for-man``
+  You can pass the ``-h`` or ``--help`` options to both `use-emacs-for-man`_
   and the specialized ``man`` function.  They will print the usage and return
   an exit code of 1.
   The ``man`` command also prints a reminder that the native man command is not
@@ -1538,7 +1538,7 @@ each one if you want.  Or just use one method.  The code is flexible.
 - For man ``-s`` and ``-S``, when topic is not found: 4.
 
 **To Activate it Permanently in a Shell**:
-  You may not always want to type the ``use-emacs-for-man`` command.
+  You may not always want to type the `use-emacs-for-man`_ command.
   Instead you can add a specific man behaviour permanently inside your shell by
   sourcing the `usrhome/ibin/envfor-emacs-for-man`_ inside your shell startup code.
   For example, you could add the following code inside your ``usrcfg/do-user-zshrc.zsh``
@@ -1573,19 +1573,8 @@ each one if you want.  Or just use one method.  The code is flexible.
   files with a `PDF index`_ to a large set of topics and file format/language supports).
   The `help PDF`_ has a `section that describe Emacs man and woman support`_.
 
-Additional Scripts
-------------------
-
-The tables below describe executable scripts, sourced scripts, and shell
-commands. Command names link to their executable or sourced script. Other
-shell aliases and functions link to the file that defines them.
-Scripts in ``bin`` are available when the USRHOME command directory is
-on ``PATH``. Platform-specific directories and internal helpers are
-identified separately.
-
-
 Tool Activation Commands
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 Execute these commands inside a shell to activate the related commands
 in the current shell.
@@ -1617,7 +1606,7 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 
 Programming Language Support
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1632,7 +1621,7 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 
 Code Analysis Commands
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1646,7 +1635,7 @@ Command or file                                        Description
 
 
 File Diff Operations
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1708,7 +1697,7 @@ diff_                                                  USRHOME diff_ is a shell-
 
 
 Track Evolution of Compiled File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 Use the ``mk-diffo`` utility to track the evolution of a source code file
 over its modifications by comparing the assembler code generated from the
@@ -1876,7 +1865,7 @@ Command or file                                        Description
 
 
 Git Support Commands
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1903,7 +1892,7 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 
 Text File Format Conversion
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -1916,13 +1905,8 @@ Command or file                                        Description
 ====================================================== ===========================================================================
 
 
-
-
-
-
-
 Files and searches
-~~~~~~~~~~~~~~~~~~
+------------------
 
 ======================================== ===========================================================================
 Command or file                          Description
@@ -2010,10 +1994,10 @@ Command or file                          Description
 ======================================== ===========================================================================
 
 Directory Commands
-~~~~~~~~~~~~~~~~~~
+------------------
 
 Directory Navigation
-^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~
 
 Extensions to the ``cd`` command.
 
@@ -2090,7 +2074,7 @@ __  ibin/setfor-alias#L587
 
 
 Cd to Conceptual Directories
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ================================== ================================================================
@@ -2227,7 +2211,7 @@ USRHOME Command Name               Description
 
 
 Make directory
-~~~~~~~~~~~~~~
+--------------
 
 ================================== ===========================================================================
 Command or file                    Description
@@ -2241,7 +2225,7 @@ Command or file                    Description
 ================================== ===========================================================================
 
 Remove Empty Directory
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 ================================== ===========================================================================
 Command or file                    Description
@@ -2253,7 +2237,7 @@ Command or file                    Description
 
 
 System and process information
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------
 
 ====================================================== ===========================================================================
 Command or file                                        Description
@@ -2305,7 +2289,7 @@ Command or file                                        Description
 
 
 Other Command Shortcuts
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 ================================== ===========================================================================
 Command or file                    Description
@@ -2317,7 +2301,7 @@ Command or file                    Description
 
 
 Platform-specific scripts
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 ======================================================== ===========================================================================
 Command or file                                          Description
@@ -2354,7 +2338,7 @@ Command or file                                          Description
 
 
 SELinux utilities
-~~~~~~~~~~~~~~~~~
+-----------------
 
 USRHOME provides Linux tools for SELinux policy development and
 troubleshooting. For the search scripts, set
@@ -2387,7 +2371,7 @@ Command or file                                              Description
 
 
 Internal and setup scripts
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 These files include helpers, sourced environment scripts, setup scripts,
 and tests. SSH base scripts are described in the `SSH helper documentation`_.
