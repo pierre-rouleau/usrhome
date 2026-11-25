@@ -777,6 +777,7 @@ script’s shebang and the interactivity of an intermediate shell do not, by
 themselves, determine whether printing is permitted.
 
 .. figure:: res/usrhome-test-print.png
+   :scale: 50 %
 
 The print functions also suppress output during unattended shell startup and
 scheduled jobs when ``USRHOME_PRINT_ENABLED`` is unset or is not ``1``.
@@ -785,6 +786,7 @@ A non-interactive shell started by an interactive session can inherit
 below explains how to prevent a scheduled job from inheriting that permission.
 
 .. figure:: res/usrhome-test-print-01.png
+   :scale: 50 %
 
 
 **Output streams**
