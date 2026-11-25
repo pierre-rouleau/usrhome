@@ -771,18 +771,21 @@ For example, both commands can print when run from a permitted interactive sessi
           usrhome-test-print
           sh -c 'usrhome-test-print'
 
-In both cases, the ``TERM`` and output-stream rules below also apply. The script’s
-shebang and the interactivity of an intermediate shell do not, by themselves,
-determine whether printing is permitted.
+If ``TERM`` is unset, empty, or set to dumb, all print functions suppress
+output. This rule also applies when ``USRHOME_STDERR_PRINT_TO_PIPE=1``.  The
+script’s shebang and the interactivity of an intermediate shell do not, by
+themselves, determine whether printing is permitted.
 
-The print functions suppress output during unattended shell startup and
+.. figure:: res/usrhome-test-print.png
+
+The print functions also suppress output during unattended shell startup and
 scheduled jobs when ``USRHOME_PRINT_ENABLED`` is unset or is not ``1``.
 A non-interactive shell started by an interactive session can inherit
 ``USRHOME_PRINT_ENABLED=1`` and permit printing. The scheduled-job boundary
 below explains how to prevent a scheduled job from inheriting that permission.
 
-If ``TERM`` is unset, empty, or dumb, all print functions suppress output. This
-rule also applies when ``USRHOME_STDERR_PRINT_TO_PIPE=1``.
+.. figure:: res/usrhome-test-print-01.png
+
 
 **Output streams**
 
