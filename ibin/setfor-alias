@@ -4,7 +4,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-23 11:37:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-24 16:50:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -914,6 +914,8 @@ alias use-info='. $USRHOME_DIR/ibin/envfor-info'
 alias use-cbr='. $USRHOME_DIR/ibin/envfor-cbr'
 alias use-emacs-for-man='. $USRHOME_DIR/ibin/envfor-emacs-for-man'
 alias use-diff='. $USRHOME_DIR/ibin/envfor-diff'
+alias append-to-path=append_to_path
+alias prepend-to-path=prepend_to_path
 #
 # Note: `source` is required in the following alias.
 #       `.` does not work because under POSIX it does not accept an argument!
