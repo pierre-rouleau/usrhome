@@ -2707,7 +2707,7 @@ user configuration, as shown in the top of the `USRHOME System Shell Startup Fil
 - The file `usrhome/ibin/setfor-path`_ controls adding extra directories in the
   PATH; the directories used by USRHOME and some other.  That file is
   optionally sourced  by the `usrhome/dot/zprofile.zsh`_ for a login shell and by the
-  usrhome/dot/zshrc.zsh in a sub-shell.  For the login shell the PATH is
+  usrhome/dot/zshrc.zsh in a sub-shell.  For a non-interactive login shell the PATH is
   modified only when the USRHOME_CONFIG_AT_LOGIN variable is set to 1.
 - Since the `usrhome/dot/zshrc.zsh`_ is used both in the login and the sub-shell,
   it's the file that sources the `usrhome/ibin/setfor-zsh-alias`_ to inject
@@ -3625,9 +3625,11 @@ Notes
 =====
 
 .. [#pike_note] Although `Pike`_ is not deployed in most system it is easy to setup and use.
-           If it's available on your system the lsd command is implemented
-           in Pike (as an alias to `lsdd`_) instead of the less capable `lsd`_ shell implementation.
-           Pike may not be well known but it's worth learning.
+           If you have set the ``USRHOME_USE_PIKE`` environment variable to 1 in your ``usrcfg/setfor-all-config.sh``
+           the lsd command assumes that Pike is installed and that it is implemented in Pike
+           (as an alias to `lsdd`_) instead of the less capable `lsd`_ shell implementation.
+           Pike may not be well known but it's worth learning.  Read the `Pike`_ site to learn how to install it.
+
 
 .. [#cdpath_note] USRHOME commands unset CDPATH when it would have an impact on relative
                   cd commands used by the USRHOME scripts.  This way you can still use
