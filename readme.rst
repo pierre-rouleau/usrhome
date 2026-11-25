@@ -211,8 +211,8 @@ shown in the title bar of the terminal.
 Path management and security
 ----------------------------
 
-The ``showpath`` command displays the entries in a PATH-like variable.
-The ``sanitize-path`` command removes leading whitespace, duplicate
+The `showpath`_ command displays the entries in a PATH-like variable.
+The `sanitize-path`_ command removes leading whitespace, duplicate
 entries, and unwanted empty entries. ``MANPATH`` has separate rules for
 its empty-entry marker. Startup attempts to sanitize ``PATH`` in the
 configured shell contexts described below.
@@ -350,7 +350,7 @@ exposure window of external binaries.
 
 USRHOME loads ``ibin/xtra/sanitize-path-posix.sh`` through its alias
 setup.  The file defines ``_usrhome_sanitize_path``.  If loading succeeds,
-alias setup defines ``sanitize-path``.  Loading alone does not sanitize PATH.
+alias setup defines `sanitize-path`_.  Loading alone does not sanitize PATH.
 
 Zsh startup attempts to sanitize PATH.  Bash startup attempts to sanitize
 PATH in non-login shells and in login shells when
@@ -1015,21 +1015,20 @@ USRHOME Command Name               Description
 Command to Display and Manipulate Environment Variables
 -------------------------------------------------------
 
-The following commands help manage and read the content of environment
-variables used in the current shell.  Any modification to an environment
-variable become available to the current shell and any sub-shells; it does
-not persists once the shell exits.
+The commands described in the following sub-sections manage and read the
+content of environment variables used in the current shell.  Any modification
+to an environment variable become available to the current shell and any
+sub-shells; it does not persists once the shell exits.
+
+Dynamic Environment Variable Management
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+With the following USRHOME commands you can set and clear the value of
+specified environment variables in the *current* shell.
 
 ================================== ================================================================
 USRHOME Command Name               Description
 ================================== ================================================================
-`add-to-path`_ DIRPATH             Add DIRPATH to the front of the current shell PATH.
-
-`add-to-path`_ --end DIRPATH       Add DIRPATH to the end of the current shell PATH.
-
-                                   - This is an alias to ``_usrhome_add_to_path`` implemented in
-                                     the file `usrhome/ibin/setfor-alias`_
-
 `clrenv`_ VARNAME                  Clear (remove) the environment variable specified by name from
                                    the environment of the *current* shell.
 
@@ -1041,38 +1040,26 @@ USRHOME Command Name               Description
 
                                    - This is an alias to ``_usrhome_setenv`` implemented in
                                      the file `usrhome/ibin/setfor-alias`_
+================================== ================================================================
 
-`use-usrhome`_                     Add USRHOME binary directory and ``~/bin`` to PATH if present.
-                                   This command is automatically executed for zsh shell started
-                                   under USRHOME control.
-
-                                   - This is an alias to `usrhome/ibin/envfor-usrhome`_
-
-`use-homebrew`_                    Add Homebrew directories to PATH if required for the CPU
-                                   architecture.
-                                   This command is automatically executed for zsh shell started
-                                   under USRHOME control when the ``USRHOME_USE_HOMEBREW``
-                                   environment variable is set to 1 inside the USRHOME user's
-                                   common shell configuration file
-                                   ``usrcfg/setfor-all-config.sh`` .
-
-                                   - This is an alias to `usrhome/ibin/setfor-alias#L912`_
+As usual, you can use the standard ``printenv`` command to print the value of any environment variables.
 
 
-`use-info`_                        Add ``info`` directories located in standard places to
-                                   the ``INFOPATH`` environment variable.  Use it to extend
-                                   the ``INFOPATH`` when using the `stand-alone GNU info reader`_
-                                   or info within Emacs.  It searches for info directories once
-                                   per process tree inside the following potential locations:
+Dynamic Path Management
+~~~~~~~~~~~~~~~~~~~~~~~
 
-                                   - Homebrew
-                                   - Emacs source repository, which must be identified by the
-                                     USRHOME_DIR_EMACS_SRC environment variable.
+The USRHOME commands and environment variables allow the dynamic management of the PATH
+in the *current*  shell.
 
-                                   Currently this list of locations is hard coded inside the
-                                   `usrhome/ibin/envfor-info`_ file.
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+`add-to-path`_ DIRPATH             Add DIRPATH to the front of the current shell PATH.
 
-                                   - This is an alias to `usrhome/ibin/envfor-info`_
+`add-to-path`_ --end DIRPATH       Add DIRPATH to the end of the current shell PATH.
+
+                                   - This is an alias to ``_usrhome_add_to_path`` implemented in
+                                     the file `usrhome/ibin/setfor-alias`_
 
 `append-to-path`_ DIRS             Append directories to PATH.
 
@@ -1123,7 +1110,7 @@ USRHOME Command Name               Description
                                    each line.
                                    Examples:
 
-                                   - ``showpath`` : prints PATH, one directory per line,
+                                   - `showpath`_ : prints PATH, one directory per line,
                                    - ``showpath PATH``: prints PATH, one directory per line,
                                    - ``showpath -n``: prints PATH with numbered lines,
                                    - ``showpath -n PATH``: prints PATH with numbered lines,
@@ -1143,7 +1130,7 @@ USRHOME Command Name               Description
                                    - 2 when specified environment variable is not defined,
                                    - 3 when the format of the specified path is incorrect.
 
-                                   Note: when MANPATH is undefined, ``showpath`` uses the manpath_
+                                   Note: when MANPATH is undefined, `showpath`_ uses the manpath_
                                    command (if available) and prints the path it returns.  It also
                                    prints a warning on stderr and exit with an
                                    exit-code of 0.
@@ -1151,11 +1138,6 @@ USRHOME Command Name               Description
                                    Help is printed when the ``-h`` or ``--help`` option is used.
 
                                    This is an alias to `bin/showpath`_
-
-`usrhome-env`_                     Display the values of all USRHOME environment variables
-                                   currently set in the shell.
-
-                                   This is an alias to `bin/usrhome-env`_
 
 `usrhome-switch-path`_             Modify PATH.  Swap current PATH with the value stored inside the
                                    ``USRHOME_ORIGINAL_PATH`` environment variable.  This is set to
@@ -1200,14 +1182,59 @@ USRHOME Command Name               Description
                                    This is a `alias for _usrhome_sanitize_path`_.
 ================================== ================================================================
 
-Dynamic Path Management
-~~~~~~~~~~~~~~~~~~~~~~~
 
-The USRHOME commands and environment variables allow the dynamic management of the PATH
-in the *current*  shell.  Here's a screen shot of this being done on a macOS Computer running on
-Apple Silicon CPU architecture.
+Here's a screen shot of this being done on a macOS Computer running on Apple
+Silicon CPU architecture.
 
 .. figure:: res/dynamic-path-management.png
+
+
+Dynamic USRHOME Shell Environment Control
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following USRHOME commands extend different aspects of the environment in *current* shell.
+
+================================== ================================================================
+USRHOME Command Name               Description
+================================== ================================================================
+`use-usrhome`_                     Add USRHOME binary directory and ``~/bin`` to PATH if present.
+                                   This command is automatically executed for zsh shell started
+                                   under USRHOME control.
+
+                                   - This is an alias to `usrhome/ibin/envfor-usrhome`_
+
+`use-homebrew`_                    Add Homebrew directories to PATH if required for the CPU
+                                   architecture.
+                                   This command is automatically executed for zsh shell started
+                                   under USRHOME control when the ``USRHOME_USE_HOMEBREW``
+                                   environment variable is set to 1 inside the USRHOME user's
+                                   common shell configuration file
+                                   ``usrcfg/setfor-all-config.sh`` .
+
+                                   - This is an alias to `usrhome/ibin/setfor-alias#L912`_
+
+`use-info`_                        Add ``info`` directories located in standard places to
+                                   the ``INFOPATH`` environment variable.  Use it to extend
+                                   the ``INFOPATH`` when using the `stand-alone GNU info reader`_
+                                   or info within Emacs.  It searches for info directories once
+                                   per process tree inside the following potential locations:
+
+                                   - Homebrew
+                                   - Emacs source repository, which must be identified by the
+                                     USRHOME_DIR_EMACS_SRC environment variable.
+
+                                   Currently this list of locations is hard coded inside the
+                                   `usrhome/ibin/envfor-info`_ file.
+
+                                   - This is an alias to `usrhome/ibin/envfor-info`_
+
+
+
+`usrhome-env`_                     Display the values of all USRHOME environment variables
+                                   currently set in the shell.
+
+                                   This is an alias to `bin/usrhome-env`_
+================================== ================================================================
 
 Help for Zsh Builtin Commands
 -----------------------------
