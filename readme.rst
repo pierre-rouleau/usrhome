@@ -30,6 +30,10 @@ USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
    :alt: Script Unit Tests
    :target: https://github.com/pierre-rouleau/usrhome/actions/workflows/test.yml
 
+.. image:: https://github.com/pierre-rouleau/usrhome/actions/workflows/bsd.yml/badge.svg
+   :alt: BSD OS Tests
+   :target: https://github.com/pierre-rouleau/usrhome/actions/workflows/bsd.yml
+
 :Author:  Pierre Rouleau
 :Copyright: © 2024-2026, Pierre Rouleau
 :Install: `How to install USRHOME`_
