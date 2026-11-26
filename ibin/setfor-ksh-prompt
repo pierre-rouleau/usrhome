@@ -4,7 +4,7 @@
 # Purpose   : Logic to se the ksh prompt.
 # Created   : Thursday, November 26 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 17:01:03 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 17:17:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -87,8 +87,12 @@ function usrhome_select_ksh_prompt
 
     case $_usp_model in
         0)
-            # Restore the prompt saved at interactive startup.
-            _usp_new=$USRHOME_KSH_SAVED_PS1
+            # Restore the user's prompt, or use a visible fallback.
+            if [ -n "${USRHOME_KSH_SAVED_PS1-}" ]; then
+                _usp_new=$USRHOME_KSH_SAVED_PS1
+            else
+                _usp_new="${USRHOME_KSH_PROMPT_SIGN} "
+            fi
             ;;
         1)
             # shellcheck disable=SC2016 # delayed expansion is intentional (it will be expanded in the prompt)
