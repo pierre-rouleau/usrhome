@@ -24,7 +24,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y zsh busybox
+          sudo apt-get install -y zsh busybox ksh93u+m mksh posh yash
 
       - name: Run tests
         shell: bash
@@ -32,6 +32,9 @@ jobs:
           command -v bash
           command -v zsh
           if [ "$RUNNER_OS" = Linux ]; then
+            for shell_name in dash ksh ksh93 mksh lksh posh yash; do
+              command -v "$shell_name"
+            done
             busybox | sed -n '1p'
             busybox --list | grep -Fx ash
           fi
