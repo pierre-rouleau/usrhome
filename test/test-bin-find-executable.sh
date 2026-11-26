@@ -1,10 +1,10 @@
-# #!/bin/sh
+#!/bin/sh
 # SH FILE: test-bin-find-executable.sh
 #
 # Purpose   : Test bin/find-executable.
 # Created   : Thursday, November 26 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 10:06:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 10:24:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,6 +55,7 @@ run_find()
 (
     trap - 0 HUP INT TERM
     set +eu
+    # shellcheck source=../bin/find-executable
     . "$USRHOME_DIR/bin/find-executable"
 )
 
