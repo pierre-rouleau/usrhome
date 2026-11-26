@@ -4,7 +4,7 @@
 # Purpose   : Test bin/find-executable.
 # Created   : Thursday, November 26 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 12:39:38 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 14:10:46 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -116,6 +116,7 @@ mkdir -p 'tree/visible dir' tree/.hidden empty default outside
 : > 'tree/visible dir/owner'
 : > 'tree/visible dir/group'
 : > 'tree/visible dir/other'
+: > 'tree/visible dir/mixed'
 : > 'tree/visible dir/plain'
 : > tree/.hidden/run
 : > outside/run
@@ -124,6 +125,7 @@ mkdir -p 'tree/visible dir' tree/.hidden empty default outside
 chmod 100 'tree/visible dir/owner'
 chmod 010 'tree/visible dir/group'
 chmod 001 'tree/visible dir/other'
+chmod 110 'tree/visible dir/mixed'
 chmod 644 'tree/visible dir/plain'
 chmod 755 tree/.hidden/run outside/run default/run
 ln -s ../outside/run tree/link
@@ -133,7 +135,8 @@ visible()
     printf '%s\n' \
         'tree/visible dir/owner' \
         'tree/visible dir/group' \
-        'tree/visible dir/other'
+        'tree/visible dir/other' \
+        'tree/visible dir/mixed'
 }
 
 # Default: exclude hidden directories and symbolic links.
@@ -213,12 +216,17 @@ for TEST_OS in Linux Darwin FreeBSD OpenBSD NetBSD DragonFly; do
     export TEST_OS
     printf '%s\n' mock/executable > "$work/expected"
     check 0 tree
-    case "$TEST_OS" in
-        Linux) expected_mode=/111 ;;
-        *)     expected_mode=+111 ;;
-    esac
-    grep -Fx -e "$expected_mode" "$FIND_ARGS" >/dev/null ||
-        fail "wrong permission mode for $TEST_OS"
+    printf '%s\n' tree '(' -perm -100 -o -perm -010 -o -perm -001 ')' \
+        -type f '(' '!' -path '*/.*' ')' > "$work/expected-args"
+    cmp -s "$work/expected-args" "$FIND_ARGS" ||
+        fail "wrong find arguments for $TEST_OS"
+
+    check 0 -L tree
+    printf '%s\n' tree '(' -perm -100 -o -perm -010 -o -perm -001 ')' \
+        '(' -type f -o -type l ')' '(' '!' -path '*/.*' ')' > "$work/expected-args"
+    cmp -s "$work/expected-args" "$FIND_ARGS" ||
+        fail "wrong find arguments for $TEST_OS with -L"
+
 done
 
 TEST_OS=UnsupportedOS
