@@ -4,7 +4,7 @@
 # Purpose   : Sanitize PATH-like variable content.  POSIX- Compliant logic.
 # Created   : Sunday, November 08 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 23:00:29 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 12:27:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -144,6 +144,9 @@
 # Dependencies
 # ------------
 #
+# The caller supplies usrhome_printf_error and, for interactive warnings,
+# usrhome_printf_warning and usrhome_printf_stderr.
+# printf and expr must be available through the standard command path.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -159,9 +162,22 @@ _usrhome_sanitize_path_value() (
     # Arg 1: envvar name
     # Arg 2: envvar value
 
+    # Set _usp_trimmed without relying on shell character-class patterns.
+    _usrhome_trim_field() {
+        _usp_trimmed=$_usp_field
+        # Prefix with x so expr always matches at least one character.
+        _usp_trim_count=$(command -p expr "x$_usp_field" : 'x[[:space:]]*') ||
+            return 1
+        _usp_trim_count=$((_usp_trim_count - 1))
+        while [ "$_usp_trim_count" -gt 0 ]; do
+            _usp_trimmed=${_usp_trimmed#?}
+            _usp_trim_count=$((_usp_trim_count - 1))
+        done
+    }
+
     # A single colon represents the default MANPATH without explicit directories.
     if [ "$2" = MANPATH ] && [ "$1" = : ]; then
-        printf -- '%s' ':'
+        command -p printf '%s' ':'
         return $?
     fi
 
@@ -176,7 +192,7 @@ _usrhome_sanitize_path_value() (
     if [ "$2" = MANPATH ]; then
         while :; do
             _usp_field=${_usp_rest%%:*}
-            _usp_trimmed=${_usp_field#"${_usp_field%%[![:space:]]*}"}
+            _usrhome_trim_field || return 1
             case $_usp_rest in
                 *:*) _usp_more=1 ;;
                 *)   _usp_more=0 ;;
@@ -211,7 +227,7 @@ _usrhome_sanitize_path_value() (
 
     while :; do
         _usp_field=${_usp_rest%%:*}
-        _usp_trimmed=${_usp_field#"${_usp_field%%[![:space:]]*}"}
+        _usrhome_trim_field || return 1
 
         if [ -z "$_usp_field" ] && [ "$_usp_kind" = internal ]; then
             _usp_pending=1
@@ -256,7 +272,7 @@ _usrhome_sanitize_path_value() (
             trailing) _usp_output="${_usp_output}:" ;;
         esac
     fi
-    printf -- '%s' "$_usp_output"
+    command -p printf -- '%s' "$_usp_output"
 )
 
 _usrhome_sanitize_path() {
@@ -287,9 +303,9 @@ _usrhome_sanitize_path() {
     # The status suffix also preserves trailing newlines.
     set -- "$1" "$2" "$(
         if _usrhome_sanitize_path_value "$2" "$1"; then
-            printf -- '.0'
+            command -p printf -- '%s' '.0'
         else
-            printf -- '.1'
+            command -p printf -- '%s' '.1'
         fi
     )"
     case $3 in

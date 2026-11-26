@@ -4,7 +4,7 @@
 # Purpose   : Test bin/find-executable.
 # Created   : Thursday, November 26 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 11:12:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 12:39:38 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -64,7 +64,21 @@ check()
     wanted_status=$1
     shift
 
-    if run_find "$@" > "$work/actual" 2> "$work/error"; then
+    # Use the following old POSIX comptatible workaround for safely passing
+    # all script arguments along without breaking when zero arguments are
+    # given: ${1+"$@"}
+    #
+    # It breaks down into two parts:
+    # • "$@":     Expands to every positional parameter passed to the script,
+    #             keeping each argument safely wrapped in its own quotes so
+    #             spaces inside arguments don't get split up.
+    # • ${1+...}: A parameter expansion rule that means "if parameter $1 is set
+    #             (even if it's empty), substitute what follows the +;
+    #             otherwise, substitute nothing."
+    #
+    # This is used to help support testing a large number of POSIX-compliant shells.
+    #
+    if run_find ${1+"$@"} > "$work/actual" 2> "$work/error"; then
         actual_status=0
     else
         actual_status=$?
@@ -72,7 +86,7 @@ check()
 
     if [ "$actual_status" -ne "$wanted_status" ]; then
         printf 'Arguments:' >&2
-        for check_arg in "$@"; do printf ' <%s>' "$check_arg" >&2; done
+        for check_arg in ${1+"$@"}; do printf ' <%s>' "$check_arg" >&2; done
         printf '\n%s\n' '--- stderr ---' >&2
         cat "$work/error" >&2
         fail "expected status $wanted_status; got $actual_status"
@@ -83,7 +97,7 @@ check()
     sort "$work/expected" > "$work/expected-sorted"
     if ! cmp -s "$work/expected-sorted" "$work/sorted"; then
         printf 'Arguments:' >&2
-        for check_arg in "$@"; do printf ' <%s>' "$check_arg" >&2; done
+        for check_arg in ${1+"$@"}; do printf ' <%s>' "$check_arg" >&2; done
         printf '\n%s\n' '--- expected ---' >&2
         cat "$work/expected-sorted" >&2
         printf '%s\n' '--- actual ---' >&2
