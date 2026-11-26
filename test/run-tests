@@ -4,7 +4,7 @@
 # Purpose   : Run all tests using specific shells.
 # Created   : Sunday, November  8 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 08:44:08 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 10:10:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,7 +34,9 @@ test_dir=$(CDPATH='' cd -P "$(dirname "$0")" && pwd -P) || {
 cd -- "$test_dir/.." || exit 2
 
 # Store list of test files inside Arg 1:
-set -- ./test/test-sanitize-path.sh ./test/test-bin-find-dir.sh
+set -- ./test/test-sanitize-path.sh \
+       ./test/test-bin-find-dir.sh  \
+       ./test/test-bin-find-executable.sh
 
 for test_file in "$@"; do
     if [ ! -f "$test_file" ] || [ ! -r "$test_file" ]; then
@@ -67,8 +69,8 @@ run_test() {
         printf 'PASS: %s\n' "$run_label"
         passed=$((passed + 1))
     else
-        status=$?
-        printf 'FAIL: %s (status %s)\n' "$run_label" "$status" >&2
+        _test_status=$?
+        printf 'FAIL: %s (_test_status %s)\n' "$run_label" "$_test_status" >&2
         failed=$((failed + 1))
     fi
 }

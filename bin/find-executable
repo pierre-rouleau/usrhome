@@ -4,7 +4,7 @@
 # Purpose   : Print all executable files found in the specified directory tree.
 # Created   : Wednesday, July 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 09:45:54 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 10:17:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -16,8 +16,7 @@
 # Dependencies
 # ------------
 #
-# POSIX compliant: find and printf.
-
+# POSIX compliant: find, printf, uname, mktemp, cat, rm.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -43,6 +42,7 @@ find-executable: Find and print all executable files in ROOT directory tree.
            : 1 if nothing is found.
            : 2 if the command line is invalid.
            : 3 the command does not support this OS.
+           : 4 if the search or output operation fails.
 
 "
 }
@@ -131,17 +131,27 @@ fi
 
 # --
 # Perform find search.
-# If find does not detect any file it returns 0 which is not what we need.
-# So use tee to display find stdout to the terminal and pipe it into
-# 'grep -q .' which return 0 on detected output and 1 if nothing is printed.
+# Capture results to preserve find's status and support stdout redirection.
+
+results=$(mktemp "${USRHOME_DIR_TMP:-${TMPDIR:-/tmp}}/find-executable.XXXXXX") || exit 4
+trap 'rm -f "$results"' 0
+trap 'exit 4' HUP INT TERM
 
 if [ "$search_hidden" = "true" ]; then
     # shellcheck disable=SC2086  # quoting would destroy the arguments.
-    find "${rootname}" -perm "${mode}" ${type} | tee /dev/tty | grep -q .
+    find "${rootname}" -perm "${mode}" ${type} > "$results"
 else
     # shellcheck disable=SC2086  # quoting would destroy the arguments.
-    find "${rootname}" -perm "${mode}" ${type} \( ! -path '*/.*' \) | tee /dev/tty | grep -q .
+    find "${rootname}" -perm "${mode}" ${type} \( ! -path '*/.*' \) > "$results"
 fi
+find_status=$?
+
+if [ "$find_status" -ne 0 ]; then
+    exit 4
+fi
+
+cat "$results" || exit 4
+[ -s "$results" ]
 
 # ----------------------------------------------------------------------------
 # Local Variables:
