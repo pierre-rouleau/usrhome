@@ -48,6 +48,7 @@ Zsh (the `Z Shell`_).
 It helps you create a consistent development environment across macOS
 and Linux systems.
 
+
 - **Switch shells as needed:** Use the login shell imposed by your OS.
   Then start Bash from Zsh or Zsh from Bash without changing your login
   shell. Exit the nested shell to return to the previous one.
@@ -79,6 +80,12 @@ and Linux systems.
   environment with commands and scripts from its `bin/`_ and `ibin/`_
   directories.  It provides some tools implemented in AWK and Pike (`lsdd`_)
   [#pike_note]_ .
+- **OS Support:** Linux and macOS.  Currently adding support for BSD
+  operating systems: FreeBSD, NetBSD, OpenBSD and DragonFly BSD.
+- **CI driven lint and tests:** All USRHOME executable and sourced scripts are
+  statically analyzed with USRHOME `lint-sh`_ which uses ShellCheck and
+  imposes other constraints to check for CDPATH awareness, POSIX command line
+  options and use of `--` argument separator where needed.
 
 .. ---------------------------------------------------------------------------
 
