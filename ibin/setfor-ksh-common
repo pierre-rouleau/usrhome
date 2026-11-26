@@ -1,0 +1,139 @@
+# Sourced script: setfor-ksh-common  -*- mode: sh; -*-
+# shellcheck shell=ksh
+#
+# Purpose   : Common Korn Shell functions.
+# Created   : Thursday, November 26 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-26 16:44:57 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+# Defines terminal-title and SSH helpers for interactive ksh93.
+# Source this file from trusted ksh startup code.
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+# Terminal titles require an OSC-compatible terminal.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Update the title when ksh expands PS1. Write to stderr so that the
+# control sequence is not included in the visible prompt's length.
+function usrhome__ksh_title_emit
+{
+    typeset _ukt_screen _ukt_host _ukt_depth _ukt_rendered
+
+    case $- in
+        *i*) ;;
+        *) return 0 ;;
+    esac
+
+    # Do not send terminal controls to Emacs or a dumb terminal.
+    [ -z "${INSIDE_EMACS-}" ] || return 0
+    [ -n "${TERM-}" ] && [ "$TERM" != dumb ] || return 0
+    [ -t 2 ] || return 0
+
+    # Match the Bash implementation's screen-session prefix handling.
+    _ukt_screen=$(
+        printf '%s' "${STY-}" | sed 's/^\(ttys\)*[0-9]*\.//'
+    )
+    _ukt_host=$(hostname -s 2>/dev/null) || _ukt_host='?'
+
+    _ukt_depth="L${SHLVL-?}"
+    [ -z "${SSHPASS-}" ] || _ukt_depth="${_ukt_depth}+"
+
+    # Keep the original title_text unchanged. Restrict the rendered title
+    # to printable ASCII so that data cannot inject terminal controls.
+    _ukt_rendered=$(
+        printf -- '%s - %s (Ksh %s: %s: %s:%s)' \
+               "$_ukt_screen" \
+               "${title_text-}" \
+               "${KSH_VERSION:-unknown}" \
+               "$_ukt_depth" \
+               "$_ukt_host" \
+               "${PWD-?}" |
+            LC_ALL=C tr -cd '\040-\176'
+    )
+
+    printf '\033]2;%s\007' "$_ukt_rendered" >&2
+}
+
+# Add the title update only once. The prompt selector must call this
+# again after it replaces PS1.
+function usrhome__ksh_title_attach
+{
+    case $- in
+        *i*) ;;
+        *) return 0 ;;
+    esac
+
+    # shellcheck disable=SC2016 # Match and insert the literal command substitution in PS1.
+    case ${PS1-} in
+        '$(usrhome__ksh_title_emit)'*) ;;
+        *) PS1='$(usrhome__ksh_title_emit)'"${PS1-}" ;;
+    esac
+}
+
+# Set the title text. With no arguments, clear the title text.
+function set_title
+{
+    case $- in
+        *i*) ;;
+        *) return 0 ;;
+    esac
+
+    title_text="$*"
+    USRHOME_TITLE=$title_text
+    export USRHOME_TITLE
+
+    usrhome__ksh_title_attach
+
+    # Update immediately as well as at the next prompt. This matters when
+    # ssh4__remote starts a session before another prompt is displayed.
+    usrhome__ksh_title_emit
+}
+
+# Arg 1 is the temporary title. Remaining arguments go to ssh4-scoped.
+function ssh4__remote
+{
+    typeset _usr_old_title _usr_ssh_status
+
+    if [ "$#" -eq 0 ]; then
+        printf '%s\n' 'ssh4__remote: missing title argument' >&2
+        return 2
+    fi
+
+    if [ -z "${USRHOME_DIR-}" ]; then
+        printf '%s\n' 'ssh4__remote: USRHOME_DIR is not set' >&2
+        return 1
+    fi
+
+    _usr_old_title=${title_text-}
+    set_title "$1" || return 1
+    shift
+
+    if "${USRHOME_DIR}/bin/sub-ssh4/ssh4-scoped" "$@"; then
+        _usr_ssh_status=0
+    else
+        _usr_ssh_status=$?
+    fi
+
+    set_title "$_usr_old_title" || :
+    return "$_usr_ssh_status"
+}
+
+# ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: ksh
+#  End:

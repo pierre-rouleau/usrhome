@@ -1,6 +1,6 @@
-=========================================================================
-USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
-=========================================================================
+==================================================================================
+USRHOME -- Clonable/Portable Multi-Shell Configuration & Tool-Box for Bash/Ksh/Zsh
+==================================================================================
 
 .. image:: https://img.shields.io/:License-gpl3-blue.svg
    :alt: License
@@ -43,8 +43,8 @@ USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
 Introduction
 ============
 
-USRHOME provides shell configuration and command-line tools for Bash and
-Zsh (the `Z Shell`_).
+USRHOME provides shell configuration and command-line tools for Bash, Ksh
+[#ksh_note] and Zsh (the `Z Shell`_).
 It helps you create a consistent development environment across macOS
 and Linux systems.
 
@@ -3689,6 +3689,13 @@ Notes
 .. [#emacs_daemon] The `PEL`_ project provides useful commands to start Emacs daemons and use clients.
                    More information is available in PEL `Using the Emacs stand-alone processes, daemon and clients`_.
 
+.. [#ksh_note] Support for Korn Shells is underway.  It is currently not
+               installed automatically by the installer.  To use it create
+               a ``~/.kshrc`` symlink to USRHOME ``dot/kshrc.ksh`` file.
+               The code is recent; more testing is required.
+               Also note that I am adding BSD OS support to USRHOME and that
+               is also underway.
+
 
 Feedback's Welcome!
 ===================
@@ -3974,16 +3981,16 @@ Thanks!
 .. _...:                                  ibin/setfor-alias#L703
 .. _....:                                 ibin/setfor-alias#L704
 .. _info-prompt:                          ibin/setfor-alias#L709
-.. _info-desktop:                         ibin/setfor-alias#L804
-.. _git-cln:                              ibin/setfor-alias#L919
-.. _use-usrhome:                          ibin/setfor-alias#L924
-.. _use-homebrew:                         ibin/setfor-alias#L925
-.. _use-info:                             ibin/setfor-alias#L926
-.. _use-emacs-for-man alias:              ibin/setfor-alias#L928
-.. _to ibin/envfor-diff:                  ibin/setfor-alias#L929
-.. _append-to-path:                       ibin/setfor-alias#L930
-.. _prepend-to-path:                      ibin/setfor-alias#L931
-.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L946
+.. _info-desktop:                         ibin/setfor-alias#L830
+.. _git-cln:                              ibin/setfor-alias#L945
+.. _use-usrhome:                          ibin/setfor-alias#L950
+.. _use-homebrew:                         ibin/setfor-alias#L951
+.. _use-info:                             ibin/setfor-alias#L952
+.. _use-emacs-for-man alias:              ibin/setfor-alias#L954
+.. _to ibin/envfor-diff:                  ibin/setfor-alias#L955
+.. _append-to-path:                       ibin/setfor-alias#L956
+.. _prepend-to-path:                      ibin/setfor-alias#L957
+.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L972
 .. _info-shell:                           bin/info-shell
 .. _append_to_path:                       ibin/setfor-path#L40
 .. _prepend_to_path:                      ibin/setfor-path#L88

@@ -4,7 +4,7 @@
 # Purpose   : Internal helper file: change prompt.
 # Created   : Sunday, May  5 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 11:30:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 15:07:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,8 +55,25 @@ case $USRHOME_SHELL in
         # shell function that was defined in usrhome/dot/bashrc.bash
         usrhome-select-bash-prompt
         ;;
+
+    "ksh")
+        if [ "${USRHOME_KSH_PROMPT_READY-}" = 1 ] &&
+            command -v usrhome_select_ksh_prompt >/dev/null 2>&1; then
+            usrhome_select_ksh_prompt
+        else
+            usrhome_printf_error 'The ksh prompt is not initialized.\n'
+            return 1
+        fi
+        ;;
+
     *)
-        usrhome_printf_error 'Dynamic prompt modification is not supported under %s shell.\n' "$USRHOME_SHELL"
+        if [ "${USRHOME_POSIX_PROMPT_READY-}" = 1 ]; then
+            usrhome_select_posix_prompt
+        else
+            usrhome_printf_error 'Dynamic prompt modification is not supported under %s shell.\n' "$USRHOME_SHELL"
+            return 1
+        fi
+
         ;;
 esac
 
