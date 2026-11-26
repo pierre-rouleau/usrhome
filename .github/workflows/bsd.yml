@@ -59,6 +59,9 @@ jobs:
             if command -v shellcheck >/dev/null 2>&1; then
               shellcheck --version || lint_status=1
               ./bin/lint-sh -d . -S -q -x || lint_status=1
+            elif [ "$(uname -s)" = DragonFly ]; then
+              echo "SKIP: ShellCheck is unavailable on DragonFly" >&2
+              ./bin/lint-sh -d . -q -x || lint_status=1
             else
               echo "ERROR: ShellCheck is not available" >&2
               # Run the internal lint checks, but still fail the job.
@@ -112,7 +115,7 @@ jobs:
             set -e
             pkg install -y bash zsh
             pkg install -y hs-ShellCheck ||
-              echo "ShellCheck installation failed" >&2
+              echo "ShellCheck installation failed; checking availability during lint" >&2
           run: *bsd_checks
 
 # ----------------------------------------------------------------------------
