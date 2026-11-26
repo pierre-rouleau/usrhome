@@ -22,7 +22,7 @@ USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
 .. image:: https://img.shields.io/badge/Installer_tested_on-Ubuntu_Linux,_Rocky_Linux_Bash-green
    :target: #install-usrhome---how-to-set-it-up
 
-.. image:: https://github.com/pierre-rouleau/usrhome/actions/workflows/lint-sh.yml/badge.svg?branch=main
+.. image:: https://github.com/pierre-rouleau/usrhome/actions/workflows/lint-sh.yml/badge.svg
    :alt: Shell lint status
    :target: https://github.com/pierre-rouleau/usrhome/actions/workflows/lint-sh.yml
 
