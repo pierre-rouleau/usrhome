@@ -1,0 +1,118 @@
+name: BSD shell lint and tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bsd:
+    name: BSD (${{ matrix.os }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [freebsd, openbsd, netbsd, dragonflybsd]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Run on FreeBSD
+        if: matrix.os == 'freebsd'
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.5"
+          copyback: false
+          prepare: |
+            set -e
+            pkg install -y bash zsh
+            pkg install -y hs-ShellCheck ||
+              echo "ShellCheck installation failed" >&2
+          run: &bsd_checks |
+            set -eu
+
+            cd "$GITHUB_WORKSPACE"
+            export USRHOME_DIR="$GITHUB_WORKSPACE"
+            export USRHOME_DIR_USRCFG="${GITHUB_WORKSPACE%/*}/usrcfg"
+            export PATH="/usr/local/bin:/usr/pkg/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+            export TERM=xterm
+            export USRHOME_PRINT_ENABLED=1
+            export USRHOME_STDERR_PRINT_TO_PIPE=1
+
+            uname -a
+            id
+            command -v bash
+            command -v zsh
+            command -v realpath
+
+            mkdir -p "$USRHOME_DIR_USRCFG"
+            cp -R "$USRHOME_DIR/template/usrcfg/." "$USRHOME_DIR_USRCFG/"
+
+            lint_status=0
+            if command -v shellcheck >/dev/null 2>&1; then
+              shellcheck --version || lint_status=1
+              ./bin/lint-sh -d . -S -q -x || lint_status=1
+            else
+              echo "ERROR: ShellCheck is not available" >&2
+              # Run the internal lint checks, but still fail the job.
+              ./bin/lint-sh -d . -q -x || :
+              lint_status=1
+            fi
+
+            test_status=0
+            ./test/run-tests || test_status=$?
+
+            printf 'Lint status: %s; test status: %s\n' \
+              "$lint_status" "$test_status"
+            if [ "$lint_status" -ne 0 ] || [ "$test_status" -ne 0 ]; then
+              exit 1
+            fi
+
+      - name: Run on OpenBSD
+        if: matrix.os == 'openbsd'
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: "7.9"
+          copyback: false
+          prepare: |
+            set -e
+            pkg_add bash zsh
+            pkg_add shellcheck ||
+              echo "ShellCheck installation failed" >&2
+          run: *bsd_checks
+
+      - name: Run on NetBSD
+        if: matrix.os == 'netbsd'
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: "10.1"
+          copyback: false
+          prepare: |
+            set -e
+            export PKG_PATH="https://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/amd64/10.0/All/"
+            /usr/sbin/pkg_add -u bash zsh
+            /usr/sbin/pkg_add -u shellcheck ||
+              echo "ShellCheck installation failed" >&2
+          run: *bsd_checks
+
+      - name: Run on DragonFly BSD
+        if: matrix.os == 'dragonflybsd'
+        uses: vmactions/dragonflybsd-vm@v1
+        with:
+          release: "6.4.2"
+          copyback: false
+          prepare: |
+            set -e
+            pkg install -y bash zsh
+            pkg install -y hs-ShellCheck ||
+              echo "ShellCheck installation failed" >&2
+          run: *bsd_checks
+
+# ----------------------------------------------------------------------------
