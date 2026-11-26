@@ -5,7 +5,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2026-11-20 15:18:22 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-25 22:30:40 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -62,7 +62,8 @@ esac
 # Topic: Startup: 1.0 - Source Global Definitions
 # ---------------------------------------------
 if [ -f /etc/bashrc ]; then
-        . /etc/bashrc
+    # shellcheck disable=SC1091 # don't try following that file.
+    . /etc/bashrc
 fi
 
 # Topic: Startup: 1.1 - Check if shell is interactive
@@ -342,8 +343,14 @@ trap 'usrhome_start_timer' DEBUG
 # PROMPT_COMMAND is a command executed just before the prompt
 # Use it to compute execution time and store result inside
 # the variable elapsed to use inside the prompt itself: PS1
-PROMPT_COMMAND="usrhome_stop_timer"
-
+# The PROMPT_COMMAND variable may be a command string or an array of commands.
+# Check if it is an array and if so append the command to it, otherwise set it as a single command.
+if [[ $(declare -p PROMPT_COMMAND 2>/dev/null) =~ ^declare\ -[^[:space:]]*a[^[:space:]]*\ PROMPT_COMMAND(=|$) ]]; then
+    PROMPT_COMMAND+=(usrhome_stop_timer)
+else
+    # shellcheck disable=SC2178
+    PROMPT_COMMAND="usrhome_stop_timer"
+fi
 
 # Ref: Bash Prompt Escape Sequences:
 #  See: https://www.gnu.org/software/bash/manual/html_node/Controlling-the-Prompt.html
