@@ -4,7 +4,7 @@
 # Purpose   : Print all executable files found in the specified directory tree.
 # Created   : Wednesday, July 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 14:02:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 09:45:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -42,6 +42,7 @@ find-executable: Find and print all executable files in ROOT directory tree.
  Exit codes: 0 if at least one file found.
            : 1 if nothing is found.
            : 2 if the command line is invalid.
+           : 3 the command does not support this OS.
 
 "
 }
@@ -104,13 +105,21 @@ fi
 # ----------------------------------------------------------------------------
 # Proceed
 
+# Identify appropriate options for the 'find' command.
+# The BSD and GNU versions differ.
+
 case "$(uname)" in
-    Darwin)
+    *BSD|DragonFly|Darwin)
         mode='+111'
         ;;
 
     Linux)
         mode='/111'
+        ;;
+
+    *)
+        usrhome_printf_error "find-executable: unsupported OS: %s\n" "$(uname)"
+        exit 3
         ;;
 esac
 
@@ -120,12 +129,18 @@ else
     type='-type f'
 fi
 
+# --
+# Perform find search.
+# If find does not detect any file it returns 0 which is not what we need.
+# So use tee to display find stdout to the terminal and pipe it into
+# 'grep -q .' which return 0 on detected output and 1 if nothing is printed.
+
 if [ "$search_hidden" = "true" ]; then
     # shellcheck disable=SC2086  # quoting would destroy the arguments.
-    find "${rootname}" -perm "${mode}" ${type}
+    find "${rootname}" -perm "${mode}" ${type} | tee /dev/tty | grep -q .
 else
     # shellcheck disable=SC2086  # quoting would destroy the arguments.
-    find "${rootname}" -perm "${mode}" ${type} \( ! -path '*/.*' \)
+    find "${rootname}" -perm "${mode}" ${type} \( ! -path '*/.*' \) | tee /dev/tty | grep -q .
 fi
 
 # ----------------------------------------------------------------------------
