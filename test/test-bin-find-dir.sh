@@ -4,7 +4,7 @@
 # Purpose   : Test USRHOME bin utilities.
 # Created   : Thursday, November 26 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 08:18:28 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 09:03:37 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,14 +62,14 @@ sort actual > sorted
 printf '%s\n' 'tree/.hidden/target dir' 'tree/visible/target dir' > expected
 cmp expected sorted
 
-# An invalid root must return status 2 and report an error.
+# An invalid root must return a status of 2 and report an error.
 if "$USRHOME_DIR/bin/find-dir" 'target dir' missing > actual 2> error; then
     printf '%s\n' 'FAIL: find-dir accepted a missing root' >&2
     exit 1
 else
-    status=$?
+    _test_status=$?
 fi
-[ "$status" -eq 2 ]
+[ "$_test_status" -eq 2 ]
 grep -F 'Specified ROOT does not exists' error >/dev/null
 
 # Normalize existing paths and omit missing paths.
