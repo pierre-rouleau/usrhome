@@ -4,7 +4,7 @@
 # Purpose   : Test bin/find-executable.
 # Created   : Thursday, November 26 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 10:24:23 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:12:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -70,14 +70,28 @@ check()
         actual_status=$?
     fi
 
-    [ "$actual_status" -eq "$wanted_status" ] ||
+    if [ "$actual_status" -ne "$wanted_status" ]; then
+        printf 'Arguments:' >&2
+        for check_arg in "$@"; do printf ' <%s>' "$check_arg" >&2; done
+        printf '\n%s\n' '--- stderr ---' >&2
+        cat "$work/error" >&2
         fail "expected status $wanted_status; got $actual_status"
+    fi
 
     # find does not promise traversal order.
     sort "$work/actual" > "$work/sorted"
     sort "$work/expected" > "$work/expected-sorted"
-    cmp "$work/expected-sorted" "$work/sorted" ||
+    if ! cmp -s "$work/expected-sorted" "$work/sorted"; then
+        printf 'Arguments:' >&2
+        for check_arg in "$@"; do printf ' <%s>' "$check_arg" >&2; done
+        printf '\n%s\n' '--- expected ---' >&2
+        cat "$work/expected-sorted" >&2
+        printf '%s\n' '--- actual ---' >&2
+        cat "$work/sorted" >&2
+        printf '%s\n' '--- stderr ---' >&2
+        cat "$work/error" >&2
         fail "unexpected stdout"
+    fi
 
     if [ "$wanted_status" -eq 0 ] || [ "$wanted_status" -eq 1 ]; then
         [ ! -s "$work/error" ] || fail "unexpected stderr"

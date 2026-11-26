@@ -24,13 +24,17 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y zsh
+          sudo apt-get install -y zsh busybox
 
       - name: Run tests
         shell: bash
         run: |
           command -v bash
           command -v zsh
+          if [ "$RUNNER_OS" = Linux ]; then
+            busybox | sed -n '1p'
+            busybox --list | grep -Fx ash
+          fi
           ./test/run-tests
 
 # ----------------------------------------------------------------------------
