@@ -1,6 +1,6 @@
-=========================================================================
-USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
-=========================================================================
+==================================================================================
+USRHOME -- Clonable/Portable Multi-Shell Configuration & Tool-Box for Bash/Ksh/Zsh
+==================================================================================
 
 .. image:: https://img.shields.io/:License-gpl3-blue.svg
    :alt: License
@@ -43,8 +43,8 @@ USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
 Introduction
 ============
 
-USRHOME provides shell configuration and command-line tools for Bash and
-Zsh (the `Z Shell`_).
+USRHOME provides shell configuration and command-line tools for Bash, Ksh
+[#ksh_note] and Zsh (the `Z Shell`_).
 It helps you create a consistent development environment across macOS
 and Linux systems.
 
@@ -3688,6 +3688,13 @@ Notes
 
 .. [#emacs_daemon] The `PEL`_ project provides useful commands to start Emacs daemons and use clients.
                    More information is available in PEL `Using the Emacs stand-alone processes, daemon and clients`_.
+
+.. [#ksh_note] Support for Korn Shells is underway.  It is currently not
+               installed automatically by the installer.  To use it create
+               a ``~/.kshrc`` symlink to USRHOME ``dot/kshrc.ksh`` file.
+               The code is recent; more testing is required.
+               Also note that I am adding BSD OS support to USRHOME and that
+               is also underway.
 
 
 Feedback's Welcome!
