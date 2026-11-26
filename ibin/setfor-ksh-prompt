@@ -4,7 +4,7 @@
 # Purpose   : Logic to se the ksh prompt.
 # Created   : Thursday, November 26 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 16:10:30 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 17:01:03 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -95,10 +95,22 @@ function usrhome_select_ksh_prompt
             _usp_new='>${?} L${SHLVL:-?} '"$_usp_identity"'[${PWD}] ${USRHOME_KSH_PROMPT_SIGN} '
             ;;
         2)
-            # shellcheck disable=SC2016 # delayed expansion is intentional (it will be expanded in the prompt)
-            _usp_new='>${?} L${SHLVL:-?} '"$_usp_identity"'[${PWD}]
+            if [ -t 2 ] && [ -n "${TERM-}" ] &&
+               [ "$TERM" != dumb ] && [ -z "${INSIDE_EMACS-}" ]; then
+                # shellcheck disable=SC2016 # delayed expansion is intentional (it will be expanded in the prompt)
+                _usp_new=$'\001\r'\
+$'\001\033[0;32m\001''>${?}'$'\001\033[0m\001'\
+' L${SHLVL:-?} '"$_usp_identity"\
+$'\001\033[1;34m\001''[${PWD}]'$'\001\033[0m\001'\
+$'\n\001\r\001\033[0;32m\001'\
+'${USRHOME_KSH_PROMPT_SIGN}'$'\001\033[0m\001'' '
+            else
+                # shellcheck disable=SC2016 # delayed expansion is intentional (it will be expanded in the prompt)
+                _usp_new='>${?} L${SHLVL:-?} '"$_usp_identity"'[${PWD}]
 ${USRHOME_KSH_PROMPT_SIGN} '
+            fi
             ;;
+
         3)
             # shellcheck disable=SC2016 # delayed expansion is intentional (it will be expanded in the prompt)
             _usp_new='>${?} '"$_usp_identity"'[${PWD}]
