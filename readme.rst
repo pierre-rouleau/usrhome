@@ -1961,6 +1961,23 @@ Command or file                          Description
 `find-executable`_                       Search a directory tree for executable files. ``-H`` includes hidden
                                          directories and ``-L`` includes links to files.
 
+                                         Usage::
+
+                                            find-executable [--inc-hidden|-H] [--inc-link|-L]  [ROOT]
+                                            find-executable [-h|--help]
+
+                                             - ROOT: Optional directory tree.  Defaults to current directory.
+                                             - Exclude all hidden directories (such as .git)
+                                                 unless --inc-hidden option is specified.
+                                             - Exclude symbolic links to files unless --inc-link is specified.
+
+                                             Exit codes: 0 if at least one file found.
+                                                       : 1 if nothing is found.
+                                                       : 2 if the command line is invalid.
+                                                       : 3 the command does not support this OS.
+                                                       : 4 if the search or output operation fails.
+
+
 `find-latest-in`_                        List recently modified files. Use ``-d`` for the directory, ``-t`` for the
                                          time window, and ``-f`` for a filename pattern. ``-H`` includes hidden
                                          entries and ``-I`` disables ignore rules. If ``fd`` is unavailable, the

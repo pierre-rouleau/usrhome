@@ -4,7 +4,7 @@
 # Purpose   : Print all executable files found in the specified directory tree.
 # Created   : Wednesday, July 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 10:44:25 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 10:50:07 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -33,10 +33,9 @@ find-executable: Find and print all executable files in ROOT directory tree.
         find-executable [-h|--help]
 
  - ROOT: Optional directory tree.  Defaults to current directory.
- - By default:
-   - Exclude all hidden directories (such as .git)
+ - Exclude all hidden directories (such as .git)
      unless --inc-hidden option is specified.
-   - Exclude symbolic links to files unless --inc-link is specified.
+ - Exclude symbolic links to files unless --inc-link is specified.
 
  Exit codes: 0 if at least one file found.
            : 1 if nothing is found.
