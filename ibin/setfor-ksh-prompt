@@ -1,0 +1,123 @@
+# Sourced script: setfor-ksh-prompt  -*- mode: sh; -*-
+# shellcheck shell=ksh
+#
+# Purpose   : Logic to se the ksh prompt.
+# Created   : Thursday, November 26 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-26 16:10:30 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Sourced once by trusted ksh interactive startup code.
+# Source this after the user has configured their initial PS1.
+
+case $- in
+    *i*) ;;
+    *) return 0 ;;
+esac
+
+# Reset any inherited state before saving this shell's user prompt.
+unset USRHOME_KSH_PROMPT_READY USRHOME_KSH_SAVED_PS1
+unset USRHOME_KSH_HOST USRHOME_KSH_PROMPT_SIGN
+
+USRHOME_KSH_SAVED_PS1=${PS1-}
+
+# shellcheck disable=SC2034 # Used later when ksh expands PS1.
+USRHOME_KSH_HOST=$(hostname -s 2>/dev/null) || USRHOME_KSH_HOST='?'
+
+if _usrhome_ksh_uid=$(id -u); then
+    if [ "$_usrhome_ksh_uid" = 0 ]; then
+        # shellcheck disable=SC2034 # Used later when ksh expands PS1.
+        USRHOME_KSH_PROMPT_SIGN='ksh#'
+    else
+        # shellcheck disable=SC2034 # Used later when ksh expands PS1.
+        USRHOME_KSH_PROMPT_SIGN='ksh$'
+    fi
+else
+    printf '%s\n' 'USRHOME: cannot determine the effective user ID.' >&2
+    return 1
+fi
+unset _usrhome_ksh_uid
+
+function usrhome_select_ksh_prompt
+{
+    typeset _usp_model _usp_identity _usp_new
+
+    _usp_model=${USRHOME_PROMPT_MODEL_OVERRIDE:-${USRHOME_PROMPT_MODEL:-2}}
+
+    # Validate before changing PS1.
+    case $_usp_model in
+        0|1|2|3) ;;
+        *)
+            printf 'USRHOME: invalid prompt model: %s\n' "$_usp_model" >&2
+            return 1
+            ;;
+    esac
+
+    # Match the existing simple prompt for Emacs Tramp.
+    if [ "${TERM-}" = dumb ] && [ -z "${INSIDE_EMACS-}" ]; then
+        PS1='$ '
+        return 0
+    fi
+
+    if [ "${USRHOME_PROMPT_SHOW_USR_HOST-0}" = 1 ]; then
+        # Keep these as literal parameter references until PS1 is displayed.
+        # shellcheck disable=SC2016 # delayed expansion is intentional (it will be expanded in the prompt)
+        _usp_identity='${USER:-${LOGNAME:-?}}@${USRHOME_KSH_HOST} '
+    else
+        _usp_identity=
+    fi
+
+    case $_usp_model in
+        0)
+            # Restore the prompt saved at interactive startup.
+            _usp_new=$USRHOME_KSH_SAVED_PS1
+            ;;
+        1)
+            # shellcheck disable=SC2016 # delayed expansion is intentional (it will be expanded in the prompt)
+            _usp_new='>${?} L${SHLVL:-?} '"$_usp_identity"'[${PWD}] ${USRHOME_KSH_PROMPT_SIGN} '
+            ;;
+        2)
+            # shellcheck disable=SC2016 # delayed expansion is intentional (it will be expanded in the prompt)
+            _usp_new='>${?} L${SHLVL:-?} '"$_usp_identity"'[${PWD}]
+${USRHOME_KSH_PROMPT_SIGN} '
+            ;;
+        3)
+            # shellcheck disable=SC2016 # delayed expansion is intentional (it will be expanded in the prompt)
+            _usp_new='>${?} '"$_usp_identity"'[${PWD}]
+${USRHOME_KSH_PROMPT_SIGN} '
+            ;;
+    esac
+
+    PS1=$_usp_new
+}
+
+# Do not mark the selector ready if the first selection fails.
+if usrhome_select_ksh_prompt; then
+    # shellcheck disable=SC2034 # Read by the proposed change_prompt integration in this shell.
+    USRHOME_KSH_PROMPT_READY=1
+else
+    return 1
+fi
+
+# ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: ksh
+#  End:

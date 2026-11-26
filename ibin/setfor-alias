@@ -4,7 +4,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 11:36:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 16:26:45 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -785,6 +785,32 @@ NOTE:
      the shell is started or when you have just hit RETURN.
 
 "  "$PROMPT0" "$PROMPT1" "$PROMPT2" "$PROMPT3" "$PROMPT4" "$RPROMPT" "$SPROMPT" "$PROMPT" "$p1" "$p2" "$p3" "$USRHOME_PROMPT_MODEL" "$USRHOME_PROMPT_MODEL_OVERRIDE"
+            fi
+        }
+        alias info-prompt=info__prompt
+        ;;
+
+    ksh)
+        info__prompt()
+        {
+            if [ "${1-}" = "-q" ]; then
+                printf 'Ksh prompt model variables:
+- USRHOME_PROMPT_MODEL         : %s
+- USRHOME_PROMPT_MODEL_OVERRIDE: %s
+' "${USRHOME_PROMPT_MODEL-}" "${USRHOME_PROMPT_MODEL_OVERRIDE-}"
+            else
+                printf 'Ksh prompt control variables:
+- PS1: %s
+- PS2: %s
+- PS3: %s
+- PS4: %s
+- USRHOME_PROMPT_MODEL         : %s
+- USRHOME_PROMPT_MODEL_OVERRIDE: %s
+- USRHOME_PROMPT_SHOW_USR_HOST : %s
+- USRHOME_KSH_PROMPT_READY     : %s
+' "${PS1-}" "${PS2-}" "${PS3-}" "${PS4-}" \
+  "${USRHOME_PROMPT_MODEL-}" "${USRHOME_PROMPT_MODEL_OVERRIDE-}" \
+  "${USRHOME_PROMPT_SHOW_USR_HOST-}" "${USRHOME_KSH_PROMPT_READY-}"
             fi
         }
         alias info-prompt=info__prompt

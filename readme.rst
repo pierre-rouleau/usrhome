@@ -3974,16 +3974,16 @@ Thanks!
 .. _...:                                  ibin/setfor-alias#L703
 .. _....:                                 ibin/setfor-alias#L704
 .. _info-prompt:                          ibin/setfor-alias#L709
-.. _info-desktop:                         ibin/setfor-alias#L804
-.. _git-cln:                              ibin/setfor-alias#L919
-.. _use-usrhome:                          ibin/setfor-alias#L924
-.. _use-homebrew:                         ibin/setfor-alias#L925
-.. _use-info:                             ibin/setfor-alias#L926
-.. _use-emacs-for-man alias:              ibin/setfor-alias#L928
-.. _to ibin/envfor-diff:                  ibin/setfor-alias#L929
-.. _append-to-path:                       ibin/setfor-alias#L930
-.. _prepend-to-path:                      ibin/setfor-alias#L931
-.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L946
+.. _info-desktop:                         ibin/setfor-alias#L830
+.. _git-cln:                              ibin/setfor-alias#L945
+.. _use-usrhome:                          ibin/setfor-alias#L950
+.. _use-homebrew:                         ibin/setfor-alias#L951
+.. _use-info:                             ibin/setfor-alias#L952
+.. _use-emacs-for-man alias:              ibin/setfor-alias#L954
+.. _to ibin/envfor-diff:                  ibin/setfor-alias#L955
+.. _append-to-path:                       ibin/setfor-alias#L956
+.. _prepend-to-path:                      ibin/setfor-alias#L957
+.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L972
 .. _info-shell:                           bin/info-shell
 .. _append_to_path:                       ibin/setfor-path#L40
 .. _prepend_to_path:                      ibin/setfor-path#L88
