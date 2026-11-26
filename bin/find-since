@@ -4,7 +4,7 @@
 # Purpose   : Find all files in directory tree created or modified after a specific file.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2026-11-09 14:04:12 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:55:46 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -300,6 +300,14 @@ if [ "$execute_find" = "true" ]; then
                 | xargs -r -0 stat --format '%Y :%y %A %h %U %G %s %n' \
                 | sort -nr | cut -d: -f2- \
                 | awk '{ printf "%s %s %s %s %s %-8s %-8s %8s %s\n",  $1, $2, $3, $4, $5, $6, $7, $8, $9 }'
+            ;;
+
+        *BSD|DragonFly)
+            find "${find_args[@]}" \
+                | xargs -0 -I '{}' stat \
+                    -f '%Sm %Sp %l %Su %Sg %z %N' \
+                    -t '%Y-%m-%d %H:%M:%S' '{}' \
+                | sort -r
             ;;
 
         *)

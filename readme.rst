@@ -3938,41 +3938,41 @@ Thanks!
 .. _lla:
 .. _lt:
 .. _lta:                                  ibin/setfor-alias#L218
-.. _lsd:                                  ibin/setfor-alias#L278
+.. _lsd:                                  ibin/setfor-alias#L291
 .. _lsda:
-.. _lsda function:                        ibin/setfor-alias#L299
-.. _lsdd -a:                              ibin/setfor-alias#L347
-.. _lsl:                                  ibin/setfor-alias#L351
-.. _info-rosetta2:                        ibin/setfor-alias#L406
-.. _setenv:                               ibin/setfor-alias#L421
-.. _clrenv:                               ibin/setfor-alias#L457
-.. _add-to-path:                          ibin/setfor-alias#L499
-.. _alias for _usrhome_sanitize_path:     ibin/setfor-alias#L559
-.. _usrhome:                              ibin/setfor-alias#L588
-.. _usrcfg:                               ibin/setfor-alias#L589
-.. _cdv:                                  ibin/setfor-alias#L613
-.. _cdh:                                  ibin/setfor-alias#L620
-.. _cdlic:                                ibin/setfor-alias#L625
-.. _cdlog:                                ibin/setfor-alias#L630
-.. _cdcontract:                           ibin/setfor-alias#L643
-.. _cdpub:                                ibin/setfor-alias#L650
-.. _cdlocal:                              ibin/setfor-alias#L657
-.. _cdother:                              ibin/setfor-alias#L664
-.. _cdtmp:                                ibin/setfor-alias#L669
-.. _..:                                   ibin/setfor-alias#L689
-.. _...:                                  ibin/setfor-alias#L690
-.. _....:                                 ibin/setfor-alias#L691
-.. _info-prompt:                          ibin/setfor-alias#L696
-.. _info-desktop:                         ibin/setfor-alias#L791
-.. _git-cln:                              ibin/setfor-alias#L906
-.. _use-usrhome:                          ibin/setfor-alias#L911
-.. _use-homebrew:                         ibin/setfor-alias#L912
-.. _use-info:                             ibin/setfor-alias#L913
-.. _use-emacs-for-man alias:              ibin/setfor-alias#L915
-.. _to ibin/envfor-diff:                  ibin/setfor-alias#L916
-.. _append-to-path:                       ibin/setfor-alias#L917
-.. _prepend-to-path:                      ibin/setfor-alias#L918
-.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L933
+.. _lsda function:                        ibin/setfor-alias#L325
+.. _lsdd -a:                              ibin/setfor-alias#L360
+.. _lsl:                                  ibin/setfor-alias#L364
+.. _info-rosetta2:                        ibin/setfor-alias#L419
+.. _setenv:                               ibin/setfor-alias#L434
+.. _clrenv:                               ibin/setfor-alias#L470
+.. _add-to-path:                          ibin/setfor-alias#L512
+.. _alias for _usrhome_sanitize_path:     ibin/setfor-alias#L572
+.. _usrhome:                              ibin/setfor-alias#L601
+.. _usrcfg:                               ibin/setfor-alias#L602
+.. _cdv:                                  ibin/setfor-alias#L626
+.. _cdh:                                  ibin/setfor-alias#L633
+.. _cdlic:                                ibin/setfor-alias#L638
+.. _cdlog:                                ibin/setfor-alias#L643
+.. _cdcontract:                           ibin/setfor-alias#L656
+.. _cdpub:                                ibin/setfor-alias#L663
+.. _cdlocal:                              ibin/setfor-alias#L670
+.. _cdother:                              ibin/setfor-alias#L677
+.. _cdtmp:                                ibin/setfor-alias#L682
+.. _..:                                   ibin/setfor-alias#L702
+.. _...:                                  ibin/setfor-alias#L703
+.. _....:                                 ibin/setfor-alias#L704
+.. _info-prompt:                          ibin/setfor-alias#L709
+.. _info-desktop:                         ibin/setfor-alias#L804
+.. _git-cln:                              ibin/setfor-alias#L919
+.. _use-usrhome:                          ibin/setfor-alias#L924
+.. _use-homebrew:                         ibin/setfor-alias#L925
+.. _use-info:                             ibin/setfor-alias#L926
+.. _use-emacs-for-man alias:              ibin/setfor-alias#L928
+.. _to ibin/envfor-diff:                  ibin/setfor-alias#L929
+.. _append-to-path:                       ibin/setfor-alias#L930
+.. _prepend-to-path:                      ibin/setfor-alias#L931
+.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L946
 .. _info-shell:                           bin/info-shell
 .. _append_to_path:                       ibin/setfor-path#L40
 .. _prepend_to_path:                      ibin/setfor-path#L88

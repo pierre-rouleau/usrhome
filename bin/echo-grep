@@ -4,7 +4,7 @@
 # Purpose   : Echo argument and grep using all arguments except the first one.
 # Created   : Wednesday, June 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 16:42:56 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 12:19:19 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -14,6 +14,8 @@
 #
 # Use this to search into a set of files provided by the result of another
 # search and launched by a xargs -I $ echo-grep ARG... $ command.
+# The result is a list of grep output preceded with a separator line that
+# identifies the file name that was grepped into.
 #
 # For example:
 #
@@ -37,7 +39,6 @@
 #
 # - GNU grep
 
-
 # ----------------------------------------------------------------------------
 # Code
 # ----
@@ -51,8 +52,8 @@ if [ "$#" -gt 2 ]; then
     exit 1
 fi
 
-printf -- "--------------------------------------------\n%s\n" "$2"
-grep --line-number -- "$1" "$2"
+printf -- "---- INSIDE: %s :\n" "$2"
+grep -n -- "$1" "$2"
 
 # ----------------------------------------------------------------------------
 # Local Variables:

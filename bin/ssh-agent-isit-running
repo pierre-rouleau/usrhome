@@ -4,7 +4,7 @@
 # Purpose   : Check if the ssh-agent is running.
 # Created   : Monday, July  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 17:04:38 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:28:45 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,7 +34,7 @@ lines=
 check_ssh()
 {
     case "$(uname)" in
-        Darwin)
+        Darwin|*BSD|DragonFly)
             # shellcheck disable=SC2009
             lines="$(ps aux | grep -v grep | grep -v ssh-agent-isit-running | grep -v emacs | grep -c ssh-agent | xargs)"
             ;;

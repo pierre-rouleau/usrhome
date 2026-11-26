@@ -4,7 +4,7 @@
 # Purpose   : Add USRHOME directories to PATH.
 # Created   : Saturday, March 30 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 15:03:35 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:32:03 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -257,7 +257,7 @@ if [ -z "$USRHOME__IN_LOGIN" ] || [ "$USRHOME_CONFIG_AT_LOGIN" = "1" ]; then
             fi
             ;;
 
-        Linux)
+        Linux|*BSD|DragonFly)
             USRHOME_SHELL_OPEN_TIME=$(date +%s)
             ;;
     esac

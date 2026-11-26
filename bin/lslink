@@ -4,7 +4,7 @@
 # Purpose   : List all symlinks in current directory tree.
 # Created   : Tuesday, August 26 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 14:17:50 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:16:02 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # ------------
@@ -37,7 +37,7 @@ case "$(uname)" in
         # find . -type l  -exec readlink '{}'  +
         ;;
 
-    Linux)
+    Linux|*BSD|DragonFly)
         find . -type l -ls
         ;;
 

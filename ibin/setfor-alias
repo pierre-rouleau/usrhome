@@ -4,7 +4,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-24 16:50:27 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:36:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -242,6 +242,16 @@ case ${os_name} in
         alias lta='ls -ltraFGO'
         ;;
 
+    *BSD|DragonFly)
+        # safe baseline: no color
+        alias l='ls -F'
+        alias la='ls -aF'
+        alias ll='ls -lF'
+        alias lla='ls -alF'
+        alias lt='ls -ltrF'
+        alias lta='ls -ltraF'
+        ;;
+
     *)
         # There's no support for the -O option normally.
         # -G normally means to not display group info in long display (so we don't use this here)
@@ -258,9 +268,12 @@ esac
 __set__ls_options()
 {
     case "$(uname)" in
-        'Darwin')
+        Darwin)
             # -G on macOS means colorize.
             _sa_usrhome_ls_color_flag=-G
+            ;;
+        *BSD|DragonFly)
+            _sa_usrhome_ls_color_flag=
             ;;
         *)
             # -G normally means to not display group info in long display (so we don't use this here)

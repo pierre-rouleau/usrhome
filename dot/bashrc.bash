@@ -5,7 +5,7 @@
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 # Copyright (C) 2024, 2026 by Pierre Rouleau
 # Created   : Monday, April  8 2024.
-# Time-stamp: <2026-11-25 22:30:40 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:29:34 EST, updated by Pierre Rouleau>
 #
 # ----------------------------------------------------------------------------
 # Module Description
@@ -83,7 +83,7 @@ esac
 # ------------------------------------------------------------------
 
 case "$(uname)" in
-    Darwin)
+    Darwin|*BSD|DragonFly)
         # shellcheck disable=SC2009
         if ! ps aux | grep -v grep | grep ssh-agent  > /dev/null 2>&1; then
             eval "$(ssh-agent)"

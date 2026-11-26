@@ -4,7 +4,7 @@
 # Purpose   : Move a file to a directory and create a symlink to it's new location.
 # Created   : Thursday, April 25 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-15 12:18:26 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:27:29 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -117,11 +117,12 @@ base_fname=$(basename -- "$2") || {
 
 target_fpath="$1/${base_fname}"
 case $(uname) in
-    Darwin)
-        lnopt="-s"
+    Linux)
+        lnopt="-s --relative"
         ;;
     *)
-        lnopt="-s --relative"
+        # macOS and Native BSD ln does not provide GNU --relative.
+        lnopt="-s"
         ;;
 esac
 

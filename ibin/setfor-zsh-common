@@ -4,7 +4,7 @@
 # Purpose   : Common zsh functions also used by configuration.
 # Created   : Friday, October  4 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-18 08:28:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:30:32 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,14 +41,14 @@ set_title()
     if [ -z "$INSIDE_EMACS" ]; then
         os_type=$(uname)
         case $os_type in
-            'Darwin' )
+            Darwin)
                 # Supports all shells with a simple echo.
                 # On macOS, the escape sequences are passed properly by echo.
                 # shellcheck disable=SC2028
                 echo "\033]0;${title_text}\007\c"
                 ;;
 
-            'Linux')
+            Linux|*BSD|DragonFly)
                 # [:todo 2024-05-04, by Pierre Rouleau: Complete this. Currently under testing. ]
                 # May be used by external Zsh title configuration.
                 # shellcheck disable=SC2034

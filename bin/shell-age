@@ -4,7 +4,7 @@
 # Purpose   : Print age of shell.
 # Created   : Tuesday, June 11 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-20 15:16:22 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:33:28 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -66,6 +66,27 @@ case "$(uname)" in
         end_time=$(date +%s)
         duration=$((end_time - start_time))
         duration_formatted=$(date -d@${duration} -u +%Hh%Mm%Ss)
+        ;;
+
+    *BSD|DragonFly)
+        case "$start_time" in
+            ''|*[!0-9]*)
+                usrhome_print_error \
+                    'shell-age: USRHOME_SHELL_OPEN_TIME must contain epoch seconds.'
+                exit 2
+                ;;
+        esac
+        end_time=$(date +%s) || exit 2
+        duration=$((end_time - start_time))
+        if [ "$duration" -lt 0 ]; then
+            usrhome_print_error \
+                'shell-age: current time precedes shell start time.'
+            exit 2
+        fi
+        duration_formatted=$(printf '%02dh%02dm%02ds' \
+            "$((duration / 3600 % 24))" \
+            "$((duration / 60 % 60))" \
+            "$((duration % 60))")
         ;;
 esac
 
