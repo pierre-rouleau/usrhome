@@ -1,9 +1,9 @@
 #!/bin/sh
 #
-# Purpose   : est ibin/xtra/sanitize-path-posix.sh.
+# Purpose   : Test $USRHOME_DIR/ibin/xtra/sanitize-path-posix.sh
 # Created   : Sunday, November 08 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-17 17:13:48 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 12:33:05 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #
 # Run from the repository root with the shell to test.
@@ -30,6 +30,12 @@ fi
 LC_ALL=C
 SHELL_IS_INTERACTIVE=false
 export LC_ALL SHELL_IS_INTERACTIVE
+
+# Override usrhome_printf_error: Error messages are not part of these value and status tests.
+usrhome_printf_error() {
+    :
+}
+
 
 # shellcheck source=../ibin/xtra/sanitize-path-posix.sh
 if ! . "$_test_file"; then
@@ -84,8 +90,8 @@ run_case() {
         esac
 
         if [ "$_test_status" -ne "$5" ] || [ "$_test_actual" != "$4" ]; then
-            printf '  status: expected %s, got %s\n' "$5" "$_test_status" >&2
-            printf '  value:  expected [%s], got [%s]\n' "$4" "$_test_actual" >&2
+            command -p printf '  status: expected %s, got %s\n' "$5" "$_test_status" >&2
+            command -p printf '  value:  expected [%s], got [%s]\n' "$4" "$_test_actual" >&2
             exit 1
         fi
 
@@ -94,7 +100,7 @@ run_case() {
             if _usrhome_sanitize_path "$2"; then
                 :
             else
-                printf '%s\n' '  second call failed' >&2
+                command -p printf '%s\n' '  second call failed' >&2
                 exit 1
             fi
 
@@ -107,7 +113,7 @@ run_case() {
             esac
 
             if [ "$_test_actual" != "$4" ]; then
-                printf '  second value: expected [%s], got [%s]\n' \
+                command -p printf '  second value: expected [%s], got [%s]\n' \
                     "$4" "$_test_actual" >&2
                 exit 1
             fi
@@ -194,6 +200,12 @@ run_case 'CPATH empty fields' CPATH ':/abc::/def:' '/abc:/def' 0 named
 run_case 'trim before deduplication' CPATH '/abc:  /abc:/def' '/abc:/def' 0 named
 run_case 'exact duplicate comparison' CPATH '/abc:/abcd:/abc' '/abc:/abcd' 0 named
 run_case 'preserve trailing space' CPATH '/abc :/abc' '/abc :/abc' 0 named
+_test_ws=$(command -p printf '\t\n\r\013\014X')
+_test_ws=${_test_ws%X}
+run_case 'C whitespace prefix' CPATH "${_test_ws}/abc:/def" '/abc:/def' 0 named
+_test_newline=$(command -p printf '\nX')
+_test_newline=${_test_newline%X}
+run_case 'preserve trailing newline' CPATH "/abc${_test_newline}" "/abc${_test_newline}" 0 named
 run_case 'CDPATH' CDPATH ':/abc::/def:/abc' '/abc:/def' 0 named
 run_case 'FPATH' FPATH ':/abc::/def:/abc' '/abc:/def' 0 named
 

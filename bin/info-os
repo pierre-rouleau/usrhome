@@ -4,7 +4,7 @@
 # Purpose   : Print information about current Operating System.
 # Created   : Tuesday, October  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-13 09:29:43 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:16:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -30,7 +30,7 @@ case "$(uname)" in
         uname -a
         ;;
 
-    Linux)
+    Linux|*BSD|DragonFly)
         uname -a
         if command -v hostnamectl > /dev/null 2>&1; then
             hostnamectl

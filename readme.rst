@@ -30,6 +30,10 @@ USRHOME -- Clonable Multi-Shell Configuration & Tool-Box for Bash and Zsh
    :alt: Script Unit Tests
    :target: https://github.com/pierre-rouleau/usrhome/actions/workflows/test.yml
 
+.. image:: https://github.com/pierre-rouleau/usrhome/actions/workflows/bsd.yml/badge.svg
+   :alt: BSD OS Tests
+   :target: https://github.com/pierre-rouleau/usrhome/actions/workflows/bsd.yml
+
 :Author:  Pierre Rouleau
 :Copyright: © 2024-2026, Pierre Rouleau
 :Install: `How to install USRHOME`_
@@ -43,6 +47,7 @@ USRHOME provides shell configuration and command-line tools for Bash and
 Zsh (the `Z Shell`_).
 It helps you create a consistent development environment across macOS
 and Linux systems.
+
 
 - **Switch shells as needed:** Use the login shell imposed by your OS.
   Then start Bash from Zsh or Zsh from Bash without changing your login
@@ -75,6 +80,12 @@ and Linux systems.
   environment with commands and scripts from its `bin/`_ and `ibin/`_
   directories.  It provides some tools implemented in AWK and Pike (`lsdd`_)
   [#pike_note]_ .
+- **OS Support:** Linux and macOS.  Currently adding support for BSD
+  operating systems: FreeBSD, NetBSD, OpenBSD and DragonFly BSD.
+- **CI driven lint and tests:** All USRHOME executable and sourced scripts are
+  statically analyzed with USRHOME `lint-sh`_ which uses ShellCheck and
+  imposes other constraints to check for CDPATH awareness, POSIX command line
+  options and use of `--` argument separator where needed.
 
 .. ---------------------------------------------------------------------------
 
@@ -1960,6 +1971,23 @@ Command or file                          Description
 
 `find-executable`_                       Search a directory tree for executable files. ``-H`` includes hidden
                                          directories and ``-L`` includes links to files.
+
+                                         Usage::
+
+                                            find-executable [--inc-hidden|-H] [--inc-link|-L]  [ROOT]
+                                            find-executable [-h|--help]
+
+                                             - ROOT: Optional directory tree.  Defaults to current directory.
+                                             - Exclude all hidden directories (such as .git)
+                                                 unless --inc-hidden option is specified.
+                                             - Exclude symbolic links to files unless --inc-link is specified.
+
+                                             Exit codes: 0 if at least one file found.
+                                                       : 1 if nothing is found.
+                                                       : 2 if the command line is invalid.
+                                                       : 3 the command does not support this OS.
+                                                       : 4 if the search or output operation fails.
+
 
 `find-latest-in`_                        List recently modified files. Use ``-d`` for the directory, ``-t`` for the
                                          time window, and ``-f`` for a filename pattern. ``-H`` includes hidden
@@ -3921,41 +3949,41 @@ Thanks!
 .. _lla:
 .. _lt:
 .. _lta:                                  ibin/setfor-alias#L218
-.. _lsd:                                  ibin/setfor-alias#L278
+.. _lsd:                                  ibin/setfor-alias#L291
 .. _lsda:
-.. _lsda function:                        ibin/setfor-alias#L299
-.. _lsdd -a:                              ibin/setfor-alias#L347
-.. _lsl:                                  ibin/setfor-alias#L351
-.. _info-rosetta2:                        ibin/setfor-alias#L406
-.. _setenv:                               ibin/setfor-alias#L421
-.. _clrenv:                               ibin/setfor-alias#L457
-.. _add-to-path:                          ibin/setfor-alias#L499
-.. _alias for _usrhome_sanitize_path:     ibin/setfor-alias#L559
-.. _usrhome:                              ibin/setfor-alias#L588
-.. _usrcfg:                               ibin/setfor-alias#L589
-.. _cdv:                                  ibin/setfor-alias#L613
-.. _cdh:                                  ibin/setfor-alias#L620
-.. _cdlic:                                ibin/setfor-alias#L625
-.. _cdlog:                                ibin/setfor-alias#L630
-.. _cdcontract:                           ibin/setfor-alias#L643
-.. _cdpub:                                ibin/setfor-alias#L650
-.. _cdlocal:                              ibin/setfor-alias#L657
-.. _cdother:                              ibin/setfor-alias#L664
-.. _cdtmp:                                ibin/setfor-alias#L669
-.. _..:                                   ibin/setfor-alias#L689
-.. _...:                                  ibin/setfor-alias#L690
-.. _....:                                 ibin/setfor-alias#L691
-.. _info-prompt:                          ibin/setfor-alias#L696
-.. _info-desktop:                         ibin/setfor-alias#L791
-.. _git-cln:                              ibin/setfor-alias#L906
-.. _use-usrhome:                          ibin/setfor-alias#L911
-.. _use-homebrew:                         ibin/setfor-alias#L912
-.. _use-info:                             ibin/setfor-alias#L913
-.. _use-emacs-for-man alias:              ibin/setfor-alias#L915
-.. _to ibin/envfor-diff:                  ibin/setfor-alias#L916
-.. _append-to-path:                       ibin/setfor-alias#L917
-.. _prepend-to-path:                      ibin/setfor-alias#L918
-.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L933
+.. _lsda function:                        ibin/setfor-alias#L325
+.. _lsdd -a:                              ibin/setfor-alias#L360
+.. _lsl:                                  ibin/setfor-alias#L364
+.. _info-rosetta2:                        ibin/setfor-alias#L419
+.. _setenv:                               ibin/setfor-alias#L434
+.. _clrenv:                               ibin/setfor-alias#L470
+.. _add-to-path:                          ibin/setfor-alias#L512
+.. _alias for _usrhome_sanitize_path:     ibin/setfor-alias#L572
+.. _usrhome:                              ibin/setfor-alias#L601
+.. _usrcfg:                               ibin/setfor-alias#L602
+.. _cdv:                                  ibin/setfor-alias#L626
+.. _cdh:                                  ibin/setfor-alias#L633
+.. _cdlic:                                ibin/setfor-alias#L638
+.. _cdlog:                                ibin/setfor-alias#L643
+.. _cdcontract:                           ibin/setfor-alias#L656
+.. _cdpub:                                ibin/setfor-alias#L663
+.. _cdlocal:                              ibin/setfor-alias#L670
+.. _cdother:                              ibin/setfor-alias#L677
+.. _cdtmp:                                ibin/setfor-alias#L682
+.. _..:                                   ibin/setfor-alias#L702
+.. _...:                                  ibin/setfor-alias#L703
+.. _....:                                 ibin/setfor-alias#L704
+.. _info-prompt:                          ibin/setfor-alias#L709
+.. _info-desktop:                         ibin/setfor-alias#L804
+.. _git-cln:                              ibin/setfor-alias#L919
+.. _use-usrhome:                          ibin/setfor-alias#L924
+.. _use-homebrew:                         ibin/setfor-alias#L925
+.. _use-info:                             ibin/setfor-alias#L926
+.. _use-emacs-for-man alias:              ibin/setfor-alias#L928
+.. _to ibin/envfor-diff:                  ibin/setfor-alias#L929
+.. _append-to-path:                       ibin/setfor-alias#L930
+.. _prepend-to-path:                      ibin/setfor-alias#L931
+.. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L946
 .. _info-shell:                           bin/info-shell
 .. _append_to_path:                       ibin/setfor-path#L40
 .. _prepend_to_path:                      ibin/setfor-path#L88

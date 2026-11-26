@@ -4,7 +4,7 @@
 # Purpose   : Print all executable files found in the specified directory tree.
 # Created   : Wednesday, July 17 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-09 14:02:00 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 14:05:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -16,8 +16,7 @@
 # Dependencies
 # ------------
 #
-# POSIX compliant: find and printf.
-
+# POSIX compliant: find, printf, uname, mktemp, cat, rm.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -34,14 +33,15 @@ find-executable: Find and print all executable files in ROOT directory tree.
         find-executable [-h|--help]
 
  - ROOT: Optional directory tree.  Defaults to current directory.
- - By default:
-   - Exclude all hidden directories (such as .git)
+ - Exclude all hidden directories (such as .git)
      unless --inc-hidden option is specified.
-   - Exclude symbolic links to files unless --inc-link is specified.
+ - Exclude symbolic links to files unless --inc-link is specified.
 
  Exit codes: 0 if at least one file found.
            : 1 if nothing is found.
            : 2 if the command line is invalid.
+           : 3 the command does not support this OS.
+           : 4 if the search or output operation fails.
 
 "
 }
@@ -104,29 +104,43 @@ fi
 # ----------------------------------------------------------------------------
 # Proceed
 
+# Ensure the OS is supported.
 case "$(uname)" in
-    Darwin)
-        mode='+111'
-        ;;
+    *BSD|DragonFly|Darwin|Linux) ;;
 
-    Linux)
-        mode='/111'
+    *)
+        usrhome_printf_error "find-executable: unsupported OS: %s\n" "$(uname)"
+        exit 3
         ;;
 esac
 
 if [ "$include_symlink" = "true" ]; then
-    type='( -type f -or -type l )'
+    set -- '(' -type f -o -type l ')'
 else
-    type='-type f'
+    set -- -type f
 fi
 
+# --
+# Perform find search.
+# Capture results to preserve find's status and support stdout redirection.
+
+results=$(mktemp "${USRHOME_DIR_TMP:-${TMPDIR:-/tmp}}/find-executable.XXXXXX") || exit 4
+trap 'rm -f "$results"' 0
+trap 'exit 4' HUP INT TERM
+
 if [ "$search_hidden" = "true" ]; then
-    # shellcheck disable=SC2086  # quoting would destroy the arguments.
-    find "${rootname}" -perm "${mode}" ${type}
+    find "${rootname}" \( -perm -100 -o -perm -010 -o -perm -001 \) "$@" > "$results"
 else
-    # shellcheck disable=SC2086  # quoting would destroy the arguments.
-    find "${rootname}" -perm "${mode}" ${type} \( ! -path '*/.*' \)
+    find "${rootname}" \( -perm -100 -o -perm -010 -o -perm -001 \) "$@" \( ! -path '*/.*' \) > "$results"
 fi
+find_status=$?
+
+if [ "$find_status" -ne 0 ]; then
+    exit 4
+fi
+
+cat "$results" || exit 4
+[ -s "$results" ]
 
 # ----------------------------------------------------------------------------
 # Local Variables:

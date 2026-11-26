@@ -4,7 +4,7 @@
 # Purpose   : Find and list all new and recently modified files.
 # Created   : Wednesday, November 27 2024.
 # Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
-# Time-stamp: <2026-11-13 17:02:49 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-26 11:53:47 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -150,7 +150,7 @@ if command -v fd > /dev/null 2>&1; then
     set -- "$@" -- "$filepattern" "$dirname"
 
     case "$(uname)" in
-        Darwin)
+        Darwin|*BSD|DragonFly)
             fd "$@" | xargs -I '$' ls -l '$'
             ;;
 
@@ -169,7 +169,7 @@ fi
 platform=$(uname)
 
 case "$platform" in
-    Darwin|Linux) ;;
+    Darwin|*BSD|DragonFly|Linux) ;;
     *)
         print_error "Unsupported operating system: $platform"
         exit 1
@@ -227,6 +227,11 @@ case "$platform" in
     Darwin)
         cutoff=$(TZ=UTC0 date -v-"${seconds}"S '+%Y%m%d%H%M.%S') || exit 1
         ;;
+    FreeBSD|OpenBSD|NetBSD|DragonFly)
+        now=$(date +%s) || exit 1
+        cutoff_epoch=$((now - seconds))
+        cutoff=$(TZ=UTC0 date -r "$cutoff_epoch" '+%Y%m%d%H%M.%S') || exit 1
+        ;;
     Linux)
         cutoff=$(TZ=UTC0 date -d "$seconds seconds ago" '+%Y%m%d%H%M.%S') || exit 1
         ;;
@@ -279,7 +284,7 @@ set -- "$@" \( -type f -newer "$work/stamp" -exec sh -c '
         fi
 
         case "$platform" in
-            Darwin) ls -l "$path" || result=1 ;;
+            Darwin|*BSD|DragonFly) ls -l "$path" || result=1  ;;
             Linux) stat --format "%Y :%y %n" -- "$path" || result=1 ;;
         esac
     done
@@ -293,7 +298,7 @@ if ! find "$@" > "$work/results"; then
 fi
 
 case "$platform" in
-    Darwin) cat -- "$work/results" ;;
+    Darwin|*BSD|DragonFly) cat -- "$work/results" ;;
     Linux) sort -nr -- "$work/results" | cut -d: -f2- ;;
 esac
 
