@@ -2734,7 +2734,7 @@ Symlink          USRHOME File                            Sourced Files
 
                                                            - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
 
-~/.bash_login   ``$USRHOME_DIR``\ /dot/bash_login.bash   - ``$USRHOME_DIR_USRCFG``\setfor-all-config.sh
+~/.bash_login   ``$USRHOME_DIR``\ /dot/bash_login.bash   - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
 
 ~/.bashrc       ``$USRHOME_DIR``\ /dot/bashrc.bash       - ``$USRHOME_DIR``\ /ibin/setfor-bash-alias
 
@@ -2749,16 +2749,13 @@ Symlink          USRHOME File                            Sourced Files
 
                                                            - ``$USRHOME_DIR_USRCFG``\ /do-user.sh
 
-~/.bash_logout  ``$USRHOME_DIR``\ /dot/bash_logout.bash  - ``$USRHOME_DIR_USRCFG``\setfor-all-config.sh
+~/.bash_logout  ``$USRHOME_DIR``\ /dot/bash_logout.bash  - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
 
 =============== ======================================== =================================================================
 
-The following usrcfg file must exist:
+The following usrcfg file are invoked:
 
 - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
-
-The others are optional:
-
 - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash
 - ``$USRHOME_DIR_USRCFG``\ /do-user.sh
 
@@ -2829,32 +2826,36 @@ that the shell is not already running inside Emacs as identified by the
 Z Shell login shell execution sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- ~/.zshenv    --> ``$USRHOME_DIR``\ /dot/zshenv.zsh
+=============== ======================================== =================================================================
+Symlink          USRHOME File                            Sourced Files
+=============== ======================================== =================================================================
+~/.zshenv       ``$USRHOME_DIR``\ /dot/zshenv.zsh        - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
 
-  - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist)*
+~/.zprofile     ``$USRHOME_DIR``\ /dot/zprofile.zsh      - ``$USRHOME_DIR``\ /ibin/setfor-path
+                                                         - ``$USRHOME_DIR_USRCFG``\ /do-user-zprofile.zsh
 
-- ~/.zprofile  --> ``$USRHOME_DIR``\ /dot/zprofile.zsh
+~/.zshrc        ``$USRHOME_DIR``\ /dot/zshrc.zsh         - ``$USRHOME_DIR``\ /ibin/setfor-zsh-alias
 
-  - ``$USRHOME_DIR``\ /ibin/setfor-path
-  - ``$USRHOME_DIR_USRCFG``\ /do-user-zprofile.zsh
+                                                           - ``$USRHOME_DIR``\ /ibin/setfor-alias
 
-- ~/.zshrc     --> ``$USRHOME_DIR``\ /dot/zshrc.zsh
+                                                         - ``$USRHOME_DIR``\ /ibin/setfor-path
 
-  - ``$USRHOME_DIR``\ /ibin/setfor-zsh-alias
+                                                           - ``$USRHOME_DIR``\ /ibin/setfor-alias
+                                                           - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
-    - ``$USRHOME_DIR``\ /ibin/setfor-alias
+                                                         - ``$USRHOME_DIR_USRCFG``\ /do-user-zshrc.zsh
 
-  - ``$USRHOME_DIR``\ /ibin/setfor-path
+                                                           - ``$USRHOME_DIR_USRCFG``\ /do-user.sh
 
-    - ``$USRHOME_DIR``\ /ibin/setfor-alias#L912
-    - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
+~/.zlogin       ``$USRHOME_DIR``\ /dot/zlogin.zsh
+~/.zlogout      ``$USRHOME_DIR``\ /dot/zlogout.zsh
+=============== ======================================== =================================================================
 
-  - ``$USRHOME_DIR_USRCFG``\ /do-user-zshrc.zsh  *(must exist)*
+The following usrcfg file are invoked:
 
-    - ``$USRHOME_DIR_USRCFG``\ /do-user.sh  *(must exist)*
-
-- ~/.zlogin    --> ``$USRHOME_DIR``\ /dot/zlogin.zsh
-
+- ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
+- ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.zsh
+- ``$USRHOME_DIR_USRCFG``\ /do-user.sh
 
 USRHOME System Shell Startup File Diagram
 -----------------------------------------
