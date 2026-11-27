@@ -2728,7 +2728,7 @@ Bash login shell execution sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 =============== ======================================== =================================================================
-Symlink          USRHOME Implementation                   Sourced Files
+Symlink          USRHOME File                            Sourced Files
 =============== ======================================== =================================================================
 ~/.bash_profile ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
 
