@@ -2727,31 +2727,30 @@ Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 Bash login shell execution sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-================== ======================================== =================================================================
-User Config File   USRHOME Implementation                   Sourced Files
-================== ======================================== =================================================================
-~/.bash_profile    ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
+=============== ======================================== =================================================================
+Symlink          USRHOME Implementation                   Sourced Files
+=============== ======================================== =================================================================
+~/.bash_profile ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
 
-                                                              - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
+                                                           - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
 
+~/.bash_profile ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
 
-- ~/.bash_profile  ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
+                                                           - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
 
-                                                              - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
+~/.bashrc       ``$USRHOME_DIR``\ /dot/bashrc.bash       - ``$USRHOME_DIR``\ /ibin/setfor-bash-alias
 
-- ~/.bashrc        ``$USRHOME_DIR``\ /dot/bashrc.bash       - ``$USRHOME_DIR``\ /ibin/setfor-bash-alias
+                                                           - ``$USRHOME_DIR``\ /ibin/setfor-alias
 
-                                                              - ``$USRHOME_DIR``\ /ibin/setfor-alias
+                                                         - ``$USRHOME_DIR``\ /ibin/setfor-path
 
-                                                            - ``$USRHOME_DIR``\ /ibin/setfor-path
+                                                           - ``$USRHOME_DIR``\ /ibin/setfor-alias
+                                                           - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
-                                                              - ``$USRHOME_DIR``\ /ibin/setfor-alias#L912
-                                                              - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
+                                                         - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash  *(if it exists)*
 
-                                                            - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash  *(if it exists)*
-
-                                                              - ``$USRHOME_DIR_USRCFG``\ /do-user.sh   *(if it exists)*
-================== ======================================== =================================================================
+                                                           - ``$USRHOME_DIR_USRCFG``\ /do-user.sh   *(if it exists)*
+=============== ======================================== =================================================================
 
 
 The Korn Shell Configuration Files
