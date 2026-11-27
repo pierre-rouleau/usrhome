@@ -2707,13 +2707,61 @@ different name to the standard file names; the USRHOME file names have no
 leading period and have a file extension that identifies the shell that uses
 them.
 
-The Bash Configuration Files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Bash, ash, dash and sh Configuration Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Bash shell uses the configuration files listed in the left column (which
-includes the ``~/.profile`` file also uses by sh).
-USRHOME replaces them to symbolic link files that point to the USRHOME files
-listed in the right column.
+The Bash startup files are the following:
+
+=============== ====================================================== ==================== ========================================
+File            Shell Type                                             When Invoked         Notes & Precedence
+=============== ====================================================== ==================== ========================================
+~/.bash_profile **Login shells**                                       At shell startup     **1st priority**. If found, Bash stops looking for ~/.bash_login and ~/.profile.
+                (interactive, or non-interactive with --login)         (after /etc/profile)
+
+~/.bash_login   **Login shells**                                       At shell startup     **2nd priority**. Only read if ~/.bash_profile does not exist.
+                (interactive, or non-interactive with --login)         (after /etc/profile)
+
+~/.profile      **Login shells**                                       At shell startup     **3rd priority**. Only read if neither ~/.bash_profile nor ~/.bash_login exists. Also read by other POSIX shells (sh, dash).
+                (interactive, or non-interactive with --login)         (after /etc/profile)
+
+~/.bashrc       **Interactive non-login shells**                       At shell startup     **Not** automatically read by login shells unless explicitly sourced inside ~/.bash_profile or ~/.profile.
+                (and non-interactive remote shells like ssh commands)
+
+~/.bash_logout  **Login shells**                                       When the shell exits **Not** executed when exiting an interactive non-login shell.
+                (interactive, or non-interactive
+                with --login using exit)
+=============== ====================================================== ==================== ========================================
+
+The ash, dash and sh shell do not use the ``~/.bash*`` files.
+They use the following files depending of the shell type:
+
+- **Login Shells** (e.g., logging into a console or running dash -l):
+
+	1. Executes /etc/profile.
+	2. Executes ~/.profile.
+	3. Checks the ENV environment variable; if the shell is also interactive and $ENV points to a readable file (such as ~/.shrc), it executes that file too.
+
+- **Interactive Non-Login Shells** (e.g., typing sh or dash in a terminal):
+
+	- Skips ~/.profile completely.
+	- Reads only the file specified in $ENV, if set. If $ENV is unset, no user startup file is executed.
+
+- **Non-Interactive Shells** (e.g., running ``#!/bin/sh`` scripts):
+
+	- Executes no startup files at all (ignores both ~/.profile and $ENV).
+
+- **Shell Exit**:
+
+  - None of these shells read a logout file automatically.
+  - To run cleanup commands on exit, you must set an EXIT trap inside
+    ``~/.profile`` or your $ENV file (e.g., ``trap 'rm -f ~/tmp/*' EXIT`` ).
+
+
+USRHOME shell startup execution sequence for Bash, ash, dash and sh
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+USRHOME uses symbolic links for each of the shell startup files
+used by Bash, ash, dash and sh shells.
 
 ========================= =====================================================
 Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
@@ -2725,9 +2773,7 @@ Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 ``~/.bash_logout``        ``$USRHOME_DIR``/dot/\ `bash_logout.bash`_
 ========================= =====================================================
 
-
-Bash login shell execution sequence
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The files execute the USRHOME logic and source other files, as shown here:
 
 =============== ======================================== =================================================================
 Symlink          USRHOME File                            Sourced Files
@@ -2737,6 +2783,8 @@ Symlink          USRHOME File                            Sourced Files
                                                            - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
 
 ~/.bash_login   ``$USRHOME_DIR``\ /dot/bash_login.bash   - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
+
+~/.profile      ``USRHOME_DIR``\ /dot/profile.sh         - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
 
 ~/.bashrc       ``$USRHOME_DIR``\ /dot/bashrc.bash       - ``$USRHOME_DIR``\ /ibin/setfor-bash-alias
 
@@ -2761,7 +2809,6 @@ The following usrcfg file are invoked:
 - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash
 - ``$USRHOME_DIR_USRCFG``\ /do-user.sh
 
-
 The Korn Shell Configuration Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -2771,9 +2818,14 @@ Korn login shell execution sequence
 =============== ======================================== =================================================================
 Symlink          USRHOME File                            Sourced Files
 =============== ======================================== =================================================================
-~/.profile      ``USRHOME_DIR``\ /dot/profile.sh
-~/.kshrc
+~/.profile      ``USRHOME_DIR``\ /dot/profile.sh         - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
 
+
+~/.kshrc        ``USRHOME_DIR``\ /dot/\ `kshrc.ksh`_     - ``$USRHOME_DIR``\ /ibin/setfor-alias
+                                                         - ``$USRHOME_DIR``\ /ibin/setfor-path
+                                                         - ``$USRHOME_DIR_USRCFG``\ /do-user-kshrc.ksh or ``$USRHOME_DIR_USRCFG``\ /ibin/do-user.sh"
+                                                         - ``$USRHOME_DIR_USRCFG``\ /ibin/setfor-ksh-prompt"
+                                                         - ``$USRHOME_DIR``\ /ibin/setfor-ksh-common"
 =============== ======================================== =================================================================
 
 The zsh Configuration Files
@@ -4057,7 +4109,6 @@ Thanks!
 .. _append-to-path:                       ibin/setfor-alias#L956
 .. _prepend-to-path:                      ibin/setfor-alias#L957
 .. _to ibin/envfor-mk-diffo:              ibin/setfor-alias#L972
-.. _info-shell:                           bin/info-shell
 .. _append_to_path:                       ibin/setfor-path#L40
 .. _prepend_to_path:                      ibin/setfor-path#L88
 .. _Dired:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-dired.pdf
@@ -4082,6 +4133,7 @@ Thanks!
 .. _Fish shell cd:                         https://fishshell.com/docs/current/cmds/cd.html
 .. _Using the Emacs stand-alone processes, daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 .. _ibin/do-info-shell:                   ibin/do-info-shell
+.. _kshrc.ksh:                            dot/kshrc.ksh
 
 .. ---------------------------------------------------------------------------
 
