@@ -2730,13 +2730,11 @@ Bash login shell execution sequence
 =============== ======================================== =================================================================
 Symlink          USRHOME File                            Sourced Files
 =============== ======================================== =================================================================
-~/.bash_profile ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
+~/.bash_profile ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
 
                                                            - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
 
-~/.bash_profile ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
-
-                                                           - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
+~/.bash_login   ``$USRHOME_DIR``\ /dot/bash_login.bash   - ``$USRHOME_DIR_USRCFG``\setfor-all-config.sh
 
 ~/.bashrc       ``$USRHOME_DIR``\ /dot/bashrc.bash       - ``$USRHOME_DIR``\ /ibin/setfor-bash-alias
 
@@ -2747,10 +2745,22 @@ Symlink          USRHOME File                            Sourced Files
                                                            - ``$USRHOME_DIR``\ /ibin/setfor-alias
                                                            - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
-                                                         - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash  *(if it exists)*
+                                                         - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash
 
-                                                           - ``$USRHOME_DIR_USRCFG``\ /do-user.sh   *(if it exists)*
+                                                           - ``$USRHOME_DIR_USRCFG``\ /do-user.sh
+
+~/.bash_logout  ``$USRHOME_DIR``\ /dot/bash_logout.bash  - ``$USRHOME_DIR_USRCFG``\setfor-all-config.sh
+
 =============== ======================================== =================================================================
+
+The following usrcfg file must exist:
+
+- ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh
+
+The others are optional:
+
+- ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash
+- ``$USRHOME_DIR_USRCFG``\ /do-user.sh
 
 
 The Korn Shell Configuration Files
