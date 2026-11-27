@@ -4,7 +4,7 @@
 # Purpose   : Set USRHOME command aliases common to bash and zsh shells.
 # Created   : Friday, April 12 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-26 16:26:45 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-27 14:40:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -98,7 +98,7 @@ cduh()
 # ------------------
 
 #alias \?='printf "%s\n" $?'
-
+alias info-shell='. $USRHOME_DIR/ibin/do-info-shell'
 
 info_shell_special_var()
 {

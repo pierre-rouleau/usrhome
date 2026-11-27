@@ -932,6 +932,8 @@ USRHOME Command Name               Description
 
 `info-shell`_                      Show current and default shell environment variable names
                                    and values.
+
+                                   - Implemented in `ibin/do-info-shell`_
 ================================== ================================================================
 
 Terminal Window Control
@@ -2766,7 +2768,13 @@ The Korn Shell Configuration Files
 Korn login shell execution sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- ~/.kshrc -->
+=============== ======================================== =================================================================
+Symlink          USRHOME File                            Sourced Files
+=============== ======================================== =================================================================
+~/.profile      ``USRHOME_DIR``\ /dot/profile.sh
+~/.kshrc
+
+=============== ======================================== =================================================================
 
 The zsh Configuration Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4005,6 +4013,7 @@ Thanks!
 .. _use-diff:                             ibin/envfor-diff
 .. _showpath:                             ibin/setfor-alias#L46
 .. _usrhome-env:                          ibin/setfor-alias#L52
+.. _info-shell:                           ibin/setfor-alias#L101
 .. _info-shell-special-var:               ibin/setfor-alias#L103
 .. _restore-title:                        ibin/setfor-alias#L183
 .. _l:
@@ -4072,9 +4081,7 @@ Thanks!
 .. _Zsh shell parameters:                  https://zsh.sourceforge.io/Intro/intro_13.html
 .. _Fish shell cd:                         https://fishshell.com/docs/current/cmds/cd.html
 .. _Using the Emacs stand-alone processes, daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
-
-
-
+.. _ibin/do-info-shell:                   ibin/do-info-shell
 
 .. ---------------------------------------------------------------------------
 
