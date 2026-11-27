@@ -4,7 +4,7 @@
 # Purpose   : Print information about current shell.
 # Created   : Friday, November 27 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-27 15:01:53 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-27 15:05:15 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -171,7 +171,7 @@ printf -- "\
  Flags         : %s\n" \
        "$USRHOME_SHELL" "${parent_cmd}" "${shell_type}" "$PPID" "${shell_path}" "${SHELL}" "$-"
 
-explain_flags
+explain_flags "$-"
 
 
 # ----------------------------------------------------------------------------
