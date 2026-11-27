@@ -1,0 +1,180 @@
+# Sourced script: do-info-shell  -*- mode: sh; -*-
+# shellcheck shell=sh
+#
+# Purpose   : Print information about current shell.
+# Created   : Friday, November 27 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-11-27 15:05:15 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print information about the shell from which this command is executed.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# POSIX:  printf, command
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+explain_flags() {
+    _flags="${1-$-}"
+    _zsh_native=0
+
+  # Detect Zsh running in native mode (where single-letter flags differ from POSIX/ksh)
+  if [ -n "${ZSH_VERSION-}" ] && ! set -o | grep -qE '^(sh|ksh)optionletters[[:space:]]+on$'; then
+    _zsh_native=1
+  fi
+
+  while [ -n "$_flags" ]; do
+    _rest="${_flags#?}"
+    _c="${_flags%"$_rest"}"
+    _flags="$_rest"
+
+    if [ "$_zsh_native" -eq 1 ]; then
+      case "$_c" in
+        0) _desc="CORRECT: Try to correct spelling of commands" ;;
+        1) _desc="PRINT_EXIT_VALUE: Print exit value of commands with non-zero status" ;;
+        2) _desc="NO_BAD_PATTERN: Leave malformed filename generation patterns unchanged" ;;
+        3) _desc="NO_NOMATCH: Leave unmatched filename generation patterns unchanged" ;;
+        4) _desc="GLOB_DOTS: Do not require a leading dot to be matched explicitly" ;;
+        5) _desc="NOTIFY: Report status of background jobs immediately (POSIX -b)" ;;
+        6) _desc="BG_NICE: Run background jobs at a lower priority" ;;
+        7) _desc="IGNORE_EOF: Do not exit on end-of-file" ;;
+        8) _desc="MARK_DIRS: Append a trailing slash to directory names from globbing" ;;
+        9) _desc="AUTO_LIST: Automatically list choices on ambiguous completion" ;;
+        B) _desc="NO_BEEP: Do not beep on error in ZLE" ;;
+        C) _desc="NO_CLOBBER: Prevent output redirection from overwriting existing files" ;;
+        D) _desc="PUSHD_TO_HOME: Have pushd with no arguments act like pushd \$HOME" ;;
+        E) _desc="PUSHD_SILENT: Do not print the directory stack after pushd or popd" ;;
+        F) _desc="NO_GLOB: Disable filename generation (globbing)" ;;
+        G) _desc="NULL_GLOB: Delete patterns with no matches from the argument list" ;;
+        H) _desc="RM_STAR_SILENT: Do not query the user before executing rm *" ;;
+        I) _desc="IGNORE_BRACES: Do not perform brace expansion" ;;
+        J) _desc="AUTO_CD: cd into a directory name typed as a command" ;;
+        K) _desc="NO_BANG_HIST: Do not perform textual history expansion (!)" ;;
+        L) _desc="SUN_KEYBOARD_HACK: Ignore trailing backquote on a line" ;;
+        M) _desc="SINGLE_LINE_ZLE: Use single-line command line editing" ;;
+        N) _desc="AUTO_PUSHD: Make cd push the old directory onto the directory stack" ;;
+        O) _desc="CORRECT_ALL: Try to correct spelling of all arguments in a line" ;;
+        P) _desc="RC_EXPAND_PARAM: Array expansions produce permutations" ;;
+        Q) _desc="PATH_DIRS: Perform path search even on command names with slashes" ;;
+        R) _desc="LONG_LIST_JOBS: List jobs in long format by default" ;;
+        S) _desc="REC_EXACT: Recognize exact matches even if they are ambiguous" ;;
+        T) _desc="CDABLE_VARS: Expand cd arguments as parameter names if not a directory" ;;
+        U) _desc="MAIL_WARNING: Print warning if a mail file has been accessed" ;;
+        V) _desc="NO_PROMPT_CR: Do not print a carriage return before printing a prompt" ;;
+        W) _desc="AUTO_RESUME: Single-word simple commands resume matching suspended jobs" ;;
+        X) _desc="LIST_TYPES: Show file type indicators when listing completions" ;;
+        Y) _desc="MENU_COMPLETE: Insert first match immediately on ambiguous completion" ;;
+        Z) _desc="ZLE: Use the Zsh Line Editor" ;;
+        a) _desc="ALL_EXPORT: Automatically export all subsequently defined parameters" ;;
+        e) _desc="ERR_EXIT: Exit immediately if a command exits with non-zero status" ;;
+        f) _desc="NO_GLOB: Disable filename generation (globbing)" ;;
+        g) _desc="HIST_IGNORE_SPACE: Do not enter lines starting with a space into history" ;;
+        h) _desc="HIST_IGNORE_DUPS: Do not enter duplicate consecutive lines into history" ;;
+        i) _desc="INTERACTIVE: Shell is interactive" ;;
+        k) _desc="INTERACTIVE_COMMENTS: Allow comments even in interactive shells" ;;
+        l) _desc="LOGIN: Shell is a login shell" ;;
+        m) _desc="MONITOR: Job control is enabled" ;;
+        n) _desc="NO_EXEC: Read commands without executing them" ;;
+        p) _desc="PRIVILEGED: Privileged mode enabled (effective UID/GID differs from real)" ;;
+        r) _desc="RESTRICTED: Restricted shell mode enabled" ;;
+        s) _desc="SHIN_STDIN: Commands are being read from standard input" ;;
+        t) _desc="SINGLE_COMMAND: Exit after reading and executing one command" ;;
+        u) _desc="NO_UNSET: Treat unset parameters as an error when substituting" ;;
+        v) _desc="VERBOSE: Print shell input lines as they are read" ;;
+        w) _desc="CHASE_LINKS: Resolve symbolic links to their true values when changing directory" ;;
+        x) _desc="XTRACE: Print commands and their arguments as they are executed" ;;
+        y) _desc="SH_WORD_SPLIT: Perform field splitting on unquoted parameter expansions" ;;
+        *) _desc="Unknown Zsh flag" ;;
+      esac
+    else
+      case "$_c" in
+        # Standard POSIX flags
+        a) _desc="allexport: Export all modified or created variables" ;;
+        b) _desc="notify: Report status of terminated background jobs immediately" ;;
+        C) _desc="noclobber: Prevent > redirection from overwriting existing files" ;;
+        e) _desc="errexit: Exit immediately if a command exits with a non-zero status" ;;
+        f) _desc="noglob: Disable pathname expansion (globbing)" ;;
+        h) _desc="hashall / trackall: Locate and remember commands as functions are defined" ;;
+        i) _desc="interactive: Shell is running interactively" ;;
+        m) _desc="monitor: Enable job control for background processes" ;;
+        n) _desc="noexec: Read commands and check syntax without executing them" ;;
+        s) _desc="stdin: Read commands from standard input" ;;
+        u) _desc="nounset: Treat unset variables as an error during expansion" ;;
+        v) _desc="verbose: Print shell input lines as they are read" ;;
+        x) _desc="xtrace: Print commands and expanded arguments before execution" ;;
+
+        # Common Bourne / Korn / Bash / Zsh-emulation extensions
+        B) _desc="braceexpand (Bash/mksh): Enable brace expansion" ;;
+        c) _desc="command_string: Commands are read from the -c string operand" ;;
+        D) _desc="globstar / braceexpand (ksh93): Enable extended globbing or brace expansion" ;;
+        E) _desc="errtrace (Bash): Inherit ERR trap in functions and subshells" ;;
+        G) _desc="globstar (ksh93): Enable ** recursive pathname expansion" ;;
+        H) _desc="histexpand (Bash): Enable !-style history substitution" ;;
+        k) _desc="keyword (Bash/ksh): Place all keyword arguments in the environment" ;;
+        l) _desc="login: Shell was invoked as a login shell" ;;
+        p) _desc="privileged: Run in privileged mode (ignore ENV/BASH_ENV, preserve euid)" ;;
+        P) _desc="physical (Bash): Do not resolve symbolic links when executing cd" ;;
+        r) _desc="restricted: Run in restricted shell mode" ;;
+        t) _desc="onecmd: Exit after reading and executing one command" ;;
+        T) _desc="functrace (Bash): Inherit DEBUG and RETURN traps in functions/subshells" ;;
+        *) _desc="Shell-specific extension flag" ;;
+      esac
+    fi
+
+    printf -- '  -%s : %s\n' "$_c" "$_desc"
+  done
+}
+
+# Note: Since this is a script, it runs inside a sub-shell.
+#       The user wants to get information about the shell where
+#       the command is invoked, which is the parent of this shell.
+#
+shell_type=
+shell_path=
+parent_cmd="$(ps -p "$PPID" | grep "$PPID" | awk '{print $4}')"
+case "$parent_cmd" in
+    -bash )
+        shell_type="top-level shell"
+        shell_path="$(command -v bash)"
+        ;;
+    bash | /bin/bash )
+        shell_type="sub-shell"
+        shell_path="$(command -v bash)"
+        ;;
+    -zsh )
+        shell_type="top level shell"
+        shell_path="$(command -v zsh)"
+        ;;
+    zsh | /bin/zsh )
+        shell_type="sub-shell"
+        shell_path="$(command -v zsh)"
+        ;;
+    * )
+        shell_type="?Unknown?"
+        shell_path="?Unknown?"
+        ;;
+esac
+printf -- "\
+\$USRHOME_SHELL: %s,
+ \$0            : %s (%s),
+ Shell PID     : \$\$: %s,
+ Shell cmd path: %s
+ \$SHELL        : %s
+ Flags         : %s\n" \
+       "$USRHOME_SHELL" "${parent_cmd}" "${shell_type}" "$PPID" "${shell_path}" "${SHELL}" "$-"
+
+explain_flags "$-"
+
+
+# ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
