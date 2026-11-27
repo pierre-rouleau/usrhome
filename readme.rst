@@ -2625,6 +2625,40 @@ Sourced Shell Files Format
             #  sh-shell: sh
             #  End:
 
+Shell Function Naming Convention
+--------------------------------
+
+All USRHOME code must comply to POSIX code convention:
+
+-  A shell function name must be a valid "Name" identifier, consisting solely
+   of uppercase and lowercase ASCII letters, digits, and underscores, and
+   cannot start with a digit.
+
+   - **Allowed characters**: only characters from the portable character set: a–z, A–Z, 0–9, and _ (underscore).
+   - **First character**: must be a letter (a–z, A–Z) or an underscore (_).
+     Digits are not permitted as the first character.
+   - **No reserved words**: a function name cannot be a POSIX shell reserved word
+       (such as if, then, else, fi, while, do, done, case, esac, for, in, or !).
+
+Note that hyphens (``-``) are forbidden in function names.  USRHOME commands
+that use hyphens must be created via an alias to the same name with the
+underscore.  These hyphenated commands can only be typed manually by the user,
+not invoked inside scripts.  Inside scripts call the function by their real
+name that use underscores.
+
+
+USRHOME code uses names that are fully POSIX compliant to ensure that the code
+will be usable in a large variety of shells.  The Korn shell, for example,
+does not accept code with non-POSIX names and the script will stop on an
+error.
+
+
+Shell Variable Naming Convention
+--------------------------------
+
+The convention for variables is the same as for functions.  With one more
+detail, use ALL_UPPERCASE names for variables meant to be exported to the
+shell as explicit environment variables.
 
 .. ---------------------------------------------------------------------------
 
@@ -2693,27 +2727,40 @@ Location of Symbolic Link Location of the USRHOME files pointed by the symlinks
 Bash login shell execution sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- ~/.bash_profile  --> ``$USRHOME_DIR``\ /dot/bash_profile.bash
+================== ======================================== =================================================================
+User Config File   USRHOME Implementation                   Sourced Files
+================== ======================================== =================================================================
+~/.bash_profile    ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
 
-  - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
+                                                              - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
 
-    - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
 
-- ~/.bashrc        --> ``$USRHOME_DIR``\ /dot/bashrc.bash
+- ~/.bash_profile  ``$USRHOME_DIR``\ /dot/bash_profile.bash - ``$USRHOME_DIR_USRCFG``\ /setfor-all-config.sh  *(must exist!)*
 
-  - ``$USRHOME_DIR``\ /ibin/setfor-bash-alias
+                                                              - ``$USRHOME_DIR_USRCFG``\ /do-user-bash_profile.bash
 
-    - ``$USRHOME_DIR``\ /ibin/setfor-alias
+- ~/.bashrc        ``$USRHOME_DIR``\ /dot/bashrc.bash       - ``$USRHOME_DIR``\ /ibin/setfor-bash-alias
 
-  - ``$USRHOME_DIR``\ /ibin/setfor-path
+                                                              - ``$USRHOME_DIR``\ /ibin/setfor-alias
 
-    - ``$USRHOME_DIR``\ /ibin/setfor-alias#L912
-    - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
+                                                            - ``$USRHOME_DIR``\ /ibin/setfor-path
 
-  - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash  *(if it exists)*
+                                                              - ``$USRHOME_DIR``\ /ibin/setfor-alias#L912
+                                                              - ``$USRHOME_DIR``\ /ibin/envfor-usrhome
 
-    - ``$USRHOME_DIR_USRCFG``\ /do-user.sh   *(if it exists)*
+                                                            - ``$USRHOME_DIR_USRCFG``\ /do-user-bashrc.bash  *(if it exists)*
 
+                                                              - ``$USRHOME_DIR_USRCFG``\ /do-user.sh   *(if it exists)*
+================== ======================================== =================================================================
+
+
+The Korn Shell Configuration Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Korn login shell execution sequence
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- ~/.kshrc -->
 
 The zsh Configuration Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
