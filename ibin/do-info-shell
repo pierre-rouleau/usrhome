@@ -1,10 +1,10 @@
 # Sourced script: do-info-shell  -*- mode: sh; -*-
-## shellcheck shell=sh
-
+# shellcheck shell=sh
+#
 # Purpose   : Print information about current shell.
 # Created   : Friday, November 27 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-27 14:34:10 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-27 15:01:53 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
